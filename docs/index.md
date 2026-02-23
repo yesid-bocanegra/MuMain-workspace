@@ -39,25 +39,25 @@
 ## Generated Documentation
 
 ### Core
-- [Project Overview](./project-overview.md) — Executive summary, tech stack, key metrics
-- [Source Tree Analysis](./source-tree-analysis.md) — Annotated directory structure with critical folders
-- [Development Guide](./development-guide.md) — Build, run, test, environment setup
-- [Development Standards](./development-standards.md) — Coding conventions, banned APIs, cross-platform rules
-- [Integration Architecture](./integration-architecture.md) — Cross-component communication and data flows
-- [Troubleshooting](./troubleshooting.md) — Common build/runtime issues and solutions
-- [Testing Strategy](./testing-strategy.md) — Test approach, ground truth capture, CI validation
+- [Project Overview](./project-overview.md) — Executive summary, tech stack, key metrics *(~120 lines)*
+- [Source Tree Analysis](./source-tree-analysis.md) — Annotated directory structure with critical folders *(~300 lines)*
+- [Development Guide](./development-guide.md) — Build, run, test, environment setup *(~210 lines)*
+- [Development Standards](./development-standards.md) — Coding conventions, banned APIs, cross-platform rules *(~425 lines; §1 banned APIs, §2 C++, §3 C#, §4 generated code, §5 i18n)*
+- [Integration Architecture](./integration-architecture.md) — Cross-component communication and data flows *(~175 lines)*
+- [Troubleshooting](./troubleshooting.md) — Common build/runtime issues and solutions *(~150 lines)*
+- [Testing Strategy](./testing-strategy.md) — Test approach, ground truth capture, CI validation *(~185 lines)*
 
 ### Architecture (Per-Part)
-- [Architecture: MuMain](./architecture-mumain.md) — Game client: rendering, scenes, UI, state management
-- [Architecture: Rendering](./architecture-rendering.md) — OpenGL pipeline, MuRenderer abstraction, SDL_gpu migration
-- [Architecture: ClientLibrary](./architecture-clientlibrary.md) — Network layer: packets, marshaling, XSLT pipeline
-- [Architecture: ConstantsReplacer](./architecture-constantsreplacer.md) — Code gen tool: SQL→C++ constant sync
-- [Architecture: MuEditor](./architecture-mueditor.md) — Debug editor: ImGui overlay, lifecycle, input blocking
+- [Architecture: MuMain](./architecture-mumain.md) — Game client: rendering, scenes, UI, state management *(~185 lines)*
+- [Architecture: Rendering](./architecture-rendering.md) — OpenGL pipeline, MuRenderer abstraction, SDL_gpu migration *(~190 lines; §Current Pipeline, §MuRenderer, §SDL_gpu, §HLSL Shaders)*
+- [Architecture: ClientLibrary](./architecture-clientlibrary.md) — Network layer: packets, marshaling, XSLT pipeline *(~140 lines)*
+- [Architecture: ConstantsReplacer](./architecture-constantsreplacer.md) — Code gen tool: SQL→C++ constant sync *(~105 lines)*
+- [Architecture: MuEditor](./architecture-mueditor.md) — Debug editor: ImGui overlay, lifecycle, input blocking *(~130 lines)*
 
 ### Reference
-- [Game Systems Reference](./game-systems-reference.md) — All gameplay subsystems, entry points, data flow
-- [Packet Protocol Reference](./packet-protocol-reference.md) — Network protocol, encryption, C++/C# boundary
-- [Asset Pipeline](./asset-pipeline.md) — Asset formats, directory structure, loading pipeline
+- [Game Systems Reference](./game-systems-reference.md) — All gameplay subsystems, entry points, data flow *(~300 lines; §Core Loop, §Global State, §Gameplay Systems, §Map/World, §UI System)*
+- [Packet Protocol Reference](./packet-protocol-reference.md) — Network protocol, encryption, C++/C# boundary *(~230 lines; §Framing, §Encryption, §C++/C# Boundary, §Code Gen)*
+- [Asset Pipeline](./asset-pipeline.md) — Asset formats, directory structure, loading pipeline *(~230 lines)*
 
 ### Metadata
 - [Project Parts](./project-parts.json) — Machine-readable project structure and integration points
@@ -72,8 +72,8 @@
 - [MuEditor README](../MuMain/src/MuEditor/README.md) — Editor architecture, ImGui integration, components
 
 ### Cross-Platform Planning
-- [Cross-Platform Plan](./CROSS_PLATFORM_PLAN.md) — 10-phase, 58-session SDL3/SDL_gpu migration roadmap
-- [Cross-Platform Decisions](./CROSS_PLATFORM_DECISIONS.md) — Research, library decisions, OpenGL audit, shader specs
+- [Cross-Platform Plan](./CROSS_PLATFORM_PLAN.md) — 10-phase, 58-session SDL3/SDL_gpu migration roadmap *(~970 lines — load specific phase sections, not entire file)*
+- [Cross-Platform Decisions](./CROSS_PLATFORM_DECISIONS.md) — Research, library decisions, OpenGL audit, shader specs *(~435 lines)*
 
 ### CI/CD
 - [MinGW Build (main)](../MuMain/.github/workflows/mingw-build.yml) — Ubuntu MinGW-w64 cross-compile
@@ -88,10 +88,18 @@
 4. **Plan features** using the [Integration Architecture](./integration-architecture.md) for cross-component work
 
 ### For AI-Assisted Development
-When creating brownfield PRDs or feature plans, provide this index file as project context. The `CLAUDE.md` file at the workspace root provides quick context for Claude Code sessions. For:
-- **Game client features** → Reference [Architecture: MuMain](./architecture-mumain.md) + [Game Systems](./game-systems-reference.md)
-- **Rendering work** → Reference [Rendering Architecture](./architecture-rendering.md)
-- **Network protocol changes** → Reference [Packet Protocol](./packet-protocol-reference.md) + [Architecture: ClientLibrary](./architecture-clientlibrary.md)
-- **Cross-component features** → Reference [Integration Architecture](./integration-architecture.md)
-- **Cross-platform work** → Reference [Cross-Platform Plan](./CROSS_PLATFORM_PLAN.md) + [Development Standards](./development-standards.md)
-- **Asset/content work** → Reference [Asset Pipeline](./asset-pipeline.md)
+
+**Context loading strategy:** Use this index to identify which docs are relevant, then load only the needed documents. For large docs (>200 lines), use section-targeted reads — section names are listed in parentheses above.
+
+| Task | Load These Docs | Skip |
+|------|----------------|------|
+| Game client features | Architecture: MuMain + Game Systems Reference | Rendering, Protocol, Asset |
+| Rendering work | Architecture: Rendering (full) | Game Systems, Protocol |
+| Network protocol changes | Packet Protocol + Architecture: ClientLibrary | Rendering, Game Systems |
+| Cross-component features | Integration Architecture | Per-part architecture docs |
+| Cross-platform migration | Development Standards §1 + Cross-Platform Plan (relevant phase only) | Full plan, Game Systems |
+| Asset/content work | Asset Pipeline | Protocol, Rendering |
+| Build/CI issues | Development Guide + Troubleshooting | Architecture docs |
+| New contributor onboarding | Project Overview + Development Guide + Development Standards | Reference docs |
+
+The `CLAUDE.md` file at the workspace root provides quick context (~75 lines) for Claude Code sessions — it is loaded automatically and should not be re-read manually.

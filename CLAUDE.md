@@ -57,17 +57,17 @@ XSLT-generated from XML packet definitions. Located in `MuMain/src/source/Dotnet
 - Forward slashes, `std::filesystem::path` for new code
 - CI (MinGW) build must pass on all changes
 
-## Documentation Index
+## Documentation — Load On Demand
 
-- `docs/index.md` — Master index, start here
-- `docs/development-standards.md` — Coding rules, banned APIs, PR checklist
-- `docs/CROSS_PLATFORM_PLAN.md` — 10-phase, 58-session migration roadmap
-- `docs/CROSS_PLATFORM_DECISIONS.md` — Research, library decisions, issue register
-- `docs/architecture-mumain.md` — Game client architecture
-- `docs/architecture-rendering.md` — Rendering pipeline, GL→SDL_gpu migration
-- `docs/game-systems-reference.md` — All gameplay subsystems
-- `docs/packet-protocol-reference.md` — Network protocol, C++/C# boundary
-- `docs/asset-pipeline.md` — Asset formats, loading pipeline
-- `docs/testing-strategy.md` — Test approach, ground truth capture
-- `docs/integration-architecture.md` — Cross-component communication
-- `docs/development-guide.md` — Build, run, environment setup
+Start with `docs/index.md` (~100 lines) for the full index with section navigation hints. Load individual docs only when relevant to your current task.
+
+| When working on... | Load (lines) |
+|---------------------|-------------|
+| Cross-platform migration | `development-standards.md` §1 (~150 lines) + `CROSS_PLATFORM_PLAN.md` (relevant phase, ~100 lines each) |
+| Game client features | `game-systems-reference.md` (~300) + `architecture-mumain.md` (~185) |
+| Rendering / shaders | `architecture-rendering.md` (~190) |
+| Network protocol | `packet-protocol-reference.md` (~230) + `architecture-clientlibrary.md` (~140) |
+| Build / CI issues | `development-guide.md` (~210) + `troubleshooting.md` (~150) |
+| Asset loading | `asset-pipeline.md` (~230) |
+
+Large files (>400 lines): `CROSS_PLATFORM_PLAN.md` (970 lines) — always read specific phase sections, never the full file.

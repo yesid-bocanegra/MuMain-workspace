@@ -4,6 +4,17 @@ The MuMain game client uses OpenGL 1.x immediate mode for all rendering. The cro
 
 For the full migration plan, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md) Phase 2. For library decisions, see [CROSS_PLATFORM_DECISIONS.md](CROSS_PLATFORM_DECISIONS.md).
 
+**Section navigation:**
+
+| Section | Lines | Content |
+|---------|-------|---------|
+| [Current Pipeline](#current-pipeline-opengl-immediate-mode) | ~60 | 111 glBegin sites inventory, blend modes, duplication analysis |
+| [Migration Path: MuRenderer](#migration-path-murenderer-abstraction) | ~35 | Abstraction API, migration order |
+| [SDL_gpu Concept Mapping](#sdl_gpu-concept-mapping) | ~25 | OpenGL→SDL_gpu translation table |
+| [HLSL Shaders](#hlsl-shaders-session-28) | ~30 | 5 shader programs, ~150 lines total |
+| [Effort Estimate](#effort-estimate) | ~20 | 10–16 week breakdown |
+| [Texture Management](#texture-management) | ~10 | 30,000+ textures, CGlobalBitmap |
+
 ---
 
 ## Current Pipeline (OpenGL Immediate Mode)

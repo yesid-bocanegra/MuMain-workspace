@@ -4,6 +4,19 @@ Standards for contributing to MuMain during the SDL3 cross-platform migration. C
 
 For implementation details, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md). For rationale and research, see [CROSS_PLATFORM_DECISIONS.md](CROSS_PLATFORM_DECISIONS.md).
 
+**Section navigation** — load only the section relevant to your task:
+
+| Section | Lines | When to read |
+|---------|-------|-------------|
+| [§1 Cross-Platform Readiness](#1-cross-platform-readiness) | ~150 | Writing new code, reviewing PRs, migration work |
+| [§2 C++ Conventions](#2-c-conventions) | ~80 | Writing/reviewing C++ code |
+| [§3 C# / .NET Conventions](#3-c--net-conventions) | ~40 | Writing/reviewing C# interop code |
+| [§4 Generated Code](#4-generated-code) | ~30 | Touching packet-related files |
+| [§5 Translation / i18n](#5-translation--i18n) | ~35 | Adding user-facing strings |
+| [§6 Git & CI Workflow](#6-git--ci-workflow) | ~30 | Committing, opening PRs |
+| [§7 Build System](#7-build-system) | ~30 | Adding dependencies, CMake changes |
+| [§8 Transition Period](#8-transition-period-guidance) | ~25 | Understanding legacy code policy |
+
 ---
 
 ## 1. Cross-Platform Readiness

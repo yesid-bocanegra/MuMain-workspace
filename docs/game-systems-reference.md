@@ -4,6 +4,18 @@ Map of all major game subsystems in MuMain with entry point files, key classes, 
 
 For architecture details, see [Architecture: MuMain](architecture-mumain.md). For rendering specifics, see [Rendering Architecture](architecture-rendering.md).
 
+**Section navigation** — load only the section relevant to your task:
+
+| Section | Lines | Content |
+|---------|-------|---------|
+| [Core Loop & Scene Management](#core-loop--scene-management) | ~45 | Game loop, 6 scenes, frame timing |
+| [Global State](#global-state) | ~25 | Extern globals (`Hero`, `CharactersClient`, `SocketClient`, etc.) |
+| [Gameplay Systems](#gameplay-systems) | ~110 | Inventory, combat, buffs, quests, party, guild, trade, shop, pets |
+| [Map & World System](#map--world-system) | ~45 | 82 worlds, event maps, world objects |
+| [UI System](#ui-system) | ~45 | 89 CNewUI* classes, framework, window categories |
+| [Configuration](#configuration) | ~10 | GameConfig singleton, INI sections |
+| [Data Persistence](#data-persistence) | ~10 | Serialization, encrypted file I/O |
+
 ---
 
 ## Core Loop & Scene Management

@@ -4,6 +4,19 @@ The MuMain client communicates with OpenMU servers via a .NET Native AOT bridge.
 
 For the network layer architecture, see [Architecture: ClientLibrary](architecture-clientlibrary.md). For cross-platform interop changes, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md) Phase 8.
 
+**Section navigation:**
+
+| Section | Lines | Content |
+|---------|-------|---------|
+| [Architecture Overview](#architecture-overview) | ~15 | High-level diagram, key stats |
+| [Packet Framing](#packet-framing) | ~15 | Length-prefixed format |
+| [Field Type Mapping](#field-type-mapping) | ~20 | XML→C++→C# type table |
+| [Encryption](#encryption) | ~30 | SimpleModulus + XOR3, login credentials |
+| [C++/C# Boundary Contracts](#cc-boundary-contracts) | ~55 | Function signatures, marshaling rules, memory safety |
+| [Code Generation Pipeline](#code-generation-pipeline) | ~30 | XSLT transforms, XML source, generated file sizes |
+| [Connection Lifecycle](#connection-lifecycle) | ~20 | Connect/Send/Receive/Disconnect |
+| [Cross-Platform Issues](#cross-platform-issues) | ~10 | wchar_t, DLL loading, marshaling |
+
 ---
 
 ## Architecture Overview
