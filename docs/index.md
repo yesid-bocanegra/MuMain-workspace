@@ -58,6 +58,8 @@
 - [Game Systems Reference](./game-systems-reference.md) — All gameplay subsystems, entry points, data flow *(~300 lines; §Core Loop, §Global State, §Gameplay Systems, §Map/World, §UI System)*
 - [Packet Protocol Reference](./packet-protocol-reference.md) — Network protocol, encryption, C++/C# boundary *(~230 lines; §Framing, §Encryption, §C++/C# Boundary, §Code Gen)*
 - [Asset Pipeline](./asset-pipeline.md) — Asset formats, directory structure, loading pipeline *(~230 lines)*
+- [Implementation Recipes](./implementation-recipes.md) — Step-by-step: add UI window, packet, manager, item, map, flag, scene *(~700 lines; 7 recipes, ~80-120 lines each)*
+- [Feature Impact Maps](./feature-impact-maps.md) — Change blast radius per system, dependency chains, feature flags *(~450 lines; 9 system maps, quick-lookup, init chain)*
 
 ### Metadata
 - [Project Parts](./project-parts.json) — Machine-readable project structure and integration points
@@ -100,6 +102,8 @@
 | Cross-platform migration | Development Standards §1 + Cross-Platform Plan (relevant phase only) | Full plan, Game Systems |
 | Asset/content work | Asset Pipeline | Protocol, Rendering |
 | Build/CI issues | Development Guide + Troubleshooting | Architecture docs |
+| Planning new features | Implementation Recipes (relevant recipe) | Impact Maps (if unsure of blast radius) |
+| Assessing change impact | Feature Impact Maps (relevant system) | Full plan, Rendering details |
 | New contributor onboarding | Project Overview + Development Guide + Development Standards | Reference docs |
 
 The `CLAUDE.md` file at the workspace root provides quick context (~75 lines) for Claude Code sessions — it is loaded automatically and should not be re-read manually.

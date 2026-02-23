@@ -69,5 +69,7 @@ Start with `docs/index.md` (~100 lines) for the full index with section navigati
 | Network protocol | `packet-protocol-reference.md` (~230) + `architecture-clientlibrary.md` (~140) |
 | Build / CI issues | `development-guide.md` (~210) + `troubleshooting.md` (~150) |
 | Asset loading | `asset-pipeline.md` (~230) |
+| Planning a new feature | `implementation-recipes.md` (relevant recipe, ~80-120 lines each) |
+| Assessing change impact | `feature-impact-maps.md` (relevant system, ~25-45 lines each) |
 
 Large files (>400 lines): `CROSS_PLATFORM_PLAN.md` (970 lines) — always read specific phase sections, never the full file.
