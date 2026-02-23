@@ -1,0 +1,87 @@
+{
+  "repository_type": "multi-part",
+  "project_name": "MuMain-workspace",
+  "parts": [
+    {
+      "part_id": "mumain",
+      "display_name": "MuMain C++ Game Client",
+      "project_type_id": "game",
+      "root_path": "MuMain/src/source/",
+      "language": "C++20",
+      "framework": "OpenGL/Win32",
+      "entry_point": "src/source/Winmain.cpp → WinMain()",
+      "source_files": 691,
+      "description": "3D MMORPG game client with OpenGL immediate mode rendering, Win32 windowing, DirectSound audio, and scene-based state machine."
+    },
+    {
+      "part_id": "clientlibrary",
+      "display_name": "ClientLibrary .NET Network Layer",
+      "project_type_id": "library",
+      "root_path": "MuMain/ClientLibrary/",
+      "language": "C#",
+      "framework": ".NET 10 Native AOT",
+      "entry_point": "ConnectionManager.cs",
+      "source_files": 14,
+      "description": "Network communication layer using MUnique.OpenMU.Network.Packets for TCP packet handling with XSLT-generated bindings."
+    },
+    {
+      "part_id": "constantsreplacer",
+      "display_name": "ConstantsReplacer Code Gen Tool",
+      "project_type_id": "cli",
+      "root_path": "MuMain/ConstantsReplacer/",
+      "language": "C#",
+      "framework": ".NET 8 WinForms",
+      "entry_point": "Program.cs",
+      "source_files": 10,
+      "description": "WinForms tool that syncs game constants between OpenMU server SQL definitions and C++ source files."
+    },
+    {
+      "part_id": "mueditor",
+      "display_name": "MuEditor ImGui Debug Editor",
+      "project_type_id": "desktop",
+      "root_path": "MuMain/src/MuEditor/",
+      "language": "C++20",
+      "framework": "Dear ImGui",
+      "entry_point": "Core/MuEditorCore.cpp → Initialize()",
+      "source_files": 34,
+      "description": "In-process debug editor using ImGui for live game state inspection and editing. Compiled via #ifdef _EDITOR."
+    }
+  ],
+  "integration_points": [
+    {
+      "from": "mumain",
+      "to": "clientlibrary",
+      "type": "Native AOT DLL",
+      "mechanism": "LoadLibrary + coreclr_delegates.h function pointer resolution",
+      "details": "C++ loads .NET DLL, resolves function pointers for connection management and packet sending"
+    },
+    {
+      "from": "clientlibrary",
+      "to": "mumain",
+      "type": "Callback Delegates",
+      "mechanism": "[UnmanagedCallersOnly] exports invoked by C++ registered callbacks",
+      "details": "Packet receive handlers in .NET invoke C++ PacketFunctions_*.cpp via registered delegates"
+    },
+    {
+      "from": "constantsreplacer",
+      "to": "mumain",
+      "type": "Code Generation",
+      "mechanism": "XSLT transforms + constant replacement",
+      "details": "XML packet definitions transformed to C++ headers/sources; SQL constants replaced in source files"
+    },
+    {
+      "from": "constantsreplacer",
+      "to": "clientlibrary",
+      "type": "Code Generation",
+      "mechanism": "XSLT transforms",
+      "details": "XML packet definitions transformed to C# extension methods"
+    },
+    {
+      "from": "mueditor",
+      "to": "mumain",
+      "type": "Same-Process Memory",
+      "mechanism": "#ifdef _EDITOR conditional compilation, direct memory access",
+      "details": "Editor reads/writes game globals (CHARACTER, ITEM, SKILL) in same address space"
+    }
+  ]
+}
