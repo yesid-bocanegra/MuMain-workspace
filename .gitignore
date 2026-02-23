@@ -1,0 +1,38 @@
+# OS
+.DS_Store
+Thumbs.db
+
+_bmad
+
+# IDEs / Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# BMAD method / AI tooling
+.claude/
+.gemini/
+.cursor/
+.aider*
+
+# Node (if using doc tooling like Docusaurus, MkDocs, etc.)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Python (if using Sphinx, MkDocs, etc.)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Documentation build output
+_build/
+site/
+public/
+dist/
+
+# Logs
+*.log
