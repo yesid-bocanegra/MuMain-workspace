@@ -30,6 +30,10 @@ The original plan was reviewed against the actual codebase and current library e
 | 12 | SDL3 not in Ubuntu 24.04 LTS | **Low** | Non-issue: vcpkg/FetchContent for build; AppImage/Flatpak for distribution; Ubuntu 26.04 LTS (April 2026) ships SDL3 natively |
 | 13 | ANGLE, MoltenGL, gl4es, Zink — none support immediate-mode GL | **Info** | Confirmed: no translation layer viable. SDL_gpu migration is the correct path |
 | 14 | OpenGL is a dead-end API (last update 2017, deprecated on macOS) | **High** | SDL_gpu eliminates OpenGL dependency entirely |
+| 15 | GameShop FileDownloader uses WinInet (`InternetOpen`, `HttpOpenRequest`, `FtpOpenFile`, etc.) and URLMon (`URLDownloadToFile`) — 10+ API calls across 7 files in `GameShop/FileDownloader/` and `GameShop/ShopListManager/`. Not identified in original plan. | **High** | New Session 5.7: Replace with cross-platform HTTP library (cpp-httplib or libcurl) behind `IPlatformHTTP` interface. Win32 file I/O (`CreateFile`/`WriteFile`) in these files replaced with `std::filesystem` + `std::ofstream`. |
+| 16 | `timeGetTime()` and `GetTickCount()` — 105+ calls across 30 files for animation timing, UI delays, buff tracking, and game logic. Scattered throughout codebase, not confined to Timer utility. | **High** | Drop-in shims in `PlatformCompat.h` (~10 lines each) wrapping `std::chrono::steady_clock`. Zero call-site changes needed. Added to Session 0.3. |
+| 17 | Win32 clipboard APIs (`OpenClipboard`/`GetClipboardData`/`CloseClipboard`) used in `UIControls.cpp` for numeric paste validation — 3 calls | **Low** | Replace with `SDL_GetClipboardText()` in Session 6.1 |
+| 18 | wzAudio API surface is minimal — only 7 of 18 functions used, all in `Winmain.cpp` (`Create`, `Destroy`, `Play`, `Stop`, `GetStreamOffsetRange`, `Option`). 11 functions completely unused. | **Info** | Phase 3 reduced from 4→3 sessions. Sessions 3.3 and 3.4 merged. wzAudio replacement is trivial — 6 call sites in 1 file. |
 
 ---
 
@@ -307,6 +311,7 @@ The automated sweep at step 5 means **every UI screen is captured** regardless o
 | Font rendering metric differences | Medium | Calibration testing; use `advance.x >> 6` not `bitmap.width` |
 | GL 2.1 performance on Apple Silicon (Phase 1 only) | Medium | Apple's GL→Metal translation acceptable for isometric game; temporary until Phase 2 |
 | miniaudio 3D audio fidelity vs DirectSound | Low | Isometric game uses basic distance+angle; inverse attenuation is equivalent |
+| GameShop FileDownloader FTP protocol support | Medium | If target servers use FTP (not just HTTP), cpp-httplib won't suffice — need libcurl or custom implementation. Test with actual server to determine protocol requirements before choosing library. |
 
 ---
 
@@ -320,6 +325,7 @@ The automated sweep at step 5 means **every UI screen is captured** regardless o
 | stb_vorbis | OGG Vorbis decoding for miniaudio | Public domain | 3 | Vendored (single file) |
 | FreeType2 (2.14.x) | Font rendering, replaces GDI | FreeType License (BSD-like) | 4 | vcpkg, Homebrew, apt |
 | Nanum Gothic | Korean-capable TTF font | SIL Open Font License | 4 | Vendored |
+| cpp-httplib or libcurl | HTTP/FTP client for GameShop FileDownloader, replaces WinInet/URLMon | MIT (cpp-httplib) or curl license (libcurl) | 5 | Vendored single header (cpp-httplib) or vcpkg/apt/brew (libcurl) |
 
 ### Ubuntu LTS note
 

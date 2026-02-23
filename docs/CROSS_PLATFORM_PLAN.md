@@ -32,9 +32,9 @@ Every session follows this format:
 | 0 | Platform Compatibility Headers & Build | 7 | — |
 | 1 | SDL3 Window, Input & Main Loop | 8 | Phase 0 |
 | 2 | SDL_gpu Migration | 10 | Phase 1 |
-| 3 | Audio System (miniaudio) | 4 | Phase 1 |
+| 3 | Audio System (miniaudio) | 3 | Phase 1 |
 | 4 | Font Rendering (FreeType) | 5 | Phase 1 |
-| 5 | Config, Encryption & System Utilities | 6 | Phase 0 |
+| 5 | Config, Encryption & System Utilities | 7 | Phase 0 |
 | 6 | Text Input & IME | 3 | Phase 1 |
 | 7 | ImGui Editor | 2 | Phase 1 |
 | 8 | .NET Native AOT Cross-Platform | 3 | Phase 0 |
@@ -72,11 +72,13 @@ Every session follows this format:
 Contents:
 - **MessageBoxW wrapper** (~80 lines): `MB_OK` → `SDL_ShowSimpleMessageBox`, `MB_YESNO` → `SDL_ShowMessageBox` with custom buttons. Handles `IDOK`, `IDYES`, `IDNO`. UTF-32 `wchar_t` → UTF-8 conversion. `#define MessageBox MessageBoxW` for UNICODE compat.
 - **`_wfopen` / `_wfopen_s` wrapper** (~40 lines): Converts `wchar_t*` path to UTF-8, normalizes `\` → `/` during conversion (fixes ~2,050 hardcoded backslash paths). Case-insensitive fallback via `std::filesystem::directory_iterator` with lazy per-directory cache. `#define _wfopen mu_wfopen` for drop-in replacement.
+- **Timing shims** (~10 lines): `timeGetTime()` and `GetTickCount()` wrappers returning `std::chrono::duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count()`. These two functions are called 105+ times across 30 files (`ZzzInterface.cpp`, `ZzzEffect.cpp`, `w_BuffTimeControl.cpp`, `NewUICustomMessageBox.cpp`, etc.) — the shims avoid touching any call sites.
+- **`RtlSecureZeroMemory` shim** (~3 lines): Maps to `explicit_bzero` (Linux/macOS) or volatile `memset`. Used in `GameShop/FileDownloader/DownloadInfo.cpp` for credential clearing.
 - **Flag constants:** `MB_OK`, `MB_YESNO`, `MB_OKCANCEL`, `MB_ICONERROR`, `MB_ICONWARNING`, `MB_ICONSTOP`, `MB_ICONINFORMATION`, `IDOK`, `IDCANCEL`, `IDYES`, `IDNO`
 
 **Create:** `src/source/Platform/PlatformCompat.h`
 **Modify:** None
-**Accept:** Header compiles standalone on Linux; backslash normalization unit test passes (`L"Data\\Local\\Item"` → `"Data/Local/Item"`)
+**Accept:** Header compiles standalone on Linux; backslash normalization unit test passes (`L"Data\\Local\\Item"` → `"Data/Local/Item"`); `timeGetTime()` returns monotonic milliseconds
 **Invariant:** Windows x64 build compiles
 
 ### Session 0.4: StringConvert.h
@@ -465,27 +467,22 @@ Key implementation:
 **Accept:** Sound effects play identically on Windows via platform abstraction; no call site changes needed
 **Invariant:** Windows x64 build compiles
 
-### Session 3.3: Remove wzAudio (music streaming)
+### Session 3.3: Remove wzAudio + 3D audio + cross-platform testing
 
-**Scope:** Replace wzAudio with miniaudio music streaming. Remove `wzAudio.lib`/`wzAudio.dll` dependency.
+**Scope:** Replace wzAudio with miniaudio music streaming, remove the dependency, and verify 3D audio on all platforms.
+
+> **Deep scan finding:** Only 7 of wzAudio's 18 API functions are actually used, all confined to `Winmain.cpp`: `wzAudioCreate`, `wzAudioDestroy`, `wzAudioPlay`, `wzAudioStop`, `wzAudioGetStreamOffsetRange`, `wzAudioOption`. The remaining 11 functions (Pause, SetVolume, GetVolume, VolumeUp/Down, OpenFile, Seek, GetStreamOffsetSec, SetMixerMode, GetStreamInfo, SetEqualizer) are completely unused. This makes the replacement trivial — 6 call sites in 1 file.
 
 Changes:
 - Rewrite `PlayMp3()`, `StopMp3()`, `IsEndMp3()`, `GetMp3PlayPosition()` in `Winmain.cpp` to call `g_platformAudio` methods
-- Remove `wzAudioCreate(g_hWnd)` from initialization
-- Remove wzAudio from build system
+- Remove `wzAudioCreate(g_hWnd)` and `wzAudioOption()` from initialization
+- Remove `wzAudioDestroy()` from shutdown
+- Remove wzAudio from build system (`wzAudio.lib`, `wzAudio.dll`, `ogg.dll`, `vorbisfile.dll`)
+- Verify 3D audio spatialization via `ma_sound_set_position` on Linux/macOS
 
 **Create:** None
-**Modify:** `src/source/Winmain.cpp`, `src/CMakeLists.txt`
-**Accept:** Background music plays and loops seamlessly; `grep -r "wzAudio" src/` returns zero matches
-**Invariant:** Windows x64 build compiles
-
-### Session 3.4: 3D audio + cross-platform testing
-
-**Scope:** Verify 3D audio spatialization works via `ma_sound_set_position`. Test all audio on Linux/macOS.
-
-**Create:** None
-**Modify:** `MiniAudioBackend.cpp` (if tuning needed)
-**Accept:** 3D audio panning works (distance attenuation, left-right panning); all sound effects and music play on Linux/macOS
+**Modify:** `src/source/Winmain.cpp`, `src/CMakeLists.txt`, `MiniAudioBackend.cpp` (if tuning needed)
+**Accept:** Background music plays and loops seamlessly; `grep -r "wzAudio" src/` returns zero matches; 3D audio panning works (distance attenuation, left-right panning); all sound effects and music play on Linux/macOS
 **Invariant:** Windows x64 build compiles
 
 **Phase 3 Outcome:** Sound effects and music work on all three platforms. wzAudio eliminated. miniaudio compiled in (no external packaging needed).
@@ -591,11 +588,11 @@ Alternative font: Source Han Sans (SIL OFL, excellent CJK, ~15MB vs ~5MB).
 - `GetSystemMetrics` → `SDL_GetCurrentDisplayMode()`
 - `timeBeginPeriod`/`timeEndPeriod` → no-op (not needed on Linux/macOS)
 - `SetTimer`/`KillTimer` (20 calls, 10 files) → `std::chrono` checks in main loop
-- `_beginthreadex`/`WaitForSingleObject` (4 calls, 2 files) → `std::thread`
+- `_beginthreadex`/`WaitForSingleObject` (4 calls in `Winmain.cpp` and `ZzzOpenglUtil.cpp`) → `std::thread` + `std::future`. Note: 4 additional calls in `GameShop/FileDownloader/` are handled in Session 5.7.
 
 **Create:** None
 **Modify:** `src/source/Winmain.cpp`, `src/source/ZzzOpenglUtil.cpp`, ~10 other files
-**Accept:** All replaced functions work on Linux/macOS; zero Win32-only API calls remain in cross-platform code paths
+**Accept:** All replaced functions work on Linux/macOS; zero Win32-only API calls remain in cross-platform code paths (except GameShop subsystem, handled in 5.7)
 **Invariant:** Windows x64 build compiles
 
 ### Session 5.5: wchar_t in .bmd files
@@ -626,7 +623,38 @@ With `WcharToU16()` conversion at call sites.
 **Accept:** Packet strings round-trip correctly including Korean characters; unit test verifies `char16_t` encoding matches Windows `wchar_t`
 **Invariant:** Windows x64 build compiles
 
-**Phase 5 Outcome:** Full feature parity for configuration, logging, and system utilities. Network protocol and binary files handle `wchar_t` size differences correctly.
+### Session 5.7: GameShop FileDownloader (WinInet/URLMon replacement)
+
+**Scope:** Replace the WinInet and URLMon APIs in the GameShop FileDownloader and ShopListManager subsystems with a cross-platform HTTP/FTP client. Do NOT change download logic or threading patterns.
+
+> **Deep scan finding:** The GameShop subsystem contains a complete HTTP/FTP file download pipeline using WinInet (`InternetOpen`, `InternetConnect`, `HttpOpenRequest`, `HttpSendRequest`, `HttpQueryInfo`, `InternetReadFile`, `FtpFindFirstFile`, `FtpOpenFile`) and URLMon (`URLDownloadToFile` for banner images). This was not identified in the original plan. Affected files:
+> - `GameShop/FileDownloader/HTTPConnecter.cpp` — HTTP download via WinInet
+> - `GameShop/FileDownloader/FTPConnecter.cpp` — FTP download via WinInet
+> - `GameShop/FileDownloader/FileDownloader.cpp` — Download orchestration (`CreateFile`, `WriteFile`, `_beginthreadex`, `WaitForSingleObject`)
+> - `GameShop/FileDownloader/DownloadInfo.cpp` — Download metadata (`RtlSecureZeroMemory`)
+> - `GameShop/ShopListManager/ListManager.cpp` — Batch script download (`GetFileAttributes`, `CreateDirectory`, `DeleteFile`, `_beginthreadex`)
+> - `GameShop/ShopListManager/BannerInfo.cpp` — Banner image download (`URLDownloadToFile`)
+> - `GameShop/ShopListManager/interface/PathMethod/Path.cpp` — Path utilities (`GetModuleFileName`, `CreateDirectory`)
+
+Replacement options (choose one):
+- **cpp-httplib** (single header, MIT) — HTTP-only, sufficient if FTP is unused by target servers
+- **libcurl** (vcpkg/apt/brew) — full HTTP+FTP, battle-tested, heavier dependency
+- **Custom using SDL3 sockets** — lightweight but more implementation work
+
+Changes:
+- Create `IPlatformHTTP` interface with: `Download(url, localPath, progressCallback)`, `DownloadToMemory(url, buffer)`
+- Implement Win32 backend wrapping existing WinInet code
+- Implement cross-platform backend using chosen HTTP library
+- Replace `URLDownloadToFile` in `BannerInfo.cpp` with `IPlatformHTTP::Download`
+- Replace Win32 file I/O (`CreateFile`/`WriteFile`/`GetFileAttributes`) with `std::filesystem` + `std::ofstream`
+- Replace `_beginthreadex`/`WaitForSingleObject` with `std::thread` + `std::future` (aligns with Session 5.4)
+
+**Create:** `src/source/Platform/PlatformHTTP.h`, `src/source/Platform/Win32/Win32HTTP.cpp`, `src/source/Platform/Curl/CurlHTTP.cpp` (or chosen library)
+**Modify:** `GameShop/FileDownloader/HTTPConnecter.cpp`, `GameShop/FileDownloader/FTPConnecter.cpp`, `GameShop/FileDownloader/FileDownloader.cpp`, `GameShop/ShopListManager/ListManager.cpp`, `GameShop/ShopListManager/BannerInfo.cpp`, `src/CMakeLists.txt`
+**Accept:** Shop script and banner downloads succeed on Linux/macOS; `grep -r "InternetOpen\|HttpOpenRequest\|URLDownloadToFile\|Wininet" src/source/` returns zero matches in cross-platform code
+**Invariant:** Windows x64 build compiles
+
+**Phase 5 Outcome:** Full feature parity for configuration, logging, system utilities, and network file downloads. Network protocol and binary files handle `wchar_t` size differences correctly.
 
 ---
 
@@ -634,13 +662,15 @@ With `WcharToU16()` conversion at call sites.
 
 **Goal:** Chat and login text input works on non-Windows platforms.
 
-### Session 6.1: SDL3 text input
+### Session 6.1: SDL3 text input + clipboard
 
-**Scope:** Replace `CreateWindowW(L"edit", ...)` Win32 edit control in `CUITextInputBox` with SDL3 text input (`SDL_StartTextInput`/`SDL_StopTextInput`, `SDL_EVENT_TEXT_INPUT`). Cursor rendering and selection handled by existing game UI code.
+**Scope:** Replace `CreateWindowW(L"edit", ...)` Win32 edit control in `CUITextInputBox` with SDL3 text input (`SDL_StartTextInput`/`SDL_StopTextInput`, `SDL_EVENT_TEXT_INPUT`). Replace clipboard access (`OpenClipboard`/`GetClipboardData`/`CloseClipboard` — 3 calls in `UIControls.cpp` for numeric paste validation) with `SDL_GetClipboardText()`. Cursor rendering and selection handled by existing game UI code.
+
+> **Deep scan finding:** `UIControls.cpp` uses Win32 clipboard APIs (`OpenClipboard`, `GetClipboardData(CF_TEXT)`, `CloseClipboard`) for checking if pasted content is numeric. SDL3's `SDL_GetClipboardText()` is a single-call replacement.
 
 **Create:** None
 **Modify:** `src/source/UIControls.cpp`
-**Accept:** Text can be typed in chat and login input boxes on Linux/macOS
+**Accept:** Text can be typed in chat and login input boxes on Linux/macOS; clipboard paste validation works via SDL3
 **Invariant:** Windows x64 build compiles
 
 ### Session 6.2: Basic IME support
@@ -904,7 +934,7 @@ Each design file includes pixel-accurate layouts, component annotations, and int
 ```
 Phase 0 (headers/build/compat) ─── required by everything
     │
-    ├── Phase 5 (config/utils/wchar_t) ─── can start after Phase 0
+    ├── Phase 5 (config/utils/wchar_t/HTTP) ─── can start after Phase 0
     ├── Phase 8 (.NET AOT) ─── can start after Phase 0
     │
     Phase 1 (SDL3 window/input/GL 2.1) ─── required by 2, 3, 4, 6, 7
@@ -914,7 +944,7 @@ Phase 0 (headers/build/compat) ─── required by everything
         │       Sessions 2.8-2.10: Swap backend to SDL_gpu
         ├── Phase 3 (audio/miniaudio) ─── independent after Phase 1
         ├── Phase 4 (fonts/FreeType) ─── independent after Phase 1
-        ├── Phase 6 (text input) ─── after Phase 1
+        ├── Phase 6 (text input + clipboard) ─── after Phase 1
         └── Phase 7 (editor) ─── after Phase 1
              │
              Phase 9 (CI/packaging/GT essentials) ─── after all others
@@ -923,3 +953,20 @@ Phase 0 (headers/build/compat) ─── required by everything
 ```
 
 Phases 2, 3, 4, 5, 6, 7, 8, 10 can be worked on in parallel after Phase 1 lands. Phase 10 can start immediately (only needs a working Windows build).
+
+---
+
+## Deep Scan Amendments (2026-02-23)
+
+The following changes were made based on a comprehensive codebase deep scan that analyzed all 691 source files:
+
+| Change | Affected | Impact |
+|--------|----------|--------|
+| Added `timeGetTime`/`GetTickCount` shims (105+ calls, 30 files) | Session 0.3 | +10 lines, no new session |
+| Added `RtlSecureZeroMemory` shim | Session 0.3 | +3 lines |
+| Added GameShop FileDownloader WinInet/URLMon replacement | New Session 5.7 | +1 session |
+| Added clipboard replacement via SDL3 | Session 6.1 | +5 lines, no new session |
+| Merged Sessions 3.3+3.4 (wzAudio has only 7/18 functions used) | Phase 3 | -1 session |
+| **Net session count change** | | **0** (58 total unchanged) |
+
+See CROSS_PLATFORM_DECISIONS.md Issues #15-#18 for detailed findings.
