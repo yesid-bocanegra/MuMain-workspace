@@ -17,11 +17,33 @@ MuMain/src/source/
 ├── Protocol/          (3 files)   — Crypto, key generation
 ├── Network/           (10 files)  — Sockets, WSclient, server list, map server
 ├── Data/              (60 files)  — Loaders, localization, GameData, DataHandler, GameConfig
+│   ├── Items/         (14 files)  — Item structs, handler, loader, saver, exports, metadata
+│   ├── Skills/        (14 files)  — Skill structs, handler, loader, saver, exports, metadata
+│   └── *(root)*       (32 files)  — Infrastructure, config, localization, SMD, GlobalBitmap
 ├── World/             (77 files)  — MapManager, terrain, GM_* scripts, physics, portals
+│   ├── Maps/          (59 files)  — All GM* map scripts + C*Direction cutscene files
+│   └── *(root)*       (18 files)  — MapManager, PhysicsManager, terrain, portals
 ├── Gameplay/          (108 files) — Characters, objects, AI, inventory, skills, pets, buffs, events
+│   ├── Characters/    (16 files)  — ZzzCharacter, CharacterManager, ZzzObject, ZzzAI, MonkSystem
+│   ├── Items/         (20 files)  — ZzzInventory, ItemManager, CSItemOption, SocketSystem, MixMgr
+│   ├── Pets/          (23 files)  — w_Pet*, CSPetSystem, GIPetManager, w_BasePet, npcBreeder
+│   ├── Events/        (16 files)  — Event, CSChaosCastle, MatchEvent, w_CursedTemple, DuelMgr
+│   ├── Buffs/         (10 files)  — w_Buff*, w_BuffState*, w_BuffTimeControl
+│   ├── Skills/        (6 files)   — SkillManager, SkillEffectMgr, SummonSystem
+│   ├── Social/        (9 files)   — PartyManager, GuildCache, GuildConstants, CSQuest, QuestMng
+│   └── NPCs/          (8 files)   — npcCatapult, npcGateSwitch, MuHelper, MuHelperData
 ├── UI/
 │   ├── Framework/     (42 files)  — NewUIBase, NewUIManager, NewUISystem, widgets
 │   ├── Windows/       (112 files) — All NewUI*Window game windows
+│   │   ├── Events/    (22 files)  — BloodCastle*, ChaosCastleTime, CursedTemple*, DoppelGanger*
+│   │   ├── Inventory/ (16 files)  — MyInventory, Storage*, MixInventory, ShopInventory
+│   │   ├── HUD/       (14 files)  — MainFrameWindow, WindowMenu, MiniMap, CommandWindows
+│   │   ├── Commerce/  (14 files)  — NPCShop, NPCDialogue, Trade, UnitedMarketPlace, LuckyCoin
+│   │   ├── Social/    (12 files)  — Party*, FriendWindow, GuildInfo*, GensRanking
+│   │   ├── Castle/    (10 files)  — CastleWindow, CatapultWindow, Gateman*, GuardWindow
+│   │   ├── Character/ (10 files)  — CharacterInfoWindow, BuffWindow, MasterLevel, PetInfo
+│   │   ├── Quest/     (6 files)   — MyQuestInfoWindow, QuestProgress*
+│   │   └── *(root)*   (8 files)   — ChatInputBox, ChatLogWindow, OptionWindow, HelpWindow
 │   ├── Events/        (30 files)  — Event UIs (siege, duel, battle soccer, crywolf)
 │   └── Legacy/        (60 files)  — Win/WinEx, UI*, ZzzInterface, login/char select
 ├── Audio/             (5 files)   — DirectSound
