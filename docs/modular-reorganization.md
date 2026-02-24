@@ -103,6 +103,20 @@ Network ↔ UI circular dependency: `WSclient.cpp` includes 4 NewUI headers for 
 
 All module directories are in the include path (via MUCommon INTERFACE). This allows existing `#include "FileName.h"` patterns to work unchanged. True dependency enforcement happens through link-time errors: adding `#include "NewUISystem.h"` in a Protocol/*.cpp file would compile but the linker would fail because MUProtocol doesn't link MUGame.
 
+### Subdirectories are for navigation, not encapsulation
+
+C++ has no language-level package system. Unlike Java packages or C# namespaces, directory nesting doesn't create access boundaries — any file in MUGame can include any other file in MUGame regardless of subdirectory. Every subdirectory is added to the include path so bare `#include "FileName.h"` works unchanged.
+
+The subdirectories (e.g., `Gameplay/Pets/`, `UI/Windows/Castle/`) exist purely for **human navigation** in a 692-file codebase. Real dependency enforcement comes from CMake library targets: `MUCore` can't call into `MUGame` because it doesn't link it. That's compile-time enforcement the filesystem alone cannot provide.
+
+Trade-offs of this approach:
+- **Pro:** Developers find files faster when directories match logical groupings they already think in
+- **Pro:** Works well alongside CMake targets that enforce actual boundaries
+- **Con:** Each subdirectory needs an include path entry (19 added for this subdivision)
+- **Con:** Can create a false sense of encapsulation — `Gameplay/Skills/*.cpp` can freely include `UI/Windows/Castle/*.h`
+
+Nesting is kept to 2–3 levels maximum. Deeper nesting adds navigation friction without additional enforcement.
+
 ### PCH Strategy
 
 `stdafx.h` (in Main/) is a fat PCH that includes headers from many modules. MUCore compiles it, and all other targets reuse it via `target_precompile_headers(... REUSE_FROM MUCore)`. Thinning the PCH is deferred to the migration.
