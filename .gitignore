@@ -6,6 +6,7 @@ _bmad
 paw
 paw_runner/*
 requirements.txt
+.pcc-deploy-manifest.yaml
 .pcc-config.template.yaml
 
 # IDEs / Editors

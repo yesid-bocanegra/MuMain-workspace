@@ -109,8 +109,11 @@ Invoke workflows directly:
 
 ## Project Configuration
 
-- **Config:** `.pcc-config.yaml` — C++ game client with custom `cpp-cmake` and `dotnet-aot` tech profiles
-- **Manifest:** `.pcc-manifest.yaml` — tracks generated files and consistency state
-- **Components:** `mumain` (C++ game client submodule), `project-docs` (documentation)
-- **Quality commands:** `make -C MuMain lint`, `make -C MuMain format`, `make -C MuMain format-check`
+**Project:** MuMain
+
+**Components:**
+- `project-docs` — documentation (./_bmad-output) [documentation]
+- `mumain` — cpp-cmake (./MuMain) [backend]
+
+**Pencil design screens:** enabled
 <!-- PCC-END -->
