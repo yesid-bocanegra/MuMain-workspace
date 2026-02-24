@@ -173,7 +173,77 @@ The XSLT code generation runs automatically during Visual Studio builds (PreBuil
 - `src/source/Dotnet/PacketFunctions_*.h/cpp`
 - `ClientLibrary/ConnectionManager.*Functions.cs`
 
+## Code Quality Tooling
+
+### Setup (one-time)
+
+```bash
+cd MuMain
+
+# Install git hooks (blocks commits with unformatted C++)
+make hooks
+
+# Verify tools are available
+clang-format --version   # formatting
+cppcheck --version       # static analysis
+clang-tidy --version     # deeper static analysis (optional)
+```
+
+### Daily Workflow
+
+```bash
+# Format all C++ files
+make format
+
+# Check formatting without modifying (same check CI runs)
+make format-check
+
+# Run static analysis
+make lint
+
+# Run clang-tidy (needs a configured build directory)
+make tidy
+
+# Build and run unit tests
+make test
+```
+
+### What Gets Enforced
+
+| Gate | Tool | When | Blocks? |
+|------|------|------|---------|
+| Formatting | clang-format | Pre-commit hook + CI | Yes |
+| Compiler warnings | `-Wall -Wextra -Werror` | Every build | Yes |
+| Static analysis | cppcheck | CI (changed files) | Yes |
+| Deep analysis | clang-tidy | Local (`make tidy`) | No (manual) |
+| Unit tests | Catch2 | Local (`make test`) | No (opt-in) |
+
+### Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `.clang-format` | Formatting rules (Allman braces, 4-space indent) |
+| `.clang-tidy` | Static analysis checks (bugprone, modernize, performance) |
+| `.cppcheck` | cppcheck configuration |
+| `.editorconfig` | Editor indent/encoding settings |
+| `scripts/pre-commit` | Git hook source |
+| `scripts/install-hooks.sh` | Hook installer |
+
 ## Testing
+
+### Unit Tests (Catch2)
+
+```bash
+# Build with tests enabled
+cmake -S . -B build-test -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug
+cmake --build build-test --target MuTests -j$(nproc)
+ctest --test-dir build-test --output-on-failure
+
+# Or use the shortcut
+make test
+```
+
+Test files live in `tests/` with the same module structure as `src/source/`.
 
 ### Manual Testing Checklist
 
@@ -186,10 +256,11 @@ The XSLT code generation runs automatically during Visual Studio builds (PreBuil
 
 ### CI Validation
 
-GitHub Actions runs MinGW-w64 cross-compile on every push/PR:
-- Builds 32-bit Windows executable on Ubuntu
-- Caches libjpeg-turbo 3.1.3 for fast rebuilds
-- Uploads `Main.exe` artifact
+GitHub Actions runs on every PR to `main`:
+
+1. **Code Quality Gates** (parallel job): clang-format + cppcheck on changed C++ files
+2. **MinGW Build**: Cross-compile with `-Werror` — all warnings are errors
+3. Both jobs must pass for the PR to merge
 
 ## Common Issues
 

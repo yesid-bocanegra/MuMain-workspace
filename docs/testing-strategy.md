@@ -1,29 +1,101 @@
 # Testing Strategy
 
-The MuMain project currently has no automated test framework. Testing relies on CI compilation checks and manual verification. This document defines the testing approach for both the existing Windows build and the cross-platform migration.
+Testing approach for the MuMain game client covering code quality enforcement, unit testing, and the cross-platform migration validation plan.
 
-For the full ground truth capture specification, see [CROSS_PLATFORM_DECISIONS.md](CROSS_PLATFORM_DECISIONS.md). For phase-specific test criteria, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md).
+For the full ground truth capture specification, see [CROSS_PLATFORM_DECISIONS.md](CROSS_PLATFORM_DECISIONS.md). For phase-specific test criteria, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md). For daily workflow and setup, see [Development Guide](development-guide.md#code-quality-tooling).
 
 ---
 
 ## Current State
 
-- **No unit test framework** — no Google Test, Catch2, or similar
-- **No automated functional tests**
-- **CI validation:** MinGW cross-compile on Ubuntu (`.github/workflows/mingw-build.yml`) — compilation only, no runtime tests
+- **Unit test framework:** Catch2 v3.7.1 via FetchContent (`tests/`, opt-in with `-DBUILD_TESTING=ON`)
+- **Code quality gates:** clang-format, cppcheck, `-Wall -Wextra -Werror` (all enforced)
+- **Static analysis:** clang-tidy available locally (`make tidy`)
+- **CI validation:** MinGW cross-compile + code quality checks on every PR
 - **Manual testing:** Launch game, connect to OpenMU server, verify gameplay
+
+---
+
+## Quality Gates
+
+Every PR must pass two CI jobs before merging:
+
+### 1. Code Quality Gates (parallel job)
+
+| Check | Tool | Scope | Blocks? |
+|-------|------|-------|---------|
+| Formatting | clang-format | Changed C++ files | Yes |
+| Static analysis | cppcheck | Changed C++ files | Yes |
+
+### 2. Build (parallel job)
+
+```
+cmake --build build-mingw -j$(nproc)
+```
+
+Compiles with `-Wall -Wextra -Werror` — every warning is a build error. This is the **single most important test**. If MinGW compilation breaks, the change is rejected.
+
+### 3. Local Enforcement
+
+| Gate | When |
+|------|------|
+| Pre-commit hook | Blocks commits with unformatted C++ (install via `make hooks`) |
+| clang-tidy | Manual (`make tidy`), requires `compile_commands.json` from build |
+
+### Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `.clang-format` | Allman braces, 4-space indent, no include reordering (PCH safety) |
+| `.clang-tidy` | bugprone-\*, modernize-\*, performance-\*, `WarningsAsErrors: '*'` |
+| `.cppcheck` | warning, performance, portability; suppresses PCH-related noise |
+| `.editorconfig` | C++ indent/encoding rules alongside existing C#/XML rules |
+
+---
+
+## Unit Testing
+
+### Framework
+
+**Catch2 v3.7.1** — fetched via CMake `FetchContent`. Opt-in build:
+
+```bash
+cmake -S . -B build-test -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug
+cmake --build build-test --target MuTests -j$(nproc)
+ctest --test-dir build-test --output-on-failure
+
+# Or: make test
+```
+
+### Test Structure
+
+Tests live in `tests/` mirroring the `src/source/` module structure:
+
+```
+tests/
+  core/
+    test_timer.cpp      # CTimer, CTimer2
+  # Future:
+  # data/
+  #   test_smd_parser.cpp
+  # protocol/
+  #   test_packet_encode.cpp
+```
+
+### What to Test
+
+Priority order for adding tests to the existing codebase:
+
+1. **Pure logic** — Timer, math utilities, string helpers, config parsing
+2. **Data loading** — SMD/BMD parsers, texture validation, INI reader
+3. **Protocol** — Packet encoding/decoding, encryption round-trips
+4. **Cross-platform migration** — Each SDL3 migration phase adds regression tests (see below)
 
 ---
 
 ## CI Build Invariant
 
-Every change must pass CI:
-
-```
-cmake --preset mingw-x86 && cmake --build --preset mingw-x86
-```
-
-This is the **single most important test**. If MinGW compilation breaks, the change is rejected. This invariant is referenced in the [development standards](development-standards.md) and [cross-platform plan](CROSS_PLATFORM_PLAN.md).
+This invariant is referenced in the [development standards](development-standards.md) and [cross-platform plan](CROSS_PLATFORM_PLAN.md).
 
 ---
 
@@ -165,20 +237,13 @@ Run against `tests/golden/` baseline data:
 
 ---
 
-## Recommended Test Framework
+## Developer Quick Reference
 
-When unit tests are introduced, use **Catch2** (header-only, C++17+, MIT license):
-- Single header include, minimal build integration
-- Matches the project's preference for header-only/single-file libraries
-- `TEST_CASE` / `REQUIRE` / `CHECK` macros
-- Integrates with CMake via `FetchContent`
-
-Add to `CMakeLists.txt`:
-```cmake
-if(BUILD_TESTING)
-    FetchContent_Declare(Catch2 GIT_REPOSITORY https://github.com/catchorg/Catch2 GIT_TAG v3.x.x)
-    FetchContent_MakeAvailable(Catch2)
-    add_executable(mu_tests tests/test_main.cpp)
-    target_link_libraries(mu_tests PRIVATE Catch2::Catch2WithMain)
-endif()
+```bash
+make format        # Format all C++ files in-place
+make format-check  # Check formatting (same as CI)
+make lint          # Run cppcheck
+make tidy          # Run clang-tidy (needs build dir)
+make hooks         # Install pre-commit hook
+make test          # Build + run unit tests
 ```
