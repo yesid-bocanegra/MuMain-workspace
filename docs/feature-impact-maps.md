@@ -26,16 +26,16 @@
 
 ## §1 Character System
 
-**Trigger files:** `ZzzCharacter.h`, `ZzzCharacter.cpp`
+**Trigger files:** `Gameplay/ZzzCharacter.h`, `Gameplay/ZzzCharacter.cpp`
 
 **Direct dependents (125 files):**
-- **Core game logic:** `Winmain.cpp`, `ZzzObject.cpp`, `ZzzScene.cpp`
-- **Scenes:** `LoginScene.cpp`, `CharacterScene.cpp`, `MainScene.cpp`, `SceneManager.cpp`
-- **Inventory:** `ZzzInventory.cpp`, `ZzzInfomation.cpp`, `NewUIMyInventory.cpp`, `NewUIInventoryCtrl.cpp`
-- **UI windows:** `NewUIMainFrameWindow.cpp`, `NewUICharacterInfoWindow.cpp`, `NewUIPartyListWindow.cpp`
-- **Combat:** `ZzzEffect.cpp`, `ZzzAI.cpp`, `Event.cpp`, `DuelMgr.cpp`
-- **Network:** `WSclient.cpp` (character state from packets)
-- **Maps:** `MapManager.cpp`, `GM_*.cpp` files
+- **Core game logic:** `Main/Winmain.cpp`, `Gameplay/ZzzObject.cpp`
+- **Scenes:** `Scenes/LoginScene.cpp`, `Scenes/CharacterScene.cpp`, `Scenes/MainScene.cpp`, `Scenes/SceneManager.cpp`
+- **Inventory:** `Gameplay/ZzzInventory.cpp`, `Data/ZzzInfomation.cpp`, `UI/Windows/NewUIMyInventory.cpp`, `UI/Framework/NewUIInventoryCtrl.cpp`
+- **UI windows:** `UI/Windows/NewUIMainFrameWindow.cpp`, `UI/Windows/NewUICharacterInfoWindow.cpp`, `UI/Windows/NewUIPartyListWindow.cpp`
+- **Combat:** `RenderFX/ZzzEffect.cpp`, `Gameplay/ZzzAI.cpp`, `Gameplay/Event.cpp`, `Gameplay/DuelMgr.cpp`
+- **Network:** `Network/WSclient.cpp` (character state from packets)
+- **Maps:** `World/MapManager.cpp`, `World/GM_*.cpp` files
 
 **Cascade effects:**
 - `CHARACTER` struct changes → breaks WSclient.cpp packet parsing (cast to struct pointers)
@@ -52,14 +52,14 @@
 
 ## §2 Inventory System
 
-**Trigger files:** `ZzzInventory.h`, `ZzzInventory.cpp`
+**Trigger files:** `Gameplay/ZzzInventory.h`, `Gameplay/ZzzInventory.cpp`
 
 **Direct dependents (58 files):**
-- **UI:** `NewUIMyInventory.cpp`, `NewUIInventoryCtrl.cpp`, `NewUIStoreInventory.cpp`, `NewUITrade.cpp`, `NewUIMixInventory.cpp`
-- **Item info:** `ZzzInfomation.cpp`, `CSItemOption.cpp`, `NewUIItemExplanationWindow.cpp`
-- **Network:** `WSclient.cpp` (item packets)
-- **Shops:** `NewUIStorageInventory.cpp`, shop windows
-- **Game logic:** `ZzzCharacter.cpp`, equipment effects
+- **UI:** `UI/Windows/NewUIMyInventory.cpp`, `UI/Framework/NewUIInventoryCtrl.cpp`, `UI/Windows/NewUIStoreInventory.cpp`, `UI/Windows/NewUITrade.cpp`, `UI/Windows/NewUIMixInventory.cpp`
+- **Item info:** `Data/ZzzInfomation.cpp`, `Gameplay/CSItemOption.cpp`, `UI/Windows/NewUIItemExplanationWindow.cpp`
+- **Network:** `Network/WSclient.cpp` (item packets)
+- **Shops:** `UI/Windows/NewUIStorageInventory.cpp`, shop windows
+- **Game logic:** `Gameplay/ZzzCharacter.cpp`, equipment effects
 
 **Cascade effects:**
 - Item struct changes → all inventory UIs must update rendering
@@ -72,16 +72,18 @@
 
 **Danger zone:** Item data loaded from encrypted `.bmd` files — struct layout must match file format. Editor builds support export for verification.
 
+**Module boundary:** Inventory types are in Gameplay/, data loading in Data/, UI display in UI/Windows/ and UI/Framework/. Changes to `ITEM_ATTRIBUTE` cross all three modules.
+
 ---
 
 ## §3 UI System
 
-**Trigger files:** `NewUISystem.h`, `NewUISystem.cpp`
+**Trigger files:** `UI/Framework/NewUISystem.h`, `UI/Framework/NewUISystem.cpp`
 
 **Direct dependents (127 files):**
-- **All `NewUI*.h/.cpp` files** — every UI window registers through `NewUISystem`
-- **Network:** `WSclient.cpp` — packet handlers call `g_pNewUISystem->Show()` directly
-- **Scenes:** `MainScene.cpp`, `SceneManager.cpp` — lifecycle management
+- **All `UI/**/*.h/.cpp` files** — every UI window registers through `NewUISystem`
+- **Network:** `Network/WSclient.cpp` — packet handlers call `g_pNewUISystem->Show()` directly
+- **Scenes:** `Scenes/MainScene.cpp`, `Scenes/SceneManager.cpp` — lifecycle management
 - **Game logic:** Any file using `g_p<WindowName>` macros (defined in `NewUISystem.h`)
 
 **Cascade effects:**
@@ -93,19 +95,19 @@
 
 **Test scope:** Window open/close, layering (z-order), mouse event blocking, keyboard shortcuts
 
-**Danger zone:** `NewUISystem.h` is a mega-include (85+ includes). Adding headers here triggers recompilation of 127 files. Prefer forward declarations where possible.
+**Danger zone:** `UI/Framework/NewUISystem.h` is a mega-include (85+ includes). Adding headers here triggers recompilation of 127 files. Prefer forward declarations where possible.
 
 ---
 
 ## §4 Network Layer
 
-**Trigger files:** `WSclient.h`, `WSclient.cpp` (15,156 lines)
+**Trigger files:** `Network/WSclient.h`, `Network/WSclient.cpp` (15,156 lines)
 
 **Direct dependents (32 files):**
-- **Connection:** `Dotnet/Connection.h`, `PacketFunctions_*.h/.cpp`
+- **Connection:** `Dotnet/Connection.h`, `Dotnet/PacketFunctions_*.h/.cpp`
 - **UI:** Direct calls from 50+ packet handlers into `g_pNewUISystem->Show()`, `g_p*Window` methods
-- **Game state:** `ZzzCharacter.cpp`, `ZzzInventory.cpp`, `MapManager.cpp`
-- **Scenes:** `LoginScene.cpp`, `CharacterScene.cpp`
+- **Game state:** `Gameplay/ZzzCharacter.cpp`, `Gameplay/ZzzInventory.cpp`, `World/MapManager.cpp`
+- **Scenes:** `Scenes/LoginScene.cpp`, `Scenes/CharacterScene.cpp`
 
 **Cascade effects:**
 - New packet → ProcessPacket() switch (line 12775), new handler function
@@ -118,15 +120,17 @@
 
 **Danger zone:** `ProcessPacket()` is a 1,500+ line switch statement. Duplicate `case` values cause silent compilation issues. Check for subcode conflicts.
 
+**Module boundary:** Network/ (WSclient) makes direct calls into UI/Framework/ and UI/Windows/ — this circular dependency is why both live in the MUGame CMake target.
+
 ---
 
 ## §5 Rendering Pipeline
 
-**Trigger files:** `ZzzOpenglUtil.h`, `ZzzOpenglUtil.cpp`
+**Trigger files:** `RenderFX/ZzzOpenglUtil.h`, `RenderFX/ZzzOpenglUtil.cpp`
 
 **Direct dependents (81 files):**
-- Included transitively via `stdafx.h` (precompiled header) — effectively **all 697 source files** rebuild when this changes
-- **Direct users:** All `Zzz*.cpp` rendering files, `NewUI*.cpp` (2D rendering), `MuRenderer/` abstraction
+- Included transitively via `Main/stdafx.h` (precompiled header) — effectively **all 692 source files** rebuild when this changes
+- **Direct users:** All `RenderFX/Zzz*.cpp` rendering files, `UI/**/*.cpp` (2D rendering), `MuRenderer/` abstraction
 
 **Cascade effects:**
 - OpenGL state changes → visual regression across entire game
@@ -137,22 +141,22 @@
 
 **Test scope:** Full visual regression — character rendering, terrain, effects, UI, text
 
-**Danger zone:** Changes here trigger a **FULL REBUILD** of all 697 source files. Plan accordingly. Any OpenGL state left dirty propagates to subsequent draw calls unpredictably.
+**Danger zone:** Changes here trigger a **FULL REBUILD** of all 692 source files. Plan accordingly. Any OpenGL state left dirty propagates to subsequent draw calls unpredictably.
 
 ---
 
 ## §6 Map/World System
 
-**Trigger files:** `MapManager.h`, `MapManager.cpp`
+**Trigger files:** `World/MapManager.h`, `World/MapManager.cpp`
 
 **Direct dependents (72 files):**
-- **Scenes:** `SceneManager.cpp` (audio, clear color), `MainScene.cpp`
-- **Map logic:** `GM_*.cpp` files (per-map game mechanics)
-- **Objects:** `ZzzObject.cpp`, `ZzzOpenData.cpp` (object placement)
-- **Characters:** `ZzzCharacter.cpp` (map-dependent behavior)
-- **UI:** `NewUIMiniMap.cpp`, `NewUIWorldMap.cpp`
-- **Effects:** `ZzzEffect.cpp` (map-dependent effects)
-- **Audio:** `SceneManager.cpp` ambient/music functions
+- **Scenes:** `Scenes/SceneManager.cpp` (audio, clear color), `Scenes/MainScene.cpp`
+- **Map logic:** `World/GM_*.cpp` files (per-map game mechanics)
+- **Objects:** `Gameplay/ZzzObject.cpp`, `Data/ZzzOpenData.cpp` (object placement)
+- **Characters:** `Gameplay/ZzzCharacter.cpp` (map-dependent behavior)
+- **UI:** `UI/Windows/NewUIMiniMap.cpp`, `UI/Windows/NewUIWorldMap.cpp`
+- **Effects:** `RenderFX/ZzzEffect.cpp` (map-dependent effects)
+- **Audio:** `Scenes/SceneManager.cpp` ambient/music functions
 
 **Cascade effects:**
 - `ENUM_WORLD` changes → recompile all 72 dependents
@@ -169,13 +173,13 @@
 
 ## §7 Effects System
 
-**Trigger files:** `ZzzEffect.h`, `ZzzEffect.cpp`
+**Trigger files:** `RenderFX/ZzzEffect.h`, `RenderFX/ZzzEffect.cpp`
 
 **Direct dependents (80 files):**
-- **Character system:** `ZzzCharacter.cpp` (character effects, skills)
+- **Character system:** `Gameplay/ZzzCharacter.cpp` (character effects, skills)
 - **Combat:** Skill effects, hit effects, death animations
-- **Objects:** `ZzzObject.cpp` (world object effects)
-- **Maps:** `GM_*.cpp` (map-specific effects)
+- **Objects:** `Gameplay/ZzzObject.cpp` (world object effects)
+- **Maps:** `World/GM_*.cpp` (map-specific effects)
 - **UI:** Effect-driven UI animations
 - **Items:** Equipment visual effects, aura rendering
 
@@ -194,7 +198,7 @@
 
 ## §8 Buff System
 
-**Trigger files:** `w_BuffStateSystem.h`, `w_BuffStateSystem.cpp`
+**Trigger files:** `Gameplay/w_BuffStateSystem.h`, `Gameplay/w_BuffStateSystem.cpp`
 
 **Direct dependents (2 files):**
 - Well-isolated with smart pointer pattern (`BuffStateSystemPtr`)
@@ -204,7 +208,7 @@
 - `BuffScriptLoader` — buff definition data
 - `BuffTimeControl` — duration/timing
 - `BuffStateValueControl` — stat modifications
-- `NewUIBuffWindow.cpp` — buff icon display (8x2 grid)
+- `UI/Windows/NewUIBuffWindow.cpp` — buff icon display (8x2 grid)
 
 **Cascade effects:**
 - Buff state changes → character stats recalculation
@@ -247,26 +251,26 @@
 
 Single table — "If changing X, also check Y":
 
-| If Changing... | Also Check These Files |
-|----------------|----------------------|
-| `CHARACTER` struct | `WSclient.cpp` (packet parsing), `ZzzEffect*.cpp`, `ZzzObject.cpp`, `NewUICharacterInfoWindow` |
-| `ITEM_ATTRIBUTE` struct | `WSclient.cpp`, `ZzzInfomation.cpp`, `NewUIMyInventory`, `CSItemOption`, `ItemDataLoader` |
-| Any `NewUI*.h` API | `NewUISystem.h/.cpp` (registration), `WSclient.cpp` (50+ direct UI calls from handlers) |
-| Packet structures | `ClientLibrary/*.cs`, `PacketFunctions_*.h/.cpp`, `WSclient.cpp` `ProcessPacket()` |
-| OpenGL blend/render state | All 14 `glBegin` files, `MuRenderer/` abstraction, `NewUI*` 2D rendering |
-| `stdafx.h` | **ALL 697 source files** — full rebuild, plan accordingly |
-| `Defined_Global.h` | All files guarded by any flag defined there (varies per flag) |
-| `_enum.h` (INTERFACE_LIST) | `NewUISystem.h/.cpp`, `NewUIManager.cpp` |
-| `_define.h` (EGameScene) | `Scenes/SceneManager.cpp`, `Scenes/SceneCommon.h`, `Scenes/SceneCore.h` |
-| `MapManager.h` (ENUM_WORLD) | `MapManager.cpp`, `SceneManager.cpp` (audio/visual), all `GM_*.cpp` files |
-| `_TextureIndex.h` | `ZzzOpenData.cpp` (loading), any `NewUI*.cpp` using those textures |
-| `Connection.h` (bridge) | All packet send paths, `PacketFunctions_Custom.*`, `ConnectionManager.cs` |
+| If Changing... | Module | Also Check These Files |
+|----------------|--------|----------------------|
+| `CHARACTER` struct | Gameplay | `Network/WSclient.cpp` (packet parsing), `RenderFX/ZzzEffect*.cpp`, `Gameplay/ZzzObject.cpp`, `UI/Windows/NewUICharacterInfoWindow` |
+| `ITEM_ATTRIBUTE` struct | Data | `Network/WSclient.cpp`, `Data/ZzzInfomation.cpp`, `UI/Windows/NewUIMyInventory`, `Gameplay/CSItemOption`, `Data/ItemDataLoader` |
+| Any `UI/**/*.h` API | UI | `UI/Framework/NewUISystem.h/.cpp` (registration), `Network/WSclient.cpp` (50+ direct UI calls from handlers) |
+| Packet structures | Dotnet | `ClientLibrary/*.cs`, `Dotnet/PacketFunctions_*.h/.cpp`, `Network/WSclient.cpp` `ProcessPacket()` |
+| OpenGL blend/render state | RenderFX | All 14 `glBegin` files, `MuRenderer/` abstraction, `UI/**/*` 2D rendering |
+| `Main/stdafx.h` | Main | **ALL 692 source files** — full rebuild, plan accordingly |
+| `Core/Defined_Global.h` | Core | All files guarded by any flag defined there (varies per flag) |
+| `Core/_enum.h` (INTERFACE_LIST) | Core | `UI/Framework/NewUISystem.h/.cpp`, `UI/Framework/NewUIManager.cpp` |
+| `Core/_define.h` (EGameScene) | Core | `Scenes/SceneManager.cpp`, `Scenes/SceneCommon.h`, `Scenes/SceneCore.h` |
+| `World/MapManager.h` (ENUM_WORLD) | World | `World/MapManager.cpp`, `Scenes/SceneManager.cpp` (audio/visual), all `World/GM_*.cpp` files |
+| `Core/_TextureIndex.h` | Core | `Data/ZzzOpenData.cpp` (loading), any `UI/**/*.cpp` using those textures |
+| `Dotnet/Connection.h` (bridge) | Dotnet | All packet send paths, `Dotnet/PacketFunctions_Custom.*`, `ConnectionManager.cs` |
 
 ---
 
 ## Initialization Dependency Chain
 
-Init order in `Winmain.cpp` `WinMain()` function (lines 944-1354):
+Init order in `Main/Winmain.cpp` `WinMain()` function (lines 944-1354):
 
 ```
 Config Load → Display Setup → Window + OpenGL Context
@@ -346,15 +350,15 @@ Per-phase blast radius from the SDL3 migration plan:
 
 | Phase | Key Files Modified | Systems Affected | Blast Radius |
 |-------|-------------------|------------------|--------------|
-| Phase 0: Headers | `stdafx.h`, platform headers | Precompiled header | **FULL REBUILD** (697 files) |
-| Phase 1: Window/Input | `Winmain.cpp`, `CInput` | Window creation, input, main loop | Login + character selection |
-| Phase 2: SDL_gpu | 14 `glBegin` files, `MuRenderer/` | Entire rendering pipeline | **FULL VISUAL REGRESSION** |
-| Phase 3: Audio | `wzAudio.*`, `DirectSound.*` | Background music, sound effects | All game audio |
-| Phase 4: Filesystem | `ZzzOpenData.cpp`, `MapManager.cpp` | Asset loading, map data | All content loading |
-| Phase 5: Text/Input | `CMultiLanguage`, IME handling | Text rendering, localization | All UI text display |
-| Phase 6: Timer/Thread | `Winmain.cpp`, game loop | Frame timing, threading | Game loop stability |
+| Phase 0: Headers | `Main/stdafx.h`, platform headers | Precompiled header | **FULL REBUILD** (692 files) |
+| Phase 1: Window/Input | `Main/Winmain.cpp`, `Core/CInput` | Window creation, input, main loop | Login + character selection |
+| Phase 2: SDL_gpu | 14 `glBegin` files in RenderFX/ | Entire rendering pipeline | **FULL VISUAL REGRESSION** |
+| Phase 3: Audio | `Audio/DSPlaySound.*`, `Audio/DSwaveIO.*` | Background music, sound effects | All game audio |
+| Phase 4: Filesystem | `Data/ZzzOpenData.cpp`, `World/MapManager.cpp` | Asset loading, map data | All content loading |
+| Phase 5: Text/Input | `Data/MultiLanguage`, IME handling | Text rendering, localization | All UI text display |
+| Phase 6: Timer/Thread | `Main/Winmain.cpp`, game loop | Frame timing, threading | Game loop stability |
 | Phase 7: Clipboard/Misc | Minor platform APIs | Clipboard, cursor, system info | Minimal |
-| Phase 8: .NET AOT | `Connection.h`, `ClientLibrary/` | C++/C# bridge, all networking | **ALL NETWORK FUNCTIONALITY** |
+| Phase 8: .NET AOT | `Dotnet/Connection.h`, `ClientLibrary/` | C++/C# bridge, all networking | **ALL NETWORK FUNCTIONALITY** |
 | Phase 9: Integration | Build system, CI | Compilation, testing | Build process |
 
 ### High-Risk Phases

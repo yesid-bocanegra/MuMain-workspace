@@ -29,7 +29,8 @@ Every session follows this format:
 
 | Phase | Name | Sessions | Depends On |
 |-------|------|----------|------------|
-| 0 | Platform Compatibility Headers & Build | 7 | — |
+| -1 | Modular Reorganization | 3 | — |
+| 0 | Platform Compatibility Headers & Build | 7 | Phase -1 |
 | 1 | SDL3 Window, Input & Main Loop | 8 | Phase 0 |
 | 2 | SDL_gpu Migration | 10 | Phase 1 |
 | 3 | Audio System (miniaudio) | 3 | Phase 1 |

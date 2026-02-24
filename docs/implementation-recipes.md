@@ -26,7 +26,7 @@ Create a new UI window class inheriting from `CNewUIObj`, register it with `NewU
 
 ### Files to Create
 
-**`MuMain/src/source/NewUIMyFeature.h`**
+**`MuMain/src/source/UI/Windows/NewUIMyFeature.h`**
 ```cpp
 #pragma once
 
@@ -64,7 +64,7 @@ namespace SEASON3B
 }
 ```
 
-**`MuMain/src/source/NewUIMyFeature.cpp`**
+**`MuMain/src/source/UI/Windows/NewUIMyFeature.cpp`**
 ```cpp
 #include "stdafx.h"
 #include "NewUIMyFeature.h"
@@ -102,7 +102,7 @@ void CNewUIMyFeature::Release()
 
 ### Files to Modify (5 touch points)
 
-#### 1. `_enum.h` — Add interface enum (~line 112)
+#### 1. `Core/_enum.h` — Add interface enum (~line 112)
 
 Add before `INTERFACE_END` (line 113):
 ```cpp
@@ -111,7 +111,7 @@ INTERFACE_END,                 // Line 113 — do NOT move this
 ```
 > `INTERFACE_COUNT` auto-calculates from `INTERFACE_END`.
 
-#### 2. `NewUISystem.h` — Include, member, getter, macro
+#### 2. `UI/Framework/NewUISystem.h` — Include, member, getter, macro
 
 **Include** (lines 6-85 region):
 ```cpp
@@ -133,7 +133,7 @@ CNewUIMyFeature* GetUI_NewMyFeature() const;
 #define g_pMyFeature SEASON3B::CNewUISystem::GetInstance()->GetUI_NewMyFeature()
 ```
 
-#### 3. `NewUISystem.cpp` — Create, delete, getter impl
+#### 3. `UI/Framework/NewUISystem.cpp` — Create, delete, getter impl
 
 **Constructor** — Initialize to `nullptr`:
 ```cpp
@@ -160,7 +160,7 @@ CNewUIMyFeature* CNewUISystem::GetUI_NewMyFeature() const
 }
 ```
 
-#### 4. `_TextureIndex.h` — Add bitmap indices (if needed)
+#### 4. `Core/_TextureIndex.h` — Add bitmap indices (if needed)
 
 Allocate in `BITMAP_INTERFACE_TEXTURE_BEGIN` (31001) to `BITMAP_INTERFACE_TEXTURE_END` (32000) range:
 ```cpp
@@ -184,7 +184,7 @@ BITMAP_MYFEATURE_END = BITMAP_MYFEATURE_BEGIN + 5,  // Adjust count as needed
 
 ### Template Reference
 
-Use `NewUIGensRanking.h/.cpp` as a minimal template — it implements all required methods with standard patterns for scrollbar, text box, and button rendering.
+Use `UI/Windows/NewUIGensRanking.h/.cpp` as a minimal template — it implements all required methods with standard patterns for scrollbar, text box, and button rendering.
 
 ### Verification
 
@@ -259,7 +259,7 @@ void PacketFunctions_ClientToServer_Custom::SendMyPacket(const wchar_t* param)
 
 **Files to modify:**
 
-#### 1. `WSclient.cpp` — Add handler function
+#### 1. `Network/WSclient.cpp` — Add handler function
 
 Write a handler anywhere in the file (15,156 lines total):
 ```cpp
@@ -271,7 +271,7 @@ void ReceiveMyFeature(const BYTE* ReceiveBuffer)
 }
 ```
 
-#### 2. `WSclient.cpp` — Register in `ProcessPacket()` switch
+#### 2. `Network/WSclient.cpp` — Register in `ProcessPacket()` switch
 
 `ProcessPacket()` starts at line 12761. The primary switch on `HeadCode` is at line 12775:
 
@@ -316,7 +316,7 @@ Create a singleton manager with lifecycle methods, integrate into the main game 
 
 ### Files to Create
 
-**`MuMain/src/source/MyFeatureManager.h`**
+**`MuMain/src/source/Gameplay/MyFeatureManager.h`**
 ```cpp
 #pragma once
 
@@ -346,7 +346,7 @@ namespace SEASON3B
 #define g_pMyFeatureManager SEASON3B::CMyFeatureManager::GetInstance()
 ```
 
-**`MuMain/src/source/MyFeatureManager.cpp`**
+**`MuMain/src/source/Gameplay/MyFeatureManager.cpp`**
 ```cpp
 #include "stdafx.h"
 #include "MyFeatureManager.h"
@@ -375,9 +375,9 @@ void CMyFeatureManager::Render() { /* Visual output if needed */ }
 
 | Pattern | File | Use When |
 |---------|------|----------|
-| Protected ctor + static `GetInstance()` | `PartyManager.h` | Standard singleton (most common) |
-| `Singleton<T>` template | `Singleton.h` | Template-based, `GetSingletonPtr()` / `GetSingleton()` |
-| `SmartPointer()` + `Make()` factory | `w_BuffStateSystem.h` | Smart pointer lifecycle, automatic cleanup |
+| Protected ctor + static `GetInstance()` | `Gameplay/PartyManager.h` | Standard singleton (most common) |
+| `Singleton<T>` template | `Core/Singleton.h` | Template-based, `GetSingletonPtr()` / `GetSingleton()` |
+| `SmartPointer()` + `Make()` factory | `Gameplay/w_BuffStateSystem.h` | Smart pointer lifecycle, automatic cleanup |
 
 ### Game Loop Integration
 
@@ -416,9 +416,9 @@ Items require data definition, model/texture loading, and inventory display inte
 
 ### Step 1: Item Data Definition
 
-**Item attributes:** `GameData/ItemData/ItemStructs.h` defines `ITEM_ATTRIBUTE` struct with wide-char name (`wchar_t Name[50]`) plus attribute fields via `ITEM_ATTRIBUTE_FIELDS` X-macro.
+**Item attributes:** `Data/ItemStructs.h` defines `ITEM_ATTRIBUTE` struct with wide-char name (`wchar_t Name[50]`) plus attribute fields via `ITEM_ATTRIBUTE_FIELDS` X-macro.
 
-**Data handler:** `DataHandler/ItemData/ItemDataHandler.h` — singleton `CItemDataHandler`:
+**Data handler:** `Data/ItemDataHandler.h` — singleton `CItemDataHandler`:
 ```cpp
 CItemDataHandler& handler = CItemDataHandler::GetInstance();
 handler.Load(fileName);                        // Load encrypted .bmd file
@@ -429,7 +429,7 @@ ITEM_ATTRIBUTE* attr = handler.GetItemAttribute(index);
 
 ### Step 2: Model Loading
 
-**File:** `ZzzOpenData.cpp`, function `OpenItems()` (lines 611-1248)
+**File:** `Data/ZzzOpenData.cpp`, function `OpenItems()` (lines 611-1248)
 
 ```cpp
 // Batch loading pattern (e.g., swords):
@@ -442,7 +442,7 @@ gLoadData.AccessModel(MODEL_MY_ITEM, L"Data\\Item\\", L"MyItem", 1);
 
 ### Step 3: Texture Loading
 
-**File:** `ZzzOpenData.cpp`, function `OpenItemTextures()` (lines 1250-1348)
+**File:** `Data/ZzzOpenData.cpp`, function `OpenItemTextures()` (lines 1250-1348)
 
 ```cpp
 gLoadData.OpenTexture(MODEL_MY_ITEM, L"Item\\");
@@ -450,20 +450,20 @@ gLoadData.OpenTexture(MODEL_MY_ITEM, L"Item\\");
 
 ### Step 4: Texture Index
 
-**File:** `_TextureIndex.h` — Add model constant. Item models use `MODEL_*` constants defined in the model enum sections.
+**File:** `Core/_TextureIndex.h` — Add model constant. Item models use `MODEL_*` constants defined in the model enum sections.
 
 ### Step 5: Inventory Display
 
-**File:** `NewUIMyInventory.cpp` — Uses `CNewUIInventoryCtrl` with an **8x8 cell grid** (line 70):
+**File:** `UI/Windows/NewUIMyInventory.cpp` — Uses `CNewUIInventoryCtrl` with an **8x8 cell grid** (line 70):
 ```cpp
 m_pNewInventoryCtrl->Create(STORAGE_TYPE::INVENTORY, ..., 8, 8, MAX_EQUIPMENT);
 ```
 
-Items occupy cells based on their width/height attributes. Display logic in `NewUIInventoryCtrl.cpp`.
+Items occupy cells based on their width/height attributes. Display logic in `UI/Framework/NewUIInventoryCtrl.cpp`.
 
 ### Step 6: Item Information
 
-**File:** `ZzzInfomation.cpp` — Contains `GetItemInfo()` and tooltip rendering for item stats.
+**File:** `Data/ZzzInfomation.cpp` — Contains `GetItemInfo()` and tooltip rendering for item stats.
 
 ### Verification
 
@@ -483,7 +483,7 @@ Maps require an enum entry, terrain data files, object/texture loading, and audi
 
 ### Step 1: World Enum
 
-**File:** `MapManager.h` (lines 7-71)
+**File:** `World/MapManager.h` (lines 7-71)
 
 Add before `NUM_WD` (line 70):
 ```cpp
@@ -506,7 +506,7 @@ Create directory `MuMain/src/bin/Data/World82/` containing:
 
 ### Step 3: Object & Texture Loading
 
-**File:** `MapManager.cpp`, function `Load()` (starts at line 35)
+**File:** `World/MapManager.cpp`, function `Load()` (starts at line 35)
 
 Add a case in the `switch(gMapManager.WorldActive)` statement:
 ```cpp
@@ -547,11 +547,11 @@ else if (gMapManager.WorldActive == WD_82MYMAP)
 
 ### Step 5: Map-Specific Logic (Optional)
 
-Create `GM_MyMap.cpp` for map-specific game mechanics (NPCs, events, triggers).
+Create `World/GM_MyMap.cpp` for map-specific game mechanics (NPCs, events, triggers).
 
 ### Step 6: NPC Spawns (Optional)
 
-**File:** `ZzzOpenData.cpp` — Add NPC models and spawn data for the new map.
+**File:** `Data/ZzzOpenData.cpp` — Add NPC models and spawn data for the new map.
 
 ### Step 7: Feature Flag Guard (Optional)
 
@@ -581,7 +581,7 @@ Feature flags use preprocessor defines in `Defined_Global.h` with author-prefixe
 
 ### Step 1: Define the Flag
 
-**File:** `Defined_Global.h`
+**File:** `Core/Defined_Global.h`
 
 ```cpp
 #define XXX_ADD_FEATURE_NAME    // Author prefix + action + name
@@ -616,7 +616,7 @@ For features with multiple components:
 
 ### Step 3: Guard Code
 
-**In headers (`NewUISystem.h`):**
+**In headers (`UI/Framework/NewUISystem.h`):**
 ```cpp
 #ifdef XXX_ADD_FEATURE_NAME
 #include "NewUIMyFeature.h"
@@ -628,7 +628,7 @@ For features with multiple components:
 #endif
 ```
 
-**In implementation (`NewUISystem.cpp`):**
+**In implementation (`UI/Framework/NewUISystem.cpp`):**
 ```cpp
 #ifdef XXX_ADD_FEATURE_NAME
     m_pNewMyFeature = new CNewUIMyFeature;
@@ -702,7 +702,7 @@ void ReleaseMyScene()
 
 ### Step 2: Scene Enum
 
-**File:** `_define.h` (lines 24-31)
+**File:** `Core/_define.h` (lines 24-31)
 
 ```cpp
 enum EGameScene {
@@ -759,7 +759,7 @@ SceneFlag = MY_SCENE;  // extern EGameScene SceneFlag (SceneCore.h:13)
 
 ### Step 6: Data Loading (Optional)
 
-**File:** `ZzzOpenData.h/.cpp` — Add `OpenMySceneData()` / `ReleaseMySceneData()` for scene-specific assets.
+**File:** `Data/ZzzOpenData.h/.cpp` — Add `OpenMySceneData()` / `ReleaseMySceneData()` for scene-specific assets.
 
 ### Verification
 
@@ -773,16 +773,16 @@ SceneFlag = MY_SCENE;  // extern EGameScene SceneFlag (SceneCore.h:13)
 
 ## Cross-Reference: Common File Touch Points
 
-| File | Recipes That Touch It |
-|------|-----------------------|
-| `_enum.h` | §1 (UI enum) |
-| `_define.h` | §7 (scene enum) |
-| `_TextureIndex.h` | §1, §4 (bitmap indices) |
-| `NewUISystem.h/.cpp` | §1, §6 (UI registration, feature guards) |
-| `Defined_Global.h` | §5, §6 (feature flags) |
-| `Scenes/SceneManager.cpp` | §5 (audio), §7 (dispatch) |
-| `Scenes/MainScene.cpp` | §3 (manager lifecycle) |
-| `ZzzOpenData.cpp` | §4 (items), §5 (maps), §7 (scene data) |
-| `WSclient.cpp` | §2 (packet handlers) |
-| `MapManager.h/.cpp` | §5 (world enum, loading) |
-| `CMakeLists.txt` | §1, §3, §4, §5, §7 (new source files) |
+| File | Module | Recipes That Touch It |
+|------|--------|-----------------------|
+| `_enum.h` | Core | §1 (UI enum) |
+| `_define.h` | Core | §7 (scene enum) |
+| `_TextureIndex.h` | Core | §1, §4 (bitmap indices) |
+| `NewUISystem.h/.cpp` | UI/Framework | §1, §6 (UI registration, feature guards) |
+| `Defined_Global.h` | Core | §5, §6 (feature flags) |
+| `SceneManager.cpp` | Scenes | §5 (audio), §7 (dispatch) |
+| `MainScene.cpp` | Scenes | §3 (manager lifecycle) |
+| `ZzzOpenData.cpp` | Data | §4 (items), §5 (maps), §7 (scene data) |
+| `WSclient.cpp` | Network | §2 (packet handlers) |
+| `MapManager.h/.cpp` | World | §5 (world enum, loading) |
+| `CMakeLists.txt` | — | §1, §3, §4, §5, §7 (new source files) |

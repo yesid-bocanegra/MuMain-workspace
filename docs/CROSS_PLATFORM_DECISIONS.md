@@ -432,3 +432,27 @@ For Phase 10 (UI Design Reference Capture):
 **Commerce (4 screens):** CNewUITrade, CNewUIInGameShop, CNewUIRegistrationLuckyCoin, CNewUIExchangeLuckyCoin
 
 **System & HUD (10+ screens):** CNewUIMainFrameWindow, CNewUIOptionWindow, CNewUIMiniMap, CNewUICommonMessageBox, CNewUICustomMessageBox, Help, Window Menu, Commands
+
+---
+
+## Modular Reorganization (Phase -1)
+
+**Decision:** Reorganize the flat 697-file `source/` directory into 20 module subdirectories with CMake library targets before starting the SDL3 migration.
+
+**Trigger:** mu-nreal's [modular reorganization proposal](https://github.com/sven-n/MuMain/issues/59#issuecomment-3662928837) demonstrated comprehensive domain analysis. Dependency analysis of `#include` patterns confirmed which modules could be cleanly separated.
+
+**Key finding:** Core, Protocol, Data, RenderFX, Audio headers are self-contained (no cross-module `#include` in `.h` files). Network ↔ UI has a circular dependency (`WSclient.cpp` includes 4 NewUI headers). Gameplay → RenderFX is `.cpp`-only (linking handles it).
+
+**Approach taken:**
+- 7 independent CMake STATIC library targets with enforced boundaries
+- 1 coupled MUGame target for tightly-coupled code (honest, not hidden)
+- Shared fat PCH via `REUSE_FROM` (thinning deferred)
+- MUCommon INTERFACE target for shared include dirs and definitions
+- Empty MUPlatform target ready for Phase 0
+
+**Rejected alternatives:**
+- *Full modular split (mu-nreal style):* Would require breaking circular dependencies first — too much risk before migration
+- *No reorganization:* 697 files in one directory, no incremental build benefit, unclear scope boundaries per migration phase
+- *Header-only refactoring:* Would require forward declarations and interface extraction — out of scope for pre-migration
+
+**See:** [modular-reorganization.md](./modular-reorganization.md) for the complete directory structure and CMake target map.

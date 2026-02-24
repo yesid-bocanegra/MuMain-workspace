@@ -15,8 +15,8 @@
 ### MuMain (mumain)
 - **Type:** Game Client
 - **Tech Stack:** C++20, OpenGL, Win32, DirectSound
-- **Root:** `MuMain/src/source/` (691 files)
-- **Entry Point:** `Winmain.cpp → WinMain()`
+- **Root:** `MuMain/src/source/` (692 files in 20 module directories)
+- **Entry Point:** `Main/Winmain.cpp → WinMain()`
 
 ### ClientLibrary (clientlibrary)
 - **Type:** Network Library
@@ -74,6 +74,7 @@
 - [MuEditor README](../MuMain/src/MuEditor/README.md) — Editor architecture, ImGui integration, components
 
 ### Cross-Platform Planning
+- [Modular Reorganization](./modular-reorganization.md) — Phase -1: module directory structure, CMake library targets, dependency map *(~120 lines)*
 - [Cross-Platform Plan](./CROSS_PLATFORM_PLAN.md) — 10-phase, 58-session SDL3/SDL_gpu migration roadmap *(~970 lines — load specific phase sections, not entire file)*
 - [Cross-Platform Decisions](./CROSS_PLATFORM_DECISIONS.md) — Research, library decisions, OpenGL audit, shader specs *(~435 lines)*
 
