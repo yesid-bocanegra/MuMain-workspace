@@ -3,6 +3,9 @@
 Thumbs.db
 
 _bmad
+paw
+paw_runner/*
+requirements.txt
 
 # IDEs / Editors
 .idea/
