@@ -6,6 +6,7 @@ _bmad
 paw
 paw_runner/*
 requirements.txt
+.pcc-config.template.yaml
 
 # IDEs / Editors
 .idea/
@@ -39,3 +40,15 @@ dist/
 
 # Logs
 *.log
+
+# C++ build artifacts (PCC workspace extras)
+build-*/
+*.o
+*.obj
+*.exe
+*.dll
+*.lib
+*.a
+*.so
+*.dylib
+_deps/
