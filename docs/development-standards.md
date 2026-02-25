@@ -9,7 +9,7 @@ For implementation details, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md)
 | Section | Lines | When to read |
 |---------|-------|-------------|
 | [§1 Cross-Platform Readiness](#1-cross-platform-readiness) | ~150 | Writing new code, reviewing PRs, migration work |
-| [§2 C++ Conventions](#2-c-conventions) | ~80 | Writing/reviewing C++ code |
+| [§2 C++ Conventions](#2-c-conventions) | ~190 | Writing/reviewing C++ code |
 | [§3 C# / .NET Conventions](#3-c--net-conventions) | ~40 | Writing/reviewing C# interop code |
 | [§4 Generated Code](#4-generated-code) | ~30 | Touching packet-related files |
 | [§5 Translation / i18n](#5-translation--i18n) | ~35 | Adding user-facing strings |
@@ -206,12 +206,124 @@ Per `.editorconfig`:
 - RAII wrappers for system handles
 - No raw `new`/`delete`
 
-### Error Handling
+### Error Handling & Logging
 
-- Return codes are the existing pattern — continue using them in touched files
-- No exceptions in the game loop (performance-critical path)
-- Use `assert()` for programmer errors in debug builds
-- Log errors via the existing logging system (`ErrorReport`)
+#### Existing Logging Infrastructure
+
+The codebase has several logging mechanisms. Choose the right one based on audience and severity:
+
+| Mechanism | Audience | Availability | Output |
+|-----------|----------|-------------|--------|
+| `g_ErrorReport.Write(L"fmt", ...)` | Developers (post-mortem) | All builds | `MuError.log` file |
+| `g_ConsoleDebug->Write(type, L"fmt", ...)` | Developers (live) | `_DEBUG` + `FOR_WORK` only | In-game console window |
+| `wprintf(L"fmt", ...)` | Developers (live) | All builds (but no console in release) | stdout |
+| `MessageBox()` / `PopUpErrorCheckMsgBox()` | Players / developers | All builds | Modal dialog |
+| `assert(expr)` | Developers | `_DEBUG` only | Abort + debugger break |
+| `OutputDebugString()` | Developers (VS attached) | `_DEBUG` only | VS Output window |
+
+**Dead mechanisms — do not use:**
+- `__TraceF()` — body is commented out, completely inert
+- `DebugAngel` / `ExecutionLog` — removed from the codebase
+
+#### When to Use Each Mechanism
+
+**`g_ErrorReport.Write()`** — Primary diagnostic log. Use for events useful in post-mortem analysis:
+- Asset loading failures (models, textures, data files)
+- Network connection state changes
+- Startup diagnostics (system info, GL capabilities)
+- Any error the player might report as a bug
+
+```cpp
+g_ErrorReport.Write(L"AccessModel failed: %ls%ls (Type=%d)\r\n", szDir, szName, iType);
+```
+
+Note: `g_ErrorReport` does not add timestamps automatically. Call `g_ErrorReport.WriteCurrentTime()` before important events (connection attempts, scene transitions).
+
+**`g_ConsoleDebug->Write()`** — Live development diagnostics. Use for high-frequency events useful while debugging:
+- Packet send/receive logging (`MCD_SEND` / `MCD_RECEIVE`)
+- Error conditions during development (`MCD_ERROR`)
+- General state transitions (`MCD_NORMAL`)
+
+```cpp
+g_ConsoleDebug->Write(MCD_RECEIVE, L"Received character list (%d chars)\r\n", nCount);
+```
+
+Always guard with `#ifdef CONSOLE_DEBUG` or null-check, since `GetInstance()` returns null in release.
+
+**`wprintf()`** — Quick debugging only. Acceptable in legacy code but avoid in new code — output goes nowhere in release builds without a console window. Prefer `g_ErrorReport.Write()` for persistent diagnostics or `g_ConsoleDebug->Write()` for debug output.
+
+**`assert()`** — Programmer errors that should never happen if the code is correct:
+- Null pointer on a parameter that must not be null
+- Index out of bounds in internal logic
+- Violated preconditions in private/internal functions
+
+```cpp
+assert(pItem != nullptr);           // Caller bug if null
+assert(iSlotIndex >= 0 && iSlotIndex < MAX_INVENTORY);
+```
+
+Do NOT assert on external data (network packets, files, user input) — validate and handle gracefully instead.
+
+**`MessageBox()` / `PopUpErrorCheckMsgBox()`** — Player-visible errors for unrecoverable situations:
+- Critical asset missing (player model, core textures)
+- Fatal initialization failure (GL context, network)
+
+Use `PopUpErrorCheckMsgBox()` which respects the `FOR_WORK` flag (recoverable in dev, fatal in release).
+
+#### Error Handling Strategy
+
+**Return codes** are the existing pattern. Continue using them:
+
+```cpp
+// GOOD — check return and handle failure
+bool bSuccess = Models[iType].Open2(szDir, szName);
+if (!bSuccess)
+{
+    g_ErrorReport.Write(L"Failed to load model: %ls%ls\r\n", szDir, szName);
+    return false;  // Propagate failure
+}
+```
+
+**Use `[[nodiscard]]`** on new functions where ignoring the return value is likely a bug:
+
+```cpp
+[[nodiscard]] bool LoadConfig(const wchar_t* szPath);
+```
+
+**No exceptions in the game loop.** The codebase is not exception-safe — most classes lack RAII cleanup. Exceptions are allowed only in:
+- Startup initialization (before the game loop)
+- JSON/config parsing (where `try/catch` already exists)
+- Third-party library boundaries
+
+**Severity escalation for asset loading:**
+
+| Asset criticality | On failure | Example |
+|-------------------|-----------|---------|
+| Critical (player can't play) | `g_ErrorReport.Write()` + `MessageBox()` + terminate | Player model, login UI textures |
+| Important (feature broken) | `g_ErrorReport.Write()` + `PopUpErrorCheckMsgBox()` | Monster models, map textures |
+| Optional (cosmetic) | `g_ErrorReport.Write()` + skip silently | Particle effects, decorative models |
+
+#### Cross-Platform Logging Migration
+
+The current infrastructure is Win32-locked. During the SDL3 migration:
+
+- `g_ErrorReport` uses `CreateFile`/`WriteFile` → will migrate to `std::ofstream` (Phase 5, Session 5.3)
+- `CmuConsoleDebug` uses `AllocConsole`/`std::wcout` → will migrate to stdout + ANSI escapes (Phase 5, Session 5.3)
+- `MessageBox` → already shimmed via `PlatformCompat.h` → `SDL_ShowSimpleMessageBox` (Phase 0, Session 0.3)
+- `OutputDebugString` → `fprintf(stderr, ...)` on non-Windows (Phase 5, Session 5.3)
+
+**New code should avoid direct Win32 logging calls.** Use `g_ErrorReport.Write()` or `g_ConsoleDebug->Write()` — these will be ported. Do not add new `OutputDebugString`, `AllocConsole`, or direct `HANDLE`-based file writes.
+
+#### Logging Rules Summary
+
+1. **Do log:** Asset load failures, network state changes, startup diagnostics, unexpected state
+2. **Don't log:** Normal operations, per-frame events (unless behind `_DEBUG`), successful routine actions
+3. **Use `g_ErrorReport`** for anything a player might report as a bug
+4. **Use `g_ConsoleDebug`** for packet debugging and live development diagnostics
+5. **Use `assert`** for internal invariants, not for external data validation
+6. **Use `MessageBox`** only for player-visible unrecoverable errors
+7. **Don't use `wprintf`** in new code — prefer `g_ErrorReport` or `g_ConsoleDebug`
+8. **Always propagate errors** via return codes — don't silently swallow failures
 
 ### Modern C++ (New Code)
 

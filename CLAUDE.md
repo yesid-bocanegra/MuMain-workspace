@@ -43,6 +43,8 @@ cmake --build --preset windows-x64-debug
 - **i18n:** `GAME_TEXT("key")` for user-facing strings, `EDITOR_TEXT("key")` in editor builds
 - **Feature flags:** Author-prefixed defines in `Defined_Global.h` (e.g., `ASG_ADD_GENS_SYSTEM`)
 - **C#:** StyleCop enforced, `[UnmanagedCallersOnly]` for AOT exports, VSTHRD103 as error
+- **Logging:** `g_ErrorReport.Write()` for post-mortem, `g_ConsoleDebug->Write()` for live debug; no `wprintf` in new code
+- **Error handling:** Return codes (no exceptions in game loop), `assert` for internal invariants only, `[[nodiscard]]` on new fallible functions
 
 ## Generated Files — DO NOT EDIT
 
@@ -70,6 +72,8 @@ Start with `docs/index.md` (~100 lines) for the full index with section navigati
 | Network protocol | `packet-protocol-reference.md` (~230) + `architecture-clientlibrary.md` (~140) |
 | Build / CI issues | `development-guide.md` (~210) + `troubleshooting.md` (~150) |
 | Asset loading | `asset-pipeline.md` (~230) |
+| Error handling / logging | `development-standards.md` §2 Error Handling & Logging (~110 lines) |
+| Static analysis (cppcheck) | `cppcheck-guidance.md` (~100) |
 | Planning a new feature | `implementation-recipes.md` (relevant recipe, ~80-120 lines each) |
 | Assessing change impact | `feature-impact-maps.md` (relevant system, ~25-45 lines each) |
 

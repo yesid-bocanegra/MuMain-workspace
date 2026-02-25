@@ -42,7 +42,8 @@
 - [Project Overview](./project-overview.md) — Executive summary, tech stack, key metrics *(~120 lines)*
 - [Source Tree Analysis](./source-tree-analysis.md) — Annotated directory structure with critical folders *(~300 lines)*
 - [Development Guide](./development-guide.md) — Build, run, test, environment setup *(~210 lines)*
-- [Development Standards](./development-standards.md) — Coding conventions, banned APIs, cross-platform rules *(~425 lines; §1 banned APIs, §2 C++, §3 C#, §4 generated code, §5 i18n)*
+- [Development Standards](./development-standards.md) — Coding conventions, banned APIs, cross-platform rules, error handling & logging *(~530 lines; §1 banned APIs, §2 C++ + error/logging, §3 C#, §4 generated code, §5 i18n)*
+- [cppcheck Guidance](./cppcheck-guidance.md) — Static analysis suppression policy and fix examples *(~100 lines)*
 - [Integration Architecture](./integration-architecture.md) — Cross-component communication and data flows *(~175 lines)*
 - [Troubleshooting](./troubleshooting.md) — Common build/runtime issues and solutions *(~150 lines)*
 - [Testing Strategy](./testing-strategy.md) — Test approach, ground truth capture, CI validation *(~185 lines)*
