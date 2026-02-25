@@ -108,7 +108,7 @@ cd build-mingw/src && ./Main.exe   # MinGW
 - MSVC-specific functions (`sprintf_s`, `_snprintf`) don't exist on MinGW
 
 **Problem:** CI cache miss for libjpeg-turbo
-**Solution:** The CI workflow caches the pre-built static library with versioned key (`libjpeg-turbo-mingw-i686-3.1.3-v1`). If the version changes, update the cache key in `mingw-build.yml`.
+**Solution:** The CI workflow caches the pre-built static library with versioned key (`libjpeg-turbo-mingw-i686-3.1.3-v1`). If the version changes, update the cache key in `ci.yml`.
 
 ---
 

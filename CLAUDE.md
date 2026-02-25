@@ -18,7 +18,7 @@ MU Online game client (Season 5.2→6). C++20 monolithic game loop + .NET 10 Nat
 - **PCH:** `MuMain/src/source/Main/stdafx.h`
 - **Build presets:** `MuMain/CMakePresets.json`
 - **i18n:** `MuMain/src/source/Translation/i18n.h`
-- **CI:** `MuMain/.github/workflows/mingw-build.yml`
+- **CI:** `MuMain/.github/workflows/ci.yml`
 
 ## Build Commands
 
@@ -70,7 +70,7 @@ Start with `docs/index.md` (~100 lines) for the full index with section navigati
 | Game client features | `game-systems-reference.md` (~300) + `architecture-mumain.md` (~185) |
 | Rendering / shaders | `architecture-rendering.md` (~190) |
 | Network protocol | `packet-protocol-reference.md` (~230) + `architecture-clientlibrary.md` (~140) |
-| Build / CI issues | `development-guide.md` (~210) + `troubleshooting.md` (~150) |
+| Build / CI issues | `development-guide.md` (~210) + `troubleshooting.md` (~150) + `ci-workflows.md` (~130) |
 | Asset loading | `asset-pipeline.md` (~230) |
 | Error handling / logging | `development-standards.md` §2 Error Handling & Logging (~110 lines) |
 | Static analysis (cppcheck) | `cppcheck-guidance.md` (~100) |

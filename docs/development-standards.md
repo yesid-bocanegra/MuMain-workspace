@@ -481,10 +481,13 @@ All user-facing strings must go through the i18n system (`src/source/Translation
 
 ### CI Pipeline
 
-- **MinGW build** (`.github/workflows/mingw-build.yml`): Ubuntu cross-compile to Windows x86, validates all PRs
+- **Single workflow** (`.github/workflows/ci.yml`): Runs on all pushes and PRs
+- **Quality gates job**: `make format-check` + `make lint` (Makefile is the source of truth for tool config)
+- **Build job**: Ubuntu MinGW-w64 cross-compile to Windows x86
 - Dependency caching (libjpeg-turbo) with versioned cache keys
 - Ninja generator for parallel compilation
-- Artifact upload with `if-no-files-found: error` (fail-fast)
+- Artifact upload with `if-no-files-found: error` (fail-fast, push events only)
+- Both jobs run in parallel; branch protection can require both to pass
 
 ---
 

@@ -80,9 +80,8 @@
 - [Cross-Platform Decisions](./CROSS_PLATFORM_DECISIONS.md) — Research, library decisions, OpenGL audit, shader specs *(~435 lines)*
 
 ### CI/CD
-- [MinGW Build (main)](../MuMain/.github/workflows/mingw-build.yml) — Ubuntu MinGW-w64 cross-compile
-- [MinGW Build (PR)](../MuMain/.github/workflows/mingw-build-pr.yml) — PR validation builds
-- [MinGW Build (dev)](../MuMain/.github/workflows/mingw-build-dev.yml) — Dev branch builds
+- [CI Workflows](./ci-workflows.md) — Consolidated CI: quality gates + build pipeline, Makefile as source of truth *(~110 lines)*
+- [CI Workflow](../MuMain/.github/workflows/ci.yml) — Single workflow: quality gates + MinGW cross-compile + artifact upload
 
 ## Getting Started
 

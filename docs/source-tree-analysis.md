@@ -23,9 +23,7 @@ MuMain-workspace/                          # Parent workspace (documentation + s
     ├── .editorconfig                      # Editor formatting rules
     │
     ├── .github/workflows/                 # CI/CD pipelines
-    │   ├── mingw-build.yml                # Main branch: MinGW-w64 cross-compile
-    │   ├── mingw-build-pr.yml             # PR validation builds
-    │   └── mingw-build-dev.yml            # Dev branch builds
+    │   └── ci.yml                         # Quality gates + MinGW cross-compile
     │
     ├── ClientLibrary/                     # ★ Part 2: .NET Network Layer
     │   ├── MUnique.Client.Library.csproj  # .NET 10, Native AOT, packet handling
