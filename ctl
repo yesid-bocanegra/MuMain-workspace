@@ -54,12 +54,10 @@ EOF
 # =============================================================================
 
 cmd_build() {
-    log_info "Building mumain (requires MinGW cross-compiler + libjpeg-turbo)..."
-    cmake -S MuMain -B build-mingw -G Ninja \
-        -DCMAKE_TOOLCHAIN_FILE=MuMain/cmake/toolchains/mingw-w64-i686.cmake \
+    log_info "Building mumain (native toolchain — catches -Werror + type errors)..."
+    cmake -S MuMain -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
-        -DMU_TURBOJPEG_STATIC_LIB=_deps/mingw-i686/lib/libturbojpeg.a \
-        && cmake --build build-mingw -j$(nproc)
+        && cmake --build build -j$(nproc)
     log_success "Build complete"
 }
 

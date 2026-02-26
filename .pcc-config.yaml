@@ -15,8 +15,10 @@ project:
 
 tech_profiles:
   cpp-cmake:
-    # Build requires MinGW cross-compiler + libjpeg-turbo (Linux CI only)
-    build: "cmake -S MuMain -B build-mingw -G Ninja -DCMAKE_TOOLCHAIN_FILE=MuMain/cmake/toolchains/mingw-w64-i686.cmake -DCMAKE_BUILD_TYPE=Debug -DMU_TURBOJPEG_STATIC_LIB=_deps/mingw-i686/lib/libturbojpeg.a && cmake --build build-mingw -j$(nproc)"
+    # Native build (no cross-compilation toolchain). Will fail on macOS (Win32 APIs).
+    # On Linux, catches -Werror violations and type errors with native GCC/Clang.
+    # CI uses MinGW cross-compilation separately (see MuMain/.github/workflows/ci.yml).
+    build: "cmake -S MuMain -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j$(nproc)"
     test: "make -C MuMain test"
     coverage: "echo 'No coverage configured yet'"
     lint: "make -C MuMain lint"
