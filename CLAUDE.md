@@ -20,23 +20,53 @@ MU Online game client (Season 5.2→6). C++20 monolithic game loop + .NET 10 Nat
 - **i18n:** `MuMain/src/source/Translation/i18n.h`
 - **CI:** `MuMain/.github/workflows/ci.yml`
 
-## Build Commands
+## Build Commands (by OS)
+
+### macOS — Quality Gates Only
+
+macOS **cannot** compile the game client (requires Win32 APIs, DirectX, `windows.h`). Use macOS for code quality checks and editing only.
 
 ```bash
-# MinGW cross-compile (recommended for development)
+brew install clang-format cppcheck          # one-time
+./ctl check                                 # format-check + lint (mirrors CI)
+./ctl format                                # auto-format all C++ files
+```
+
+### Linux / WSL — Full Build (Recommended)
+
+MinGW cross-compiles a Windows `.exe` from Linux. WSL is the recommended daily-dev environment.
+
+```bash
+# Install toolchain (one-time)
+sudo apt-get update && sudo apt-get install -y mingw-w64 g++-mingw-w64-i686 cmake ninja-build
+
+# Build
 cmake -S MuMain -B build-mingw -G Ninja \
   -DCMAKE_TOOLCHAIN_FILE=MuMain/cmake/toolchains/mingw-w64-i686.cmake \
   -DCMAKE_BUILD_TYPE=Debug -DENABLE_EDITOR=ON \
   -DMU_TURBOJPEG_STATIC_LIB=_deps/mingw-i686/lib/libturbojpeg.a
 cmake --build build-mingw -j$(nproc)
 
-# MSVC presets
+# Quality gates
+./ctl check
+```
+
+> **Note:** .NET Native AOT (`ClientLibrary/`) requires Windows `dotnet.exe`. WSL finds it via interop at `/mnt/c/Program Files/dotnet/dotnet.exe`. Without it, the game compiles but cannot connect to servers.
+
+### Windows — MSVC Presets
+
+```powershell
 cmake --preset windows-x64
 cmake --build --preset windows-x64-debug
+
+# With editor
+cmake --preset windows-x64-mueditor
+cmake --build --preset windows-x64-mueditor-debug
 ```
 
 ## Conventions
 
+- **Commits:** Conventional Commits format — `type(scope): description` (e.g., `feat(ui):`, `fix(network):`, `refactor:`). Semantic-release parses these for automated versioning. See `docs/development-standards.md` §6.
 - **C++ naming:** PascalCase functions, `m_` prefix members with Hungarian hints (`by`, `w`, `dw`, `sz`, `p`), `CNewUI*` UI classes, UPPER_SNAKE constants
 - **Formatting:** 4 spaces, UTF-8, LF, Allman braces (per `.editorconfig`)
 - **New code:** `std::unique_ptr` (no raw `new`/`delete`), `nullptr` (not `NULL`), `std::chrono` (not `timeGetTime`), `std::filesystem` for paths
@@ -76,6 +106,9 @@ Start with `docs/index.md` (~100 lines) for the full index with section navigati
 | Static analysis (cppcheck) | `cppcheck-guidance.md` (~100) |
 | Planning a new feature | `implementation-recipes.md` (relevant recipe, ~80-120 lines each) |
 | Assessing change impact | `feature-impact-maps.md` (relevant system, ~25-45 lines each) |
+| Security review | `security-guidelines.md` (~130) |
+| Performance optimization | `performance-guidelines.md` (~130) |
+| Architectural decisions | `adr/README.md` + relevant ADR files |
 
 Large files (>400 lines): `CROSS_PLATFORM_PLAN.md` (970 lines) — always read specific phase sections, never the full file.
 

@@ -134,10 +134,16 @@ cd build-mingw/src && ./Main.exe   # MinGW
 ## FAQ
 
 **Q: Which build environment should I use?**
-A: WSL + MinGW for daily development and Claude Code. MSVC via CLion or Visual Studio only when you need the debugger or MSVC-specific testing.
+A: Depends on your OS:
+- **macOS** — Quality gates only (`./ctl check`, `./ctl format`). Cannot compile the game (Win32/DirectX dependency).
+- **Linux / WSL** (Recommended) — Full MinGW cross-compile build + quality gates. WSL is fastest for daily dev with Claude Code.
+- **Windows** — MSVC presets for native builds. Use Visual Studio or CLion when you need the debugger.
 
 **Q: Can I build on native Linux (no WSL)?**
 A: The C++ client builds via MinGW cross-compile, but the .NET DLL requires Windows `dotnet.exe` for Native AOT. Without it, the game compiles but cannot connect to servers.
+
+**Q: Why can't I build on macOS?**
+A: The game client includes `windows.h` in its precompiled header (`stdafx.h`) and uses Win32/DirectX APIs throughout. The .NET layer also targets `win-x64` for Native AOT. Until the SDL3 cross-platform migration is complete, macOS is limited to quality gates (formatting, linting, static analysis).
 
 **Q: Why is MuMain a git submodule?**
 A: The workspace repo (`MuMain-workspace`) wraps the game client repo (`MuMain`) as a submodule. This separates documentation and planning from the game client code.

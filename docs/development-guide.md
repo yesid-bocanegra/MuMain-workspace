@@ -31,7 +31,30 @@ cd MuMain-workspace/MuMain
 git submodule update --init
 ```
 
-### 2. Build (WSL + MinGW — Recommended)
+### 2. Build by OS
+
+#### macOS — Quality Gates Only
+
+macOS **cannot** compile the game client — the codebase requires Win32 APIs, DirectX, and `windows.h` which are unavailable on macOS. Use macOS for editing, code quality checks, and static analysis.
+
+```bash
+# Install quality tools (one-time)
+brew install clang-format cppcheck
+
+# Run quality gate (format-check + lint, mirrors CI)
+cd .. && ./ctl check
+
+# Auto-format all C++ files
+./ctl format
+
+# Individual checks
+make format-check
+make lint
+```
+
+#### Linux / WSL — Full Build (Recommended)
+
+MinGW cross-compiles a 32-bit Windows `.exe` from Linux. **WSL is the recommended daily-dev environment** — fastest iteration with Claude Code.
 
 ```bash
 # Install toolchain (one-time)
@@ -46,28 +69,36 @@ cmake -S . -B build-mingw -G Ninja \
 
 # Build
 cmake --build build-mingw -j$(nproc)
+
+# Quality gate
+cd .. && ./ctl check
 ```
 
-### 3. Build (Windows — Visual Studio Presets)
+> **Note:** .NET Native AOT (`ClientLibrary/`) requires Windows `dotnet.exe`. On WSL, it is found via interop at `/mnt/c/Program Files/dotnet/dotnet.exe`. On native Linux without Windows, the game compiles but cannot connect to servers (the .NET DLL is skipped).
+
+#### Windows — MSVC Presets
+
+Native Windows build using Visual Studio and CMake presets. Full .NET Native AOT support included.
 
 ```powershell
-# Standard build
+# x86 (standard 32-bit game build)
 cmake --preset windows-x86
 cmake --build --preset windows-x86-debug
 
-# With editor
+# x86 with editor
 cmake --preset windows-x86-mueditor
 cmake --build --preset windows-x86-mueditor-debug
-```
 
-### 4. Build (Windows — x64)
-
-```powershell
+# x64
 cmake --preset windows-x64
 cmake --build --preset windows-x64-debug
+
+# x64 with editor
+cmake --preset windows-x64-mueditor
+cmake --build --preset windows-x64-mueditor-debug
 ```
 
-### 5. Run
+### 3. Run
 
 ```bash
 # WSL/MinGW
@@ -76,8 +107,11 @@ cd build-mingw/src && ./Main.exe
 # Windows x86
 ./out/build/windows-x86/src/Debug/Main.exe
 
+# Windows x64
+./out/build/windows-x64/src/Debug/Main.exe
+
 # With server connection
-main.exe connect /u192.168.0.20 /p55902
+Main.exe connect /u192.168.0.20 /p55902
 ```
 
 Default connection: `localhost:44406` (requires [OpenMU](https://github.com/MUnique/OpenMU) server).

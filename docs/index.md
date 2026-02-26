@@ -62,6 +62,11 @@
 - [Implementation Recipes](./implementation-recipes.md) — Step-by-step: add UI window, packet, manager, item, map, flag, scene *(~700 lines; 7 recipes, ~80-120 lines each)*
 - [Feature Impact Maps](./feature-impact-maps.md) — Change blast radius per system, dependency chains, feature flags *(~450 lines; 9 system maps, quick-lookup, init chain)*
 
+### Guidelines
+- [Security Guidelines](./security-guidelines.md) — Input validation, memory safety, crypto migration, logging security *(~130 lines)*
+- [Performance Guidelines](./performance-guidelines.md) — Game loop constraints, timing, memory, rendering, .NET hot paths *(~130 lines)*
+- [Architecture Decision Records](./adr/README.md) — ADR process, template, and decision log
+
 ### Metadata
 - [Project Parts](./project-parts.json) — Machine-readable project structure and integration points
 - [Project Scan Report](./project-scan-report.json) — Documentation workflow state and findings

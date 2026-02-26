@@ -467,11 +467,74 @@ All user-facing strings must go through the i18n system (`src/source/Translation
 - `fix/` — bug fixes
 - `refactor/` — code restructuring without behavior change
 
-### Commit Messages
+### Commit Messages — Conventional Commits
 
-- Imperative mood: "Add input mapping" not "Added input mapping"
-- Reference issue numbers where applicable
-- Separate generated file commits from manual changes
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) with **semantic-release** for automated versioning and changelog generation. Every commit to `main` is parsed by `.releaserc.json`.
+
+**Format:**
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types and their release impact:**
+
+| Type | Release | Use When |
+|------|---------|----------|
+| `feat` | minor | Adding new functionality |
+| `fix` | patch | Bug fixes |
+| `perf` | patch | Performance improvements (no behavior change) |
+| `refactor` | patch | Code restructuring (no behavior change) |
+| `docs` | none | Documentation only |
+| `style` | none | Formatting, whitespace (no code change) |
+| `test` | none | Adding or updating tests |
+| `build` | none | Build system or dependency changes |
+| `ci` | none | CI configuration changes |
+| `chore` | none | Maintenance tasks |
+
+**Scopes** (optional, in parentheses):
+
+| Scope | Covers |
+|-------|--------|
+| `render` | Rendering, OpenGL, shaders |
+| `network` | Packets, ClientLibrary, .NET bridge |
+| `ui` | CNewUI windows, HUD, menus |
+| `input` | Keyboard, mouse, gamepad |
+| `audio` | Sound, music, wzAudio |
+| `build` | CMake, toolchain, dependencies |
+| `editor` | MuEditor / ImGui debug tools |
+| `i18n` | Translations, localization |
+| `codegen` | XSLT transforms, ConstantsReplacer |
+
+**Examples:**
+
+```bash
+feat(ui): add inventory sorting by item level
+fix(network): handle disconnection during character select
+perf(render): batch terrain draw calls to reduce state changes
+refactor(input): extract key binding table from CNewUISystem
+docs: update cross-platform migration phase 3 notes
+ci: add cppcheck portability checks to quality gate
+```
+
+**Breaking changes:** Add `BREAKING CHANGE:` in the footer or `!` after the type:
+
+```
+feat(network)!: migrate packet framing to new header format
+
+BREAKING CHANGE: Packet header size changed from 3 to 4 bytes.
+Requires server-side update to OpenMU v0.10+.
+```
+
+**Additional rules:**
+
+- Imperative mood in description: "add input mapping" not "added input mapping"
+- Reference issue numbers in footer: `Closes #42`
+- Separate generated file commits from manual changes (use `chore(codegen):` for generated files)
 
 ### Pull Requests
 

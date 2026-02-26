@@ -15,14 +15,16 @@ project:
 
 tech_profiles:
   cpp-cmake:
-    build: "cmake --build build-mingw -j$(nproc)"
-    test: "echo 'No automated tests yet'"
+    # Build requires MinGW cross-compiler + libjpeg-turbo (Linux CI only)
+    build: "cmake -S MuMain -B build-mingw -G Ninja -DCMAKE_TOOLCHAIN_FILE=MuMain/cmake/toolchains/mingw-w64-i686.cmake -DCMAKE_BUILD_TYPE=Debug -DMU_TURBOJPEG_STATIC_LIB=_deps/mingw-i686/lib/libturbojpeg.a && cmake --build build-mingw -j$(nproc)"
+    test: "make -C MuMain test"
     coverage: "echo 'No coverage configured yet'"
     lint: "make -C MuMain lint"
     format: "make -C MuMain format"
     format_check: "make -C MuMain format-check"
+    # Local quality gate mirrors CI quality job: format-check + lint (build is CI-only MinGW job)
     quality_gate: "make -C MuMain format-check && make -C MuMain lint"
-    clean: "cmake --build build-mingw --target clean"
+    clean: "rm -rf build build-mingw build-test"
     # Testing conventions
     testing:
       ac_test_dir: "MuMain/tests"
