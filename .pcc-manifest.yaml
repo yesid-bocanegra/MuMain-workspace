@@ -4,7 +4,7 @@
 
 pcc:
   version: "3.0.0"
-  generated_at: "2026-02-26T11:55:33+0000"
+  generated_at: "2026-02-26T17:11:00+0000"
 
 config_hash: "99be6eed46955f00ef6a1854c367d971b84aa64cc031d026ec9d2e5d23e82025"
 
@@ -29,15 +29,20 @@ generated_files:
     sha256: "b2713b707294eecac0b02f1e0348eb932e6ffbed1fbc563130530a71dd45e3be"
     step: "5"
     description: "Project control script (dev commands only, no Docker)"
+    executable: true
 
   "_bmad/pcc/overrides/workflow-variables.yaml":
-    sha256: "4bebac90c747819bd1d19d1d7de2f8a65c71420d178e21dfa6ca17e1c63b7068"
+    sha256: "97443c34a159e00ffb10a975b2a6a52f005a8e10e49a393ded8e22fdd2775562"
     step: "1.5"
     description: "Workflow variable paths derived from components"
 
   ".git/hooks/pre-push":
     step: "7.5"
     description: "Pre-push quality gate hook (runs ./paw check)"
+
+  ".git/modules/MuMain/hooks/pre-push":
+    step: "7.5"
+    description: "Pre-push quality gate hook for mumain submodule"
 
 # =============================================================================
 # SKIPPED STEPS
@@ -64,7 +69,7 @@ components:
     type: "git-submodule"
     remote: "git@github.com:yesid-bocanegra/MuMain.git"
     branch: "main"
-    commit: "1925df6caf3811afe8c1888791271e2506bbd55d"
+    commit: "4daca45227a43c2ea5b507a52aaa6a59d36a06e8"  # updated 2026-02-26
 
   project-docs:
     path: "./_bmad-output"
@@ -91,7 +96,7 @@ consistency_checks:
   component_health:
     status: "PASS"
     details:
-      - "mumain: submodule checked out on main (1925df6), remote URL matches config"
+      - "mumain: submodule checked out on main (4daca452), remote URL matches config"
       - "project-docs: directory exists"
   file_existence:
     status: "PASS"
@@ -100,6 +105,8 @@ consistency_checks:
       - ".gitignore exists (131 lines)"
       - "ctl exists (135 lines, executable)"
       - ".git/hooks/pre-push exists (executable)"
+      - ".git/modules/MuMain/hooks/pre-push exists (executable)"
+      - "_bmad/pcc/overrides/workflow-variables.yaml exists (215 lines)"
   dev_command_consistency:
     status: "PASS"
     details:
@@ -141,6 +148,6 @@ quality_validation:
 
 authored_directories:
   - "docs/"
-  - "MuMain/src/"
   - "infra/"
+  - "scripts/"
   - "_bmad-output/"
