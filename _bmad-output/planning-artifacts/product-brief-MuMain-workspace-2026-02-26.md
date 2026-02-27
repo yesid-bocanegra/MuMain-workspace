@@ -156,10 +156,11 @@ Finds repo through OpenMU/GitHub → Builds on Linux/macOS, reads docs, submits 
 
 1. **Cross-platform client** — Complete the SDL3 migration (Phases 0-2 minimum) to deliver native builds on Windows, macOS, and Linux
 2. **OpenMU compatibility** — Stable, reliable connection to OpenMU servers with full gameplay functionality
-3. **Gameplay parity** — All existing game features working correctly across platforms (combat, inventory, trading, guilds, PvP, world exploration)
-4. **Stability and polish** — Address unknown gaps and bugs that early adopters haven't surfaced yet due to limited testing; establish a baseline of quality that power users can trust
-5. **Easy distribution** — Clean downloadable binaries for all three platforms — no patching, no workarounds, no legal gray areas
-6. **Quality gates** — CI pipeline validating builds across platforms, static analysis, and format checks on every change
+3. **.NET network layer cross-platform** — The ClientLibrary (.NET Native AOT) must build and load on all three platforms. The C# code is already cross-platform; requires CMake RID detection, platform-correct library extension loading (`.so`/`.dylib`), and `wchar_t` → `char16_t` fix at the C++/.NET interop boundary. Without this, Linux/macOS users cannot connect to servers
+4. **Gameplay parity** — All existing game features working correctly across platforms (combat, inventory, trading, guilds, PvP, world exploration)
+5. **Stability and polish** — Address unknown gaps and bugs that early adopters haven't surfaced yet due to limited testing; establish a baseline of quality that power users can trust
+6. **Easy distribution** — Clean downloadable binaries for all three platforms — no patching, no workarounds, no legal gray areas
+7. **Quality gates** — CI pipeline validating builds across platforms, static analysis, and format checks on every change
 
 ### Out of Scope for MVP
 
@@ -169,13 +170,13 @@ Finds repo through OpenMU/GitHub → Builds on Linux/macOS, reads docs, submits 
 - **Original IP / custom assets** — Requires understanding what attracts players first, which requires an active player base
 - **Audio migration (miniaudio)** — Phase 3 of migration plan; can ship with existing audio on Windows, platform-appropriate fallback on Linux/macOS
 - **ImGui editor cross-platform** — Phase 7; developer tooling, not player-facing
-- **.NET AOT cross-platform** — Phase 8; may require Windows for server connectivity initially, with cross-platform interop as a follow-up
+- ~~.NET AOT cross-platform~~ — **Moved to MVP scope.** The .NET C# code is already cross-platform; only build integration fixes are needed. Without this, Linux/macOS cannot connect to servers, breaking the core MVP promise
 - **Advanced rendering (SDL_gpu)** — Phase 2 is in MVP scope but full shader pipeline optimization is not
 
 ### MVP Success Criteria
 
 - **Builds and runs natively** on Windows, macOS, and Linux from a single codebase
-- **Connects to OpenMU** and delivers stable gameplay sessions without crashes or disconnects
+- **Connects to OpenMU on all three platforms** (Windows, macOS, Linux) and delivers stable gameplay sessions without crashes or disconnects
 - **Early adopters confirm** core gameplay loop works: login → character select → world → combat → inventory → trading → logout
 - **Community servers emerge** — at least a handful of hosts distributing MuMain to their players
 - **Contributors onboard** — developers can clone, build, and contribute on any of the three platforms
@@ -190,9 +191,8 @@ Finds repo through OpenMU/GitHub → Builds on Linux/macOS, reads docs, submits 
 3. **Config, encryption & system utilities** — Cross-platform file handling, HTTP, config
 4. **Text input & IME** — SDL3 text events for international input
 5. **ImGui editor cross-platform** — Developer tooling on all platforms
-6. **.NET AOT cross-platform** — `dlopen` on Linux/macOS for full server connectivity
-7. **CI/CD & packaging** — AppImage (Linux), DMG (macOS), installer (Windows)
-8. **SSO / player data portability** — The passport system for character sovereignty
-9. **Ethical monetization framework** — "Pay to enjoy" accelerators and cosmetics
-10. **Mobile/tablet client** — SDL3 touch input, responsive UI scaling
-11. **Original IP exploration** — When community insights reveal what truly retains players
+6. **CI/CD & packaging** — AppImage (Linux), DMG (macOS), installer (Windows)
+7. **SSO / player data portability** — The passport system for character sovereignty
+8. **Ethical monetization framework** — "Pay to enjoy" accelerators and cosmetics
+9. **Mobile/tablet client** — SDL3 touch input, responsive UI scaling
+10. **Original IP exploration** — When community insights reveal what truly retains players

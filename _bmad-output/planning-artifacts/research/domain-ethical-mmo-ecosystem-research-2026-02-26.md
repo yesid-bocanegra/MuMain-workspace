@@ -367,14 +367,29 @@ _Sources: [GamingOnLinux — SDL3 Release](https://www.gamingonlinux.com/2025/01
 
 ### .NET Native AOT Cross-Platform
 
-.NET Native AOT is critical for MuMain's network bridge (`ClientLibrary`) cross-platform story:
+.NET Native AOT is critical for MuMain's network bridge (`ClientLibrary`) cross-platform story. **Key insight: the .NET code itself is already cross-platform — the barriers are purely in the build/integration layer, not in the C# code.**
 
-- **Platform support:** Windows, macOS, Linux, iOS, Android — all targets MuMain needs
-- **Limitation:** Native AOT does NOT support cross-OS compilation. Cannot compile a Linux binary from Windows or vice-versa. Each platform must compile natively (or via WSL/emulation)
-- **Performance:** Sub-10ms startup times, smaller memory footprints, no JIT dependency
-- **Future trajectory:** Expected to become the default .NET deployment mode, suggesting improving tooling and cross-platform support
+**What the .NET layer does (ConnectionManager.cs, ConnectionWrapper.cs):**
+- TCP socket management (`TcpClient` + `Pipelines.Sockets.Unofficial`)
+- Packet encryption/decryption (SimpleModulus + Xor32, via `MUnique.OpenMU.Network` NuGet package)
+- 200+ generated packet serialization functions (from `MUnique.OpenMU.Network.Packets` XML definitions)
+- Async I/O pipeline with callback dispatch to C++
 
-**Impact on MuMain:** The cross-OS compilation limitation means the build pipeline must support native compilation on each target platform (or use CI with platform-specific runners). WSL provides a workaround for Windows→Linux, but macOS requires a macOS build environment. This is a Phase 8 concern in the migration plan — solvable but requires CI infrastructure investment.
+**None of this is Windows-specific.** `TcpClient`, `System.IO.Pipelines`, and the OpenMU encryption libraries are standard cross-platform .NET. The .NET SDK (`dotnet publish`) runs natively on Linux and macOS.
+
+**What actually needs fixing (3 integration points):**
+
+| Fix | Scope | Effort |
+|---|---|---|
+| CMake RID detection — currently hardcodes `win-x64`/`win-x86`, needs `linux-x64`, `osx-arm64`, `osx-x64` | `src/CMakeLists.txt` ~10 lines | Tiny |
+| Library extension in `Connection.h` — loads `.dll`, needs `.so` (Linux) / `.dylib` (macOS) | `Connection.h` ~5 lines | Tiny |
+| String encoding at interop boundary — `wchar_t` is 4 bytes on Linux/macOS vs 2 on Windows, needs `char16_t` | XSLT templates + `ConnectionManager.cs` | Medium |
+
+**Platform support:** Windows, macOS, Linux, iOS, Android — all targets MuMain needs
+**Limitation:** Native AOT does NOT support cross-OS compilation. Each platform must `dotnet publish` natively. This means multi-platform CI runners (GitHub Actions supports all three)
+**Performance:** Sub-10ms startup times, smaller memory footprints, no JIT dependency
+
+**Impact on MuMain:** This is **MVP-critical, not post-MVP.** Without the .NET layer, the game compiles and renders on Linux/macOS but cannot connect to any server — making "cross-platform client connected to OpenMU" impossible. The fix is small (primarily the `wchar_t` → `char16_t` encoding change) and should be sequenced alongside or immediately after SDL3 Phases 0-2, not deferred to Phase 8.
 
 _Sources: [Microsoft Learn — Native AOT](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/), [Microsoft Learn — Cross Compilation](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/cross-compile), [NDepend — Native AOT Explained](https://blog.ndepend.com/net-native-aot-explained/)_
 
@@ -435,7 +450,7 @@ _Sources: [It's FOSS — COCOS 4 Open Source](https://itsfoss.com/news/cocos-4-g
 |---|---|---|---|
 | SDL3 migration (Phases 0-2) | MVP | Cross-platform client — the core deliverable | HIGH (in progress) |
 | miniaudio integration | Post-MVP | Eliminates Windows-only audio dependency | MEDIUM |
-| .NET Native AOT on Linux/macOS | Post-MVP | Full server connectivity on all platforms | MEDIUM-HIGH |
+| .NET Native AOT on Linux/macOS | **MVP** | Full server connectivity on all platforms — without this, Linux/macOS cannot connect | **LOW** (C# code is already cross-platform; fix is CMake RID + library extension + `char16_t` encoding) |
 | AI-assisted content generation | Future | Differentiated gameplay without massive art budget | MEDIUM |
 | Cloud-hosted server infrastructure | Future | Lowers barrier for community hosts | LOW-MEDIUM |
 | Progressive web/cloud client | Far future | Play-without-install for discovery | HIGH |
@@ -445,7 +460,7 @@ _Sources: [It's FOSS — COCOS 4 Open Source](https://itsfoss.com/news/cocos-4-g
 | Risk | Level | Mitigation |
 |---|---|---|
 | SDL3 maturity (just released) | LOW-MEDIUM | Stable ABI, active development, large user base, migration can fall back to SDL2 compatibility layer |
-| .NET Native AOT cross-compile limitation | MEDIUM | CI runners per platform, WSL workaround for Windows→Linux, macOS CI required |
+| .NET Native AOT cross-compile limitation | LOW | .NET SDK installs natively on all platforms; CI runners per platform; only 3 integration fixes needed (RID, extension, encoding) |
 | OpenGL 1.x → SDL_gpu migration complexity | MEDIUM | Phased approach, immediate mode→retained mode is well-documented transition |
 | miniaudio audio format compatibility | LOW | Supports all common formats, public domain, no licensing risk |
 | C++ build toolchain fragmentation | LOW-MEDIUM | CMake + Ninja standardized, MinGW cross-compile established, platform presets defined |
