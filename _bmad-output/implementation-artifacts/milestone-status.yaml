@@ -1,0 +1,83 @@
+# Milestone Status Registry
+# Schema version: 3.22.0
+milestones:
+  M1:
+    name: "Platform Foundation"
+    contributing_epics: [EPIC-1, EPIC-7]
+    linked_sprints: [sprint-1]
+    status: active
+    validated_at: null
+    report: null
+    failure_reasons: []
+    success_criteria:
+      - { name: "CMake configures on macOS, Linux, Windows", status: null }
+      - { name: "MUPlatform library compiles with correct backends", status: null }
+      - { name: "PlatformLibrary can load a dynamic library on each platform", status: null }
+      - { name: "SDL3 available as linked dependency", status: null }
+      - { name: "MinGW CI remains green", status: null }
+      - { name: "Build documentation covers all three platforms", status: null }
+      - { name: "MuError.log works on all platforms", status: null }
+      - { name: "POSIX signal handlers produce crash diagnostics", status: null }
+      - { name: "Frame time instrumentation operational", status: null }
+  M2:
+    name: "Cross-Platform I/O"
+    contributing_epics: [EPIC-2, EPIC-3]
+    linked_sprints: []
+    status: active
+    validated_at: null
+    report: null
+    failure_reasons: []
+    success_criteria:
+      - { name: "Game window opens on macOS, Linux, Windows via SDL3", status: null }
+      - { name: "Keyboard, mouse, text input work on all platforms", status: null }
+      - { name: "No Win32 windowing or input APIs in game logic", status: null }
+      - { name: ".NET AOT library builds and loads on all platforms", status: null }
+      - { name: "Server connectivity works on all three platforms", status: null }
+      - { name: "char16_t encoding produces correct packets", status: null }
+      - { name: "Error messages help diagnose connection failures", status: null }
+      - { name: "Game can launch without .NET library (graceful degradation)", status: null }
+  M3:
+    name: "Rendering Migration"
+    contributing_epics: [EPIC-4]
+    linked_sprints: []
+    status: active
+    validated_at: null
+    report: null
+    failure_reasons: []
+    success_criteria:
+      - { name: "All OpenGL calls removed from codebase", status: null }
+      - { name: "GLEW dependency removed", status: null }
+      - { name: "Game renders on macOS (Metal), Linux (Vulkan), Windows (D3D)", status: null }
+      - { name: "Ground truth SSIM > 0.99 for all baselines on all platforms", status: null }
+      - { name: "No frame time regression (FPS within 10% of OpenGL baseline)", status: null }
+      - { name: "All ~30,000 textures load correctly", status: null }
+  M4:
+    name: "Audio Migration"
+    contributing_epics: [EPIC-5]
+    linked_sprints: []
+    status: active
+    validated_at: null
+    report: null
+    failure_reasons: []
+    success_criteria:
+      - { name: "BGM and SFX play on all three platforms via miniaudio", status: null }
+      - { name: "All audio formats (WAV, OGG, MP3) decode correctly", status: null }
+      - { name: "DirectSound and wzAudio dependencies removed", status: null }
+      - { name: "No audio latency or quality degradation vs baseline", status: null }
+      - { name: "Volume controls functional", status: null }
+  M5:
+    name: "MVP Complete"
+    contributing_epics: [EPIC-6, EPIC-7]
+    linked_sprints: []
+    status: active
+    validated_at: null
+    report: null
+    failure_reasons: []
+    success_criteria:
+      - { name: "All core gameplay systems work on macOS and Linux", status: null }
+      - { name: "No gameplay regression on Windows", status: null }
+      - { name: "All 84 UI windows function correctly", status: null }
+      - { name: "60+ minute stability sessions pass on macOS and Linux", status: null }
+      - { name: "Memory usage stable (no leaks over 60 minutes)", status: null }
+      - { name: "Native CI runners validate every push on all platforms", status: null }
+      - { name: "Paco plays MU Online on Mac for 60 minutes and logs out voluntarily", status: null }

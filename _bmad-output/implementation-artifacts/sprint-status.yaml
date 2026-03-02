@@ -1,0 +1,301 @@
+# Sprint Status
+# generated: 2026-03-02
+# project: MuMain-workspace
+# project_key: MUMAIN
+# tracking_system: file-system
+# story_location: "_bmad-output/implementation-artifacts"
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created, ready for development
+#   - in-progress: Developer actively working on implementation
+#   - review: Implementation complete, ready for review
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Mark epic as 'in-progress' when starting work on its first story
+# - SM typically creates next story ONLY after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then Dev runs code-review (fresh context, ideally different LLM)
+
+# =====================
+# SPRINT DEFINITIONS
+# =====================
+sprints:
+  sprint-1:
+    name: "Sprint 1"
+    status: planned
+    milestones: [M1]
+    start_date: "2026-03-03"
+    end_date: "2026-03-16"
+    planned_points: 18
+    stories:
+      - 1-1-macos-cmake-toolchain
+      - 1-2-linux-cmake-toolchain
+      - 1-3-platform-abstraction-headers
+      - 1-4-platform-library-backends
+      - 1-5-sdl3-dependency-integration
+      - 1-6-build-documentation
+    velocity: null
+    delivered_points: null
+    commitment_reliability: null
+    scope_changes:
+      added: []
+      removed: []
+
+# =====================
+# FLOW METRICS (SAFe)
+# =====================
+flow_metrics:
+  velocity:
+    current_sprint: null  # First sprint, no data yet
+    rolling_average: null
+    trend: null
+  wip_limits:
+    in_progress: 2
+    review: 3
+  flow_distribution:
+    Feature: 0      # 0 feature stories in sprint-1
+    Enabler: 6      # 6 enabler stories (all EPIC-1)
+    Defect: 0
+    Debt: 0
+  flow_load:
+    total_wip: 0
+    by_status:
+      in_progress: 0
+      review: 0
+
+# =====================
+# CRITICAL PATH ANALYSIS
+# =====================
+critical_path:
+  # Epic Dependency Graph (Project Level):
+  #
+  # EPIC-1 (Platform Foundation)
+  #   ├──► EPIC-2 (Windowing & Input) ──┐
+  #   │                                  ├──► EPIC-4 (Rendering) ──┐
+  #   ├──► EPIC-3 (.NET AOT) ──────────┘                           │
+  #   │                                                             ├──► EPIC-6 (Gameplay) ──► EPIC-7.4/7.5 (Stability)
+  #   ├──► EPIC-5 (Audio) ─────────────────────────────────────────┘
+  #   └──► EPIC-7.1–7.3 (Diagnostics — Phase 0, parallel with EPIC-1)
+  #                                      EPIC-4 ──► EPIC-7.6 (Native CI)
+
+  project_critical_path:
+    sequence: "EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.4/7.5"
+    total_points: 111
+    parallel_opportunities:
+      - "EPIC-3 can start after 1.4, parallel with EPIC-2"
+      - "EPIC-5 can start after EPIC-1, parallel with EPIC-3/4"
+      - "EPIC-7.1-7.3 should start with EPIC-1 (Phase 0)"
+
+  sprint_1_critical_path:
+    # Track A: 1.1/1.2 → 1.5 → 1.6 (10 pts, 4 stories)
+    # Track B: 1.3 → 1.4 (8 pts, 2 stories)
+    # Tracks A and B run in parallel
+    longest_chain: "1.1 → 1.5 → 1.6 (8 pts)"
+    parallel_chains:
+      - track_a: "1.1 (3) → 1.5 (3) → 1.6 (2)"
+        points: 8
+      - track_a_parallel: "1.2 (2) feeds into 1.5"
+        points: 2
+      - track_b: "1.3 (3) → 1.4 (5)"
+        points: 8
+    stories_with_no_dependencies: [1-1-macos-cmake-toolchain, 1-2-linux-cmake-toolchain, 1-3-platform-abstraction-headers]
+    stories_that_unblock_other_epics:
+      - story: 1-4-platform-library-backends
+        unblocks: "EPIC-3 (3.2 Connection.h)"
+      - story: 1-5-sdl3-dependency-integration
+        unblocks: "EPIC-2 (2.1 SDL3 Window)"
+
+  blocking_dependencies:
+    - from: 1-3-platform-abstraction-headers
+      to: 1-4-platform-library-backends
+      type: sequential
+    - from: 1-1-macos-cmake-toolchain
+      to: 1-5-sdl3-dependency-integration
+      type: sequential
+    - from: 1-2-linux-cmake-toolchain
+      to: 1-5-sdl3-dependency-integration
+      type: sequential
+    - from: 1-5-sdl3-dependency-integration
+      to: 1-6-build-documentation
+      type: sequential
+
+  risk_items:
+    - id: R1
+      description: "SDL3 FetchContent may be slow or fail in CI (MinGW cross-compile)"
+      affected_stories: [1-5-sdl3-dependency-integration]
+      mitigation: "AC-5 allows SDL3 to be excluded from CI initially"
+    - id: R2
+      description: "macOS arm64 toolchain may need special handling for framework paths"
+      affected_stories: [1-1-macos-cmake-toolchain]
+      mitigation: "AC-1 requires correct system framework paths"
+
+# =====================
+# SCHEMA ALIGNMENT
+# =====================
+# Not applicable — C++20 game client with no schema validation tooling.
+# schema_alignment: N/A
+
+# =====================
+# EPIC COMPLETION GATES
+# =====================
+epic_completion_gates:
+  epic_1:
+    name: "Platform Foundation & Build System"
+    criteria:
+      - all_stories_done
+      - cmake_configures_on_macos_linux_windows
+      - muplatform_compiles_with_correct_backends
+      - platformlibrary_loads_dynamic_library_per_platform
+      - sdl3_available_as_linked_dependency
+      - mingw_ci_remains_green
+      - build_docs_cover_all_platforms
+    status: pending
+  epic_2:
+    name: "SDL3 Windowing & Input Migration"
+    criteria:
+      - all_stories_done
+      - game_window_opens_on_all_platforms
+      - keyboard_mouse_text_input_works
+      - no_win32_windowing_or_input_apis_in_game_logic
+      - mingw_ci_remains_green
+    status: pending
+  epic_3:
+    name: ".NET AOT Cross-Platform Networking"
+    criteria:
+      - all_stories_done
+      - dotnet_aot_builds_loads_on_all_platforms
+      - server_connectivity_on_all_platforms
+      - char16t_encoding_correct
+      - error_messages_diagnose_failures
+      - game_launches_without_dotnet_library
+    status: pending
+  epic_4:
+    name: "Rendering Pipeline Migration"
+    criteria:
+      - all_stories_done
+      - all_opengl_calls_removed
+      - glew_dependency_removed
+      - renders_on_macos_metal_linux_vulkan_windows_d3d
+      - ground_truth_ssim_above_099
+      - no_frame_time_regression
+      - all_30000_textures_load
+    status: pending
+  epic_5:
+    name: "Audio System Migration"
+    criteria:
+      - all_stories_done
+      - bgm_sfx_play_on_all_platforms
+      - all_audio_formats_decode_correctly
+      - directsound_wzaudio_removed
+      - no_audio_latency_degradation
+      - volume_controls_functional
+    status: pending
+  epic_6:
+    name: "Cross-Platform Gameplay Validation"
+    criteria:
+      - all_stories_done
+      - all_core_gameplay_on_macos_linux
+      - no_gameplay_regression_on_windows
+      - all_84_ui_windows_function
+      - chat_social_features_with_correct_encoding
+    status: pending
+  epic_7:
+    name: "Stability, Diagnostics & Quality Gates"
+    criteria:
+      - all_stories_done
+      - 60min_stability_macos_linux
+      - muerror_log_on_all_platforms
+      - crash_diagnostics_useful_output
+      - frame_timer_confirms_30plus_fps
+      - native_ci_validates_all_platforms
+    status: pending
+
+# =====================
+# DEVELOPMENT STATUS
+# =====================
+development_status:
+  # EPIC-1: Platform Foundation & Build System [VS-0] [Enabler] (18 pts)
+  epic-1: backlog
+  1-1-macos-cmake-toolchain: backlog          # 3 pts | Flow:E | No deps
+  1-2-linux-cmake-toolchain: backlog          # 2 pts | Flow:E | No deps
+  1-3-platform-abstraction-headers: backlog   # 3 pts | Flow:E | No deps
+  1-4-platform-library-backends: backlog      # 5 pts | Flow:E | Deps: 1.3
+  1-5-sdl3-dependency-integration: backlog    # 3 pts | Flow:E | Deps: 1.1, 1.2
+  1-6-build-documentation: backlog            # 2 pts | Flow:E | Deps: 1.5
+  epic-1-retrospective: optional
+
+  # EPIC-2: SDL3 Windowing & Input Migration [VS-1] [Feature] (17 pts)
+  epic-2: backlog
+  2-1-sdl3-window-event-loop: backlog         # 5 pts | Flow:F | Deps: EPIC-1 (1.5)
+  2-2-sdl3-window-focus-display: backlog      # 3 pts | Flow:F | Deps: 2.1
+  2-3-sdl3-keyboard-input: backlog            # 3 pts | Flow:F | Deps: 2.1
+  2-4-sdl3-mouse-input: backlog               # 3 pts | Flow:F | Deps: 2.1
+  2-5-sdl3-text-input: backlog                # 3 pts | Flow:F | Deps: 2.3
+  epic-2-retrospective: optional
+
+  # EPIC-3: .NET AOT Cross-Platform Networking [VS-1] [Feature] (24 pts)
+  epic-3: backlog
+  3-1-cmake-rid-detection: backlog            # 5 pts | Flow:F | Deps: 1.1, 1.2
+  3-2-connection-h-crossplatform: backlog     # 3 pts | Flow:F | Deps: 1.4, 3.1
+  3-3-char16t-encoding: backlog               # 5 pts | Flow:F | Deps: 3.2
+  3-4-macos-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.3
+  3-5-linux-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.3
+  3-6-connection-error-messaging: backlog     # 3 pts | Flow:F | Deps: 3.2
+  3-7-server-connection-config: backlog       # 2 pts | Flow:F | Deps: 3.4/3.5
+  epic-3-retrospective: optional
+
+  # EPIC-4: Rendering Pipeline Migration [VS-1] [Feature] (48 pts)
+  epic-4: backlog
+  4-1-ground-truth-capture: backlog           # 5 pts | Flow:F | Deps: 2.1
+  4-2-murenderer-core-api: backlog            # 8 pts | Flow:F | Deps: 4.1
+  4-3-migrate-renderbitmap-quad2d: backlog    # 8 pts | Flow:F | Deps: 4.2
+  4-4-migrate-skeletal-mesh: backlog          # 5 pts | Flow:F | Deps: 4.2
+  4-5-migrate-trail-effects: backlog          # 3 pts | Flow:F | Deps: 4.2
+  4-6-migrate-blend-pipeline-state: backlog   # 3 pts | Flow:F | Deps: 4.2
+  4-7-sdlgpu-backend: backlog                 # 8 pts | Flow:F | Deps: 4.3-4.6
+  4-8-shader-programs: backlog                # 5 pts | Flow:F | Deps: 4.7
+  4-9-texture-system-migration: backlog       # 8 pts | Flow:F | Deps: 4.7
+  epic-4-retrospective: optional
+
+  # EPIC-5: Audio System Migration [VS-1] [Feature] (18 pts)
+  epic-5: backlog
+  5-1-muaudio-abstraction-layer: backlog      # 3 pts | Flow:F | No deps
+  5-2-miniaudio-bgm: backlog                  # 5 pts | Flow:F | Deps: 5.1
+  5-3-miniaudio-sfx: backlog                  # 5 pts | Flow:F | Deps: 5.1
+  5-4-audio-format-validation: backlog        # 3 pts | Flow:F | Deps: 5.2, 5.3
+  5-5-volume-controls: backlog                # 2 pts | Flow:F | Deps: 5.2, 5.3
+  epic-5-retrospective: optional
+
+  # EPIC-6: Cross-Platform Gameplay Validation [VS-1] [Feature] (23 pts)
+  epic-6: backlog
+  6-1-auth-character-validation: backlog      # 3 pts | Flow:F | Deps: EPIC-2,3,4
+  6-2-world-navigation-validation: backlog    # 3 pts | Flow:F | Deps: 6.1
+  6-3-combat-system-validation: backlog       # 3 pts | Flow:F | Deps: 6.2
+  6-4-inventory-trading-validation: backlog   # 3 pts | Flow:F | Deps: 6.1
+  6-5-social-systems-validation: backlog      # 3 pts | Flow:F | Deps: 6.1
+  6-6-advanced-systems-validation: backlog    # 3 pts | Flow:F | Deps: 6.3
+  6-7-ui-windows-validation: backlog          # 5 pts | Flow:F | Deps: 6.1
+  epic-6-retrospective: optional
+
+  # EPIC-7: Stability, Diagnostics & Quality Gates [VS-0] [Enabler] (24 pts)
+  epic-7: backlog
+  7-1-crossplatform-error-reporting: backlog  # 3 pts | Flow:E | Deps: 1.3
+  7-2-posix-signal-handlers: backlog          # 3 pts | Flow:E | Deps: 7.1
+  7-3-frame-time-instrumentation: backlog     # 3 pts | Flow:E | No deps
+  7-4-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
+  7-5-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
+  7-6-native-ci-runners: backlog              # 5 pts | Flow:E | Deps: EPIC-4
+  epic-7-retrospective: optional
