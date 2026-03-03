@@ -115,46 +115,46 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 | FR | Epic | Story |
 |----|------|-------|
-| FR1 | EPIC-1 | 1.1 |
-| FR2 | EPIC-1 | 1.2 |
-| FR3 | EPIC-1 | 1.1, 1.2 (regression) |
-| FR4 | EPIC-1 | 1.6 |
-| FR5 | EPIC-1 | 1.5; EPIC-7: 7.7 |
-| FR6 | EPIC-3 | 3.4 |
-| FR7 | EPIC-3 | 3.5 |
-| FR8 | EPIC-3 | 3.4, 3.5 (regression) |
-| FR9 | EPIC-1: 1.4; EPIC-3 | 3.1, 3.2 |
-| FR10 | EPIC-3 | 3.6 |
-| FR11 | EPIC-3 | 3.7 |
-| FR12 | EPIC-4 | 4.7 |
-| FR13 | EPIC-4 | 4.7 |
-| FR14 | EPIC-4 | 4.7 |
-| FR15 | EPIC-4 | 4.1, 4.2–4.6, 4.9 |
-| FR16 | EPIC-2 | 2.2 |
-| FR17 | EPIC-5 | 5.2 |
-| FR18 | EPIC-5 | 5.3 |
-| FR19 | EPIC-5 | 5.4 |
-| FR20 | EPIC-2 | 2.3 |
-| FR21 | EPIC-2 | 2.4 |
-| FR22 | EPIC-2 | 2.5 |
-| FR23 | EPIC-6 | 6.1 |
-| FR24 | EPIC-6 | 6.1 |
-| FR25 | EPIC-6 | 6.2 |
-| FR26 | EPIC-6 | 6.3 |
-| FR27 | EPIC-6 | 6.4 |
-| FR28 | EPIC-6 | 6.4 |
-| FR29 | EPIC-6 | 6.5 |
-| FR30 | EPIC-6 | 6.5 |
-| FR31 | EPIC-6 | 6.6 |
-| FR32 | EPIC-6 | 6.6 |
-| FR33 | EPIC-6 | 6.4 |
-| FR34 | EPIC-6 | 6.6 |
-| FR35 | EPIC-6 | 6.7 |
-| FR36 | EPIC-6 | 6.5 |
-| FR37 | EPIC-7 | 7.4 |
-| FR38 | EPIC-7 | 7.5 |
-| FR39 | EPIC-7 | 7.1 |
-| FR40 | EPIC-7 | 7.6 |
+| FR1 | EPIC-1 | 1.1.1 |
+| FR2 | EPIC-1 | 1.1.2 |
+| FR3 | EPIC-1 | 1.1.1, 1.1.2 (regression) |
+| FR4 | EPIC-1 | 1.4.1 |
+| FR5 | EPIC-1 | 1.3.1; EPIC-7: 7.7 |
+| FR6 | EPIC-3 | 3.3.1 |
+| FR7 | EPIC-3 | 3.3.2 |
+| FR8 | EPIC-3 | 3.3.1, 3.3.2 (regression) |
+| FR9 | EPIC-1: 1.2.2; EPIC-3 | 3.1.1, 3.1.2 |
+| FR10 | EPIC-3 | 3.4.1 |
+| FR11 | EPIC-3 | 3.4.2 |
+| FR12 | EPIC-4 | 4.3.1 |
+| FR13 | EPIC-4 | 4.3.1 |
+| FR14 | EPIC-4 | 4.3.1 |
+| FR15 | EPIC-4 | 4.1.1, 4.2.1–4.2.5, 4.4.1 |
+| FR16 | EPIC-2 | 2.1.2 |
+| FR17 | EPIC-5 | 5.2.1 |
+| FR18 | EPIC-5 | 5.2.2 |
+| FR19 | EPIC-5 | 5.3.1 |
+| FR20 | EPIC-2 | 2.2.1 |
+| FR21 | EPIC-2 | 2.2.2 |
+| FR22 | EPIC-2 | 2.2.3 |
+| FR23 | EPIC-6 | 6.1.1 |
+| FR24 | EPIC-6 | 6.1.1 |
+| FR25 | EPIC-6 | 6.1.2 |
+| FR26 | EPIC-6 | 6.2.1 |
+| FR27 | EPIC-6 | 6.2.2 |
+| FR28 | EPIC-6 | 6.2.2 |
+| FR29 | EPIC-6 | 6.3.1 |
+| FR30 | EPIC-6 | 6.3.1 |
+| FR31 | EPIC-6 | 6.3.2 |
+| FR32 | EPIC-6 | 6.3.2 |
+| FR33 | EPIC-6 | 6.2.2 |
+| FR34 | EPIC-6 | 6.3.2 |
+| FR35 | EPIC-6 | 6.4.1 |
+| FR36 | EPIC-6 | 6.3.1 |
+| FR37 | EPIC-7 | 7.3.1 |
+| FR38 | EPIC-7 | 7.3.2 |
+| FR39 | EPIC-7 | 7.1.1 |
+| FR40 | EPIC-7 | 7.4.1 |
 
 ## Epic List
 
@@ -162,7 +162,7 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 |------|-------|-------------|-----------|---------|--------|----------|-------|
 | EPIC-1 | Platform Foundation & Build System | VS-0 | Enabler | 6 | 18 | P0 | 0 |
 | EPIC-2 | SDL3 Windowing & Input Migration | VS-1 | Feature | 5 | 17 | P0 | 1–2 |
-| EPIC-3 | .NET AOT Cross-Platform Networking | VS-1 | Feature | 7 | 24 | P0 | 2.5 |
+| EPIC-3 | .NET AOT Cross-Platform Networking | VS-1 | Feature | 7 | 24 | P0 | 2.2.3 |
 | EPIC-4 | Rendering Pipeline Migration | VS-1 | Feature | 9 | 48 | P0 | 3–5 |
 | EPIC-5 | Audio System Migration | VS-1 | Feature | 5 | 18 | P0 | 6 |
 | EPIC-6 | Cross-Platform Gameplay Validation | VS-1 | Feature | 7 | 23 | P0 | 9–10 |
@@ -192,14 +192,16 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 | Feature | Stories | Points | Priority |
 |---------|---------|--------|----------|
-| 1.1–1.2 CMake Toolchains | 2 | 5 | P0 |
-| 1.3–1.4 Platform Abstraction | 2 | 8 | P0 |
-| 1.5 SDL3 Integration | 1 | 3 | P0 |
-| 1.6 Build Docs & CI | 1 | 2 | P0 |
+| 1.1 CMake Toolchains | 1.1.1–1.1.2 | 5 | P0 |
+| 1.2 Platform Abstraction | 1.2.1–1.2.2 | 8 | P0 |
+| 1.3 SDL3 Integration | 1.3.1 | 3 | P0 |
+| 1.4 Build Docs & CI | 1.4.1 | 2 | P0 |
 
 ---
 
-### Story 1.1: Create macOS CMake Toolchain & Presets
+### Feature 1.1: CMake Toolchains
+
+#### Story 1.1.1: Create macOS CMake Toolchain & Presets
 
 **[VS-0] [Flow:E]**
 
@@ -234,7 +236,7 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 ---
 
-### Story 1.2: Create Linux CMake Toolchain & Presets
+#### Story 1.1.2: Create Linux CMake Toolchain & Presets
 
 **[VS-0] [Flow:E]**
 
@@ -244,7 +246,7 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 **Story Points:** 2
 **Priority:** P0 - Must Have
-**Prerequisites:** None (can run parallel with 1.1)
+**Prerequisites:** None (can run parallel with 1.1.1)
 **Flow Code:** VS0-PLAT-CMAKE-LINUX
 
 #### Functional Acceptance Criteria
@@ -267,7 +269,9 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 ---
 
-### Story 1.3: Platform Abstraction Headers
+### Feature 1.2: Platform Abstraction
+
+#### Story 1.2.1: Platform Abstraction Headers
 
 **[VS-0] [Flow:E]**
 
@@ -303,7 +307,7 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 ---
 
-### Story 1.4: MUPlatform Library with win32/posix Backends
+#### Story 1.2.2: MUPlatform Library with win32/posix Backends
 
 **[VS-0] [Flow:E]**
 
@@ -313,7 +317,7 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** 1.3 (Platform headers)
+**Prerequisites:** 1.2.1 (Platform headers)
 **Flow Code:** VS0-PLAT-LIBRARY-BACKENDS
 
 #### Functional Acceptance Criteria
@@ -341,7 +345,9 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 ---
 
-### Story 1.5: SDL3 Dependency Integration
+### Feature 1.3: SDL3 Integration
+
+#### Story 1.3.1: SDL3 Dependency Integration
 
 **[VS-0] [Flow:E]**
 
@@ -351,7 +357,7 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 1.1, 1.2 (toolchains must exist)
+**Prerequisites:** 1.1.1, 1.1.2 (toolchains must exist)
 **Flow Code:** VS0-PLAT-SDL3-INTEGRATE
 
 #### Functional Acceptance Criteria
@@ -377,7 +383,9 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 ---
 
-### Story 1.6: Build Documentation Per Platform
+### Feature 1.4: Build Docs & CI
+
+#### Story 1.4.1: Build Documentation Per Platform
 
 **[VS-0] [Flow:E]**
 
@@ -387,7 +395,7 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 
 **Story Points:** 2
 **Priority:** P0 - Must Have
-**Prerequisites:** 1.1, 1.2, 1.5 (build system must work first)
+**Prerequisites:** 1.1.1, 1.1.2, 1.3.1 (build system must work first)
 **Flow Code:** VS0-PLAT-DOCS-BUILD
 
 #### Functional Acceptance Criteria
@@ -414,16 +422,16 @@ This document decomposes the MuMain cross-platform migration requirements into 7
 ### Epic 1 Story Dependency Graph
 
 ```
-1.1 (macOS CMake) ──┐
-                    ├──► 1.5 (SDL3 Integration) ──► 1.6 (Build Docs)
-1.2 (Linux CMake) ──┘
+1.1.1 (macOS CMake) ──┐
+                    ├──► 1.3.1 (SDL3 Integration) ──► 1.4.1 (Build Docs)
+1.1.2 (Linux CMake) ──┘
 
-1.3 (Platform Headers) ──► 1.4 (PlatformLibrary Backends)
+1.2.1 (Platform Headers) ──► 1.2.2 (PlatformLibrary Backends)
 ```
 
-**Parallel Execution:** Stories 1.1/1.2 and 1.3 can run concurrently. Story 1.4 depends on 1.3. Story 1.5 depends on 1.1+1.2. Story 1.6 depends on 1.5.
+**Parallel Execution:** Stories 1.1.1/1.1.2 and 1.2.1 can run concurrently. Story 1.2.2 depends on 1.2.1. Story 1.3.1 depends on 1.1.1+1.1.2. Story 1.4.1 depends on 1.3.1.
 
-**Critical Path:** 1.1 → 1.5 → 1.6 (8 points)
+**Critical Path:** 1.1.1 → 1.3.1 → 1.4.1 (8 points)
 
 ---
 
@@ -462,12 +470,14 @@ Before proceeding to EPIC-2, verify:
 
 | Feature | Stories | Points | Priority |
 |---------|---------|--------|----------|
-| 2.1–2.2 Windowing | 2 | 8 | P0 |
-| 2.3–2.5 Input | 3 | 9 | P0 |
+| 2.1 Windowing | 2.1.1–2.1.2 | 8 | P0 |
+| 2.2 Input | 2.2.1–2.2.3 | 9 | P0 |
 
 ---
 
-### Story 2.1: SDL3 Window Creation & Event Loop
+### Feature 2.1: Windowing
+
+#### Story 2.1.1: SDL3 Window Creation & Event Loop
 
 **[VS-1] [Flow:F]**
 
@@ -477,7 +487,7 @@ Before proceeding to EPIC-2, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** EPIC-1 complete (1.5 SDL3 integrated)
+**Prerequisites:** EPIC-1 complete (1.3.1 SDL3 integrated)
 **Flow Code:** VS1-SDL-WINDOW-CREATE
 
 #### Functional Acceptance Criteria
@@ -506,7 +516,7 @@ Before proceeding to EPIC-2, verify:
 
 ---
 
-### Story 2.2: SDL3 Window Focus & Display Management
+#### Story 2.1.2: SDL3 Window Focus & Display Management
 
 **[VS-1] [Flow:F]**
 
@@ -516,7 +526,7 @@ Before proceeding to EPIC-2, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 2.1 (SDL3 window exists)
+**Prerequisites:** 2.1.1 (SDL3 window exists)
 **Flow Code:** VS1-SDL-WINDOW-FOCUS
 
 #### Functional Acceptance Criteria
@@ -540,7 +550,9 @@ Before proceeding to EPIC-2, verify:
 
 ---
 
-### Story 2.3: SDL3 Keyboard Input Migration
+### Feature 2.2: Input
+
+#### Story 2.2.1: SDL3 Keyboard Input Migration
 
 **[VS-1] [Flow:F]**
 
@@ -550,7 +562,7 @@ Before proceeding to EPIC-2, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 2.1 (SDL3 event loop)
+**Prerequisites:** 2.1.1 (SDL3 event loop)
 **Flow Code:** VS1-SDL-INPUT-KEYBOARD
 
 #### Functional Acceptance Criteria
@@ -577,7 +589,7 @@ Before proceeding to EPIC-2, verify:
 
 ---
 
-### Story 2.4: SDL3 Mouse Input Migration
+#### Story 2.2.2: SDL3 Mouse Input Migration
 
 **[VS-1] [Flow:F]**
 
@@ -587,7 +599,7 @@ Before proceeding to EPIC-2, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 2.1 (SDL3 event loop)
+**Prerequisites:** 2.1.1 (SDL3 event loop)
 **Flow Code:** VS1-SDL-INPUT-MOUSE
 
 #### Functional Acceptance Criteria
@@ -613,7 +625,7 @@ Before proceeding to EPIC-2, verify:
 
 ---
 
-### Story 2.5: SDL3 Text Input Migration
+#### Story 2.2.3: SDL3 Text Input Migration
 
 **[VS-1] [Flow:F]**
 
@@ -623,7 +635,7 @@ Before proceeding to EPIC-2, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 2.3 (keyboard input)
+**Prerequisites:** 2.2.1 (keyboard input)
 **Flow Code:** VS1-SDL-INPUT-TEXT
 
 #### Functional Acceptance Criteria
@@ -651,15 +663,15 @@ Before proceeding to EPIC-2, verify:
 ### Epic 2 Story Dependency Graph
 
 ```
-2.1 (Window + Event Loop)
-  ├──► 2.2 (Focus/Display)
-  ├──► 2.3 (Keyboard) ──► 2.5 (Text Input)
-  └──► 2.4 (Mouse)
+2.1.1 (Window + Event Loop)
+  ├──► 2.1.2 (Focus/Display)
+  ├──► 2.2.1 (Keyboard) ──► 2.2.3 (Text Input)
+  └──► 2.2.2 (Mouse)
 ```
 
-**Parallel Execution:** Stories 2.2, 2.3, 2.4 can run concurrently after 2.1.
+**Parallel Execution:** Stories 2.1.2, 2.2.1, 2.2.2 can run concurrently after 2.1.1.
 
-**Critical Path:** 2.1 → 2.3 → 2.5 (11 points)
+**Critical Path:** 2.1.1 → 2.2.1 → 2.2.3 (11 points)
 
 ---
 
@@ -688,7 +700,7 @@ Before proceeding to EPIC-3, verify:
 | Value Stream | VS-1 (Core Experience) |
 | Flow Type | Feature Flow |
 | Total Story Points | 24 |
-| Prerequisites | EPIC-1 (1.4 PlatformLibrary) |
+| Prerequisites | EPIC-1 (1.2.2 PlatformLibrary) |
 | PRD References | FR6–FR11 |
 | Contributing Milestones | Architecture Phase 2.5 |
 
@@ -696,14 +708,16 @@ Before proceeding to EPIC-3, verify:
 
 | Feature | Stories | Points | Priority |
 |---------|---------|--------|----------|
-| 3.1–3.2 Build Integration | 2 | 8 | P0 |
-| 3.3 Encoding | 1 | 5 | P0 |
-| 3.4–3.5 Platform Validation | 2 | 6 | P0 |
-| 3.6–3.7 UX & Config | 2 | 5 | P0/P1 |
+| 3.1 Build Integration | 3.1.1–3.1.2 | 8 | P0 |
+| 3.2 Encoding | 3.2.1 | 5 | P0 |
+| 3.3 Platform Validation | 3.3.1–3.3.2 | 6 | P0 |
+| 3.4 UX & Config | 3.4.1–3.4.2 | 5 | P0/P1 |
 
 ---
 
-### Story 3.1: CMake RID Detection & .NET AOT Build Integration
+### Feature 3.1: Build Integration
+
+#### Story 3.1.1: CMake RID Detection & .NET AOT Build Integration
 
 **[VS-1] [Flow:F]**
 
@@ -713,7 +727,7 @@ Before proceeding to EPIC-3, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** EPIC-1 (1.1, 1.2 toolchains)
+**Prerequisites:** EPIC-1 (1.1.1, 1.1.2 toolchains)
 **Flow Code:** VS1-NET-CMAKE-RID
 
 #### Functional Acceptance Criteria
@@ -740,7 +754,7 @@ Before proceeding to EPIC-3, verify:
 
 ---
 
-### Story 3.2: Connection.h Cross-Platform Updates
+#### Story 3.1.2: Connection.h Cross-Platform Updates
 
 **[VS-1] [Flow:F]**
 
@@ -750,7 +764,7 @@ Before proceeding to EPIC-3, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** EPIC-1 (1.4 PlatformLibrary), 3.1 (CMake RID)
+**Prerequisites:** EPIC-1 (1.2.2 PlatformLibrary), 3.1.1 (CMake RID)
 **Flow Code:** VS1-NET-CONNECTION-XPLAT
 
 #### Functional Acceptance Criteria
@@ -777,7 +791,9 @@ Before proceeding to EPIC-3, verify:
 
 ---
 
-### Story 3.3: char16_t Encoding at .NET Interop Boundary
+### Feature 3.2: Encoding
+
+#### Story 3.2.1: char16_t Encoding at .NET Interop Boundary
 
 **[VS-1] [Flow:F]**
 
@@ -787,7 +803,7 @@ Before proceeding to EPIC-3, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** 3.2 (Connection.h updated)
+**Prerequisites:** 3.1.2 (Connection.h updated)
 **Flow Code:** VS1-NET-CHAR16T-ENCODING
 
 #### Functional Acceptance Criteria
@@ -814,7 +830,9 @@ Before proceeding to EPIC-3, verify:
 
 ---
 
-### Story 3.4: macOS Server Connectivity Validation
+### Feature 3.3: Platform Validation
+
+#### Story 3.3.1: macOS Server Connectivity Validation
 
 **[VS-1] [Flow:F]**
 
@@ -824,7 +842,7 @@ Before proceeding to EPIC-3, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 3.1, 3.2, 3.3 (all .NET plumbing complete)
+**Prerequisites:** 3.1.1, 3.1.2, 3.2.1 (all .NET plumbing complete)
 **Flow Code:** VS1-NET-VALIDATE-MACOS
 
 #### Functional Acceptance Criteria
@@ -849,7 +867,7 @@ Before proceeding to EPIC-3, verify:
 
 ---
 
-### Story 3.5: Linux Server Connectivity Validation
+#### Story 3.3.2: Linux Server Connectivity Validation
 
 **[VS-1] [Flow:F]**
 
@@ -859,7 +877,7 @@ Before proceeding to EPIC-3, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 3.1, 3.2, 3.3 (all .NET plumbing complete)
+**Prerequisites:** 3.1.1, 3.1.2, 3.2.1 (all .NET plumbing complete)
 **Flow Code:** VS1-NET-VALIDATE-LINUX
 
 #### Functional Acceptance Criteria
@@ -884,7 +902,9 @@ Before proceeding to EPIC-3, verify:
 
 ---
 
-### Story 3.6: Connection Error Messaging & Graceful Degradation
+### Feature 3.4: UX & Config
+
+#### Story 3.4.1: Connection Error Messaging & Graceful Degradation
 
 **[VS-1] [Flow:F]**
 
@@ -894,7 +914,7 @@ Before proceeding to EPIC-3, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 3.2 (Connection.h updated)
+**Prerequisites:** 3.1.2 (Connection.h updated)
 **Flow Code:** VS1-NET-ERROR-MESSAGING
 
 #### Functional Acceptance Criteria
@@ -920,7 +940,7 @@ Before proceeding to EPIC-3, verify:
 
 ---
 
-### Story 3.7: Server Connection Configuration
+#### Story 3.4.2: Server Connection Configuration
 
 **[VS-1] [Flow:F]**
 
@@ -930,7 +950,7 @@ Before proceeding to EPIC-3, verify:
 
 **Story Points:** 2
 **Priority:** P1 - Should Have
-**Prerequisites:** 3.4 or 3.5 (basic connectivity working)
+**Prerequisites:** 3.3.1 or 3.3.2 (basic connectivity working)
 **Flow Code:** VS1-NET-CONFIG-SERVER
 
 #### Functional Acceptance Criteria
@@ -955,15 +975,15 @@ Before proceeding to EPIC-3, verify:
 ### Epic 3 Story Dependency Graph
 
 ```
-3.1 (CMake RID) ──► 3.2 (Connection.h) ──► 3.3 (char16_t) ──┬──► 3.4 (macOS Validation)
-                                                               ├──► 3.5 (Linux Validation)
-                                            3.2 ──► 3.6 (Error Messaging)
-                                            3.4/3.5 ──► 3.7 (Server Config)
+3.1.1 (CMake RID) ──► 3.1.2 (Connection.h) ──► 3.2.1 (char16_t) ──┬──► 3.3.1 (macOS Validation)
+                                                               ├──► 3.3.2 (Linux Validation)
+                                            3.1.2 ──► 3.4.1 (Error Messaging)
+                                            3.3.1/3.3.2 ──► 3.4.2 (Server Config)
 ```
 
-**Parallel Execution:** Stories 3.4, 3.5, and 3.6 can run concurrently after 3.3/3.2.
+**Parallel Execution:** Stories 3.3.1, 3.3.2, and 3.4.1 can run concurrently after 3.2.1/3.1.2.
 
-**Critical Path:** 3.1 → 3.2 → 3.3 → 3.4 (16 points)
+**Critical Path:** 3.1.1 → 3.1.2 → 3.2.1 → 3.3.1 (16 points)
 
 ---
 
@@ -993,7 +1013,7 @@ Before proceeding to EPIC-4, verify:
 | Value Stream | VS-1 (Core Experience) |
 | Flow Type | Feature Flow |
 | Total Story Points | 48 |
-| Prerequisites | EPIC-1 (1.5 SDL3), EPIC-2 (2.1 windowing) |
+| Prerequisites | EPIC-1 (1.3.1 SDL3), EPIC-2 (2.1.1 windowing) |
 | PRD References | FR12–FR15 |
 | Contributing Milestones | Architecture Phases 3–5 |
 
@@ -1001,14 +1021,16 @@ Before proceeding to EPIC-4, verify:
 
 | Feature | Stories | Points | Priority |
 |---------|---------|--------|----------|
-| 4.1 Ground Truth | 1 | 5 | P0 |
-| 4.2–4.6 MuRenderer Abstraction (Phase 3) | 5 | 22 | P0 |
-| 4.7–4.8 SDL_gpu Backend (Phase 4) | 2 | 13 | P0 |
-| 4.9 Texture System (Phase 5) | 1 | 8 | P0 |
+| 4.1 Ground Truth | 4.1.1 | 5 | P0 |
+| 4.2 MuRenderer Abstraction (Phase 3) | 4.2.1–4.2.5 | 22 | P0 |
+| 4.3 SDL_gpu Backend (Phase 4) | 4.3.1–4.3.2 | 13 | P0 |
+| 4.4 Texture System (Phase 5) | 4.4.1 | 8 | P0 |
 
 ---
 
-### Story 4.1: Ground Truth Capture Mechanism
+### Feature 4.1: Ground Truth
+
+#### Story 4.1.1: Ground Truth Capture Mechanism
 
 **[VS-1] [Flow:F]**
 
@@ -1018,7 +1040,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** EPIC-2 (2.1 windowing)
+**Prerequisites:** EPIC-2 (2.1.1 windowing)
 **Flow Code:** VS1-RENDER-GROUNDTRUTH-CAPTURE
 
 #### Functional Acceptance Criteria
@@ -1045,7 +1067,9 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.2: MuRenderer Core API with OpenGL Backend
+### Feature 4.2: MuRenderer Abstraction
+
+#### Story 4.2.1: MuRenderer Core API with OpenGL Backend
 
 **[VS-1] [Flow:F]**
 
@@ -1055,7 +1079,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 8
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.1 (ground truth baselines captured)
+**Prerequisites:** 4.1.1 (ground truth baselines captured)
 **Flow Code:** VS1-RENDER-ABSTRACT-CORE
 
 #### Functional Acceptance Criteria
@@ -1083,7 +1107,7 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.3: Migrate RenderBitmap Variants to RenderQuad2D
+#### Story 4.2.2: Migrate RenderBitmap Variants to RenderQuad2D
 
 **[VS-1] [Flow:F]**
 
@@ -1093,7 +1117,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 8
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.2 (MuRenderer API exists)
+**Prerequisites:** 4.2.1 (MuRenderer API exists)
 **Flow Code:** VS1-RENDER-MIGRATE-QUAD2D
 
 #### Functional Acceptance Criteria
@@ -1118,7 +1142,7 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.4: Migrate Skeletal Mesh Rendering to RenderTriangles
+#### Story 4.2.3: Migrate Skeletal Mesh Rendering to RenderTriangles
 
 **[VS-1] [Flow:F]**
 
@@ -1128,7 +1152,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.2 (MuRenderer API exists)
+**Prerequisites:** 4.2.1 (MuRenderer API exists)
 **Flow Code:** VS1-RENDER-MIGRATE-TRIANGLES
 
 #### Functional Acceptance Criteria
@@ -1151,7 +1175,7 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.5: Migrate Trail Effects to RenderQuadStrip
+#### Story 4.2.4: Migrate Trail Effects to RenderQuadStrip
 
 **[VS-1] [Flow:F]**
 
@@ -1161,7 +1185,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.2 (MuRenderer API exists)
+**Prerequisites:** 4.2.1 (MuRenderer API exists)
 **Flow Code:** VS1-RENDER-MIGRATE-QUADSTRIP
 
 #### Functional Acceptance Criteria
@@ -1182,7 +1206,7 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.6: Migrate Blend & Pipeline State to MuRenderer
+#### Story 4.2.5: Migrate Blend & Pipeline State to MuRenderer
 
 **[VS-1] [Flow:F]**
 
@@ -1192,7 +1216,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.2 (MuRenderer API exists)
+**Prerequisites:** 4.2.1 (MuRenderer API exists)
 **Flow Code:** VS1-RENDER-MIGRATE-STATE
 
 #### Functional Acceptance Criteria
@@ -1216,7 +1240,9 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.7: SDL_gpu Backend Implementation
+### Feature 4.3: SDL_gpu Backend
+
+#### Story 4.3.1: SDL_gpu Backend Implementation
 
 **[VS-1] [Flow:F]**
 
@@ -1226,7 +1252,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 8
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.3, 4.4, 4.5, 4.6 (all call sites migrated to MuRenderer)
+**Prerequisites:** 4.2.2, 4.2.3, 4.2.4, 4.2.5 (all call sites migrated to MuRenderer)
 **Flow Code:** VS1-RENDER-SDLGPU-BACKEND
 
 #### Functional Acceptance Criteria
@@ -1255,7 +1281,7 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.8: Shader Programs (HLSL + SDL_shadercross)
+#### Story 4.3.2: Shader Programs (HLSL + SDL_shadercross)
 
 **[VS-1] [Flow:F]**
 
@@ -1265,7 +1291,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.7 (SDL_gpu backend)
+**Prerequisites:** 4.3.1 (SDL_gpu backend)
 **Flow Code:** VS1-RENDER-SHADERS
 
 #### Functional Acceptance Criteria
@@ -1289,7 +1315,9 @@ Before proceeding to EPIC-4, verify:
 
 ---
 
-### Story 4.9: Texture System Migration (CGlobalBitmap → SDL_gpu)
+### Feature 4.4: Texture System
+
+#### Story 4.4.1: Texture System Migration (CGlobalBitmap → SDL_gpu)
 
 **[VS-1] [Flow:F]**
 
@@ -1299,7 +1327,7 @@ Before proceeding to EPIC-4, verify:
 
 **Story Points:** 8
 **Priority:** P0 - Must Have
-**Prerequisites:** 4.7 (SDL_gpu backend)
+**Prerequisites:** 4.3.1 (SDL_gpu backend)
 **Flow Code:** VS1-RENDER-TEXTURE-MIGRATE
 
 #### Functional Acceptance Criteria
@@ -1329,21 +1357,21 @@ Before proceeding to EPIC-4, verify:
 ### Epic 4 Story Dependency Graph
 
 ```
-4.1 (Ground Truth) ──► 4.2 (MuRenderer Core API)
-                          ├──► 4.3 (RenderQuad2D migration)
-                          ├──► 4.4 (RenderTriangles migration)
-                          ├──► 4.5 (RenderQuadStrip migration)
-                          └──► 4.6 (Blend/State migration)
+4.1.1 (Ground Truth) ──► 4.2.1 (MuRenderer Core API)
+                          ├──► 4.2.2 (RenderQuad2D migration)
+                          ├──► 4.2.3 (RenderTriangles migration)
+                          ├──► 4.2.4 (RenderQuadStrip migration)
+                          └──► 4.2.5 (Blend/State migration)
                                       │
-                          ┌───────────┘ (all 4.3–4.6 complete)
+                          ┌───────────┘ (all 4.2.2–4.2.5 complete)
                           ▼
-                       4.7 (SDL_gpu backend) ──► 4.8 (Shaders)
-                                               └──► 4.9 (Texture system)
+                       4.3.1 (SDL_gpu backend) ──► 4.3.2 (Shaders)
+                                               └──► 4.4.1 (Texture system)
 ```
 
-**Parallel Execution:** Stories 4.3, 4.4, 4.5, 4.6 can run concurrently after 4.2.
+**Parallel Execution:** Stories 4.2.2, 4.2.3, 4.2.4, 4.2.5 can run concurrently after 4.2.1.
 
-**Critical Path:** 4.1 → 4.2 → 4.3 → 4.7 → 4.9 (37 points)
+**Critical Path:** 4.1.1 → 4.2.1 → 4.2.2 → 4.3.1 → 4.4.1 (37 points)
 
 ---
 
@@ -1382,14 +1410,16 @@ Before proceeding to EPIC-5, verify:
 
 | Feature | Stories | Points | Priority |
 |---------|---------|--------|----------|
-| 5.1 Abstraction | 1 | 3 | P0 |
-| 5.2–5.3 Implementation | 2 | 10 | P0 |
-| 5.4 Format Support | 1 | 3 | P0 |
-| 5.5 Volume Controls | 1 | 2 | P1 |
+| 5.1 Abstraction | 5.1.1 | 3 | P0 |
+| 5.2 Implementation | 5.2.1–5.2.2 | 10 | P0 |
+| 5.3 Format Support | 5.3.1 | 3 | P0 |
+| 5.4 Volume Controls | 5.4.1 | 2 | P1 |
 
 ---
 
-### Story 5.1: MuAudio Abstraction Layer
+### Feature 5.1: Abstraction
+
+#### Story 5.1.1: MuAudio Abstraction Layer
 
 **[VS-1] [Flow:F]**
 
@@ -1423,7 +1453,9 @@ Before proceeding to EPIC-5, verify:
 
 ---
 
-### Story 5.2: miniaudio BGM Implementation
+### Feature 5.2: Implementation
+
+#### Story 5.2.1: miniaudio BGM Implementation
 
 **[VS-1] [Flow:F]**
 
@@ -1433,7 +1465,7 @@ Before proceeding to EPIC-5, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** 5.1 (MuAudio interface)
+**Prerequisites:** 5.1.1 (MuAudio interface)
 **Flow Code:** VS1-AUDIO-MINIAUDIO-BGM
 
 #### Functional Acceptance Criteria
@@ -1459,7 +1491,7 @@ Before proceeding to EPIC-5, verify:
 
 ---
 
-### Story 5.3: miniaudio SFX Implementation
+#### Story 5.2.2: miniaudio SFX Implementation
 
 **[VS-1] [Flow:F]**
 
@@ -1469,7 +1501,7 @@ Before proceeding to EPIC-5, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** 5.1 (MuAudio interface)
+**Prerequisites:** 5.1.1 (MuAudio interface)
 **Flow Code:** VS1-AUDIO-MINIAUDIO-SFX
 
 #### Functional Acceptance Criteria
@@ -1496,7 +1528,9 @@ Before proceeding to EPIC-5, verify:
 
 ---
 
-### Story 5.4: Audio Format Support Validation
+### Feature 5.3: Format Support
+
+#### Story 5.3.1: Audio Format Support Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1506,7 +1540,7 @@ Before proceeding to EPIC-5, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 5.2, 5.3 (BGM + SFX working)
+**Prerequisites:** 5.2.1, 5.2.2 (BGM + SFX working)
 **Flow Code:** VS1-AUDIO-FORMAT-VALIDATE
 
 #### Functional Acceptance Criteria
@@ -1531,7 +1565,9 @@ Before proceeding to EPIC-5, verify:
 
 ---
 
-### Story 5.5: Volume Controls & Audio State Management
+### Feature 5.4: Volume Controls
+
+#### Story 5.4.1: Volume Controls & Audio State Management
 
 **[VS-1] [Flow:F]**
 
@@ -1541,7 +1577,7 @@ Before proceeding to EPIC-5, verify:
 
 **Story Points:** 2
 **Priority:** P1 - Should Have
-**Prerequisites:** 5.2, 5.3 (BGM + SFX working)
+**Prerequisites:** 5.2.1, 5.2.2 (BGM + SFX working)
 **Flow Code:** VS1-AUDIO-VOLUME-CONTROLS
 
 #### Functional Acceptance Criteria
@@ -1566,15 +1602,15 @@ Before proceeding to EPIC-5, verify:
 ### Epic 5 Story Dependency Graph
 
 ```
-5.1 (MuAudio API)
-  ├──► 5.2 (BGM) ──┬──► 5.4 (Format Validation)
-  └──► 5.3 (SFX) ──┤
-                    └──► 5.5 (Volume Controls)
+5.1.1 (MuAudio API)
+  ├──► 5.2.1 (BGM) ──┬──► 5.3.1 (Format Validation)
+  └──► 5.2.2 (SFX) ──┤
+                    └──► 5.4.1 (Volume Controls)
 ```
 
-**Parallel Execution:** Stories 5.2 and 5.3 can run concurrently after 5.1.
+**Parallel Execution:** Stories 5.2.1 and 5.2.2 can run concurrently after 5.1.1.
 
-**Critical Path:** 5.1 → 5.2 → 5.4 (11 points)
+**Critical Path:** 5.1.1 → 5.2.1 → 5.3.1 (11 points)
 
 ---
 
@@ -1612,14 +1648,16 @@ Before proceeding to EPIC-6, verify:
 
 | Feature | Stories | Points | Priority |
 |---------|---------|--------|----------|
-| 6.1–6.2 Core Loop | 2 | 6 | P0 |
-| 6.3–6.4 Combat & Economy | 2 | 6 | P0 |
-| 6.5–6.6 Social & Systems | 2 | 6 | P0 |
-| 6.7 UI Validation | 1 | 5 | P0 |
+| 6.1 Core Loop | 6.1.1–6.1.2 | 6 | P0 |
+| 6.2 Combat & Economy | 6.2.1–6.2.2 | 6 | P0 |
+| 6.3 Social & Systems | 6.3.1–6.3.2 | 6 | P0 |
+| 6.4 UI Validation | 6.4.1 | 5 | P0 |
 
 ---
 
-### Story 6.1: Authentication & Character Management Validation
+### Feature 6.1: Core Loop
+
+#### Story 6.1.1: Authentication & Character Management Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1654,7 +1692,7 @@ Before proceeding to EPIC-6, verify:
 
 ---
 
-### Story 6.2: World Navigation Validation
+#### Story 6.1.2: World Navigation Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1664,7 +1702,7 @@ Before proceeding to EPIC-6, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 6.1 (can log in and enter world)
+**Prerequisites:** 6.1.1 (can log in and enter world)
 **Flow Code:** VS1-GAME-VALIDATE-NAVIGATION
 
 #### Functional Acceptance Criteria
@@ -1687,7 +1725,9 @@ Before proceeding to EPIC-6, verify:
 
 ---
 
-### Story 6.3: Combat System Validation
+### Feature 6.2: Combat & Economy
+
+#### Story 6.2.1: Combat System Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1697,7 +1737,7 @@ Before proceeding to EPIC-6, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 6.2 (can navigate to combat areas)
+**Prerequisites:** 6.1.2 (can navigate to combat areas)
 **Flow Code:** VS1-GAME-VALIDATE-COMBAT
 
 #### Functional Acceptance Criteria
@@ -1721,7 +1761,7 @@ Before proceeding to EPIC-6, verify:
 
 ---
 
-### Story 6.4: Inventory, Trading & Shops Validation
+#### Story 6.2.2: Inventory, Trading & Shops Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1731,7 +1771,7 @@ Before proceeding to EPIC-6, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 6.1 (logged in with character)
+**Prerequisites:** 6.1.1 (logged in with character)
 **Flow Code:** VS1-GAME-VALIDATE-ECONOMY
 
 #### Functional Acceptance Criteria
@@ -1755,7 +1795,9 @@ Before proceeding to EPIC-6, verify:
 
 ---
 
-### Story 6.5: Social Systems Validation
+### Feature 6.3: Social & Systems
+
+#### Story 6.3.1: Social Systems Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1765,7 +1807,7 @@ Before proceeding to EPIC-6, verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 6.1 (logged in)
+**Prerequisites:** 6.1.1 (logged in)
 **Flow Code:** VS1-GAME-VALIDATE-SOCIAL
 
 #### Functional Acceptance Criteria
@@ -1788,7 +1830,7 @@ Before proceeding to EPIC-6, verify:
 
 ---
 
-### Story 6.6: Advanced Game Systems Validation
+#### Story 6.3.2: Advanced Game Systems Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1798,7 +1840,7 @@ Before proceeding to EPIC-6, verify:
 
 **Story Points:** 3
 **Priority:** P1 - Should Have
-**Prerequisites:** 6.3 (combat works)
+**Prerequisites:** 6.2.1 (combat works)
 **Flow Code:** VS1-GAME-VALIDATE-SYSTEMS
 
 #### Functional Acceptance Criteria
@@ -1819,7 +1861,9 @@ Before proceeding to EPIC-6, verify:
 
 ---
 
-### Story 6.7: UI Windows Comprehensive Validation
+### Feature 6.4: UI Validation
+
+#### Story 6.4.1: UI Windows Comprehensive Validation
 
 **[VS-1] [Flow:F]**
 
@@ -1829,7 +1873,7 @@ Before proceeding to EPIC-6, verify:
 
 **Story Points:** 5
 **Priority:** P0 - Must Have
-**Prerequisites:** 6.1 (logged in), EPIC-4 (rendering), EPIC-2 (input)
+**Prerequisites:** 6.1.1 (logged in), EPIC-4 (rendering), EPIC-2 (input)
 **Flow Code:** VS1-GAME-VALIDATE-UI
 
 #### Functional Acceptance Criteria
@@ -1855,16 +1899,16 @@ Before proceeding to EPIC-6, verify:
 ### Epic 6 Story Dependency Graph
 
 ```
-6.1 (Auth/Characters) ──► 6.2 (Navigation) ──► 6.3 (Combat) ──► 6.6 (Advanced Systems)
+6.1.1 (Auth/Characters) ──► 6.1.2 (Navigation) ──► 6.2.1 (Combat) ──► 6.3.2 (Advanced Systems)
          │                                           │
-         ├──► 6.4 (Inventory/Trading)                │
-         ├──► 6.5 (Social)                           │
-         └──► 6.7 (UI Windows)                       │
+         ├──► 6.2.2 (Inventory/Trading)                │
+         ├──► 6.3.1 (Social)                           │
+         └──► 6.4.1 (UI Windows)                       │
 ```
 
-**Parallel Execution:** Stories 6.4, 6.5, 6.7 can run concurrently after 6.1. Story 6.6 requires 6.3.
+**Parallel Execution:** Stories 6.2.2, 6.3.1, 6.4.1 can run concurrently after 6.1.1. Story 6.3.2 requires 6.2.1.
 
-**Critical Path:** 6.1 → 6.2 → 6.3 → 6.6 (12 points)
+**Critical Path:** 6.1.1 → 6.1.2 → 6.2.1 → 6.3.2 (12 points)
 
 ---
 
@@ -1902,16 +1946,18 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 | Feature | Stories | Points | Priority |
 |---------|---------|--------|----------|
-| 7.1–7.2 Diagnostics (Phase 0) | 2 | 6 | P0 |
-| 7.3 Performance Instrumentation | 1 | 3 | P0 |
-| 7.4–7.5 Stability Sessions | 2 | 8 | P0 |
-| 7.6 Native CI | 1 | 3 | P1 |
+| 7.1 Diagnostics (Phase 0) | 7.1.1–7.1.2 | 6 | P0 |
+| 7.2 Performance Instrumentation | 7.2.1 | 3 | P0 |
+| 7.3 Stability Sessions | 7.3.1–7.3.2 | 8 | P0 |
+| 7.4 Native CI | 7.4.1 | 3 | P1 |
 
-**Note:** Stories 7.1–7.3 should be implemented during Phase 0 alongside EPIC-1. Stories 7.4–7.5 are end-of-migration validation. Story 7.6 is post-migration CI expansion.
+**Note:** Stories 7.1.1–7.2.1 should be implemented during Phase 0 alongside EPIC-1. Stories 7.3.1–7.3.2 are end-of-migration validation. Story 7.4.1 is post-migration CI expansion.
 
 ---
 
-### Story 7.1: Cross-Platform Error Reporting
+### Feature 7.1: Diagnostics
+
+#### Story 7.1.1: Cross-Platform Error Reporting
 
 **[VS-0] [Flow:E]**
 
@@ -1921,7 +1967,7 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** EPIC-1 (1.3 platform headers)
+**Prerequisites:** EPIC-1 (1.2.1 platform headers)
 **Flow Code:** VS0-QUAL-ERRORREPORT-XPLAT
 
 #### Functional Acceptance Criteria
@@ -1947,7 +1993,7 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 ---
 
-### Story 7.2: POSIX Signal Handlers for Crash Diagnostics
+#### Story 7.1.2: POSIX Signal Handlers for Crash Diagnostics
 
 **[VS-0] [Flow:E]**
 
@@ -1957,7 +2003,7 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 **Story Points:** 3
 **Priority:** P0 - Must Have
-**Prerequisites:** 7.1 (error reporting works on POSIX)
+**Prerequisites:** 7.1.1 (error reporting works on POSIX)
 **Flow Code:** VS0-QUAL-SIGNAL-HANDLERS
 
 #### Functional Acceptance Criteria
@@ -1982,7 +2028,9 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 ---
 
-### Story 7.3: Frame Time Instrumentation
+### Feature 7.2: Performance Instrumentation
+
+#### Story 7.2.1: Frame Time Instrumentation
 
 **[VS-0] [Flow:E]**
 
@@ -2017,7 +2065,9 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 ---
 
-### Story 7.4: macOS 60-Minute Stability Session
+### Feature 7.3: Stability Sessions
+
+#### Story 7.3.1: macOS 60-Minute Stability Session
 
 **[VS-0] [Flow:E]**
 
@@ -2051,7 +2101,7 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 ---
 
-### Story 7.5: Linux 60-Minute Stability Session
+#### Story 7.3.2: Linux 60-Minute Stability Session
 
 **[VS-0] [Flow:E]**
 
@@ -2085,7 +2135,9 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 ---
 
-### Story 7.6: Native Platform CI Runners
+### Feature 7.4: Native CI
+
+#### Story 7.4.1: Native Platform CI Runners
 
 **[VS-0] [Flow:E]**
 
@@ -2124,18 +2176,18 @@ Before proceeding to EPIC-7 (final stability), verify:
 
 ```
 Phase 0 (early):
-7.1 (Error Reporting) ──► 7.2 (Signal Handlers)
-7.3 (Frame Timer) [independent]
+7.1.1 (Error Reporting) ──► 7.1.2 (Signal Handlers)
+7.2.1 (Frame Timer) [independent]
 
 Phase 10 (late):
-7.4 (macOS Stability) [requires EPIC-2–6]
-7.5 (Linux Stability) [requires EPIC-2–6]
-7.6 (Native CI) [requires EPIC-4]
+7.3.1 (macOS Stability) [requires EPIC-2–6]
+7.3.2 (Linux Stability) [requires EPIC-2–6]
+7.4.1 (Native CI) [requires EPIC-4]
 ```
 
-**Parallel Execution:** 7.1 and 7.3 can run concurrently. 7.4 and 7.5 can run concurrently. 7.6 is independent after EPIC-4.
+**Parallel Execution:** 7.1.1 and 7.2.1 can run concurrently. 7.3.1 and 7.3.2 can run concurrently. 7.4.1 is independent after EPIC-4.
 
-**Critical Path:** 7.1 → 7.2 (6 points for Phase 0); 7.4 or 7.5 (5 points for Phase 10)
+**Critical Path:** 7.1.1 → 7.1.2 (6 points for Phase 0); 7.3.1 or 7.3.2 (5 points for Phase 10)
 
 ---
 
@@ -2158,27 +2210,27 @@ EPIC-1 (Platform Foundation)
   ├──► EPIC-2 (Windowing & Input) ──┐
   │                                  ├──► EPIC-4 (Rendering) ──┐
   ├──► EPIC-3 (.NET AOT) ──────────┘                           │
-  │                                                             ├──► EPIC-6 (Gameplay Validation) ──► EPIC-7.4/7.5 (Stability)
+  │                                                             ├──► EPIC-6 (Gameplay Validation) ──► EPIC-7.3.1/7.3.2 (Stability)
   ├──► EPIC-5 (Audio) ─────────────────────────────────────────┘
   │
-  └──► EPIC-7.1–7.3 (Diagnostics — Phase 0, parallel with EPIC-1)
-                                     EPIC-4 ──► EPIC-7.6 (Native CI)
+  └──► EPIC-7.1.1–7.2.1 (Diagnostics — Phase 0, parallel with EPIC-1)
+                                     EPIC-4 ──► EPIC-7.4.1 (Native CI)
 ```
 
 **Phase Alignment:**
-- **Phase 0:** EPIC-1 + EPIC-7 (7.1–7.3)
+- **Phase 0:** EPIC-1 + EPIC-7 (7.1.1–7.2.1)
 - **Phases 1–2:** EPIC-2
 - **Phase 2.5:** EPIC-3
 - **Phases 3–5:** EPIC-4
 - **Phase 6:** EPIC-5
-- **Phases 9–10:** EPIC-6 + EPIC-7 (7.4–7.6)
+- **Phases 9–10:** EPIC-6 + EPIC-7 (7.3.1–7.4.1)
 
-**Critical Path:** EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.4/7.5 (18 + 17 + 48 + 23 + 5 = 111 points)
+**Critical Path:** EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.3.1/7.3.2 (18 + 17 + 48 + 23 + 5 = 111 points)
 
 **Parallel Opportunities:**
-- EPIC-3 (.NET) can start after EPIC-1.4, parallel with EPIC-2
+- EPIC-3 (.NET) can start after EPIC-1.2.2, parallel with EPIC-2
 - EPIC-5 (Audio) can start after EPIC-1, parallel with EPIC-3/4
-- EPIC-7.1–7.3 (Diagnostics) should start with EPIC-1 (Phase 0)
+- EPIC-7.1.1–7.2.1 (Diagnostics) should start with EPIC-1 (Phase 0)
 
 ---
 
