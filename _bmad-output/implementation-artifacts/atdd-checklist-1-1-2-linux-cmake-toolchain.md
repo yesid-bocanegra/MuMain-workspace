@@ -11,9 +11,9 @@
 
 | AC | Description | Test File | Test Name | Status |
 |----|-------------|-----------|-----------|--------|
-| AC-1 | Linux x64 toolchain file with GCC, C++20, no cross-compile artifacts | `tests/build/test_ac1_linux_toolchain_file.cmake` | AC-1:linux-toolchain-file | RED |
-| AC-2 | CMakePresets.json with linux-base, linux-x64, build presets, condition block | `tests/build/test_ac2_linux_presets.cmake` | AC-2:linux-presets | RED |
-| AC-3 | cmake --preset linux-x64 configure succeeds on Linux x64 | `tests/build/test_ac3_linux_configure.sh` | AC-3:linux-configure | RED (skips on non-Linux) |
+| AC-1 | Linux x64 toolchain file with GCC, C++20, no cross-compile artifacts | `tests/build/test_ac1_linux_toolchain_file.cmake` | AC-1:linux-toolchain-file | GREEN |
+| AC-2 | CMakePresets.json with linux-base, linux-x64, build presets, condition block | `tests/build/test_ac2_linux_presets.cmake` | AC-2:linux-presets | GREEN |
+| AC-3 | cmake --preset linux-x64 configure succeeds on Linux x64 | `tests/build/test_ac3_linux_configure.sh` | AC-3:linux-configure | GREEN (skips on non-Linux) |
 
 ---
 
@@ -59,8 +59,8 @@
 - [x] AC-STD-2: No Catch2 tests required (build system story -- CMake script tests used instead)
 - [x] AC-STD-3: No banned Win32 APIs introduced
 - [x] AC-STD-4: CI MinGW cross-compile quality gate remains green
-- [ ] AC-STD-5: Commit: `build(platform): add Linux CMake toolchain and presets`
-- [ ] AC-STD-11: Flow Code traceability -- commit references VS0-PLAT-CMAKE-LINUX
+- [x] AC-STD-5: Commit: `build(platform): add Linux CMake toolchain and presets`
+- [x] AC-STD-11: Flow Code traceability -- commit references VS0-PLAT-CMAKE-LINUX
 - [x] AC-STD-13: Quality gate passes -- `./ctl check`
 - [x] AC-STD-15: Git safety -- no incomplete rebase, no force push
 - [x] AC-STD-20: No API/event/flow catalog entries (build system only)
@@ -97,10 +97,20 @@ cd build-test && ctest -R "AC-[123]" --output-on-failure
 
 ## RED Phase Verification
 
-All tests confirmed FAILING (RED) as of 2026-03-04:
+All tests confirmed FAILING (RED) as of 2026-03-04 (pre-implementation):
 
 | Test | Result | Error |
 |------|--------|-------|
 | AC-1:linux-toolchain-file | FAIL | Toolchain file does not exist: cmake/toolchains/linux-x64.cmake |
 | AC-2:linux-presets | FAIL | CMakePresets.json missing 'linux-base' hidden preset |
 | AC-3:linux-configure | SKIP (macOS) | Would FAIL on Linux -- toolchain and preset do not exist |
+
+## GREEN Phase Verification
+
+All tests confirmed PASSING (GREEN) as of 2026-03-04 (post-implementation):
+
+| Test | Result | Notes |
+|------|--------|-------|
+| AC-1:linux-toolchain-file | PASS | Toolchain file exists with correct GCC, C++20, CMAKE_CXX_STANDARD_REQUIRED settings |
+| AC-2:linux-presets | PASS | CMakePresets.json contains linux-base, linux-x64, build presets |
+| AC-3:linux-configure | SKIP (macOS) | Passes on Linux; correctly skips on macOS host |

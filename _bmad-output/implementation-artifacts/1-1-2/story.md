@@ -1,6 +1,6 @@
 # Story 1.1.2: Create Linux CMake Toolchain & Presets
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -53,7 +53,7 @@ Status: review
 - [x] **AC-STD-1:** Code follows project-context.md standards — CMake files use consistent style, `#pragma once` in any new C++ headers, no new Win32 API calls
 - [x] **AC-STD-2:** No Catch2 tests required — this is a build system story with no testable logic
 - [x] **AC-STD-3:** No banned Win32 APIs introduced in any files touched
-- [ ] **AC-STD-11:** Flow Code traceability — commit message includes `VS0-PLAT-CMAKE-LINUX` reference
+- [x] **AC-STD-11:** Flow Code traceability — commit message includes `VS0-PLAT-CMAKE-LINUX` reference
 - [x] **AC-STD-13:** Quality gate passes — `make -C MuMain format-check && make -C MuMain lint` (mirrors CI quality job)
 - [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
 - [x] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (build system only)
@@ -61,7 +61,7 @@ Status: review
 ### NFR Acceptance Criteria
 
 - [x] **AC-STD-4:** CI (MinGW cross-compile) quality gate remains green — the Linux presets must not break or conflict with the existing MinGW CI workflow
-- [ ] **AC-STD-5:** Conventional commit: `build(platform): add Linux CMake toolchain and presets`
+- [x] **AC-STD-5:** Conventional commit: `build(platform): add Linux CMake toolchain and presets`
 
 ---
 
@@ -341,3 +341,9 @@ claude-opus-4-6
 
 - [NEW] `MuMain/cmake/toolchains/linux-x64.cmake` — Native Linux x64 toolchain (GCC, C++20, no cross-compile artifacts)
 - [MODIFIED] `MuMain/CMakePresets.json` — Added `linux-base` (hidden), `linux-x64` configure presets; `linux-x64-debug`, `linux-x64-release` build presets
+- [MODIFIED] `MuMain/tests/CMakeLists.txt` — Added `add_subdirectory(build)` for build system validation tests
+- [NEW] `MuMain/tests/build/CMakeLists.txt` — CTest registration for build system validation tests
+- [NEW] `MuMain/tests/build/test_ac1_linux_toolchain_file.cmake` — ATDD: validates linux-x64.cmake exists with required settings
+- [NEW] `MuMain/tests/build/test_ac2_linux_presets.cmake` — ATDD: validates CMakePresets.json contains Linux presets
+- [NEW] `MuMain/tests/build/test_ac3_linux_configure.sh` — ATDD: validates `cmake --preset linux-x64` configure succeeds on Linux
+- [MODIFIED] `MuMain/.gitignore` — Added `!tests/build/` exception so ATDD test directory is tracked
