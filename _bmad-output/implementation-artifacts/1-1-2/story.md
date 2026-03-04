@@ -327,6 +327,7 @@ _None — story creation only._
 - Previous story context: Story 1.1.1 (macOS) reviewed — established CMakePresets.json `condition` block pattern and `macos-base` hidden preset convention
 - Git context: Main branch, last 5 commits are docs-only (planning artifacts, epic breakdown, sprint status, PRD/architecture/runbook, test design)
 - Key difference from 1.1.1: Linux is a native (not cross-compiled) build — no `CMAKE_FIND_ROOT_PATH_MODE_*` settings
+- design-screen (2026-03-04): NOT APPLICABLE — story type is `infrastructure` (CMake build system). No Visual Design Specification, no UI components, no frontend. .pen screen creation skipped. design_status = N/A
 
 ### File List
 
