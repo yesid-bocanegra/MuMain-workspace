@@ -381,4 +381,5 @@ Clean infrastructure implementation. All functional ACs are correctly implemente
 
 ### Change Log
 
-- 2026-03-04: Adversarial code review completed (BMM workflow). Approved with 2 MEDIUM, 3 LOW findings. No code changes required.
+- 2026-03-04: Adversarial code review completed (PCC workflow). Approved with 2 MEDIUM, 3 LOW findings. No code changes required.
+- 2026-03-04: BMM adversarial code review. 2 MEDIUM, 3 LOW findings. Fixed MEDIUM-1 (added CMAKE_CXX_STANDARD_REQUIRED ON check to AC-1 test). 4 acknowledged non-blocking.

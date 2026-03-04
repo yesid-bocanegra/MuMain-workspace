@@ -265,3 +265,90 @@ Fresh adversarial review after all previous fixes were applied. Tests re-execute
 | E2E Regression | SKIPPED (infrastructure) |
 | AC Compliance | SKIPPED (infrastructure) |
 | Boot Verification | SKIPPED (not configured) |
+
+## Step 4: BMM Code Review (Adversarial)
+
+**Completed:** 2026-03-04
+**Status:** COMPLETED
+**Agent Model:** claude-opus-4-6
+
+### Severity Summary
+
+| Severity | Count |
+|----------|-------|
+| BLOCKER | 0 |
+| CRITICAL | 0 |
+| HIGH | 0 |
+| MEDIUM | 2 |
+| LOW | 3 |
+| **Total** | **5** |
+
+### Findings
+
+#### MEDIUM-1: AC-1 test missing `CMAKE_CXX_STANDARD_REQUIRED ON` verification
+
+- **Severity:** MEDIUM
+- **Category:** TEST-QUALITY
+- **Location:** `MuMain/tests/build/test_ac1_linux_toolchain_file.cmake`
+- **Description:** The toolchain file was updated during prior PCC code review to add `CMAKE_CXX_STANDARD_REQUIRED ON`, but the AC-1 test only validated 7 properties and didn't verify this one. A regression removing `CMAKE_CXX_STANDARD_REQUIRED` would go undetected.
+- **Status:** FIXED -- Added Check 8 to verify `CMAKE_CXX_STANDARD_REQUIRED ON`
+
+#### MEDIUM-2: Implementation artifacts copy out of sync with canonical story
+
+- **Severity:** MEDIUM
+- **Category:** DOCUMENTATION
+- **Location:** `_bmad-output/implementation-artifacts/1-1-2/story.md`
+- **Description:** The implementation artifacts copy has a different Senior Developer Review section and formatting compared to the canonical `docs/stories/1-1-2-linux-cmake-toolchain/story.md`. Both locations have complete data but content diverged across pipeline runs.
+- **Status:** Acknowledged -- pipeline artifact sync is outside story scope
+
+#### LOW-1: AC-2 test Check 6 matches `"Linux"` string broadly
+
+- **Severity:** LOW
+- **Category:** TEST-QUALITY
+- **Location:** `MuMain/tests/build/test_ac2_linux_presets.cmake:54`
+- **Description:** The check `string(FIND ... "\"Linux\"" ...)` would match any occurrence of `"Linux"` in the JSON, not specifically within the condition block. Currently works since the only occurrence is in the condition, but fragile.
+- **Status:** Acknowledged -- non-blocking, false positive risk negligible
+
+#### LOW-2: `tests/build/CMakeLists.txt` uses fragile relative path
+
+- **Severity:** LOW
+- **Category:** CODE-QUALITY
+- **Location:** `MuMain/tests/build/CMakeLists.txt:4`
+- **Description:** `set(MUMAIN_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")` assumes exact directory depth. Standard CMake pattern but would break silently if test directory is reorganized.
+- **Status:** Acknowledged -- non-blocking, standard CMake convention
+
+#### LOW-3: Review.md Step 3 resolution descriptions imprecise
+
+- **Severity:** LOW
+- **Category:** DOCUMENTATION
+- **Location:** `docs/stories/1-1-2-linux-cmake-toolchain/review.md:229-234`
+- **Description:** Prior Step 3 Resolution Details descriptions don't precisely match the actual code changes in commit `c227a704` (e.g., CRITICAL-1 description references `.gitignore` + ATDD files but actual fix was `git rm -r --cached build-test/`).
+- **Status:** Acknowledged -- documentation only, does not affect implementation
+
+### Verification Results
+
+- AC-1 test: **PASSED** (with new Check 8 for CMAKE_CXX_STANDARD_REQUIRED)
+- AC-2 test: **PASSED**
+- AC-3 test: **SKIPPED** (macOS host -- by design)
+- Quality gate (`./ctl check`): **PASSED** (670/670 files)
+- JSON validation: **VALID**
+
+### Resolution Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 1 |
+| Action Items Created | 0 |
+| Acknowledged (non-blocking) | 4 |
+
+### Files Modified
+
+- `MuMain/tests/build/test_ac1_linux_toolchain_file.cmake` -- Added Check 8 for CMAKE_CXX_STANDARD_REQUIRED ON
+
+### Final Status
+
+- **Story Status:** done
+- **All ACs:** 13/13 IMPLEMENTED
+- **All Tasks:** 5/5 VERIFIED
+- **Quality Gate:** PASSED
+- **BLOCKERS:** 0
