@@ -15,7 +15,7 @@
 
 | Step | Status | Date |
 |------|--------|------|
-| 1. Quality Gate | PASSED | 2026-03-04 (re-validated 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04) |
+| 1. Quality Gate | PASSED | 2026-03-04 (re-validated 2026-03-04 x10) |
 | 2. Code Review Analysis | COMPLETED (re-analyzed 2026-03-04) | 2026-03-04 |
 | 3. Code Review Finalize | COMPLETED | 2026-03-04 |
 
@@ -23,7 +23,7 @@
 
 | Phase | Status | Iterations | Issues Fixed | Notes |
 |-------|--------|------------|--------------|-------|
-| Backend Local (mumain) | PASSED | 1 | 0 | format-check exit 0 + cppcheck 670/670 clean exit 0 + ./ctl check exit 0 (re-validated 2026-03-04 x4, 2026-03-04 x5, 2026-03-04 x6, 2026-03-04 x7, 2026-03-04 x8) |
+| Backend Local (mumain) | PASSED | 1 | 0 | format-check exit 0 + cppcheck 670/670 clean exit 0 + ./ctl check exit 0 (re-validated 2026-03-04 x4, 2026-03-04 x5, 2026-03-04 x6, 2026-03-04 x7, 2026-03-04 x8, 2026-03-04 x9, 2026-03-04 x10) |
 | Backend SonarCloud (mumain) | SKIPPED | — | — | No sonar_cmd in cpp-cmake profile, no sonar_key configured |
 | Boot Verification (mumain) | SKIPPED | — | — | Not applicable (game client, no boot_verify_cmd) |
 | Frontend Local | SKIPPED | — | — | No frontend components affected |
@@ -53,6 +53,8 @@
 - Re-validated 2026-03-04 (6th run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 "Quality gate passed" — all clean
 - Re-validated 2026-03-04 (7th run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 "Quality gate passed" — all clean
 - Re-validated 2026-03-04 (8th run): format-check EXIT 0, lint 670/670 EXIT 0 — all clean
+- Re-validated 2026-03-04 (9th run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 "Quality gate passed" — all clean
+- Re-validated 2026-03-04 (10th run): ./ctl check EXIT 0 "Quality gate passed" — format-check + cppcheck 670/670 — all clean
 - Build (native CMake) — SKIPPED (macOS host cannot compile Win32/DirectX game client)
 - Coverage — SKIPPED (no coverage configured yet, threshold=0)
 - SonarCloud — SKIPPED (no sonar configuration in .pcc-config.yaml)
@@ -77,9 +79,9 @@ _No fixes needed — all checks passed on first iteration._
 ## Step 1 Summary
 
 - quality_gate_status: **PASSED**
-- Total iterations: 1
+- Total iterations: 1 (10th re-validation as of 2026-03-04)
 - Total issues fixed: 0
-- All applicable quality checks passed on first attempt
+- All applicable quality checks passed on first attempt; codebase remains clean on re-validation
 
 ## Step 2: Analysis Results
 
