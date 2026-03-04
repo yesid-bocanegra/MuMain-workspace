@@ -72,8 +72,9 @@ You'll be prompted to select which PRD milestone(s) this sprint advances. Story 
 ./paw 2                  # all stories in epic 2
 ./paw 2-1-2,2-2-4       # comma-separated stories
 
-# Run all stories in the active sprint, one by one
-./paw batch --sprint
+# Run incomplete stories in the active sprint
+./paw sprint
+./paw sprint s3           # or target a specific sprint by name
 
 # Preset flags for common scenarios
 ./paw 2-3-4 --dev        # skip create/validate/atdd, start at dev-story
@@ -394,7 +395,8 @@ Auto-generation reads `development-standards.md` for your commit format (convent
 ./paw run {key} --fresh                  # full restart (clear state)
 ./paw run {key} --dry-run               # preview what would run
 
-./paw batch --sprint --continue         # finish in-progress story first
+./paw sprint                            # run incomplete stories in active sprint
+./paw sprint s3 --continue              # named sprint, finish in-progress first
 ./paw remediate --quick --dry-run       # preview remediation plan
 ```
 
