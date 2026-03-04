@@ -1,6 +1,6 @@
 {
   "story_key": "1-1-2-linux-cmake-toolchain",
-  "current_step": "dev-story",
+  "current_step": "completeness-gate",
   "status": "completed",
-  "last_run": "2026-03-04T13:14:17.504473"
+  "last_run": "2026-03-04T13:19:05.734143"
 }
