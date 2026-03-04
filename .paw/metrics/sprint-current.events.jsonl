@@ -2,3 +2,5 @@
 {"timestamp":"2026-03-04T12:09:06.211771+00:00","event_type":"step_started","story_key":"1-1-1-macos-cmake-toolchain","step":"create-story","sprint":null,"epic":"1","data":{}}
 {"timestamp":"2026-03-04T12:21:10.119737+00:00","event_type":"story_started","story_key":"1-1-2-linux-cmake-toolchain","step":null,"sprint":null,"epic":"1","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-04T12:21:10.120177+00:00","event_type":"step_started","story_key":"1-1-2-linux-cmake-toolchain","step":"create-story","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-04T12:24:32.816107+00:00","event_type":"step_passed","story_key":"1-1-2-linux-cmake-toolchain","step":"create-story","sprint":null,"epic":"1","data":{"duration_seconds":202.7,"input_tokens":4,"output_tokens":342}}
+{"timestamp":"2026-03-04T12:24:33.822336+00:00","event_type":"step_started","story_key":"1-1-2-linux-cmake-toolchain","step":"validate-story","sprint":null,"epic":"1","data":{}}
