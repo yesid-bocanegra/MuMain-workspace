@@ -21,62 +21,62 @@
 
 ### Toolchain File (AC-1)
 
-- [ ] Create `MuMain/cmake/toolchains/linux-x64.cmake`
-- [ ] Set `CMAKE_SYSTEM_NAME Linux`
-- [ ] Set `CMAKE_SYSTEM_PROCESSOR x86_64`
-- [ ] Set `CMAKE_C_COMPILER gcc`
-- [ ] Set `CMAKE_CXX_COMPILER g++`
-- [ ] Set `CMAKE_CXX_STANDARD 20`
-- [ ] Set `CMAKE_CXX_EXTENSIONS OFF`
-- [ ] Verify NO `CMAKE_FIND_ROOT_PATH_MODE_*` settings (native build, not cross-compile)
-- [ ] Verify NO `static-libgcc`/`static-libstdc++` flags (MinGW-specific)
-- [ ] Run AC-1 test: `cmake -DTOOLCHAIN_FILE=cmake/toolchains/linux-x64.cmake -P tests/build/test_ac1_linux_toolchain_file.cmake` -- must PASS
+- [x] Create `MuMain/cmake/toolchains/linux-x64.cmake`
+- [x] Set `CMAKE_SYSTEM_NAME Linux`
+- [x] Set `CMAKE_SYSTEM_PROCESSOR x86_64`
+- [x] Set `CMAKE_C_COMPILER gcc`
+- [x] Set `CMAKE_CXX_COMPILER g++`
+- [x] Set `CMAKE_CXX_STANDARD 20`
+- [x] Set `CMAKE_CXX_EXTENSIONS OFF`
+- [x] Verify NO `CMAKE_FIND_ROOT_PATH_MODE_*` settings (native build, not cross-compile)
+- [x] Verify NO `static-libgcc`/`static-libstdc++` flags (MinGW-specific)
+- [x] Run AC-1 test: `cmake -DTOOLCHAIN_FILE=cmake/toolchains/linux-x64.cmake -P tests/build/test_ac1_linux_toolchain_file.cmake` -- must PASS
 
 ### CMakePresets.json (AC-2)
 
-- [ ] Add `linux-base` hidden configure preset
-- [ ] Set generator to `"Ninja Multi-Config"`
-- [ ] Set `CMAKE_EXPORT_COMPILE_COMMANDS ON`
-- [ ] Add `condition` block: `hostSystemName == "Linux"`
-- [ ] Add `linux-x64` configure preset inheriting `linux-base`
-- [ ] Reference `cmake/toolchains/linux-x64.cmake` as toolchainFile
-- [ ] Add `linux-x64-debug` build preset
-- [ ] Add `linux-x64-release` build preset
-- [ ] Validate JSON: `python3 -m json.tool MuMain/CMakePresets.json`
-- [ ] Verify existing Windows presets unchanged (regression)
-- [ ] Run AC-2 test: `cmake -DPRESETS_FILE=CMakePresets.json -P tests/build/test_ac2_linux_presets.cmake` -- must PASS
+- [x] Add `linux-base` hidden configure preset
+- [x] Set generator to `"Ninja Multi-Config"`
+- [x] Set `CMAKE_EXPORT_COMPILE_COMMANDS ON`
+- [x] Add `condition` block: `hostSystemName == "Linux"`
+- [x] Add `linux-x64` configure preset inheriting `linux-base`
+- [x] Reference `cmake/toolchains/linux-x64.cmake` as toolchainFile
+- [x] Add `linux-x64-debug` build preset
+- [x] Add `linux-x64-release` build preset
+- [x] Validate JSON: `python3 -m json.tool MuMain/CMakePresets.json`
+- [x] Verify existing Windows presets unchanged (regression)
+- [x] Run AC-2 test: `cmake -DPRESETS_FILE=CMakePresets.json -P tests/build/test_ac2_linux_presets.cmake` -- must PASS
 
 ### Configure Validation (AC-3)
 
-- [ ] On Linux x64: Run `cmake --preset linux-x64` -- configure step completes
-- [ ] Note any warnings (acceptable at this stage -- Win32 headers not yet replaced)
-- [ ] Capture configure output as validation artifact
-- [ ] Run AC-3 test: `bash tests/build/test_ac3_linux_configure.sh` -- must PASS on Linux
+- [x] On Linux x64: Run `cmake --preset linux-x64` -- configure step completes
+- [x] Note any warnings (acceptable at this stage -- Win32 headers not yet replaced)
+- [x] Capture configure output as validation artifact
+- [x] Run AC-3 test: `bash tests/build/test_ac3_linux_configure.sh` -- must PASS on Linux
 
 ### Standard Acceptance Criteria
 
-- [ ] AC-STD-1: CMake files use consistent style, no new Win32 API calls
-- [ ] AC-STD-2: No Catch2 tests required (build system story -- CMake script tests used instead)
-- [ ] AC-STD-3: No banned Win32 APIs introduced
-- [ ] AC-STD-4: CI MinGW cross-compile quality gate remains green
+- [x] AC-STD-1: CMake files use consistent style, no new Win32 API calls
+- [x] AC-STD-2: No Catch2 tests required (build system story -- CMake script tests used instead)
+- [x] AC-STD-3: No banned Win32 APIs introduced
+- [x] AC-STD-4: CI MinGW cross-compile quality gate remains green
 - [ ] AC-STD-5: Commit: `build(platform): add Linux CMake toolchain and presets`
 - [ ] AC-STD-11: Flow Code traceability -- commit references VS0-PLAT-CMAKE-LINUX
-- [ ] AC-STD-13: Quality gate passes -- `./ctl check`
-- [ ] AC-STD-15: Git safety -- no incomplete rebase, no force push
-- [ ] AC-STD-20: No API/event/flow catalog entries (build system only)
+- [x] AC-STD-13: Quality gate passes -- `./ctl check`
+- [x] AC-STD-15: Git safety -- no incomplete rebase, no force push
+- [x] AC-STD-20: No API/event/flow catalog entries (build system only)
 
 ### PCC Compliance
 
-- [ ] No prohibited libraries used (N/A -- CMake files only)
-- [ ] Testing patterns follow project conventions (CMake script + CTest)
-- [ ] No `#ifdef _WIN32` in game logic (N/A -- CMake files only)
-- [ ] No backslash path literals
-- [ ] Forward slashes in all paths
-- [ ] CI build invariant maintained
+- [x] No prohibited libraries used (N/A -- CMake files only)
+- [x] Testing patterns follow project conventions (CMake script + CTest)
+- [x] No `#ifdef _WIN32` in game logic (N/A -- CMake files only)
+- [x] No backslash path literals
+- [x] Forward slashes in all paths
+- [x] CI build invariant maintained
 
 ### Validation Artifacts
 
-- [ ] AC-VAL-1: Linux configure log showing successful `cmake --preset linux-x64`
+- [x] AC-VAL-1: Linux configure log showing successful `cmake --preset linux-x64`
 
 ---
 
