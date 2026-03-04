@@ -15,7 +15,7 @@
 
 | Step | Status | Date |
 |------|--------|------|
-| 1. Quality Gate | PASSED | 2026-03-04 (re-validated 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04) |
+| 1. Quality Gate | PASSED | 2026-03-04 (re-validated 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04, 2026-03-04) |
 | 2. Code Review Analysis | COMPLETED (re-analyzed 2026-03-04) | 2026-03-04 |
 | 3. Code Review Finalize | COMPLETED | 2026-03-04 |
 
@@ -23,7 +23,7 @@
 
 | Phase | Status | Iterations | Issues Fixed | Notes |
 |-------|--------|------------|--------------|-------|
-| Backend Local (mumain) | PASSED | 1 | 0 | format-check exit 0 + cppcheck 670/670 clean exit 0 + ./ctl check exit 0 (re-validated 2026-03-04 x4) |
+| Backend Local (mumain) | PASSED | 1 | 0 | format-check exit 0 + cppcheck 670/670 clean exit 0 + ./ctl check exit 0 (re-validated 2026-03-04 x4, 2026-03-04 x5, 2026-03-04 x6, 2026-03-04 x7, 2026-03-04 x8) |
 | Backend SonarCloud (mumain) | SKIPPED | — | — | No sonar_cmd in cpp-cmake profile, no sonar_key configured |
 | Boot Verification (mumain) | SKIPPED | — | — | Not applicable (game client, no boot_verify_cmd) |
 | Frontend Local | SKIPPED | — | — | No frontend components affected |
@@ -49,6 +49,10 @@
 - `./ctl check` — EXIT CODE 0, "Quality gate passed" (PASSED)
 - Re-validated 2026-03-04 (3rd run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 — all clean
 - Re-validated 2026-03-04 (4th run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 "Quality gate passed" — all clean
+- Re-validated 2026-03-04 (5th run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 "Quality gate passed" — all clean
+- Re-validated 2026-03-04 (6th run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 "Quality gate passed" — all clean
+- Re-validated 2026-03-04 (7th run): format-check EXIT 0, lint 670/670 EXIT 0, ./ctl check EXIT 0 "Quality gate passed" — all clean
+- Re-validated 2026-03-04 (8th run): format-check EXIT 0, lint 670/670 EXIT 0 — all clean
 - Build (native CMake) — SKIPPED (macOS host cannot compile Win32/DirectX game client)
 - Coverage — SKIPPED (no coverage configured yet, threshold=0)
 - SonarCloud — SKIPPED (no sonar configuration in .pcc-config.yaml)

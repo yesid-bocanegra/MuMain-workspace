@@ -85,6 +85,7 @@ quality_gates:
   backend:
     enabled: true
     coverage_threshold: 0   # No tests yet, will increase as tests are added
+    skip_checks: [build, test]  # macOS cannot compile Win32/DirectX — build/test are CI-only
 
 # =============================================================================
 # WORKSPACE CONFIGURATION
