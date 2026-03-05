@@ -14,3 +14,6 @@
 {"timestamp":"2026-03-05T05:15:20.034548+00:00","event_type":"step_retried","story_key":"1-2-2-platform-library-backends","step":"completeness-gate","sprint":null,"epic":"1","data":{"attempt":2}}
 {"timestamp":"2026-03-05T05:15:20.035933+00:00","event_type":"feedback_saved","story_key":"1-2-2-platform-library-backends","step":"completeness-gate","sprint":null,"epic":"1","data":{"regression_target":"completeness-gate"}}
 {"timestamp":"2026-03-05T05:15:22.037050+00:00","event_type":"step_started","story_key":"1-2-2-platform-library-backends","step":"completeness-gate","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T05:18:03.236133+00:00","event_type":"step_passed","story_key":"1-2-2-platform-library-backends","step":"completeness-gate","sprint":null,"epic":"1","data":{"duration_seconds":161.2,"input_tokens":24,"output_tokens":4854}}
+{"timestamp":"2026-03-05T05:18:04.247564+00:00","event_type":"step_started","story_key":"1-2-2-platform-library-backends","step":"code-review","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T00:30:00Z","event_type":"workflow_metric:code_review_completed","story_key":"1-2-2-platform-library-backends","step":"code-review-finalize","sprint":null,"epic":"1","data":{"final_status":"done","issues_fixed":7,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}

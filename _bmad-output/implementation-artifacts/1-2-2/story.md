@@ -1,6 +1,6 @@
 # Story 1.2.2: MUPlatform Library with win32/posix Backends
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -474,3 +474,6 @@ skipped_at: 2026-03-04
 - [CREATE] `MuMain/tests/platform/test_platform_library.cpp` — Catch2 unit tests for Load, GetSymbol, Unload
 - [MODIFY] `MuMain/src/CMakeLists.txt` — Add platform-conditional backend source to MUPlatform target
 - [MODIFY] `MuMain/tests/CMakeLists.txt` — Add test_platform_library.cpp to MuTests + link MUPlatform
+- [CREATE] `MuMain/tests/platform/CMakeLists.txt` — Register CMake script tests for platform validation
+- [CREATE] `MuMain/tests/platform/test_ac_1_2_2_header_neutral.cmake` — CMake script test for header neutrality (AC-STD-3, AC-1, AC-6)
+- [CREATE] `MuMain/tests/platform/test_ac_1_2_2_cmake_backend.cmake` — CMake script test for backend selection (AC-4, AC-2, AC-3)
