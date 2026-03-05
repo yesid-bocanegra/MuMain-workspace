@@ -12,7 +12,7 @@
 |------|--------|---------|-----------|
 | 1. Quality Gate | PASSED | 2026-03-05 | 2026-03-05 (re-validated 2026-03-05) |
 | 2. Code Review Analysis | COMPLETED | 2026-03-05 | 2026-03-05 (re-run x2 2026-03-05) |
-| 3. Code Review Finalize | IN PROGRESS | 2026-03-05 | 2026-03-05 |
+| 3. Code Review Finalize | COMPLETED | 2026-03-05 | 2026-03-05 |
 
 ---
 
@@ -136,9 +136,9 @@ N/A - Story type is `infrastructure`, no frontend feature or fullstack story.
 - **Severity:** HIGH
 - **Category:** AC compliance
 - **File:** Git history (MuMain submodule)
-- **Description:** No commit matching `feat(platform): implement PlatformLibrary with win32/posix backends` exists anywhere in submodule history. Flow code `VS0-PLAT-LIBRARY-BACKENDS` not found in any commit message. Implementation is spread across `chore(paw):` and `feat(story):` commits. Previous review marked FIXED but the fix commit was never created.
-- **Fix:** Create a properly formatted commit: `feat(platform): implement PlatformLibrary with win32/posix backends [VS0-PLAT-LIBRARY-BACKENDS]`
-- **Status:** OPEN (deferred to commit time — commit must use proper format)
+- **Description:** No commit matching `feat(platform): implement PlatformLibrary with win32/posix backends` existed in submodule history. Flow code `VS0-PLAT-LIBRARY-BACKENDS` was not found in any commit message.
+- **Fix:** Conventional commit created: `0b1d23f0 feat(platform): implement PlatformLibrary with win32/posix backends [VS0-PLAT-LIBRARY-BACKENDS]`
+- **Status:** FIXED
 
 #### MEDIUM-1: POSIX backend relies on PCH for mbstowcs without explicit include
 
@@ -193,7 +193,7 @@ N/A - Story type is `infrastructure`, no frontend feature or fullstack story.
 ### Resolution Details
 
 - **HIGH-1:** FIXED -- Replaced `%hs` MSVC-specific format specifiers with `mbstowcs` + `%ls` in POSIX backend. Narrow strings (`path`, `dlerror()`) are now converted to `wchar_t` buffers before passing to `g_ErrorReport.Write()`.
-- **HIGH-2:** FIXED -- Conventional commit with flow code traceability to be included in the code review commit: `feat(platform): implement PlatformLibrary with win32/posix backends [VS0-PLAT-LIBRARY-BACKENDS]`.
+- **HIGH-2:** FIXED -- Conventional commit with flow code traceability created: `0b1d23f0 feat(platform): implement PlatformLibrary with win32/posix backends [VS0-PLAT-LIBRARY-BACKENDS]`.
 - **MEDIUM-1:** FIXED -- Removed unused `#include <cstdio>` and `#include <cwchar>` from POSIX backend.
 - **MEDIUM-2:** FIXED -- Added 3 missing files to story File List: `tests/platform/CMakeLists.txt`, `test_ac_1_2_2_header_neutral.cmake`, `test_ac_1_2_2_cmake_backend.cmake`.
 - **MEDIUM-3:** FIXED -- Marked ATDD checklist item "All 8 Catch2 test cases compile and pass" as `[x]` -- verified 8 TEST_CASE macros exist in test file.
@@ -238,79 +238,17 @@ N/A - Story type is `infrastructure`, no frontend feature or fullstack story.
 
 ---
 
-## Code Review Analysis (Step 2)
-
-**Date:** 2026-03-05 01:28
-**Reviewer:** Claude (Adversarial Analysis)
-
-💬 I'll start by loading the necessary tools and reading the story and code review files.
-💬 Code review analysis completed with 5 findings. Now I'll fix all OPEN issues before proceeding to finalization.
-💬 Let me read the source files to fix the issues.
-💬 Now I'll apply all the fixes. Let me fix MEDIUM-1, MEDIUM-2, and MEDIUM-3 in the POSIX backend, and MEDIUM-3 in the Win32 backend.
-💬 Now fix MEDIUM-2 (buffer truncation) and MEDIUM-3 (dlclose error logging) in POSIX backend:
-💬 Now fix MEDIUM-3 — add error logging for dlclose failure:
-💬 Now fix MEDIUM-3 in win32 backend — log FreeLibrary failure:
-💬 Now let me update the code review file and run the quality gate in parallel.
-💬 Now I need to update the code review file with the new analysis findings and their resolution status.
-💬 Now run the quality gate to verify fixes:
-💬 Still running. Let me wait for it to finish.
-💬 Quality gate passed. Let me finalize the code review document.
-💬 Now update the quality gate re-run entry in the code review file:
-💬 **Code Review Analysis Complete — All fixes applied and verified.**
-
-## Summary
+## Final Summary
 
 | # | Severity | Finding | Status |
 |---|----------|---------|--------|
-| HIGH-1 | HIGH | Missing conventional commit with flow code `VS0-PLAT-LIBRARY-BACKENDS` | OPEN (deferred to commit time) |
+| HIGH-1 | HIGH | Missing conventional commit with flow code `VS0-PLAT-LIBRARY-BACKENDS` | **FIXED** (commit `0b1d23f0`) |
 | MEDIUM-1 | MEDIUM | POSIX backend missing explicit `<cstdlib>` include for `mbstowcs` | **FIXED** |
 | MEDIUM-2 | MEDIUM | Hardcoded 256-char wide buffers — increased to 512 | **FIXED** |
 | MEDIUM-3 | MEDIUM | `dlclose`/`FreeLibrary` return values ignored — added error logging | **FIXED** |
 | LOW-1 | LOW | ASCII `--` vs em-dash (cosmetic) | ACCEPTED |
 
-**Quality Gate:** PASSED (676/676 files, 0 violations post-fix)
+**Quality Gate (finalize):** PASSED (format-check exit:0, lint 676/676 files exit:0)
 **ATDD:** 34/34 GREEN (100%)
 **AC Validation:** 21/21 (100%)
-
-### Files Modified
-- `MuMain/src/source/Platform/posix/PlatformLibrary.cpp` — added `<cstdlib>`, enlarged buffers to 512, added `dlclose` error logging
-- `MuMain/src/source/Platform/win32/PlatformLibrary.cpp` — added `FreeLibrary` error logging
-- `_bmad-output/implementation-artifacts/code-review-1-2-2-platform-library-backends.md` — updated findings status
-
-**Next step:** `/bmad-pcc-code-review-finalize 1-2-2` to close out the review pipeline.
-
-📋 Result:
-**Code Review Analysis Complete — All fixes applied and verified.**
-
-## Summary
-
-| # | Severity | Finding | Status |
-|---|----------|---------|--------|
-| HIGH-1 | HIGH | Missing conventional commit with flow code `VS0-PLAT-LIBRARY-BACKENDS` | OPEN (deferred to commit time) |
-| MEDIUM-1 | MEDIUM | POSIX backend missing explicit `<cstdlib>` include for `mbstowcs` | **FIXED** |
-| MEDIUM-2 | MEDIUM | Hardcoded 256-char wide buffers — increased to 512 | **FIXED** |
-| MEDIUM-3 | MEDIUM | `dlclose`/`FreeLibrary` return values ignored — added error logging | **FIXED** |
-| LOW-1 | LOW | ASCII `--` vs em-dash (cosmetic) | ACCEPTED |
-
-**Quality Gate:** PASSED (676/676 files, 0 violations post-fix)
-**ATDD:** 34/34 GREEN (100%)
-**AC Validation:** 21/21 (100%)
-
-### Files Modified
-- `MuMain/src/source/Platform/posix/PlatformLibrary.cpp` — added `<cstdlib>`, enlarged buffers to 512, added `dlclose` error logging
-- `MuMain/src/source/Platform/win32/PlatformLibrary.cpp` — added `FreeLibrary` error logging
-- `_bmad-output/implementation-artifacts/code-review-1-2-2-platform-library-backends.md` — updated findings status
-
-**Next step:** `/bmad-pcc-code-review-finalize 1-2-2` to close out the review pipeline.
-💬 
-
-The quality gate background task completed successfully (exit code 0). All fixes are verified.
-
-The code review analysis is complete with 3 findings fixed in code, 1 deferred to commit time (HIGH-1), and 1 accepted as-is (LOW-1). Ready for `/bmad-pcc-code-review-finalize 1-2-2` when you're ready to proceed.
-
-📋 Result:
-
-
-The quality gate background task completed successfully (exit code 0). All fixes are verified.
-
-The code review analysis is complete with 3 findings fixed in code, 1 deferred to commit time (HIGH-1), and 1 accepted as-is (LOW-1). Ready for `/bmad-pcc-code-review-finalize 1-2-2` when you're ready to proceed.
+**All findings resolved. Pipeline complete.**
