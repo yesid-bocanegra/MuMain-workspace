@@ -1,6 +1,6 @@
 # Story 1.2.2: MUPlatform Library with win32/posix Backends
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,88 +42,88 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** `PlatformLibrary.h` exists at `MuMain/src/source/Platform/PlatformLibrary.h` and defines interface: `Load(path) -> handle`, `GetSymbol(handle, name) -> pointer`, `Unload(handle)` — all in the `mu::platform` namespace with `[[nodiscard]]` on fallible functions
-- [ ] **AC-2:** `MuMain/src/source/Platform/win32/PlatformLibrary.cpp` implements the interface via `LoadLibraryW`/`GetProcAddress`/`FreeLibrary` (Win32 backend)
-- [ ] **AC-3:** `MuMain/src/source/Platform/posix/PlatformLibrary.cpp` implements the interface via `dlopen`/`dlsym`/`dlclose` (POSIX backend for Linux and macOS)
-- [ ] **AC-4:** `MuMain/src/CMakeLists.txt` selects the correct backend using CMake platform detection: `if(WIN32)` sources `win32/PlatformLibrary.cpp`, else sources `posix/PlatformLibrary.cpp`; both compile only on their respective platforms
-- [ ] **AC-5:** Error handling: Load failure logs `PLAT: PlatformLibrary::Load() failed — <reason>` using `g_ErrorReport.Write()` and returns a null handle; `GetSymbol` failure logs `PLAT: PlatformLibrary::GetSymbol(<name>) failed` and returns `nullptr`; `Unload` on null handle is a no-op
-- [ ] **AC-6:** All fallible functions (`Load`, `GetSymbol`) are annotated with `[[nodiscard]]` and return bool or null-check-able handle types; callers are expected to check return values
+- [x] **AC-1:** `PlatformLibrary.h` exists at `MuMain/src/source/Platform/PlatformLibrary.h` and defines interface: `Load(path) -> handle`, `GetSymbol(handle, name) -> pointer`, `Unload(handle)` — all in the `mu::platform` namespace with `[[nodiscard]]` on fallible functions
+- [x] **AC-2:** `MuMain/src/source/Platform/win32/PlatformLibrary.cpp` implements the interface via `LoadLibraryW`/`GetProcAddress`/`FreeLibrary` (Win32 backend)
+- [x] **AC-3:** `MuMain/src/source/Platform/posix/PlatformLibrary.cpp` implements the interface via `dlopen`/`dlsym`/`dlclose` (POSIX backend for Linux and macOS)
+- [x] **AC-4:** `MuMain/src/CMakeLists.txt` selects the correct backend using CMake platform detection: `if(WIN32)` sources `win32/PlatformLibrary.cpp`, else sources `posix/PlatformLibrary.cpp`; both compile only on their respective platforms
+- [x] **AC-5:** Error handling: Load failure logs `PLAT: PlatformLibrary::Load() failed — <reason>` using `g_ErrorReport.Write()` and returns a null handle; `GetSymbol` failure logs `PLAT: PlatformLibrary::GetSymbol(<name>) failed` and returns `nullptr`; `Unload` on null handle is a no-op
+- [x] **AC-6:** All fallible functions (`Load`, `GetSymbol`) are annotated with `[[nodiscard]]` and return bool or null-check-able handle types; callers are expected to check return values
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code follows project-context.md standards — `#pragma once` in headers, `mu::platform` namespace, PascalCase function names, `m_` prefix for any members, no new Win32 API calls in the header, no `#ifdef _WIN32` in `PlatformLibrary.h` — only in the backend `.cpp` files and CMake selection
-- [ ] **AC-STD-2:** Catch2 tests in `MuMain/tests/platform/test_platform_library.cpp` cover: (a) load a known shared library (e.g., the C runtime or a known system library), (b) resolve a known symbol from that library, (c) verify null handle returned on missing library path, (d) verify null returned from `GetSymbol` on invalid symbol name; tests must compile and pass on MinGW (Windows), Linux GCC, and macOS Clang
-- [ ] **AC-STD-3:** No `#ifdef _WIN32` in `PlatformLibrary.h` — compile-time CMake source selection is the only platform conditional; the header is platform-neutral
-- [ ] **AC-STD-4:** CI quality gate passes — `make -C MuMain format-check && make -C MuMain lint`
-- [ ] **AC-STD-5:** Error logging uses `PLAT:` prefix taxonomy (e.g., `PLAT: PlatformLibrary::Load() failed — <GetLastError()/dlerror()>`)
-- [ ] **AC-STD-6:** Conventional commit: `feat(platform): implement PlatformLibrary with win32/posix backends`
-- [ ] **AC-STD-11:** Flow Code traceability — commit message references `VS0-PLAT-LIBRARY-BACKENDS`
-- [ ] **AC-STD-12:** SLI/SLO — N/A for infrastructure story; no latency or availability SLOs apply (build-time artifact, no runtime service introduced)
-- [ ] **AC-STD-13:** Quality gate passes — `make -C MuMain format-check && make -C MuMain lint`
-- [ ] **AC-STD-14:** Observability — N/A for infrastructure story; `g_ErrorReport.Write()` provides post-mortem tracing via `PLAT:` prefix taxonomy; no runtime metrics or structured logs required
-- [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
-- [ ] **AC-STD-16:** Error codes — no new error codes registered in error-catalog.md; `PLAT:` prefix is a logging taxonomy prefix only, not a registered error code
-- [ ] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (infrastructure only)
+- [x] **AC-STD-1:** Code follows project-context.md standards — `#pragma once` in headers, `mu::platform` namespace, PascalCase function names, `m_` prefix for any members, no new Win32 API calls in the header, no `#ifdef _WIN32` in `PlatformLibrary.h` — only in the backend `.cpp` files and CMake selection
+- [x] **AC-STD-2:** Catch2 tests in `MuMain/tests/platform/test_platform_library.cpp` cover: (a) load a known shared library (e.g., the C runtime or a known system library), (b) resolve a known symbol from that library, (c) verify null handle returned on missing library path, (d) verify null returned from `GetSymbol` on invalid symbol name; tests must compile and pass on MinGW (Windows), Linux GCC, and macOS Clang
+- [x] **AC-STD-3:** No `#ifdef _WIN32` in `PlatformLibrary.h` — compile-time CMake source selection is the only platform conditional; the header is platform-neutral
+- [x] **AC-STD-4:** CI quality gate passes — `make -C MuMain format-check && make -C MuMain lint`
+- [x] **AC-STD-5:** Error logging uses `PLAT:` prefix taxonomy (e.g., `PLAT: PlatformLibrary::Load() failed — <GetLastError()/dlerror()>`)
+- [x] **AC-STD-6:** Conventional commit: `feat(platform): implement PlatformLibrary with win32/posix backends`
+- [x] **AC-STD-11:** Flow Code traceability — commit message references `VS0-PLAT-LIBRARY-BACKENDS`
+- [x] **AC-STD-12:** SLI/SLO — N/A for infrastructure story; no latency or availability SLOs apply (build-time artifact, no runtime service introduced)
+- [x] **AC-STD-13:** Quality gate passes — `make -C MuMain format-check && make -C MuMain lint`
+- [x] **AC-STD-14:** Observability — N/A for infrastructure story; `g_ErrorReport.Write()` provides post-mortem tracing via `PLAT:` prefix taxonomy; no runtime metrics or structured logs required
+- [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [x] **AC-STD-16:** Error codes — no new error codes registered in error-catalog.md; `PLAT:` prefix is a logging taxonomy prefix only, not a registered error code
+- [x] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (infrastructure only)
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Catch2 test passes on MinGW CI (Windows cross-compile — test must use a library available in MinGW environment)
-- [ ] **AC-VAL-2:** Manual dlopen smoke test on macOS: load a known .dylib (e.g., `libSystem.B.dylib`) and resolve a known symbol; log output shows no errors
-- [ ] **AC-VAL-3:** `g++ -fsyntax-only -std=c++20 PlatformLibrary.h` passes on Linux or macOS (compile check without linking)
-- [ ] **AC-VAL-4:** CMake configure log shows correct backend selected per platform (`win32/PlatformLibrary.cpp` on Windows, `posix/PlatformLibrary.cpp` on Linux/macOS)
+- [x] **AC-VAL-1:** Catch2 test passes on MinGW CI (Windows cross-compile — test must use a library available in MinGW environment)
+- [x] **AC-VAL-2:** Manual dlopen smoke test on macOS: load a known .dylib (e.g., `libSystem.B.dylib`) and resolve a known symbol; log output shows no errors
+- [x] **AC-VAL-3:** `g++ -fsyntax-only -std=c++20 PlatformLibrary.h` passes on Linux or macOS (compile check without linking)
+- [x] **AC-VAL-4:** CMake configure log shows correct backend selected per platform (`win32/PlatformLibrary.cpp` on Windows, `posix/PlatformLibrary.cpp` on Linux/macOS)
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Create `PlatformLibrary.h` interface header** (AC: AC-1, AC-3, AC-6)
-  - [ ] 1.1 Create `MuMain/src/source/Platform/PlatformLibrary.h` with `#pragma once`
-  - [ ] 1.2 Define `namespace mu::platform` (C++17 nested namespace, C++20 compatible)
-  - [ ] 1.3 Define opaque handle type: `using LibraryHandle = void*;`
-  - [ ] 1.4 Declare `[[nodiscard]] LibraryHandle Load(const char* path)` — returns `nullptr` on failure
-  - [ ] 1.5 Declare `[[nodiscard]] void* GetSymbol(LibraryHandle handle, const char* name)` — returns `nullptr` on failure
-  - [ ] 1.6 Declare `void Unload(LibraryHandle handle)` — no-op on null
-  - [ ] 1.7 Header must NOT include `<windows.h>` or `<dlfcn.h>` — backend implementations include those
-  - [ ] 1.8 Verify `#include "PlatformLibrary.h"` resolves from any game source (Platform/ is on MUCommon include path — line 171 in CMakeLists.txt)
+- [x] **Task1: Create `PlatformLibrary.h` interface header** (AC: AC-1, AC-3, AC-6)
+  - [x]1.1 Create `MuMain/src/source/Platform/PlatformLibrary.h` with `#pragma once`
+  - [x]1.2 Define `namespace mu::platform` (C++17 nested namespace, C++20 compatible)
+  - [x]1.3 Define opaque handle type: `using LibraryHandle = void*;`
+  - [x]1.4 Declare `[[nodiscard]] LibraryHandle Load(const char* path)` — returns `nullptr` on failure
+  - [x]1.5 Declare `[[nodiscard]] void* GetSymbol(LibraryHandle handle, const char* name)` — returns `nullptr` on failure
+  - [x]1.6 Declare `void Unload(LibraryHandle handle)` — no-op on null
+  - [x]1.7 Header must NOT include `<windows.h>` or `<dlfcn.h>` — backend implementations include those
+  - [x]1.8 Verify `#include "PlatformLibrary.h"` resolves from any game source (Platform/ is on MUCommon include path — line 171 in CMakeLists.txt)
 
-- [ ] **Task 2: Create win32 backend** (AC: AC-2, AC-5)
-  - [ ] 2.1 Create directory `MuMain/src/source/Platform/win32/`
-  - [ ] 2.2 Create `MuMain/src/source/Platform/win32/PlatformLibrary.cpp`
-  - [ ] 2.3 Include `<windows.h>` and `"PlatformLibrary.h"` and `"ErrorReport.h"`
-  - [ ] 2.4 Implement `mu::platform::Load(const char* path)`:
+- [x] **Task2: Create win32 backend** (AC: AC-2, AC-5)
+  - [x]2.1 Create directory `MuMain/src/source/Platform/win32/`
+  - [x]2.2 Create `MuMain/src/source/Platform/win32/PlatformLibrary.cpp`
+  - [x]2.3 Include `<windows.h>` and `"PlatformLibrary.h"` and `"ErrorReport.h"`
+  - [x]2.4 Implement `mu::platform::Load(const char* path)`:
     - Convert `path` to wide string for `LoadLibraryW` using `MultiByteToWideChar` or a simple loop
     - On failure: call `g_ErrorReport.Write(L"PLAT: PlatformLibrary::Load() failed — %lu\r\n", GetLastError())` then return `nullptr`
     - On success: return `HMODULE` cast to `void*`
-  - [ ] 2.5 Implement `mu::platform::GetSymbol(LibraryHandle handle, const char* name)`:
+  - [x]2.5 Implement `mu::platform::GetSymbol(LibraryHandle handle, const char* name)`:
     - Cast handle to `HMODULE`, call `GetProcAddress`
     - On failure: `g_ErrorReport.Write(L"PLAT: PlatformLibrary::GetSymbol(%hs) failed\r\n", name)` return `nullptr`
-  - [ ] 2.6 Implement `mu::platform::Unload(LibraryHandle handle)`:
+  - [x]2.6 Implement `mu::platform::Unload(LibraryHandle handle)`:
     - If `handle == nullptr`: return immediately (no-op)
     - Cast to `HMODULE`, call `FreeLibrary`
 
-- [ ] **Task 3: Create posix backend** (AC: AC-3, AC-5)
-  - [ ] 3.1 Create directory `MuMain/src/source/Platform/posix/`
-  - [ ] 3.2 Create `MuMain/src/source/Platform/posix/PlatformLibrary.cpp`
-  - [ ] 3.3 Include `<dlfcn.h>` and `"PlatformLibrary.h"` and `"ErrorReport.h"`
-  - [ ] 3.4 Implement `mu::platform::Load(const char* path)`:
+- [x] **Task3: Create posix backend** (AC: AC-3, AC-5)
+  - [x]3.1 Create directory `MuMain/src/source/Platform/posix/`
+  - [x]3.2 Create `MuMain/src/source/Platform/posix/PlatformLibrary.cpp`
+  - [x]3.3 Include `<dlfcn.h>` and `"PlatformLibrary.h"` and `"ErrorReport.h"`
+  - [x]3.4 Implement `mu::platform::Load(const char* path)`:
     - Call `dlopen(path, RTLD_LAZY | RTLD_LOCAL)`
     - On failure: `g_ErrorReport.Write(L"PLAT: PlatformLibrary::Load() failed — %hs\r\n", dlerror())` then return `nullptr`
     - On success: return the handle directly (already `void*`)
-  - [ ] 3.5 Implement `mu::platform::GetSymbol(LibraryHandle handle, const char* name)`:
+  - [x]3.5 Implement `mu::platform::GetSymbol(LibraryHandle handle, const char* name)`:
     - Call `dlsym(handle, name)`
     - On failure (nullptr): `g_ErrorReport.Write(L"PLAT: PlatformLibrary::GetSymbol(%hs) failed\r\n", name)` return `nullptr`
     - Note: `dlsym` returns `nullptr` for both missing symbols AND symbols with value 0; this is acceptable for function pointers
-  - [ ] 3.6 Implement `mu::platform::Unload(LibraryHandle handle)`:
+  - [x]3.6 Implement `mu::platform::Unload(LibraryHandle handle)`:
     - If `handle == nullptr`: return (no-op)
     - Call `dlclose(handle)`
 
-- [ ] **Task 4: Update CMakeLists.txt for platform-selected backend** (AC: AC-4)
-  - [ ] 4.1 Read `MuMain/src/CMakeLists.txt` lines 268-277 — current `file(GLOB MU_PLATFORM_SOURCES)` pattern
-  - [ ] 4.2 Replace or augment the MUPlatform `file(GLOB)` with explicit platform-conditional source selection:
+- [x] **Task4: Update CMakeLists.txt for platform-selected backend** (AC: AC-4)
+  - [x]4.1 Read `MuMain/src/CMakeLists.txt` lines 268-277 — current `file(GLOB MU_PLATFORM_SOURCES)` pattern
+  - [x]4.2 Replace or augment the MUPlatform `file(GLOB)` with explicit platform-conditional source selection:
     ```cmake
     # Platform-selected backend sources
     if(WIN32)
@@ -138,32 +138,32 @@ Status: ready-for-dev
     file(GLOB MU_PLATFORM_SOURCES CONFIGURE_DEPENDS "${MU_SOURCE_DIR}/Platform/*.cpp")
     list(APPEND MU_PLATFORM_SOURCES ${MU_PLATFORM_BACKEND_SOURCES})
     ```
-  - [ ] 4.3 Verify MUPlatform target now has sources and builds as `STATIC` (not INTERFACE)
-  - [ ] 4.4 Verify MUPlatform still links `MUCore` (for `g_ErrorReport`)
-  - [ ] 4.5 Verify `precompile_headers(REUSE_FROM MUCore)` is applied to MUPlatform when it has sources
-  - [ ] 4.6 If MUPlatform transitions from INTERFACE to STATIC, verify MUGame still links correctly (it already has `MUPlatform` in `target_link_libraries`)
+  - [x]4.3 Verify MUPlatform target now has sources and builds as `STATIC` (not INTERFACE)
+  - [x]4.4 Verify MUPlatform still links `MUCore` (for `g_ErrorReport`)
+  - [x]4.5 Verify `precompile_headers(REUSE_FROM MUCore)` is applied to MUPlatform when it has sources
+  - [x]4.6 If MUPlatform transitions from INTERFACE to STATIC, verify MUGame still links correctly (it already has `MUPlatform` in `target_link_libraries`)
 
-- [ ] **Task 5: Create Catch2 tests** (AC: AC-STD-2, AC-VAL-1)
-  - [ ] 5.1 Create `MuMain/tests/platform/test_platform_library.cpp`
-  - [ ] 5.2 Include `<catch2/catch_test_macros.hpp>` and `"PlatformLibrary.h"`
-  - [ ] 5.3 Add test: Load a system library that exists on all platforms:
+- [x] **Task5: Create Catch2 tests** (AC: AC-STD-2, AC-VAL-1)
+  - [x]5.1 Create `MuMain/tests/platform/test_platform_library.cpp`
+  - [x]5.2 Include `<catch2/catch_test_macros.hpp>` and `"PlatformLibrary.h"`
+  - [x]5.3 Add test: Load a system library that exists on all platforms:
     - On Windows (MinGW): load `"kernel32.dll"` — always present
     - On Linux: load `"libm.so.6"` (or `"libdl.so.2"`) — available in MinGW test environment? (use conditional compile)
     - On macOS: load `"libSystem.B.dylib"`
     - Use `#ifdef _WIN32` / `#else` in the test file ONLY (test platform selection is acceptable — it's not game logic)
-  - [ ] 5.4 Add test: Resolve a known symbol from the loaded library (e.g., `GetTickCount` from `kernel32.dll`, `sin` from `libm`)
-  - [ ] 5.5 Add test: Load a non-existent library path returns `nullptr` (e.g., `"definitely_does_not_exist_12345.so"`)
-  - [ ] 5.6 Add test: `GetSymbol` with invalid name on valid handle returns `nullptr`
-  - [ ] 5.7 Add test: `Unload(nullptr)` does not crash (no-op safety)
-  - [ ] 5.8 Add `test_platform_library.cpp` to `MuTests` in `MuMain/tests/CMakeLists.txt`
-  - [ ] 5.9 Verify all tests compile with `-DBUILD_TESTING=ON` and pass on macOS Clang
-  - [ ] 5.10 Add `target_link_libraries(MuTests PRIVATE ... MUPlatform)` if not already linked (tests need the implementation)
+  - [x]5.4 Add test: Resolve a known symbol from the loaded library (e.g., `GetTickCount` from `kernel32.dll`, `sin` from `libm`)
+  - [x]5.5 Add test: Load a non-existent library path returns `nullptr` (e.g., `"definitely_does_not_exist_12345.so"`)
+  - [x]5.6 Add test: `GetSymbol` with invalid name on valid handle returns `nullptr`
+  - [x]5.7 Add test: `Unload(nullptr)` does not crash (no-op safety)
+  - [x]5.8 Add `test_platform_library.cpp` to `MuTests` in `MuMain/tests/CMakeLists.txt`
+  - [x]5.9 Verify all tests compile with `-DBUILD_TESTING=ON` and pass on macOS Clang
+  - [x]5.10 Add `target_link_libraries(MuTests PRIVATE ... MUPlatform)` if not already linked (tests need the implementation)
 
-- [ ] **Task 6: Quality gate and validation** (AC: AC-STD-4, AC-VAL-2, AC-VAL-3)
-  - [ ] 6.1 Run `./ctl check` (format-check + cppcheck lint) — must pass with 0 violations
-  - [ ] 6.2 Run `g++ -fsyntax-only -std=c++20 MuMain/src/source/Platform/PlatformLibrary.h` on macOS — must pass
-  - [ ] 6.3 Manually verify dlopen smoke test on macOS (if available)
-  - [ ] 6.4 Verify `win32/` and `posix/` subdirectories are not caught by `cppcheck` ThirdParty exclusion (they are inside `Platform/`, not `ThirdParty/`)
+- [x] **Task6: Quality gate and validation** (AC: AC-STD-4, AC-VAL-2, AC-VAL-3)
+  - [x]6.1 Run `./ctl check` (format-check + cppcheck lint) — must pass with 0 violations
+  - [x]6.2 Run `g++ -fsyntax-only -std=c++20 MuMain/src/source/Platform/PlatformLibrary.h` on macOS — must pass
+  - [x]6.3 Manually verify dlopen smoke test on macOS (if available)
+  - [x]6.4 Verify `win32/` and `posix/` subdirectories are not caught by `cppcheck` ThirdParty exclusion (they are inside `Platform/`, not `ThirdParty/`)
 
 ---
 
