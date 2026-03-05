@@ -7,3 +7,6 @@
 {"timestamp":"2026-03-05T02:39:53.283609+00:00","event_type":"story_failed","story_key":"1-2-1-platform-abstraction-headers","step":"atdd","sprint":null,"epic":"1","data":{"failed_step":"atdd","retries_used":0,"regressions_used":0,"error":"INTERRUPTED","duration_seconds":463.9}}
 {"timestamp":"2026-03-05T02:46:10.909862+00:00","event_type":"story_started","story_key":"1-2-1-platform-abstraction-headers","step":null,"sprint":null,"epic":"1","data":{"from_step":"atdd","to_step":"code-review-finalize","planned_steps":10,"fresh":false}}
 {"timestamp":"2026-03-05T02:46:10.911053+00:00","event_type":"step_started","story_key":"1-2-1-platform-abstraction-headers","step":"atdd","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T02:51:17.833936+00:00","event_type":"step_passed","story_key":"1-2-1-platform-abstraction-headers","step":"atdd","sprint":null,"epic":"1","data":{"duration_seconds":306.9,"input_tokens":5,"output_tokens":566}}
+{"timestamp":"2026-03-05T02:51:18.836288+00:00","event_type":"step_started","story_key":"1-2-1-platform-abstraction-headers","step":"design-screen","sprint":null,"epic":"1","data":{}}
+{"event":"step_skipped","story_key":"1-2-1-platform-abstraction-headers","step":"design-screen","reason":"infrastructure story - no visual design specification; design system not initialized","timestamp":"2026-03-05T02:53:37.3NZ"}

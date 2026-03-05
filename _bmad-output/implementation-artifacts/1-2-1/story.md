@@ -399,6 +399,18 @@ claude-sonnet-4-6
 
 _None — story creation only._
 
+### Design Screen Step
+
+**Status: SKIPPED — Not Applicable**
+
+**Reason:** This is an `infrastructure` story (C++ platform headers). There is no Visual Design Specification section, no UI components, and no frontend screens to design. Additionally, the MuMain Pencil design system has not been initialized (`pencil.style_guide.initialized: false` in `_bmad/pcc/config.yaml`) and no `designs/MuMain.pen` file exists for this project.
+
+The design-screen pipeline step was attempted on 2026-03-04. The task XML Step 0.5 HALT condition was met (design system not initialized). Per automation rules, the step is marked SKIPPED and the pipeline advances to `dev-story`.
+
+**design_status: SKIPPED**
+
+---
+
 ### Completion Notes List
 
 - Story created 2026-03-04 via create-story workflow (agent: claude-sonnet-4-6)
