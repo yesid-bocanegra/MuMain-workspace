@@ -1,0 +1,101 @@
+metadata:
+  story_key: "1-2-1-platform-abstraction-headers"
+  status: "passed"
+  total_iterations: 0
+  created_at: "2026-03-04"
+  last_updated: "2026-03-04"
+
+test_class:
+  class_name: "platform_tests (Catch2)"
+  full_path:
+    - "MuMain/tests/platform/test_platform_types.cpp"
+    - "MuMain/tests/platform/test_platform_compat.cpp"
+    - "MuMain/tests/platform/test_platform_keys.cpp"
+  test_framework: "Catch2 v3.7.1"
+  ac_test_pattern: 'TEST_CASE("AC-'
+
+test_results:
+  total_tests: 14
+  passed: 14
+  failed: 0
+  total_assertions: 139
+  ac_mapping:
+    - ac_id: AC-1
+      test_name: "AC-1: PlatformCompat timing shims"
+      status: passed
+    - ac_id: AC-1
+      test_name: "AC-1: PlatformCompat MessageBoxW stub"
+      status: passed
+    - ac_id: AC-1
+      test_name: "AC-1: PlatformCompat RtlSecureZeroMemory shim"
+      status: passed
+    - ac_id: AC-1
+      test_name: "AC-1: PlatformCompat file I/O shims"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformTypes type size assertions"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformTypes constants and macros"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformTypes handle types are pointer-sized"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformTypes integral parameter types"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformKeys mouse button constants"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformKeys navigation constants"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformKeys arrow and page constants"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformKeys function key constants"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformKeys modifier constants"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2: PlatformKeys numpad constants"
+      status: passed
+  passing_tests:
+    - "AC-1: PlatformCompat timing shims"
+    - "AC-1: PlatformCompat MessageBoxW stub"
+    - "AC-1: PlatformCompat RtlSecureZeroMemory shim"
+    - "AC-1: PlatformCompat file I/O shims"
+    - "AC-2: PlatformTypes type size assertions"
+    - "AC-2: PlatformTypes constants and macros"
+    - "AC-2: PlatformTypes handle types are pointer-sized"
+    - "AC-2: PlatformTypes integral parameter types"
+    - "AC-2: PlatformKeys mouse button constants"
+    - "AC-2: PlatformKeys navigation constants"
+    - "AC-2: PlatformKeys arrow and page constants"
+    - "AC-2: PlatformKeys function key constants"
+    - "AC-2: PlatformKeys modifier constants"
+    - "AC-2: PlatformKeys numpad constants"
+  failing_tests: []
+
+script_tests:
+  - name: "AC-3:platform-pragma-once"
+    status: passed
+    result: "All platform headers use #pragma once"
+  - name: "AC-4:platform-header-existence"
+    status: passed
+    result: "All platform headers exist"
+  - name: "AC-5:no-game-logic-ifdef"
+    status: passed
+    result: "Found 0 game logic files with #ifdef _WIN32 (baseline: 0)"
+
+iterations: []
+blockers: []
+next_actions: []
+
+notes:
+  - "Tests compiled standalone against Catch2 v3.7.1 (without MUCore due to GCC-specific warning flags incompatible with macOS Clang)"
+  - "All 14 test cases passed with 139 assertions"
+  - "CMake script tests for AC-3, AC-4, AC-5 also passed"
+  - "Story status: done — all ACs verified"
