@@ -399,6 +399,7 @@ claude-opus-4-6
 - ATDD tests fixed: CMake regex `[\\s]` replaced with `[ \t]` for proper whitespace matching
 - All 4 ATDD tests pass: AC-1 (FetchContent), AC-3 (link visibility), AC-4 (no game logic includes), AC-5 (CI option)
 - Quality gate passed: `./ctl check` (format-check + lint) clean
+- ui-validation step SKIPPED 2026-03-05 — infrastructure story (build system only); story type=infrastructure, both validate-pen-compliance and validate-functional-requirements have webskip=true; no designs/MuMain.pen exists, no ui-requirements-index.md exists; PAW runner auto-skips UI_VALIDATION for infrastructure stories (claude.py:340-345)
 
 ### File List
 
