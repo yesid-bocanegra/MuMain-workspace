@@ -124,3 +124,5 @@
 {"timestamp":"2026-03-05T01:33:47.023048+00:00","event_type":"step_started","story_key":"1-1-1-macos-cmake-toolchain","step":"code-review","sprint":null,"epic":"1","data":{}}
 {"timestamp":"2026-03-05T01:38:15.068791+00:00","event_type":"step_passed","story_key":"1-1-1-macos-cmake-toolchain","step":"code-review","sprint":null,"epic":"1","data":{"duration_seconds":268.0,"input_tokens":35,"output_tokens":11173}}
 {"timestamp":"2026-03-05T01:38:16.079730+00:00","event_type":"step_started","story_key":"1-1-1-macos-cmake-toolchain","step":"code-review-qg","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T02:10:02.945329+00:00","event_type":"step_passed","story_key":"1-1-1-macos-cmake-toolchain","step":"code-review-qg","sprint":null,"epic":"1","data":{"duration_seconds":1906.9,"input_tokens":35,"output_tokens":8244}}
+{"timestamp":"2026-03-05T02:10:03.952454+00:00","event_type":"step_started","story_key":"1-1-1-macos-cmake-toolchain","step":"code-review-analysis","sprint":null,"epic":"1","data":{}}

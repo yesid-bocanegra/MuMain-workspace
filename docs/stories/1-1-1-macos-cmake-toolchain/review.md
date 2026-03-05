@@ -16,7 +16,7 @@
 | Step | Status | Date |
 |------|--------|------|
 | 1. Quality Gate | PASSED | 2026-03-04 |
-| 2. Code Review Analysis | pending | — |
+| 2. Code Review Analysis | PASSED | 2026-03-04 |
 | 3. Code Review Finalize | pending | — |
 
 ## Quality Gate Progress
@@ -86,3 +86,62 @@ _No fixes needed — all checks passed on first iteration._
 - All applicable quality checks passed on first attempt
 
 **Next step:** Run `code-review-analysis` for story `1-1-1-macos-cmake-toolchain`.
+
+## Step 2: Code Review Analysis
+
+**Reviewer:** claude-opus-4-6 (adversarial)
+**Date:** 2026-03-04
+**Files Reviewed:** 6
+
+### ATDD Completeness
+
+| Metric | Value |
+|--------|-------|
+| Total checklist items | 46 |
+| Checked items | 46 |
+| Completion | **100%** |
+| Threshold | 80% |
+| **Status** | **PASSED** (not a blocker) |
+
+### AC Verification (Code-Level)
+
+| AC | Verified | Method | Notes |
+|----|----------|--------|-------|
+| AC-1 | YES | File read + test execution | `macos-arm64.cmake` has all required settings: Darwin, arm64, Clang, C++20, xcrun SDK detection with error handling |
+| AC-2 | YES | File read + test execution | `CMakePresets.json` has `macos-base` (hidden, Darwin condition), `macos-arm64` (inherits, toolchain ref), debug+release build presets |
+| AC-3 | YES | Test execution | `cmake --preset macos-arm64` exits 0, Clang 21.1.8 detected, configure done in 1.1s |
+| AC-4 | YES | File read + test execution | All Windows presets (4 configure + 8 build) and Linux presets (1 configure + 2 build) structurally unchanged |
+
+### Task Verification
+
+| Task | Verified | Notes |
+|------|----------|-------|
+| Task 1 (toolchain file) | YES | All 7 subtasks verified in code |
+| Task 2 (presets) | YES | All 5 subtasks verified in code |
+| Task 3 (configure validation) | YES | Configure succeeds, output captured |
+| Task 4 (quality gate) | YES | format-check + lint pass (670/670 files) |
+
+### Findings
+
+| ID | Severity | File | Description | Resolution |
+|----|----------|------|-------------|------------|
+| F1 | MEDIUM | (process) | Conventional commit `build(platform): add macOS CMake toolchain and presets` not applied — actual commits use `chore(story): complete atdd/completeness-gate...` workflow-generated messages | **DEFERRED** — process limitation of paw_runner workflow; commit messages are auto-generated. Same issue was noted in story 1-1-2 BMM review (M2). Requires paw_runner enhancement to support conventional commit format. |
+| F2 | LOW | `macos-arm64.cmake` | No `CMAKE_OSX_DEPLOYMENT_TARGET` set — build defaults to SDK-provided minimum, which may vary between developer machines | **NOTED** — original spec (1-1-1/story.md Task 1.6) included this, but refined story intentionally omitted it. Not a correctness issue for configure-only usage. Consider adding in a future story when full macOS compilation is targeted. |
+| F3 | LOW | `test_ac2_macos_presets.cmake:84` | AC-2 inherits check (Check 10) only verifies `"macos-base"` string exists anywhere in file, not that `macos-arm64`'s `"inherits"` field specifically references it | **NOTED** — string search is a weak proxy for structural JSON validation. A false positive is unlikely given the current preset structure, but the test would pass even if `macos-arm64` inherited from a different base. Not worth fixing for a build-system test. |
+| F4 | LOW | `test_ac3_macos_configure.sh` | No timeout on cmake configure command — could hang indefinitely if cmake or xcrun has issues | **NOTED** — low risk since configure is fast (1.1s observed). Adding `timeout 60` would improve robustness but is not critical for a developer-run test. |
+| F5 | INFO | `CMakePresets.json` | `windows-base` preset lacks `"description"` field that `linux-base` and `macos-base` both have — pre-existing inconsistency, not introduced by this story | **NOTED** — pre-existing. Out of scope for this story. |
+
+### Summary
+
+| Metric | Value |
+|--------|-------|
+| HIGH findings | 0 |
+| MEDIUM findings | 1 (deferred — process limitation) |
+| LOW findings | 3 (all noted — no code changes needed) |
+| INFO findings | 1 (pre-existing) |
+| BLOCKER findings | 0 |
+| **Review Verdict** | **PASSED** |
+
+The implementation is clean, consistent with the linux-x64.cmake sibling, and all 4 ATDD tests pass. The toolchain file includes proper error handling for xcrun failures (added during BMM review). The CMakePresets.json changes are additive-only and do not modify any existing presets. No security, performance, or correctness issues found.
+
+**Next step:** Run `code-review-finalize` for story `1-1-1-macos-cmake-toolchain`.
