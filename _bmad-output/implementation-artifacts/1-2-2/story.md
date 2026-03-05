@@ -60,8 +60,11 @@ Status: ready-for-dev
 - [ ] **AC-STD-5:** Error logging uses `PLAT:` prefix taxonomy (e.g., `PLAT: PlatformLibrary::Load() failed — <GetLastError()/dlerror()>`)
 - [ ] **AC-STD-6:** Conventional commit: `feat(platform): implement PlatformLibrary with win32/posix backends`
 - [ ] **AC-STD-11:** Flow Code traceability — commit message references `VS0-PLAT-LIBRARY-BACKENDS`
+- [ ] **AC-STD-12:** SLI/SLO — N/A for infrastructure story; no latency or availability SLOs apply (build-time artifact, no runtime service introduced)
 - [ ] **AC-STD-13:** Quality gate passes — `make -C MuMain format-check && make -C MuMain lint`
+- [ ] **AC-STD-14:** Observability — N/A for infrastructure story; `g_ErrorReport.Write()` provides post-mortem tracing via `PLAT:` prefix taxonomy; no runtime metrics or structured logs required
 - [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [ ] **AC-STD-16:** Error codes — no new error codes registered in error-catalog.md; `PLAT:` prefix is a logging taxonomy prefix only, not a registered error code
 - [ ] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (infrastructure only)
 
 ---
