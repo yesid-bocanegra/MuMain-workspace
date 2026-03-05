@@ -1,0 +1,65 @@
+metadata:
+  story_key: "1-3-1-sdl3-dependency-integration"
+  status: "passed"
+  total_iterations: 0
+  last_updated: "2026-03-05"
+  profile_name: "cpp-cmake"
+  component: "mumain"
+  backend_root: "./MuMain"
+
+test_class:
+  type: "cmake-script-mode"
+  class_name: "SDL3 ATDD CMake/Shell Tests"
+  test_files:
+    - "MuMain/tests/build/test_ac1_sdl3_fetchcontent.cmake"
+    - "MuMain/tests/build/test_ac3_sdl3_link_visibility.cmake"
+    - "MuMain/tests/build/test_ac4_sdl3_no_game_logic_includes.sh"
+    - "MuMain/tests/build/test_ac5_sdl3_ci_option.cmake"
+  note: "Infrastructure story — tests use cmake -P script mode and bash, not GTest TEST_F(AC_ pattern"
+
+test_results:
+  total_tests: 4
+  passed: 4
+  failed: 0
+  ac_mapping:
+    - ac_id: "AC-1"
+      test_name: "1.3.1-AC-1:sdl3-fetchcontent"
+      test_file: "test_ac1_sdl3_fetchcontent.cmake"
+      status: "passed"
+      result: "SDL3 FetchContent is declared with pinned version 'release-3.2.8'"
+    - ac_id: "AC-3"
+      test_name: "1.3.1-AC-3:sdl3-link-visibility"
+      test_file: "test_ac3_sdl3_link_visibility.cmake"
+      status: "passed"
+      result: "SDL3 link visibility is correct (MUPlatform + MURenderFX PRIVATE only)"
+    - ac_id: "AC-4"
+      test_name: "1.3.1-AC-4:sdl3-no-game-logic-includes"
+      test_file: "test_ac4_sdl3_no_game_logic_includes.sh"
+      status: "passed"
+      result: "No SDL3 headers in game logic directories"
+    - ac_id: "AC-5"
+      test_name: "1.3.1-AC-5:sdl3-ci-option"
+      test_file: "test_ac5_sdl3_ci_option.cmake"
+      status: "passed"
+      result: "MU_ENABLE_SDL3 option exists with 3 guard block(s)"
+  passing_tests:
+    - "1.3.1-AC-1:sdl3-fetchcontent"
+    - "1.3.1-AC-3:sdl3-link-visibility"
+    - "1.3.1-AC-4:sdl3-no-game-logic-includes"
+    - "1.3.1-AC-5:sdl3-ci-option"
+  failing_tests: []
+
+iterations: []
+
+blockers: []
+
+next_actions: []
+
+notes:
+  - "Story type is infrastructure (CMake build system only) — no Catch2/GTest tests exist"
+  - "ac_test_pattern for cpp-cmake defaults to TEST_F(AC_ but this story uses cmake -P script mode ATDD tests"
+  - "AC-2 (multi-platform cmake configure) is not automated as a script test — validated manually per story notes"
+  - "All 4 automated ATDD tests passed on first run with zero fixes needed"
+  - "SDL3 pinned to release-3.2.8 via FetchContent with GIT_SHALLOW TRUE"
+  - "PRIVATE link visibility enforced: MUPlatform and MURenderFX only"
+  - "CI Strategy B applied: -DMU_ENABLE_SDL3=OFF in MinGW workflow"
