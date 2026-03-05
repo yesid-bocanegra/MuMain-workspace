@@ -319,8 +319,19 @@ claude-opus-4-6
 - CMakePresets.json follows hidden base + inherit pattern consistent with windows-base and linux-base
 - Configure succeeds on macOS (Clang 21.1.8 detected, .NET SDK found)
 - All 4 ATDD tests GREEN, quality gate passed
+- BMM code review on 2026-03-04: 0 HIGH, 3 MEDIUM, 3 LOW findings
+  - FIXED M1: File List updated to include 4 test files (was incomplete)
+  - FIXED M3: Added xcrun RESULT_VARIABLE check with warning message in macos-arm64.cmake
+  - DEFERRED M2: Conventional commit `build(platform):` not applied — implementation bundled in workflow commits (process limitation)
+  - NOTED L1: AC-2 test inherits check is weak (string search only)
+  - NOTED L2: Commit order validate-story→atdd is reversed (process limitation)
+  - NOTED L3: AC-3 test has no timeout on cmake configure step
 
 ### File List
 
 - `MuMain/cmake/toolchains/macos-arm64.cmake` [CREATE] — macOS arm64 toolchain with Clang, C++20, xcrun SDK detection
 - `MuMain/CMakePresets.json` [MODIFY] — add macos-base (hidden), macos-arm64 configure presets + debug/release build presets
+- `MuMain/tests/build/test_ac1_macos_toolchain_file.cmake` [CREATE] — AC-1 validation: toolchain file content checks
+- `MuMain/tests/build/test_ac2_macos_presets.cmake` [CREATE] — AC-2 validation: CMakePresets.json macOS preset checks
+- `MuMain/tests/build/test_ac3_macos_configure.sh` [CREATE] — AC-3 validation: cmake --preset macos-arm64 integration test
+- `MuMain/tests/build/test_ac4_macos_windows_presets_unchanged.cmake` [CREATE] — AC-4 regression: Windows/Linux presets intact
