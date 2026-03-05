@@ -192,3 +192,5 @@
 {"timestamp":"2026-03-05T00:30:00Z","event_type":"workflow_metric:code_review_completed","story_key":"1-2-2-platform-library-backends","step":"code-review-finalize","sprint":null,"epic":"1","data":{"final_status":"done","issues_fixed":7,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
 {"timestamp":"2026-03-05T05:55:30.411309+00:00","event_type":"step_passed","story_key":"1-2-2-platform-library-backends","step":"code-review","sprint":null,"epic":"1","data":{"duration_seconds":2246.2,"input_tokens":8,"output_tokens":1018}}
 {"timestamp":"2026-03-05T05:55:31.422370+00:00","event_type":"step_started","story_key":"1-2-2-platform-library-backends","step":"code-review-qg","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T06:12:50.393362+00:00","event_type":"step_passed","story_key":"1-2-2-platform-library-backends","step":"code-review-qg","sprint":null,"epic":"1","data":{"duration_seconds":1039.0,"input_tokens":7,"output_tokens":409}}
+{"timestamp":"2026-03-05T06:12:51.398889+00:00","event_type":"step_started","story_key":"1-2-2-platform-library-backends","step":"code-review-analysis","sprint":null,"epic":"1","data":{}}
