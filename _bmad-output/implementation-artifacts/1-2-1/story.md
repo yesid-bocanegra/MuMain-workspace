@@ -1,6 +1,6 @@
 # Story 1.2.1: Platform Abstraction Headers
 
-Status: implementation-complete
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -315,6 +315,7 @@ claude-opus-4-6 (implementation), claude-sonnet-4-6 (story creation)
 - Fixed AC-5 test script `pipefail` issue when all `#ifdef _WIN32` files are in excluded directories
 - All 126 Catch2 assertions pass across 14 test cases on macOS Clang
 - Code review finalize (2026-03-04): Fixed 8 issues (3 HIGH, 3 MEDIUM, 2 LOW) — errno_t guard, MB_YESNO docs, mode assert, path/mode null checks, stale comments
+- BMM code review (2026-03-04): Found 6 issues (2 HIGH, 2 MEDIUM, 2 LOW). Fixed HIGH-1 (surrogate codepoint filtering in mu_wfopen UTF-8 conversion), HIGH-2 (test_ac5 always exiting 0), MEDIUM-1 (added file I/O success/backslash/null tests). MEDIUM-2 (CI validation), LOW-1/LOW-2 documented as acceptable.
 
 ### Design Screen Step
 
@@ -363,6 +364,8 @@ The design-screen pipeline step was attempted on 2026-03-04. The task XML Step 0
 - [CREATED by ATDD] `MuMain/tests/platform/test_platform_compat.cpp` — Catch2 timing, MessageBoxW, RtlSecureZeroMemory, _wfopen_s assertions
 - [CREATED by ATDD] `MuMain/tests/platform/test_ac3_pragma_once.cmake` — CMake script test for #pragma once
 - [CREATED by ATDD] `MuMain/tests/platform/test_ac4_header_compilation.cmake` — CMake script test for header existence
-- [MODIFIED] `MuMain/tests/platform/test_ac5_no_game_logic_changes.sh` — Fixed pipefail issue when all #ifdef _WIN32 files are in excluded dirs
+- [MODIFIED] `MuMain/tests/platform/test_ac5_no_game_logic_changes.sh` — Fixed pipefail issue; added baseline enforcement (exits non-zero on regression)
+- [MODIFIED] `MuMain/tests/platform/test_platform_compat.cpp` — Added file I/O success, backslash normalization, and null parameter tests
+- [MODIFIED] `MuMain/src/source/Platform/PlatformCompat.h` — Added UTF-16 surrogate codepoint filtering in mu_wfopen
 - [MODIFIED by ATDD] `MuMain/tests/CMakeLists.txt` — Added platform test sources to MuTests + add_subdirectory(platform)
 - [VERIFIED] `MuMain/src/CMakeLists.txt` — Platform/ confirmed on include path (line 171), no changes needed
