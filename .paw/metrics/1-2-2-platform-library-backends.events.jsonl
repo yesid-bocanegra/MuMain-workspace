@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-05T04:38:05.996827+00:00","event_type":"story_started","story_key":"1-2-2-platform-library-backends","step":null,"sprint":null,"epic":"1","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-05T04:38:05.999529+00:00","event_type":"step_started","story_key":"1-2-2-platform-library-backends","step":"create-story","sprint":null,"epic":"1","data":{}}
