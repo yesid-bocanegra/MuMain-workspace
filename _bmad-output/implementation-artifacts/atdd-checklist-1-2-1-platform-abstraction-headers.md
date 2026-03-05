@@ -3,7 +3,7 @@
 **Story ID:** 1-2-1-platform-abstraction-headers
 **Story Type:** infrastructure
 **Date Generated:** 2026-03-04
-**Phase:** RED (all tests failing — headers not yet implemented)
+**Phase:** GREEN (all tests passing — headers implemented)
 
 ---
 
@@ -25,55 +25,55 @@
 
 ### Header Implementation (RED -> GREEN)
 
-- [ ] Create `MuMain/src/source/Platform/PlatformTypes.h` with all type aliases (DWORD, BOOL, BYTE, WORD, HANDLE, HWND, HDC, HGLRC, HFONT, HINSTANCE, LPARAM, WPARAM, LRESULT, HRESULT, DWORD_PTR, MAX_PATH, TRUE/FALSE, LOWORD/HIWORD, ZeroMemory)
-- [ ] Create `MuMain/src/source/Platform/PlatformKeys.h` with all ~40 VK_* constants
-- [ ] Create `MuMain/src/source/Platform/PlatformCompat.h` with function shims (timeGetTime, GetTickCount, MessageBoxW stub, _wfopen/_wfopen_s, RtlSecureZeroMemory)
-- [ ] All headers wrapped in `#ifndef _WIN32` (no-op on Windows)
-- [ ] All headers use `#pragma once`
-- [ ] PlatformCompat.h includes PlatformTypes.h
+- [x] Create `MuMain/src/source/Platform/PlatformTypes.h` with all type aliases (DWORD, BOOL, BYTE, WORD, HANDLE, HWND, HDC, HGLRC, HFONT, HINSTANCE, LPARAM, WPARAM, LRESULT, HRESULT, DWORD_PTR, MAX_PATH, TRUE/FALSE, LOWORD/HIWORD, ZeroMemory)
+- [x] Create `MuMain/src/source/Platform/PlatformKeys.h` with all ~40 VK_* constants
+- [x] Create `MuMain/src/source/Platform/PlatformCompat.h` with function shims (timeGetTime, GetTickCount, MessageBoxW stub, _wfopen/_wfopen_s, RtlSecureZeroMemory)
+- [x] All headers wrapped in `#ifndef _WIN32` (no-op on Windows)
+- [x] All headers use `#pragma once`
+- [x] PlatformCompat.h includes PlatformTypes.h
 
 ### CMake Integration
 
-- [ ] Verify `Platform/` is in MUCommon/MUPlatform include path (line 171 of src/CMakeLists.txt)
-- [ ] Platform test files registered in `tests/CMakeLists.txt` (MuTests target)
-- [ ] `tests/platform/CMakeLists.txt` registered with `add_subdirectory(platform)`
+- [x] Verify `Platform/` is in MUCommon/MUPlatform include path (line 171 of src/CMakeLists.txt)
+- [x] Platform test files registered in `tests/CMakeLists.txt` (MuTests target)
+- [x] `tests/platform/CMakeLists.txt` registered with `add_subdirectory(platform)`
 
 ### Test Verification (all must pass after implementation)
 
-- [ ] `AC-2: PlatformTypes type size assertions` — sizeof(DWORD)==4, sizeof(BOOL)==sizeof(int), sizeof(BYTE)==1, sizeof(WORD)==2
-- [ ] `AC-2: PlatformTypes constants and macros` — TRUE==1, FALSE==0, MAX_PATH==260, LOWORD/HIWORD
-- [ ] `AC-2: PlatformTypes handle types` — all pointer-sized
-- [ ] `AC-2: PlatformTypes integral parameter types` — LPARAM, WPARAM, LRESULT, HRESULT sizes
-- [ ] `AC-2: PlatformKeys` — all VK_* constants match Windows values
-- [ ] `AC-1: PlatformCompat timing shims` — timeGetTime/GetTickCount non-zero and advancing
-- [ ] `AC-1: PlatformCompat MessageBoxW stub` — returns IDOK, MB_* constants defined
-- [ ] `AC-1: PlatformCompat RtlSecureZeroMemory` — zeroes buffer
-- [ ] `AC-1: PlatformCompat file I/O shims` — _wfopen_s error handling
-- [ ] `AC-3:platform-pragma-once` — all headers have #pragma once
-- [ ] `AC-4:platform-header-existence` — all three headers exist
-- [ ] `AC-5:no-game-logic-ifdef` — no new #ifdef _WIN32 in game logic
+- [x] `AC-2: PlatformTypes type size assertions` — sizeof(DWORD)==4, sizeof(BOOL)==sizeof(int), sizeof(BYTE)==1, sizeof(WORD)==2
+- [x] `AC-2: PlatformTypes constants and macros` — TRUE==1, FALSE==0, MAX_PATH==260, LOWORD/HIWORD
+- [x] `AC-2: PlatformTypes handle types` — all pointer-sized
+- [x] `AC-2: PlatformTypes integral parameter types` — LPARAM, WPARAM, LRESULT, HRESULT sizes
+- [x] `AC-2: PlatformKeys` — all VK_* constants match Windows values
+- [x] `AC-1: PlatformCompat timing shims` — timeGetTime/GetTickCount non-zero and advancing
+- [x] `AC-1: PlatformCompat MessageBoxW stub` — returns IDOK, MB_* constants defined
+- [x] `AC-1: PlatformCompat RtlSecureZeroMemory` — zeroes buffer
+- [x] `AC-1: PlatformCompat file I/O shims` — _wfopen_s error handling
+- [x] `AC-3:platform-pragma-once` — all headers have #pragma once
+- [x] `AC-4:platform-header-existence` — all three headers exist
+- [x] `AC-5:no-game-logic-ifdef` — no new #ifdef _WIN32 in game logic
 
 ### Compile Validation
 
-- [ ] `g++ -fsyntax-only -std=c++20 PlatformTypes.h` passes on macOS/Linux
-- [ ] `g++ -fsyntax-only -std=c++20 PlatformCompat.h` passes on macOS/Linux
-- [ ] `g++ -fsyntax-only -std=c++20 PlatformKeys.h` passes on macOS/Linux
-- [ ] MinGW CI build passes with new headers
+- [x] `g++ -fsyntax-only -std=c++20 PlatformTypes.h` passes on macOS/Linux
+- [x] `g++ -fsyntax-only -std=c++20 PlatformCompat.h` passes on macOS/Linux
+- [x] `g++ -fsyntax-only -std=c++20 PlatformKeys.h` passes on macOS/Linux
+- [ ] MinGW CI build passes with new headers (pending CI run after commit)
 
 ### Quality Gate
 
-- [ ] `./ctl check` passes (format-check + lint)
-- [ ] No clang-tidy warnings in new headers
-- [ ] No cppcheck warnings in new headers
+- [x] `./ctl check` passes (format-check + lint)
+- [x] No clang-tidy warnings in new headers
+- [x] No cppcheck warnings in new headers
 
 ### PCC Compliance
 
-- [ ] No prohibited libraries used (no raw new/delete, no NULL, no wprintf)
-- [ ] Required patterns followed (#pragma once, std::chrono in timing shims, nullptr)
-- [ ] No #ifdef _WIN32 outside Platform/ headers
-- [ ] No backslash path literals in new code
-- [ ] Conventional commit format: `refactor(platform): add cross-platform type aliases and compat headers`
-- [ ] Flow code traceability: commit references VS0-PLAT-ABSTRACT-HEADERS
+- [x] No prohibited libraries used (no raw new/delete, no NULL, no wprintf)
+- [x] Required patterns followed (#pragma once, std::chrono in timing shims, nullptr)
+- [x] No #ifdef _WIN32 outside Platform/ headers
+- [x] No backslash path literals in new code
+- [ ] Conventional commit format: `refactor(platform): add cross-platform type aliases and compat headers` (pending commit)
+- [ ] Flow code traceability: commit references VS0-PLAT-ABSTRACT-HEADERS (pending commit)
 
 ---
 
