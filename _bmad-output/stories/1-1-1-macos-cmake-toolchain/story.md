@@ -1,6 +1,6 @@
 # Story 1.1.1: Create macOS CMake Toolchain & Presets
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,57 +42,57 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** `MuMain/cmake/toolchains/macos-arm64.cmake` exists with Clang configuration, C++20 standard, and correct system framework paths
-- [ ] **AC-2:** `MuMain/CMakePresets.json` includes `macos-arm64` configure and build presets (Debug + Release) with `hostSystemName == "Darwin"` condition
-- [ ] **AC-3:** `cmake --preset macos-arm64` succeeds on macOS (configure step only — full compile blocked by Win32/DirectX APIs until SDL3 migration is complete)
-- [ ] **AC-4:** Windows MSVC presets (`windows-x86`, `windows-x86-mueditor`, `windows-x64`, `windows-x64-mueditor`) are unchanged and all existing build presets remain valid
+- [x] **AC-1:** `MuMain/cmake/toolchains/macos-arm64.cmake` exists with Clang configuration, C++20 standard, and correct system framework paths
+- [x] **AC-2:** `MuMain/CMakePresets.json` includes `macos-arm64` configure and build presets (Debug + Release) with `hostSystemName == "Darwin"` condition
+- [x] **AC-3:** `cmake --preset macos-arm64` succeeds on macOS (configure step only — full compile blocked by Win32/DirectX APIs until SDL3 migration is complete)
+- [x] **AC-4:** Windows MSVC presets (`windows-x86`, `windows-x86-mueditor`, `windows-x64`, `windows-x64-mueditor`) are unchanged and all existing build presets remain valid
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance — CMake files use forward slashes, no hardcoded absolute paths, toolchain file follows conventions established in `mingw-w64-i686.cmake` and `linux-x64.cmake`
-- [ ] **AC-STD-2:** No Catch2 tests required — build system only; CI is the validation mechanism
-- [ ] **AC-STD-3:** No banned Win32 APIs introduced
-- [ ] **AC-STD-4:** CI quality gate passes (`make -C MuMain format-check && make -C MuMain lint`) — build/test skipped on macOS per `.pcc-config.yaml` `skip_checks: [build, test]`
-- [ ] **AC-STD-5:** Conventional commit: `build(platform): add macOS CMake toolchain and presets`
+- [x] **AC-STD-1:** Code Standards Compliance — CMake files use forward slashes, no hardcoded absolute paths, toolchain file follows conventions established in `mingw-w64-i686.cmake` and `linux-x64.cmake`
+- [x] **AC-STD-2:** No Catch2 tests required — build system only; CI is the validation mechanism
+- [x] **AC-STD-3:** No banned Win32 APIs introduced
+- [x] **AC-STD-4:** CI quality gate passes (`make -C MuMain format-check && make -C MuMain lint`) — build/test skipped on macOS per `.pcc-config.yaml` `skip_checks: [build, test]`
+- [x] **AC-STD-5:** Conventional commit: `build(platform): add macOS CMake toolchain and presets`
 
 ### NFR Acceptance Criteria (Infrastructure)
 
-- [ ] **AC-STD-13:** Quality Gate passes: `make -C MuMain format-check && make -C MuMain lint`
-- [ ] **AC-STD-15:** Git safety: no incomplete rebase, no force push, no `--no-verify` hooks
+- [x] **AC-STD-13:** Quality Gate passes: `make -C MuMain format-check && make -C MuMain lint`
+- [x] **AC-STD-15:** Git safety: no incomplete rebase, no force push, no `--no-verify` hooks
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** macOS configure log showing successful `cmake --preset macos-arm64` run (exit code 0)
-- [ ] **AC-VAL-2:** Windows build confirmed not regressed — existing presets (`windows-x64`, `windows-x64-mueditor`) still valid JSON and unchanged
+- [x] **AC-VAL-1:** macOS configure log showing successful `cmake --preset macos-arm64` run (exit code 0)
+- [x] **AC-VAL-2:** Windows build confirmed not regressed — existing presets (`windows-x64`, `windows-x64-mueditor`) still valid JSON and unchanged
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create `MuMain/cmake/toolchains/macos-arm64.cmake` toolchain file (AC: 1)
-  - [ ] 1.1: Set `CMAKE_SYSTEM_NAME Darwin` and `CMAKE_SYSTEM_PROCESSOR arm64`
-  - [ ] 1.2: Set `CMAKE_C_COMPILER clang` and `CMAKE_CXX_COMPILER clang++`
-  - [ ] 1.3: Set `CMAKE_CXX_STANDARD 20`, `CMAKE_CXX_STANDARD_REQUIRED ON`, `CMAKE_CXX_EXTENSIONS OFF`
-  - [ ] 1.4: Add `-isysroot` with `$(xcrun --sdk macosx --show-sdk-path)` or detect via CMake's `CMAKE_OSX_SYSROOT`
-  - [ ] 1.5: Set `CMAKE_OSX_ARCHITECTURES arm64`
-  - [ ] 1.6: Add comment block explaining configure-only status (full compile blocked until SDL3 migration)
-- [ ] Task 2: Add macOS presets to `MuMain/CMakePresets.json` (AC: 2, 4)
-  - [ ] 2.1: Add `macos-base` hidden configure preset with `hostSystemName == "Darwin"` condition, Ninja Multi-Config generator
-  - [ ] 2.2: Add `macos-arm64` configure preset inheriting `macos-base`, pointing to `cmake/toolchains/macos-arm64.cmake`
-  - [ ] 2.3: Add `macos-arm64-debug` build preset
-  - [ ] 2.4: Add `macos-arm64-release` build preset
-  - [ ] 2.5: Validate existing Windows presets are structurally unchanged (JSON diff review)
-- [ ] Task 3: Validate configure on macOS (AC: 3)
-  - [ ] 3.1: Run `cmake --preset macos-arm64` in the `MuMain/` directory
-  - [ ] 3.2: Capture configure output as validation artifact (or document expected errors from Win32 headers)
-  - [ ] 3.3: Confirm exit code 0 (configure success) or document any expected errors with rationale
-- [ ] Task 4: Run quality gate (AC: STD-4)
-  - [ ] 4.1: Run `./ctl check` from workspace root
-  - [ ] 4.2: Confirm format-check and lint pass (670/670 files pattern from story 1.1.2)
+- [x] Task 1: Create `MuMain/cmake/toolchains/macos-arm64.cmake` toolchain file (AC: 1)
+  - [x] 1.1: Set `CMAKE_SYSTEM_NAME Darwin` and `CMAKE_SYSTEM_PROCESSOR arm64`
+  - [x] 1.2: Set `CMAKE_C_COMPILER clang` and `CMAKE_CXX_COMPILER clang++`
+  - [x] 1.3: Set `CMAKE_CXX_STANDARD 20`, `CMAKE_CXX_STANDARD_REQUIRED ON`, `CMAKE_CXX_EXTENSIONS OFF`
+  - [x] 1.4: Add `-isysroot` with `$(xcrun --sdk macosx --show-sdk-path)` or detect via CMake's `CMAKE_OSX_SYSROOT`
+  - [x] 1.5: Set `CMAKE_OSX_ARCHITECTURES arm64`
+  - [x] 1.6: Add comment block explaining configure-only status (full compile blocked until SDL3 migration)
+- [x] Task 2: Add macOS presets to `MuMain/CMakePresets.json` (AC: 2, 4)
+  - [x] 2.1: Add `macos-base` hidden configure preset with `hostSystemName == "Darwin"` condition, Ninja Multi-Config generator
+  - [x] 2.2: Add `macos-arm64` configure preset inheriting `macos-base`, pointing to `cmake/toolchains/macos-arm64.cmake`
+  - [x] 2.3: Add `macos-arm64-debug` build preset
+  - [x] 2.4: Add `macos-arm64-release` build preset
+  - [x] 2.5: Validate existing Windows presets are structurally unchanged (JSON diff review)
+- [x] Task 3: Validate configure on macOS (AC: 3)
+  - [x] 3.1: Run `cmake --preset macos-arm64` in the `MuMain/` directory
+  - [x] 3.2: Capture configure output as validation artifact (or document expected errors from Win32 headers)
+  - [x] 3.3: Confirm exit code 0 (configure success) or document any expected errors with rationale
+- [x] Task 4: Run quality gate (AC: STD-4)
+  - [x] 4.1: Run `./ctl check` from workspace root
+  - [x] 4.2: Confirm format-check and lint pass (670/670 files pattern from story 1.1.2)
 
 ---
 
@@ -295,9 +295,15 @@ Story 1.1.2 key decisions with applicability:
 
 ### Agent Model Used
 
-claude-sonnet-4-6
+claude-opus-4-6
 
 ### Debug Log References
+
+- AC-1 test: PASSED (toolchain file validated)
+- AC-2 test: PASSED (presets validated)
+- AC-3 test: PASSED (cmake --preset macos-arm64 configure exit code 0)
+- AC-4 test: PASSED (Windows/Linux presets unchanged)
+- Quality gate: 670/670 files passed format-check + lint
 
 ### Completion Notes List
 
@@ -308,8 +314,13 @@ claude-sonnet-4-6
 - Story type: `infrastructure` (build system only — no frontend design screen needed)
 - Schema alignment: N/A for build system story (no API schemas affected)
 - Sprint status: story was `ready-for-dev` in sprint-status.yaml at create time (pre-existing state)
+- Implementation completed by dev-story workflow on 2026-03-04
+- Toolchain follows linux-x64.cmake pattern with macOS-specific SDK detection via xcrun
+- CMakePresets.json follows hidden base + inherit pattern consistent with windows-base and linux-base
+- Configure succeeds on macOS (Clang 21.1.8 detected, .NET SDK found)
+- All 4 ATDD tests GREEN, quality gate passed
 
 ### File List
 
-- `MuMain/cmake/toolchains/macos-arm64.cmake` [CREATE]
-- `MuMain/CMakePresets.json` [MODIFY] — add macos-base, macos-arm64 configure presets + build presets
+- `MuMain/cmake/toolchains/macos-arm64.cmake` [CREATE] — macOS arm64 toolchain with Clang, C++20, xcrun SDK detection
+- `MuMain/CMakePresets.json` [MODIFY] — add macos-base (hidden), macos-arm64 configure presets + debug/release build presets
