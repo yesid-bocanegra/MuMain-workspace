@@ -13,3 +13,5 @@
 {"timestamp":"2026-03-05T16:35:31.663340+00:00","event_type":"step_passed","story_key":"1-4-1-build-documentation","step":"completeness-gate","sprint":null,"epic":"1","data":{"duration_seconds":108.1,"input_tokens":10,"output_tokens":4322}}
 {"timestamp":"2026-03-05T16:35:32.669667+00:00","event_type":"step_started","story_key":"1-4-1-build-documentation","step":"code-review","sprint":null,"epic":"1","data":{}}
 {"timestamp":"2026-03-05T00:00:00Z","event_type":"workflow_metric:code_review_completed","story_key":"1-4-1-build-documentation","step":"code-review-finalize","sprint":null,"epic":"1","data":{"final_status":"done","issues_fixed":5,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
+{"timestamp":"2026-03-05T17:00:00.726515+00:00","event_type":"step_passed","story_key":"1-4-1-build-documentation","step":"code-review","sprint":null,"epic":"1","data":{"duration_seconds":1468.1,"input_tokens":35,"output_tokens":10339}}
+{"timestamp":"2026-03-05T17:00:01.732195+00:00","event_type":"step_started","story_key":"1-4-1-build-documentation","step":"code-review-qg","sprint":null,"epic":"1","data":{}}
