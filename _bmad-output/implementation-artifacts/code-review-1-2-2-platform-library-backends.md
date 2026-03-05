@@ -10,7 +10,7 @@
 
 | Step | Status | Started | Completed |
 |------|--------|---------|-----------|
-| 1. Quality Gate | PASSED | 2026-03-05 | 2026-03-05 |
+| 1. Quality Gate | PASSED | 2026-03-05 | 2026-03-05 (re-validated 2026-03-05) |
 | 2. Code Review Analysis | COMPLETED | 2026-03-05 | 2026-03-05 |
 | 3. Code Review Finalize | COMPLETED | 2026-03-05 | 2026-03-05 |
 
@@ -33,6 +33,8 @@
 | Backend SonarCloud (mumain) | SKIPPED (no sonar_cmd in tech profile) | — | — |
 | Frontend Local | N/A (no frontend) | — | — |
 | Frontend SonarCloud | N/A (no frontend) | — | — |
+
+**Re-validated:** 2026-03-05 — Fresh run confirmed clean (676/676 files, 0 violations)
 
 ---
 
@@ -240,3 +242,4 @@ N/A - Story type is `infrastructure`, no frontend feature or fullstack story.
 | AC compliance | SKIPPED (infrastructure) |
 | Boot verification | SKIPPED (not configured) |
 | Quality gate (format+lint) | PASSED |
+| Quality gate re-run (2026-03-05) | PASSED (format-check exit:0, lint exit:0, 676/676 files) |
