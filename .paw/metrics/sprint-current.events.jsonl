@@ -224,3 +224,7 @@
 {"timestamp":"2026-03-05T08:19:03.059807+00:00","event_type":"step_started","story_key":"1-3-1-sdl3-dependency-integration","step":"ac-validation","sprint":null,"epic":"1","data":{}}
 {"timestamp":"2026-03-05T08:21:12.162802+00:00","event_type":"step_passed","story_key":"1-3-1-sdl3-dependency-integration","step":"ac-validation","sprint":null,"epic":"1","data":{"duration_seconds":129.1,"input_tokens":18,"output_tokens":6159}}
 {"timestamp":"2026-03-05T08:21:13.174200+00:00","event_type":"step_started","story_key":"1-3-1-sdl3-dependency-integration","step":"ui-validation","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T08:25:20.140279+00:00","event_type":"step_failed","story_key":"1-3-1-sdl3-dependency-integration","step":"ui-validation","sprint":null,"epic":"1","data":{"duration_seconds":247.0,"retry_count":0,"error":"MAX_TURNS_REACHED","input_tokens":31,"output_tokens":9909}}
+{"timestamp":"2026-03-05T08:25:20.141871+00:00","event_type":"step_retried","story_key":"1-3-1-sdl3-dependency-integration","step":"ui-validation","sprint":null,"epic":"1","data":{"attempt":2}}
+{"timestamp":"2026-03-05T08:25:20.142436+00:00","event_type":"feedback_saved","story_key":"1-3-1-sdl3-dependency-integration","step":"ui-validation","sprint":null,"epic":"1","data":{"regression_target":"ui-validation"}}
+{"timestamp":"2026-03-05T08:25:22.153001+00:00","event_type":"step_started","story_key":"1-3-1-sdl3-dependency-integration","step":"ui-validation","sprint":null,"epic":"1","data":{}}
