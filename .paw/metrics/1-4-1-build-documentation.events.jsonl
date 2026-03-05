@@ -1,2 +1,4 @@
 {"timestamp":"2026-03-05T16:04:15.306257+00:00","event_type":"story_started","story_key":"1-4-1-build-documentation","step":null,"sprint":null,"epic":"1","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-05T16:04:15.307098+00:00","event_type":"step_started","story_key":"1-4-1-build-documentation","step":"create-story","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T16:08:17.459669+00:00","event_type":"step_passed","story_key":"1-4-1-build-documentation","step":"create-story","sprint":null,"epic":"1","data":{"duration_seconds":242.2,"input_tokens":9,"output_tokens":1095}}
+{"timestamp":"2026-03-05T16:08:18.466880+00:00","event_type":"step_started","story_key":"1-4-1-build-documentation","step":"validate-story","sprint":null,"epic":"1","data":{}}
