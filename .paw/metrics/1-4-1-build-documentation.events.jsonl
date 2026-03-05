@@ -8,3 +8,5 @@
 {"timestamp":"2026-03-05T16:13:31.229471+00:00","event_type":"step_started","story_key":"1-4-1-build-documentation","step":"design-screen","sprint":null,"epic":"1","data":{}}
 {"timestamp":"2026-03-05T16:13:31.229941+00:00","event_type":"step_passed","story_key":"1-4-1-build-documentation","step":"design-screen","sprint":null,"epic":"1","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
 {"timestamp":"2026-03-05T16:13:32.235494+00:00","event_type":"step_started","story_key":"1-4-1-build-documentation","step":"dev-story","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T16:33:42.521752+00:00","event_type":"step_passed","story_key":"1-4-1-build-documentation","step":"dev-story","sprint":null,"epic":"1","data":{"duration_seconds":1210.3,"input_tokens":5,"output_tokens":506}}
+{"timestamp":"2026-03-05T16:33:43.528214+00:00","event_type":"step_started","story_key":"1-4-1-build-documentation","step":"completeness-gate","sprint":null,"epic":"1","data":{}}
