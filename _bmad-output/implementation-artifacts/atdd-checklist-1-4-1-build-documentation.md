@@ -31,43 +31,43 @@
 
 ### Task 1: Update docs/development-guide.md — macOS section (AC-1, AC-3)
 
-- [ ] 1.1 Add "macOS — Native Build (arm64 + x64)" subsection after existing "macOS — Quality Gates Only" section
-- [ ] 1.2 List prerequisites: Xcode CLI tools (Clang 15+ for C++20), cmake, ninja via brew
-- [ ] 1.3 Document `cmake --preset macos-arm64` and `cmake --preset macos-x64` configure commands
-- [ ] 1.4 Document `cmake --build --preset macos-arm64-debug` build step
-- [ ] 1.5 Note SDL3 FetchContent behavior (internet required, ~30 sec on first configure)
-- [ ] 1.6 Note .NET SDK requirement for server connectivity
+- [x] 1.1 Add "macOS — Native Build (arm64 + x64)" subsection after existing "macOS — Quality Gates Only" section
+- [x] 1.2 List prerequisites: Xcode CLI tools (Clang 15+ for C++20), cmake, ninja via brew
+- [x] 1.3 Document `cmake --preset macos-arm64` and `cmake --preset macos-x64` configure commands
+- [x] 1.4 Document `cmake --build --preset macos-arm64-debug` build step
+- [x] 1.5 Note SDL3 FetchContent behavior (internet required, ~30 sec on first configure)
+- [x] 1.6 Note .NET SDK requirement for server connectivity
 
 ### Task 2: Update docs/development-guide.md — Linux native section (AC-2, AC-3)
 
-- [ ] 2.1 Add "Linux — Native Build (x64)" subsection distinct from existing MinGW section
-- [ ] 2.2 List prerequisites: cmake, ninja-build, gcc (12+), g++, libgl1-mesa-dev
-- [ ] 2.3 Document `cmake --preset linux-x64` and `cmake --build --preset linux-x64-debug`
-- [ ] 2.4 Note SDL3 FetchContent behavior
-- [ ] 2.5 Note native Linux binary output (not .exe), Win32 includes guarded by cross-platform headers
+- [x] 2.1 Add "Linux — Native Build (x64)" subsection distinct from existing MinGW section
+- [x] 2.2 List prerequisites: cmake, ninja-build, gcc (12+), g++, libgl1-mesa-dev
+- [x] 2.3 Document `cmake --preset linux-x64` and `cmake --build --preset linux-x64-debug`
+- [x] 2.4 Note SDL3 FetchContent behavior
+- [x] 2.5 Note native Linux binary output (not .exe), Win32 includes guarded by cross-platform headers
 
 ### Task 3: Update troubleshooting section (AC-4)
 
-- [ ] 3.1 Add macOS troubleshooting: SDL3 FetchContent slow/fails, cannot find framework
-- [ ] 3.2 Add Linux troubleshooting: libGL not found, C++20 features unavailable (GCC 12+), SDL3 FetchContent
-- [ ] 3.3 Preserve all existing troubleshooting entries
+- [x] 3.1 Add macOS troubleshooting: SDL3 FetchContent slow/fails, cannot find framework
+- [x] 3.2 Add Linux troubleshooting: libGL not found, C++20 features unavailable (GCC 12+), SDL3 FetchContent
+- [x] 3.3 Preserve all existing troubleshooting entries
 
 ### Task 4: Update CLAUDE.md build commands (AC-5)
 
-- [ ] 4.1 Add macOS native build commands to "Build Commands (by OS)" section
-- [ ] 4.2 Add Linux native build commands alongside existing MinGW WSL commands
-- [ ] 4.3 Note macOS native build uses `cmake --preset macos-arm64` (not `./ctl check`)
-- [ ] 4.4 Verify all existing CLAUDE.md content preserved (additive only)
+- [x] 4.1 Add macOS native build commands to "Build Commands (by OS)" section
+- [x] 4.2 Add Linux native build commands alongside existing MinGW WSL commands
+- [x] 4.3 Note macOS native build uses `cmake --preset macos-arm64` (not `./ctl check`)
+- [x] 4.4 Verify all existing CLAUDE.md content preserved (additive only)
 
 ### Task 5: Quality gate (AC-STD-4, AC-STD-13)
 
-- [ ] 5.1 Run `./ctl check` (format-check + lint) — must pass
-- [ ] 5.2 Verify CMakePresets.json was NOT modified (documentation only)
+- [x] 5.1 Run `./ctl check` (format-check + lint) — must pass
+- [x] 5.2 Verify CMakePresets.json was NOT modified (documentation only)
 
 ### Verification Prerequisites
 
-- [ ] Verify exact preset names in `MuMain/CMakePresets.json` before writing docs
-- [ ] Verify existing development-guide.md structure and style before adding sections
+- [x] Verify exact preset names in `MuMain/CMakePresets.json` before writing docs
+- [x] Verify existing development-guide.md structure and style before adding sections
 
 ---
 

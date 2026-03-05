@@ -52,6 +52,38 @@ make format-check
 make lint
 ```
 
+#### macOS — Native Build (arm64)
+
+macOS can now configure the CMake project natively using the `macos-arm64` preset. Full compilation is blocked until the SDL3 windowing migration (EPIC-2) removes Win32 API dependencies from game logic, but the configure step succeeds and validates the build system.
+
+**Prerequisites:**
+
+| Requirement | Version | Install |
+|-------------|---------|---------|
+| Xcode Command Line Tools | Latest | `xcode-select --install` |
+| Clang | 15+ (ships with Xcode CLI tools) | Included with Xcode CLI tools |
+| CMake | 3.25+ | `brew install cmake` |
+| Ninja | Latest | `brew install ninja` |
+
+```bash
+# Install build tools (one-time, Clang ships with Xcode CLI tools)
+xcode-select --install
+brew install cmake ninja
+
+# Configure (from MuMain/ directory)
+cd MuMain
+cmake --preset macos-arm64
+
+# Attempt build (will partially succeed — Win32 translation units fail until EPIC-2)
+cmake --build --preset macos-arm64-debug
+```
+
+> **Note:** SDL3 is fetched via FetchContent on the first configure (requires internet, ~30 seconds). Subsequent configures use the cached download. To skip SDL3 for quality-gate-only work, use `./ctl check` from the workspace root instead.
+
+> **Note:** .NET SDK is required for server connectivity. The game configures without it, but cannot connect to servers. See the [.NET SDK note](#3-run) for details.
+
+> **Current limitation:** `cmake --build` will fail on translation units that include Win32 headers (`windows.h`, DirectX). This is expected — the SDL3 cross-platform migration (EPIC-2+) will progressively remove these dependencies. The configure step validates that CMake, toolchains, and SDL3 integration are working correctly.
+
 #### Linux / WSL — Full Build (Recommended)
 
 MinGW cross-compiles a 32-bit Windows `.exe` from Linux. **WSL is the recommended daily-dev environment** — fastest iteration with Claude Code.
@@ -75,6 +107,37 @@ cd .. && ./ctl check
 ```
 
 > **Note:** .NET Native AOT (`ClientLibrary/`) requires Windows `dotnet.exe`. On WSL, it is found via interop at `/mnt/c/Program Files/dotnet/dotnet.exe`. On native Linux without Windows, the game compiles but cannot connect to servers (the .NET DLL is skipped).
+
+#### Linux — Native Build (x64)
+
+Linux can configure and attempt to build the project natively using the `linux-x64` preset. Like macOS, full compilation is blocked until the SDL3 windowing migration (EPIC-2) removes Win32 API dependencies, but the configure step succeeds and validates the build system. This is distinct from the MinGW/WSL cross-compile above, which produces a Windows `.exe`.
+
+**Prerequisites:**
+
+| Requirement | Version | Install |
+|-------------|---------|---------|
+| GCC | 12+ (for full C++20 support) | `sudo apt-get install gcc g++` |
+| CMake | 3.25+ | `sudo apt-get install cmake` |
+| Ninja | Latest | `sudo apt-get install ninja-build` |
+| OpenGL dev headers | Latest | `sudo apt-get install libgl1-mesa-dev` |
+
+```bash
+# Install toolchain (one-time)
+sudo apt-get update && sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev
+
+# Configure (from MuMain/ directory)
+cd MuMain
+cmake --preset linux-x64
+
+# Attempt build (will partially succeed — Win32 translation units fail until EPIC-2)
+cmake --build --preset linux-x64-debug
+```
+
+> **Note:** SDL3 is fetched via FetchContent on the first configure (requires internet, ~30 seconds). Subsequent configures use the cached download.
+
+> **Note:** The native Linux build produces a native Linux binary (not a Windows `.exe`). Game logic still includes Win32 headers, but cross-platform abstraction headers from EPIC-1 guard them. Full compilation will succeed progressively as EPIC-2+ removes Win32 dependencies.
+
+> **Note:** .NET SDK is required for server connectivity. On native Linux without Windows, the .NET DLL is skipped — the game configures but cannot connect to servers.
 
 #### Windows — MSVC Presets
 
@@ -298,6 +361,8 @@ GitHub Actions runs on every PR to `main`:
 
 ## Common Issues
 
+### General / MinGW / Windows
+
 | Issue | Solution |
 |-------|----------|
 | `Cannot find -lturbojpeg` | Install MinGW-w64 libjpeg-turbo or set `MU_TURBOJPEG_STATIC_LIB` |
@@ -305,6 +370,25 @@ GitHub Actions runs on every PR to `main`:
 | ImGui submodule missing | `git submodule update --init` from repository root |
 | NuGet cache fails (umlauts in path) | Set `cmake -DMU_NUGET_CACHE_DIR=C:/.mu-nuget` |
 | Z: drive slow builds (CLion) | Put build output on Windows-native drive: `C:\build\MuMain-...` |
+
+### macOS
+
+| Issue | Solution |
+|-------|----------|
+| SDL3 FetchContent slow or fails | Check internet connection. FetchContent downloads SDL3 from GitHub on first configure (~30 sec). If behind a proxy, configure `HTTP_PROXY`/`HTTPS_PROXY` environment variables. To skip SDL3 entirely for quality-gate-only work, use `./ctl check` instead of configuring with a preset. |
+| `Cannot find framework` / missing system headers | Ensure Xcode Command Line Tools are installed: `xcode-select --install`. If recently updated macOS, re-run the install command. |
+| `cmake --preset macos-arm64` fails with "preset not found" | Ensure you are running from the `MuMain/` directory (not the workspace root). Presets are defined in `MuMain/CMakePresets.json`. |
+| Build fails on Win32 translation units | Expected behavior until EPIC-2 completes the SDL3 windowing migration. The configure step succeeding is the current goal. |
+
+### Linux
+
+| Issue | Solution |
+|-------|----------|
+| `libGL not found` / `GL/gl.h: No such file` | Install OpenGL development headers: `sudo apt-get install libgl1-mesa-dev` |
+| C++20 features not available / compilation errors | Upgrade to GCC 12+: `sudo apt-get install gcc-12 g++-12` and set `CC=gcc-12 CXX=g++-12` before configuring. |
+| SDL3 FetchContent slow or fails | Same as macOS — check internet connection. FetchContent downloads SDL3 from GitHub on first configure. Configure proxy variables if needed. |
+| `cmake --preset linux-x64` fails with "preset not found" | Ensure you are running from the `MuMain/` directory. Also verify the host OS condition: the preset requires `hostSystemName == Linux` (will not work under WSL if CMake reports Windows). |
+| Build fails on Win32 translation units | Expected behavior until EPIC-2 completes the SDL3 windowing migration. The configure step succeeding is the current goal. |
 
 ## Project Conventions
 

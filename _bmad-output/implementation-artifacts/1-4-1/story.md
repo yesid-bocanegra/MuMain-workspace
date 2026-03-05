@@ -1,6 +1,6 @@
 # Story 1.4.1: Build Documentation Per Platform
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -73,35 +73,35 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Update `docs/development-guide.md` — macOS section** (AC: AC-1, AC-3)
-  - [ ] 1.1 Add "macOS — Native Build (arm64 + x64)" subsection after the existing "macOS — Quality Gates Only" section in `docs/development-guide.md`
-  - [ ] 1.2 List prerequisites: `brew install cmake ninja clang` (Clang ships with Xcode CLI tools); note required Clang version (Clang 15+ for C++20 full support)
-  - [ ] 1.3 Document the `cmake --preset macos-arm64` and `cmake --preset macos-x64` configure commands (from `CMakePresets.json`)
-  - [ ] 1.4 Document `cmake --build --preset macos-arm64-debug` build step
-  - [ ] 1.5 Note that SDL3 will be fetched by FetchContent on first configure (internet required, ~30 sec)
-  - [ ] 1.6 Note that `.NET` is required for server connectivity (see existing .NET SDK note) — game configures without it
+- [x] **Task 1: Update `docs/development-guide.md` — macOS section** (AC: AC-1, AC-3)
+  - [x] 1.1 Add "macOS — Native Build (arm64 + x64)" subsection after the existing "macOS — Quality Gates Only" section in `docs/development-guide.md`
+  - [x] 1.2 List prerequisites: `brew install cmake ninja clang` (Clang ships with Xcode CLI tools); note required Clang version (Clang 15+ for C++20 full support)
+  - [x] 1.3 Document the `cmake --preset macos-arm64` and `cmake --preset macos-x64` configure commands (from `CMakePresets.json`)
+  - [x] 1.4 Document `cmake --build --preset macos-arm64-debug` build step
+  - [x] 1.5 Note that SDL3 will be fetched by FetchContent on first configure (internet required, ~30 sec)
+  - [x] 1.6 Note that `.NET` is required for server connectivity (see existing .NET SDK note) — game configures without it
 
-- [ ] **Task 2: Update `docs/development-guide.md` — Linux native section** (AC: AC-2, AC-3)
-  - [ ] 2.1 Add "Linux — Native Build (x64)" subsection distinct from the existing "Linux / WSL — Full Build (Recommended)" MinGW section
-  - [ ] 2.2 List prerequisites: `sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev`; note GCC 12+ for C++20 full support
-  - [ ] 2.3 Document `cmake --preset linux-x64` configure and `cmake --build --preset linux-x64-debug` build
-  - [ ] 2.4 Note SDL3 FetchContent behavior (same as macOS note above)
-  - [ ] 2.5 Note that the native Linux build produces a native Linux binary (not a `.exe`) — game logic still has Win32 includes but cross-platform headers from EPIC-1 guard them
+- [x] **Task 2: Update `docs/development-guide.md` — Linux native section** (AC: AC-2, AC-3)
+  - [x] 2.1 Add "Linux — Native Build (x64)" subsection distinct from the existing "Linux / WSL — Full Build (Recommended)" MinGW section
+  - [x] 2.2 List prerequisites: `sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev`; note GCC 12+ for C++20 full support
+  - [x] 2.3 Document `cmake --preset linux-x64` configure and `cmake --build --preset linux-x64-debug` build
+  - [x] 2.4 Note SDL3 FetchContent behavior (same as macOS note above)
+  - [x] 2.5 Note that the native Linux build produces a native Linux binary (not a `.exe`) — game logic still has Win32 includes but cross-platform headers from EPIC-1 guard them
 
-- [ ] **Task 3: Update troubleshooting section** (AC: AC-4)
-  - [ ] 3.1 Add macOS troubleshooting entries: "SDL3 FetchContent slow/fails" (check internet, use `MU_ENABLE_SDL3=OFF` to skip), "Cannot find framework" (ensure Xcode CLI tools installed with `xcode-select --install`)
-  - [ ] 3.2 Add Linux troubleshooting entries: "libGL not found" (`sudo apt-get install libgl1-mesa-dev`), "C++20 features not available" (upgrade to GCC 12+), "SDL3 FetchContent fails" (same SDL3 note as macOS)
-  - [ ] 3.3 Preserve all existing troubleshooting entries (MinGW, .NET, NuGet, ImGui submodule, etc.)
+- [x] **Task 3: Update troubleshooting section** (AC: AC-4)
+  - [x] 3.1 Add macOS troubleshooting entries: "SDL3 FetchContent slow/fails" (check internet, use `MU_ENABLE_SDL3=OFF` to skip), "Cannot find framework" (ensure Xcode CLI tools installed with `xcode-select --install`)
+  - [x] 3.2 Add Linux troubleshooting entries: "libGL not found" (`sudo apt-get install libgl1-mesa-dev`), "C++20 features not available" (upgrade to GCC 12+), "SDL3 FetchContent fails" (same SDL3 note as macOS)
+  - [x] 3.3 Preserve all existing troubleshooting entries (MinGW, .NET, NuGet, ImGui submodule, etc.)
 
-- [ ] **Task 4: Update `CLAUDE.md` build commands** (AC: AC-5)
-  - [ ] 4.1 Add macOS native build commands to the "Build Commands (by OS)" section in `CLAUDE.md`
-  - [ ] 4.2 Add Linux native build commands to the Linux section (alongside existing MinGW WSL commands)
-  - [ ] 4.3 Note that macOS native build uses `cmake --preset macos-arm64` (not `./ctl check` which is quality-gates-only)
-  - [ ] 4.4 Verify all existing CLAUDE.md content is preserved; this is additive only
+- [x] **Task 4: Update `CLAUDE.md` build commands** (AC: AC-5)
+  - [x] 4.1 Add macOS native build commands to the "Build Commands (by OS)" section in `CLAUDE.md`
+  - [x] 4.2 Add Linux native build commands to the Linux section (alongside existing MinGW WSL commands)
+  - [x] 4.3 Note that macOS native build uses `cmake --preset macos-arm64` (not `./ctl check` which is quality-gates-only)
+  - [x] 4.4 Verify all existing CLAUDE.md content is preserved; this is additive only
 
-- [ ] **Task 5: Quality gate** (AC: AC-STD-13)
-  - [ ] 5.1 Run `./ctl check` (format-check + lint) — must pass (no C++ files changed, only Markdown)
-  - [ ] 5.2 Verify `CMakePresets.json` was NOT modified in this story (documentation only)
+- [x] **Task 5: Quality gate** (AC: AC-STD-13)
+  - [x] 5.1 Run `./ctl check` (format-check + lint) — must pass (no C++ files changed, only Markdown)
+  - [x] 5.2 Verify `CMakePresets.json` was NOT modified in this story (documentation only)
 
 ---
 
@@ -208,19 +208,22 @@ The dev agent should verify the exact preset names in `MuMain/CMakePresets.json`
 
 ### Agent Model Used
 
-claude-sonnet-4-6
+claude-opus-4-6
 
 ### Debug Log References
 
-_None yet._
+- Verified CMakePresets.json contains `macos-arm64` (configure), `macos-arm64-debug` (build), `linux-x64` (configure), `linux-x64-debug` (build). Note: `macos-x64` preset does NOT exist in CMakePresets.json -- only `macos-arm64` is available. Documentation reflects actual presets only.
+- Quality gate (`./ctl check`): format-check passed (exit 0), cppcheck lint passed (676/676 files, exit 0).
+- CMakePresets.json verified NOT modified (documentation-only story).
 
 ### Completion Notes List
 
-_None yet._
+- Added "macOS -- Native Build (arm64)" section to `docs/development-guide.md` with prerequisites table (Xcode CLI tools, Clang 15+, CMake 3.25+, Ninja), configure/build commands, SDL3 FetchContent note, .NET note, and current-limitation note about partial build.
+- Added "Linux -- Native Build (x64)" section to `docs/development-guide.md` with prerequisites table (GCC 12+, CMake, Ninja, libgl1-mesa-dev), configure/build commands, SDL3 FetchContent note, native binary note, and .NET note.
+- Restructured "Common Issues" troubleshooting section into platform-specific subsections (General/MinGW/Windows, macOS, Linux) with 5 macOS and 5 Linux troubleshooting entries added. All existing entries preserved.
+- Updated `CLAUDE.md` with new "macOS -- Native Build (arm64)" and "Linux -- Native Build (x64)" sections. Renamed existing Linux section to "Linux / WSL -- MinGW Cross-Compile (Recommended)" for clarity. All existing content preserved.
 
 ### File List
 
-Files to modify (documentation only — no C++ or CMake files):
-
-- [MODIFY] `docs/development-guide.md` — Add macOS native build section, Linux native section, update troubleshooting
-- [MODIFY] `CLAUDE.md` — Update "Build Commands (by OS)" section with macOS and Linux native preset commands
+- [MODIFY] `docs/development-guide.md` -- Added macOS native build section, Linux native build section, restructured troubleshooting into platform subsections
+- [MODIFY] `CLAUDE.md` -- Added macOS native build section, Linux native build section, renamed existing Linux section for clarity

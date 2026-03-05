@@ -32,7 +32,24 @@ brew install clang-format cppcheck          # one-time
 ./ctl format                                # auto-format all C++ files
 ```
 
-### Linux / WSL — Full Build (Recommended)
+### macOS — Native Build (arm64)
+
+macOS can configure the CMake project natively. Full compilation is blocked until EPIC-2 (SDL3 windowing migration), but configure succeeds and validates the build system.
+
+```bash
+# Install build tools (one-time, Clang ships with Xcode CLI tools)
+xcode-select --install
+brew install cmake ninja
+
+# Configure and attempt build (from MuMain/ directory)
+cd MuMain
+cmake --preset macos-arm64
+cmake --build --preset macos-arm64-debug    # partial — Win32 TUs fail until EPIC-2
+```
+
+> **Note:** SDL3 is fetched via FetchContent on first configure (internet required, ~30 sec). `.NET` SDK needed for server connectivity.
+
+### Linux / WSL — MinGW Cross-Compile (Recommended)
 
 MinGW cross-compiles a Windows `.exe` from Linux. WSL is the recommended daily-dev environment.
 
@@ -52,6 +69,22 @@ cmake --build build-mingw -j$(nproc)
 ```
 
 > **Note:** .NET Native AOT (`ClientLibrary/`) requires Windows `dotnet.exe`. WSL finds it via interop at `/mnt/c/Program Files/dotnet/dotnet.exe`. Without it, the game compiles but cannot connect to servers.
+
+### Linux — Native Build (x64)
+
+Linux can configure the CMake project natively. Full compilation is blocked until EPIC-2 (SDL3 windowing migration), but configure succeeds and validates the build system.
+
+```bash
+# Install toolchain (one-time)
+sudo apt-get update && sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev
+
+# Configure and attempt build (from MuMain/ directory)
+cd MuMain
+cmake --preset linux-x64
+cmake --build --preset linux-x64-debug      # partial — Win32 TUs fail until EPIC-2
+```
+
+> **Note:** SDL3 is fetched via FetchContent on first configure (internet required, ~30 sec). GCC 12+ required for full C++20 support.
 
 ### Windows — MSVC Presets
 
