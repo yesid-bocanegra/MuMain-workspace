@@ -11,7 +11,7 @@
 |------|--------|
 | 1. Quality Gate | PASSED |
 | 2. Code Review Analysis | PASSED |
-| 3. Finalize | pending |
+| 3. Finalize | PASSED |
 
 ## Quality Gate Progress
 
@@ -143,6 +143,53 @@ All 4 acceptance criteria verified both by code inspection and live test executi
 | INFO | 1 | Noted (pre-existing inconsistency) |
 
 No blockers. Implementation is clean and consistent with the linux-x64.cmake sibling pattern. Pipeline state advanced to `code-review-finalize`.
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-04
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 3 |
+| Issues Deferred | 1 (F1 - conventional commit, process limitation) |
+| Issues Noted | 1 (F3 - test quality, acceptable for infrastructure story) |
+
+### Resolution Details
+
+- **F1 (MEDIUM):** DEFERRED -- Conventional commit format is a process limitation; commits already made. Not a code fix.
+- **F2 (LOW):** FIXED -- Added `CMAKE_OSX_DEPLOYMENT_TARGET "12.0"` to `macos-arm64.cmake` as specified in story Task 1.6.
+- **F3 (LOW):** NOTED -- AC-2 inherits check uses string search; acceptable for CMake script tests at this project stage.
+- **F4 (LOW):** FIXED -- Added timeout guard (120s) to `test_ac3_macos_configure.sh` using `timeout`/`gtimeout`.
+- **F5 (INFO):** FIXED -- Added `description` field to `windows-base` preset for consistency with `linux-base` and `macos-base`.
+
+### Validation Gates
+
+| Gate | Status |
+|------|--------|
+| Quality Gate (format-check + lint) | PASSED |
+| cmake --preset macos-arm64 | PASSED |
+| ATDD Tests (AC-1, AC-2, AC-3, AC-4) | ALL PASSED |
+| JSON Validation (CMakePresets.json) | PASSED |
+| Checkbox Validation | PASSED |
+| Catalog Verification | PASSED (N/A - infrastructure) |
+| AC-VAL Artifacts | PASSED |
+
+### Story Status Update
+
+- **Previous Status:** ready-for-dev
+- **New Status:** done
+- **Story File Updated:** _bmad-output/implementation-artifacts/1-1-1/story.md
+- **ATDD Checklist Synchronized:** Yes (all GREEN, no changes needed)
+
+### Files Modified
+
+- `MuMain/cmake/toolchains/macos-arm64.cmake` -- Added CMAKE_OSX_DEPLOYMENT_TARGET "12.0"
+- `MuMain/CMakePresets.json` -- Added description to windows-base preset
+- `MuMain/tests/build/test_ac3_macos_configure.sh` -- Added timeout guard
+- `_bmad-output/implementation-artifacts/1-1-1/story.md` -- Updated all checkboxes, status to done
 
 📋 Result:
 ## Code Review Analysis Complete
