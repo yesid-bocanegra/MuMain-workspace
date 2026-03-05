@@ -169,6 +169,14 @@ epic_completion_gates:
       - build_docs_cover_all_platforms
     status: done
     completed_date: "2026-03-05"
+    epic_validation:
+      status: validated
+      validated_at: "2026-03-05"
+      report: "_bmad-output/test-scenarios/epic-1/epic-validation.md"
+      automated_checks: PASS
+      catalog_registration: N/A  # Infrastructure/enabler epic — no API, events, or flow catalogs
+      bruno_tests: N/A           # C++ game client — no HTTP server, Bruno not applicable
+      manual_scenarios: GENERATED
   epic_2:
     name: "SDL3 Windowing & Input Migration"
     criteria:
@@ -241,6 +249,7 @@ development_status:
   1-2-2-platform-library-backends: done             # 5 pts | Flow:E | Deps: 1.2.1
   1-3-1-sdl3-dependency-integration: done               # 3 pts | Flow:E | Deps: 1.1.1, 1.1.2
   1-4-1-build-documentation: done                 # 2 pts | Flow:E | Deps: 1.3.1
+  epic-1-epic-validation: done                    # validated 2026-03-05
   epic-1-retrospective: optional
 
   # EPIC-2: SDL3 Windowing & Input Migration [VS-1] [Feature] (17 pts)
