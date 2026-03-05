@@ -147,42 +147,470 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
   <div class="header">
     <div class="header-left">
       <h1>PCC Dashboard</h1>
-      <span class="health" style="background:var(--blue);color:#fff;">Setup Mode</span>
+      <span class="health health-GREEN">On track</span>
     </div>
-    <div class="subtitle">MuMain-workspace &middot; Generated 2026-02-26 14:36 &middot; <span style="color:var(--green);">claude-mem active</span></div>
+    <div class="subtitle">MuMain-workspace &middot; Generated 2026-03-05 05:37 &middot; <span style="color:var(--green);">claude-mem active</span></div>
   </div>
 
   <div class="tab-bar"><button class="tab-btn active" data-tab="overview">Overview</button><button class="tab-btn" data-tab="kanban">Kanban</button><button class="tab-btn" data-tab="pipeline">Pipeline</button><button class="tab-btn" data-tab="epics">Epics & Milestones</button><button class="tab-btn" data-tab="health">Health</button><button class="tab-btn" data-tab="guidance">Guidance</button><button class="tab-btn" data-tab="runbook">Runbook</button></div>
-  <div id="overview" class="tab-content active"><div class="section"><h2>Setup Checklist</h2>
-<div class="checklist-item"><span class="checklist-icon checklist-done">✓</span><div class="checklist-label"><div>Project config</div><div class="checklist-path">.pcc-config.yaml</div></div><div class="rec-cmd"><code>/bmad:pcc:workflows:workspace-configure</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:workspace-configure')">Copy</button></div></div>
-<div class="checklist-item"><span class="checklist-icon checklist-missing">✗</span><div class="checklist-label"><div>Guidelines</div><div class="checklist-path">docs/project-context.md</div></div><div class="rec-cmd"><code>/bmad:pcc:workflows:guidelines-init</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:guidelines-init')">Copy</button></div></div>
-<div class="checklist-item"><span class="checklist-icon checklist-missing">✗</span><div class="checklist-label"><div>Dev standards</div><div class="checklist-path">docs/development-standards.md</div></div><div class="rec-cmd"><code>/bmad:pcc:workflows:guidelines-init</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:guidelines-init')">Copy</button></div></div>
-<div class="checklist-item"><span class="checklist-icon checklist-missing">✗</span><div class="checklist-label"><div>Design system</div><div class="checklist-path">design tokens / .pen files</div></div><div class="rec-cmd"><code>/bmad:pcc:workflows:design-system-init</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:design-system-init')">Copy</button></div></div>
-<div class="checklist-item"><span class="checklist-icon checklist-missing">✗</span><div class="checklist-label"><div>Sprint tracking</div><div class="checklist-path">sprint-status.yaml</div></div><div class="rec-cmd"><code>/bmad:pcc:workflows:sprint-planning</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:sprint-planning')">Copy</button></div></div>
-<div class="checklist-item"><span class="checklist-icon checklist-missing">✗</span><div class="checklist-label"><div>Milestone tracking</div><div class="checklist-path">milestone-status.yaml</div></div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-plan</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-plan')">Copy</button></div></div>
-<div class="checklist-item"><span class="checklist-icon checklist-missing">✗</span><div class="checklist-label"><div>Story artifacts</div><div class="checklist-path">docs/stories/ or docs/implementation-artifacts/</div></div><div class="rec-cmd"><code>/bmad:pcc:workflows:create-epics-and-stories</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:create-epics-and-stories')">Copy</button></div></div>
-<p style="padding:10px 14px;color:var(--gray);font-size:12px;">1/7 complete</p>
+  <div id="overview" class="tab-content active"><div class="grid"><div class="card"><div class="card-label">Total Stories</div><div class="card-value">6</div><div class="card-sub">18 points planned</div></div><div class="card"><div class="card-label">Done</div><div class="card-value">4</div><div class="card-sub">67% complete</div></div><div class="card"><div class="card-label">In Progress</div><div class="card-value">0</div><div class="card-sub">2 in backlog</div></div><div class="card"><div class="card-label">Health</div><div class="card-value">GREEN</div><div class="card-sub">On track</div></div></div>
+<div class="sprint-progress"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><h3>Sprint 1 <span class="status-badge status-active">active</span></h3><span class="subtitle">2026-03-03 &rarr; 2026-03-16 &middot; Milestones: M1</span></div><div class="sprint-progress-bar"><div class="sprint-progress-done" style="width:66.7%"></div><div class="sprint-progress-wip" style="width:0.0%"></div></div><div class="sprint-progress-labels"><span>4 done</span><span>0 in progress</span><span>2 backlog</span></div></div>
+<div class="section"><h2>Epic Progress</h2>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-1</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:67%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">4/6</span><span class="status-badge status-in-progress">in-progress</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-2</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/5</span><span class="status-badge status-backlog">backlog</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-3</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/7</span><span class="status-badge status-backlog">backlog</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-4</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/9</span><span class="status-badge status-backlog">backlog</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-5</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/5</span><span class="status-badge status-backlog">backlog</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-6</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/7</span><span class="status-badge status-backlog">backlog</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-7</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/6</span><span class="status-badge status-backlog">backlog</span></div>
 </div>
-<div class="grid"><div class="card"><div class="card-label">Stories</div><div class="card-value">—</div><div class="card-sub">Not yet configured</div></div><div class="card"><div class="card-label">Done</div><div class="card-value">—</div><div class="card-sub">Not yet configured</div></div><div class="card"><div class="card-label">In Progress</div><div class="card-value">—</div><div class="card-sub">Not yet configured</div></div><div class="card"><div class="card-label">Health</div><div class="card-value">—</div><div class="card-sub">Not yet configured</div></div></div>
-
 <div class="section"><h2>Top Recommendations</h2>
-<div class="rec-card"><div class="rec-body"><div class="rec-title">Set up guidelines</div><div class="rec-desc">Generate project-context.md and development-standards.md.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:guidelines-init</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:guidelines-init')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-body"><div class="rec-title">Initialize design system</div><div class="rec-desc">Bootstrap Pencil design tokens before first screen design.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:design-system-init</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:design-system-init')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-body"><div class="rec-title">Plan first sprint</div><div class="rec-desc">Create sprint-status.yaml with story selection.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:sprint-planning</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:sprint-planning')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-body"><div class="rec-title">Start 1-4-1-build-documentation</div><div class="rec-desc">No stories in progress — pick up next backlog item.</div><div class="rec-cmd"><code>./paw 1-4-1-build-documentation</code><button class="copy-btn" onclick="copyCmd('./paw 1-4-1-build-documentation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-body"><div class="rec-title">Check milestone M1</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-body"><div class="rec-title">Check milestone M2</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
 </div></div>
-<div id="kanban" class="tab-content"><div class="empty-state"><p>No stories in current sprint</p><p>Run sprint-planning to begin</p></div></div>
+<div id="kanban" class="tab-content"><div class="kanban">
+<div class="kanban-col">
+<div class="kanban-col-header">Backlog <span class="kanban-col-count">2</span></div>
+<div class="kanban-card"><span class="key">1-3-1-sdl3-dependency-integration</span><div class="meta">ready-for-dev</div><div class="meta">@ ui-validation</div></div>
+<div class="kanban-card"><span class="key">1-4-1-build-documentation</span><div class="meta">backlog</div><div class="meta">@ create-story</div></div>
+</div>
+<div class="kanban-col">
+<div class="kanban-col-header">Ready <span class="kanban-col-count">0</span></div>
+</div>
+<div class="kanban-col">
+<div class="kanban-col-header">In Progress <span class="kanban-col-count">0</span></div>
+</div>
+<div class="kanban-col">
+<div class="kanban-col-header">Review <span class="kanban-col-count">0</span></div>
+</div>
+<div class="kanban-col">
+<div class="kanban-col-header">Done <span class="kanban-col-count">4</span></div>
+<div class="kanban-card"><span class="key">1-1-1-macos-cmake-toolchain</span><div class="meta">done</div></div>
+<div class="kanban-card"><span class="key">1-1-2-linux-cmake-toolchain</span><div class="meta">done</div></div>
+<div class="kanban-card"><span class="key">1-2-1-platform-abstraction-headers</span><div class="meta">done</div></div>
+<div class="kanban-card"><span class="key">1-2-2-platform-library-backends</span><div class="meta">done</div></div>
+</div>
+</div></div>
 <div id="pipeline" class="tab-content"><div class="empty-state"><p>No stories currently in the pipeline</p></div></div>
-<div id="epics" class="tab-content"><div class="section"><h2>Milestones</h2><p style="color:var(--gray);">No milestone-status.yaml found</p></div>
-<div class="section"><h2>Epics</h2><p style="color:var(--gray);">No epic data available</p></div></div>
+<div id="epics" class="tab-content"><div class="section"><h2>Milestones</h2>
+<table><tr><th>Milestone</th><th>Status</th><th>Contributing Epics</th></tr>
+<tr><td><strong>M1</strong></td><td><span class="status-badge status-active">active</span></td><td>EPIC-1, EPIC-7</td></tr>
+<tr><td><strong>M2</strong></td><td><span class="status-badge status-active">active</span></td><td>EPIC-2, EPIC-3</td></tr>
+<tr><td><strong>M3</strong></td><td><span class="status-badge status-active">active</span></td><td>EPIC-4</td></tr>
+<tr><td><strong>M4</strong></td><td><span class="status-badge status-active">active</span></td><td>EPIC-5</td></tr>
+<tr><td><strong>M5</strong></td><td><span class="status-badge status-active">active</span></td><td>EPIC-6, EPIC-7</td></tr>
+</table></div>
+<div class="section"><h2>Epics</h2>
+<table><tr><th>Epic</th><th>Stories</th><th>Progress</th><th>Status</th></tr>
+<tr><td><strong>epic-1</strong></td><td>4/6</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:67%"></div></div></td><td><span class="status-badge status-in-progress">in-progress</span></td></tr>
+<tr><td><strong>epic-2</strong></td><td>0/5</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
+<tr><td><strong>epic-3</strong></td><td>0/7</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
+<tr><td><strong>epic-4</strong></td><td>0/9</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
+<tr><td><strong>epic-5</strong></td><td>0/5</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
+<tr><td><strong>epic-6</strong></td><td>0/7</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
+<tr><td><strong>epic-7</strong></td><td>0/6</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
+</table></div></div>
 <div id="health" class="tab-content"><div class="section"><h2>Health Status</h2><p style="color:var(--green);font-weight:600;">No gaps detected — all clear</p></div></div>
-<div id="guidance" class="tab-content"><p style="margin-bottom:16px;color:var(--gray);font-size:13px;">Current state: Project setup in progress</p>
-<div class="rec-card"><div class="rec-priority">1</div><div class="rec-body"><div class="rec-title">Set up guidelines</div><div class="rec-desc">Generate project-context.md and development-standards.md.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:guidelines-init</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:guidelines-init')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-priority">2</div><div class="rec-body"><div class="rec-title">Initialize design system</div><div class="rec-desc">Bootstrap Pencil design tokens before first screen design.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:design-system-init</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:design-system-init')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-priority">3</div><div class="rec-body"><div class="rec-title">Plan first sprint</div><div class="rec-desc">Create sprint-status.yaml with story selection.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:sprint-planning</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:sprint-planning')">Copy</button></div></div></div></div>
-<div id="runbook" class="tab-content"><div class="empty-state"><p>executor-runbook.md not found</p></div></div>
+<div id="guidance" class="tab-content"><p style="margin-bottom:16px;color:var(--gray);font-size:13px;">Current state: Sprint: Sprint 1 (active)</p>
+<div class="rec-card"><div class="rec-priority">1</div><div class="rec-body"><div class="rec-title">Start 1-4-1-build-documentation</div><div class="rec-desc">No stories in progress — pick up next backlog item.</div><div class="rec-cmd"><code>./paw 1-4-1-build-documentation</code><button class="copy-btn" onclick="copyCmd('./paw 1-4-1-build-documentation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">2</div><div class="rec-body"><div class="rec-title">Check milestone M1</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">3</div><div class="rec-body"><div class="rec-title">Check milestone M2</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">4</div><div class="rec-body"><div class="rec-title">Check milestone M3</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">5</div><div class="rec-body"><div class="rec-title">Check milestone M4</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">6</div><div class="rec-body"><div class="rec-title">Check milestone M5</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div></div>
+<div id="runbook" class="tab-content"><div class="runbook">
+<h2 style="margin-bottom:12px;">PCC Executor Runbook</h2>
+<div class="section-content" style="margin-bottom:16px;">
+<blockquote>Cheat sheet for running the project lifecycle. Follow commands in order.</blockquote>
+<blockquote>If something breaks → Troubleshooting section.</blockquote>
+<blockquote>If still stuck → ask the PCC agent (bottom of this doc).</blockquote>
+</div>
+<details><summary>How It Works</summary><div class="section-content">
+<p>Two tools:</p>
+<ul>
+<li><strong><code>./paw</code></strong> — terminal CLI, automates the story pipeline end-to-end</li>
+<li><strong>Claude Code slash commands</strong> — AI-guided workflows for sprint/epic/milestone management</li>
+</ul>
+
+<p>Stories run on autopilot via <code>./paw</code>. Everything above story-level uses Claude Code.</p>
+</div></details>
+<details><summary>First-Time Setup</summary><div class="section-content">
+<h3>Option A: Full Project Init (Recommended)</h3>
+
+<p>Sequences all setup workflows in the correct order:</p>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:project-init
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:project-init')">Copy</button></div>
+
+<p>Runs: workspace-configure → guidelines-init → tracker-init → design-system-init → implementation-readiness → bootstrap-reachability. Skips what&#x27;s already done.</p>
+
+<h3>Option B: Run Setup Workflows Individually</h3>
+
+<div style="position:relative;"><pre><code>
+# 1. Generate workspace infrastructure from .pcc-config.yaml
+#    (docker-compose, CI pipelines, ctl script, .gitignore, pre-push hook)
+/bmad:pcc:workflows:workspace-configure
+
+# 2. Generate development-standards.md and project-context.md
+#    (coding conventions, git workflow, testing standards)
+#    Required for ./paw commit to auto-generate messages
+/bmad:pcc:workflows:guidelines-init
+
+# 3. Bootstrap Pencil MCP design tokens (if using .pen screens)
+/bmad:pcc:workflows:design-system-init
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# 1. Generate workspace infrastructure from .pcc-config.yaml\n#    (docker-compose, CI pipelines, ctl script, .gitignore, pre-push hook)\n/bmad:pcc:workflows:workspace-configure\n\n# 2. Generate development-standards.md and project-context.md\n#    (coding conventions, git workflow, testing standards)\n#    Required for ./paw commit to auto-generate messages\n/bmad:pcc:workflows:guidelines-init\n\n# 3. Bootstrap Pencil MCP design tokens (if using .pen screens)\n/bmad:pcc:workflows:design-system-init')">Copy</button></div>
+
+<p>Re-run <code>workspace-configure</code> after adding/removing components in <code>.pcc-config.yaml</code>.</p>
+</div></details>
+<details><summary>Sprint Lifecycle</summary><div class="section-content">
+<h3>1. Plan the Sprint</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:sprint-planning
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:sprint-planning')">Copy</button></div>
+
+<p>You&#x27;ll be prompted to select which PRD milestone(s) this sprint advances. Story selection is then scoped to epics contributing to those milestones. Sets story list, points, dates. Sprint status → <code>planned</code> in sprint-status.yaml.</p>
 
 
-  <footer>Generated by PCC Dashboard &middot; 2026-02-26 14:36</footer>
+<h3>2. Run Stories (Daily Work)</h3>
+
+<div style="position:relative;"><pre><code>
+# Run a single story (auto-detects where it left off)
+./paw run {story-key}
+
+# Shorthand — auto-routes by key format
+./paw 2-3-4              # single story
+./paw 2-3                # all stories in feature 2-3
+./paw 2                  # all stories in epic 2
+./paw 2-1-2,2-2-4       # comma-separated stories
+
+# Run incomplete stories in the active sprint
+./paw sprint
+./paw sprint s3           # or target a specific sprint by name
+
+# Preset flags for common scenarios
+./paw 2-3-4 --dev        # skip create/validate/atdd, start at dev-story
+./paw 2-3-4 --reimpl     # dev-story with fresh progress file
+./paw 2-3-4 --validate   # QG, analysis, AC, UI, finalize only
+./paw 2-3-4 --quick      # dev + quality gate only (no adversarial review)
+./paw 2-3-4 --fresh      # full restart (all steps)
+
+# Check current state
+./paw status
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# Run a single story (auto-detects where it left off)\n./paw run {story-key}\n\n# Shorthand — auto-routes by key format\n./paw 2-3-4              # single story\n./paw 2-3                # all stories in feature 2-3\n./paw 2                  # all stories in epic 2\n./paw 2-1-2,2-2-4       # comma-separated stories\n\n# Run incomplete stories in the active sprint\n./paw sprint\n./paw sprint s3           # or target a specific sprint by name\n\n# Preset flags for common scenarios\n./paw 2-3-4 --dev        # skip create/validate/atdd, start at dev-story\n./paw 2-3-4 --reimpl     # dev-story with fresh progress file\n./paw 2-3-4 --validate   # QG, analysis, AC, UI, finalize only\n./paw 2-3-4 --quick      # dev + quality gate only (no adversarial review)\n./paw 2-3-4 --fresh      # full restart (all steps)\n\n# Check current state\n./paw status')">Copy</button></div>
+
+<p>The pipeline runs fully automated: create → ATDD → design → dev → review → done.</p>
+<p>Self-healing is built in: 1 retry per step, up to 2 regressions before stopping.</p>
+
+
+<h3>3. Quality Checks (Between Stories)</h3>
+
+<div style="position:relative;"><pre><code>
+# Deterministic quality gate — no Claude, fast
+./paw check              # all components
+./paw check --backend    # backend only
+./paw check --frontend   # frontend only
+./paw check --component X  # specific component
+./paw check --full       # include extended checks (e2e, lighthouse, a11y)
+./paw check --skip-submodules  # skip git submodule components
+./paw check --dry-run    # show resolved commands without running
+
+# Quality gate + Claude auto-fix (3-phase: pre-check → format → Claude fix)
+./paw fix                # all components
+./paw fix --backend      # backend only
+./paw fix --frontend     # frontend only
+./paw fix --component X  # specific component
+./paw fix --fresh        # clear progress, start fresh
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# Deterministic quality gate — no Claude, fast\n./paw check              # all components\n./paw check --backend    # backend only\n./paw check --frontend   # frontend only\n./paw check --component X  # specific component\n./paw check --full       # include extended checks (e2e, lighthouse, a11y)\n./paw check --skip-submodules  # skip git submodule components\n./paw check --dry-run    # show resolved commands without running\n\n# Quality gate + Claude auto-fix (3-phase: pre-check → format → Claude fix)\n./paw fix                # all components\n./paw fix --backend      # backend only\n./paw fix --frontend     # frontend only\n./paw fix --component X  # specific component\n./paw fix --fresh        # clear progress, start fresh')">Copy</button></div>
+
+<p><code>check</code> mirrors CI locally. <code>fix</code> goes further — if checks fail, it invokes Claude to diagnose and fix, then re-verifies.</p>
+
+<p>The pre-push hook uses <code>--skip-submodules</code> automatically — submodule components get their own hooks installed inside their git directory.</p>
+
+
+<h3>4. Mid-Sprint: Scope Changes</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:sprint-replan
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:sprint-replan')">Copy</button></div>
+
+<p>Calculates rolling velocity, proposes story additions/removals, requires your confirmation before applying.</p>
+
+
+<h3>5. Mid-Sprint: Things Are Broken</h3>
+
+<div style="position:relative;"><pre><code>
+# See what&#x27;s wrong across all sprint stories
+/bmad:pcc:workflows:sprint-health-audit
+
+# Quick auto-fix loop (audit → batch resume → re-audit)
+./paw remediate --quick
+
+# Full AI-guided remediation with detailed strategy
+/bmad:pcc:workflows:sprint-remediate
+
+# Scope remediation to an epic
+./paw remediate --epic 3
+
+# Preview plan without executing
+./paw remediate --dry-run
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# See what&amp;#x27;s wrong across all sprint stories\n/bmad:pcc:workflows:sprint-health-audit\n\n# Quick auto-fix loop (audit → batch resume → re-audit)\n./paw remediate --quick\n\n# Full AI-guided remediation with detailed strategy\n/bmad:pcc:workflows:sprint-remediate\n\n# Scope remediation to an epic\n./paw remediate --epic 3\n\n# Preview plan without executing\n./paw remediate --dry-run')">Copy</button></div>
+
+<p>Repeat health audit after each remediation until the sprint shows HEALTHY or AT_RISK (no CRITICALs).</p>
+
+
+<h3>6. Close the Sprint</h3>
+
+<p>Run these in order:</p>
+
+<div style="position:relative;"><pre><code>
+# Step 1 — audit (must be HEALTHY or AT_RISK with no CRITICALs)
+/bmad:pcc:workflows:sprint-health-audit
+
+# Step 2 — if CRITICALs exist, fix them first (see mid-sprint section above)
+
+# Step 3 — generate metrics and mark sprint complete
+/bmad:pcc:workflows:sprint-complete
+
+# Step 4 — capture lessons for next sprint
+/bmad:pcc:workflows:sprint-retrospective
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# Step 1 — audit (must be HEALTHY or AT_RISK with no CRITICALs)\n/bmad:pcc:workflows:sprint-health-audit\n\n# Step 2 — if CRITICALs exist, fix them first (see mid-sprint section above)\n\n# Step 3 — generate metrics and mark sprint complete\n/bmad:pcc:workflows:sprint-complete\n\n# Step 4 — capture lessons for next sprint\n/bmad:pcc:workflows:sprint-retrospective')">Copy</button></div>
+
+<p>Then loop back to step 1 for the next sprint.</p>
+</div></details>
+<details><summary>Epic Lifecycle</summary><div class="section-content">
+<h3>Before the First Sprint of a New Epic</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:epic-start
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:epic-start')">Copy</button></div>
+
+<p>Verifies the previous epic is fully done and checks catalog state. Required before any sprint-planning for a new epic.</p>
+
+
+<h3>When All Epic Stories Are Done</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:epic-validation
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:epic-validation')">Copy</button></div>
+
+<p>Must PASS before you can start the next epic or trigger milestone validation.</p>
+<p>If FAIL → check the report, fix, re-run.</p>
+
+
+<h3>After Epic Validation Passes</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:epic-retrospective
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:epic-retrospective')">Copy</button></div>
+
+<p>Captures cross-story lessons to persistent memory. Required before moving to the next epic.</p>
+</div></details>
+<details><summary>Milestone Lifecycle</summary><div class="section-content">
+<p>Milestones are defined in the PRD (<code>## Milestones</code> section) and span multiple epics/sprints. <code>sprint-planning</code> automatically bootstraps a <code>pending</code> stub in <code>milestone-status.yaml</code> when a sprint references a milestone.</p>
+
+<h3>1. Kick Off Milestone Tracking</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:milestone-plan
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:milestone-plan')">Copy</button></div>
+
+<p>Run when you&#x27;re ready to actively track a milestone. Reads the PRD definition, assesses contributing epic status, sequences epics, and transitions the milestone from <code>pending</code> → <code>active</code>. Produces a planning brief.</p>
+
+<h3>2. Validate the Milestone</h3>
+
+<p>Run only when <strong>all contributing epics</strong> (as defined in the PRD) have passed <code>epic-validation</code>:</p>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:milestone-validation
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div>
+
+<p>Validates cross-epic API contracts, events, navigation, and end-to-end journeys.</p>
+<p>Sets status to <code>validating</code> in <code>docs/implementation-artifacts/milestone-status.yaml</code>.</p>
+
+<p>If FAIL → remediate the failing epics → re-run <code>epic-validation</code> on them → retry <code>milestone-validation</code>.</p>
+
+<h3>3. Go/No-Go Decision</h3>
+
+<p>Run after <code>milestone-validation</code> passes (status = <code>validating</code>):</p>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:milestone-review
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:milestone-review')">Copy</button></div>
+
+<p>Presents validation findings and prompts for a human decision:</p>
+<ul>
+<li><strong>GO</strong> → status becomes <code>passed</code></li>
+<li><strong>NO-GO</strong> → status becomes <code>failed</code> (remediate and re-validate)</li>
+<li><strong>CONDITIONAL</strong> → status becomes <code>conditional</code> (passes with conditions to resolve)</li>
+</ul>
+</div></details>
+<details><summary>Strategic Planning</summary><div class="section-content">
+<h3>Quarterly Business Review</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:qbr
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:qbr')">Copy</button></div>
+
+<p>Aggregates sprint/epic/milestone metrics over a period, surfaces systemic themes (GREEN/YELLOW/RED health), and produces a decision-gate report with priority adjustments.</p>
+
+<h3>Backlog Refinement</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:backlog-refinement
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:backlog-refinement')">Copy</button></div>
+
+<p>Assesses story readiness (READY/PARTIALLY<em>READY/NOT</em>READY/BLOCKED), classifies backlog items, and recommends ordering for upcoming sprint planning. Advisory only.</p>
+
+<h3>Epic Replan</h3>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:epic-replan
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:epic-replan')">Copy</button></div>
+
+<p>Re-sequence epics within a milestone, remap epic-milestone assignments, and move stories between epics. Requires confirmation gate. Produces before/after traceability.</p>
+</div></details>
+<details><summary>Retroactive Closure (Backfill)</summary><div class="section-content">
+<p>If a sprint or epic ended without running the proper closing workflows, use backfill instead of manual YAML edits. Backfill <strong>validates first</strong> before writing any status changes.</p>
+
+<div style="position:relative;"><pre><code>
+# Close a past sprint (validates all stories done, writes RETROACTIVE metrics)
+./paw backfill sprint {sprint-key}
+
+# Dry-run: see the plan without making changes
+./paw backfill sprint {sprint-key} --dry-run
+
+# Close a past epic (validates stories done, writes RETROACTIVE validation report)
+./paw backfill epic {epic-num}
+
+# Re-run milestone validation (e.g., after fixing contributing epics)
+./paw backfill milestone {milestone-id}
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# Close a past sprint (validates all stories done, writes RETROACTIVE metrics)\n./paw backfill sprint {sprint-key}\n\n# Dry-run: see the plan without making changes\n./paw backfill sprint {sprint-key} --dry-run\n\n# Close a past epic (validates stories done, writes RETROACTIVE validation report)\n./paw backfill epic {epic-num}\n\n# Re-run milestone validation (e.g., after fixing contributing epics)\n./paw backfill milestone {milestone-id}')">Copy</button></div>
+
+<p>Or via Claude Code workflows directly:</p>
+<div style="position:relative;"><pre><code>
+/bmad:pcc:workflows:sprint-backfill
+/bmad:pcc:workflows:epic-backfill
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc:workflows:sprint-backfill\n/bmad:pcc:workflows:epic-backfill')">Copy</button></div>
+
+<p><strong>Key constraint:</strong> All sprint/epic stories must have <code>status: done</code> before backfill proceeds.</p>
+<p>Backfill reports are flagged RETROACTIVE — Bruno tests are not re-executed for epic backfill.</p>
+</div></details>
+<details><summary>Daily Dev Commands</summary><div class="section-content">
+<h3>Commits</h3>
+
+<div style="position:relative;"><pre><code>
+./paw commit             # auto-generate message from diff using project git conventions
+./paw commit -m &quot;msg&quot;    # explicit message
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw commit             # auto-generate message from diff using project git conventions\n./paw commit -m &amp;quot;msg&amp;quot;    # explicit message')">Copy</button></div>
+
+<p>Auto-generation reads <code>development-standards.md</code> for your commit format (conventional commits, etc.). If that file is missing, run <code>guidelines-init</code>.</p>
+
+<h3>Code Review</h3>
+
+<div style="position:relative;"><pre><code>
+./paw review 2-3-4       # code review pipeline (auto-resumes from last gate)
+./paw review 2-3-4 --fresh  # fresh code review
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw review 2-3-4       # code review pipeline (auto-resumes from last gate)\n./paw review 2-3-4 --fresh  # fresh code review')">Copy</button></div>
+
+<h3>Acceptance Criteria</h3>
+
+<div style="position:relative;"><pre><code>
+./paw ac 2-2-6           # run AC validation tests for story
+./paw ac 2-2-6 --ui      # interactive Playwright UI mode
+./paw ac 2-2-6 --gen     # generate AC test stubs first, then run
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw ac 2-2-6           # run AC validation tests for story\n./paw ac 2-2-6 --ui      # interactive Playwright UI mode\n./paw ac 2-2-6 --gen     # generate AC test stubs first, then run')">Copy</button></div>
+</div></details>
+<details><summary>Status &amp; Diagnostics</summary><div class="section-content">
+<div style="position:relative;"><pre><code>
+./paw status             # milestone + epic + sprint status + memory stats
+./paw metrics            # full metrics dashboard
+./paw metrics --level=operational  # just story statuses
+
+./paw detect 2-3-4       # show detected progress for a story
+./paw phase 2-3-4        # show which instruction shard would load
+./paw steps              # list pipeline steps
+
+./paw memory             # claude-mem worker status
+./paw memory list        # list project memories
+./paw memory list 2-3-4  # list memories for a story
+
+/bmad:pcc:workflows:sprint-progress       # detailed sprint progress report
+/bmad:pcc:workflows:sprint-health-audit   # full gap analysis
+/bmad:pcc:workflows:sprint-metrics        # velocity and SAFe metrics
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw status             # milestone + epic + sprint status + memory stats\n./paw metrics            # full metrics dashboard\n./paw metrics --level=operational  # just story statuses\n\n./paw detect 2-3-4       # show detected progress for a story\n./paw phase 2-3-4        # show which instruction shard would load\n./paw steps              # list pipeline steps\n\n./paw memory             # claude-mem worker status\n./paw memory list        # list project memories\n./paw memory list 2-3-4  # list memories for a story\n\n/bmad:pcc:workflows:sprint-progress       # detailed sprint progress report\n/bmad:pcc:workflows:sprint-health-audit   # full gap analysis\n/bmad:pcc:workflows:sprint-metrics        # velocity and SAFe metrics')">Copy</button></div>
+</div></details>
+<details><summary>Maintenance &amp; Utilities</summary><div class="section-content">
+<div style="position:relative;"><pre><code>
+./paw cleanup            # show duplicate/dangling artifacts
+./paw cleanup all        # clean up all
+
+./paw consolidate --all  # consolidate all logs (Haiku summary)
+./paw consolidate 2-3-4  # consolidate logs for one story
+
+./paw sync-atdd 2-3-4    # mark ATDD checklist items complete
+
+./paw corpus stats       # specification index statistics
+./paw corpus context X   # get story context from corpus
+./paw corpus validate X  # validate dependencies in corpus
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw cleanup            # show duplicate/dangling artifacts\n./paw cleanup all        # clean up all\n\n./paw consolidate --all  # consolidate all logs (Haiku summary)\n./paw consolidate 2-3-4  # consolidate logs for one story\n\n./paw sync-atdd 2-3-4    # mark ATDD checklist items complete\n\n./paw corpus stats       # specification index statistics\n./paw corpus context X   # get story context from corpus\n./paw corpus validate X  # validate dependencies in corpus')">Copy</button></div>
+</div></details>
+<details><summary>Troubleshooting</summary><div class="section-content">
+<table>
+<tr><th>Symptom</th><th>Try First</th><th>If Still Failing</th></tr>
+<tr><th>Story stuck mid-pipeline</th><th><code>./paw run {key}</code> (auto-resumes)</th><th><code>./paw run {key} --dev</code> (restart from dev-story)</th></tr>
+<tr><th>Story failed code review</th><th><code>./paw review {key}</code></th><th><code>./paw review {key} --fresh</code></th></tr>
+<tr><td>Phantom completions / placeholders</td><td><code>./paw fix</code></td><td><code>./paw run {key} --reimpl</code></td></tr>
+<tr><td>Multiple stories failing</td><td><code>./paw remediate --quick</code></td><td><code>/bmad:pcc:workflows:sprint-remediate</code></td></tr>
+<tr><td>Sprint shows CRITICAL gaps</td><td><code>/bmad:pcc:workflows:sprint-health-audit</code> → follow report</td><td>Manual fixes per gap type</td></tr>
+<tr><td><code>sprint-complete</code> blocked</td><td>Resolve all CRITICALs first</td><td>Re-run health audit after fixes</td></tr>
+<tr><td><code>epic-validation</code> FAIL</td><td>Review individual story code-review-finalize outputs</td><td><code>/bmad:pcc:workflows:sprint-health-audit</code></td></tr>
+<tr><td><code>milestone-validation</code> FAIL</td><td>Identify failing epics from report</td><td>Fix cross-epic contracts, re-validate epics</td></tr>
+<tr><td>Past sprint/epic not formally closed</td><td><code>./paw backfill sprint {key}</code> or <code>./paw backfill epic {num}</code></td><td>Ensure all stories are <code>done</code> first</td></tr>
+<tr><td>Quality gate fails on push</td><td><code>./paw check</code> → <code>./paw fix</code></td><td>Check <code>.pcc-config.yaml</code> build commands (run <code>workspace-configure</code>)</td></tr>
+<tr><td><code>./paw commit</code> can&#x27;t generate message</td><td>Run <code>/bmad:pcc:workflows:guidelines-init</code></td><td>Provide explicit: <code>./paw commit -m &quot;msg&quot;</code></td></tr>
+<tr><td>Don&#x27;t know what to do next</td><td><code>./paw status</code></td><td>Ask the PCC agent (below)</td></tr>
+</table>
+
+<h3><code>./paw</code> Flags for Common Recovery Scenarios</h3>
+
+<div style="position:relative;"><pre><code>
+./paw run {key} --from=DEV_STORY        # restart from dev step
+./paw run {key} --from=CODE_REVIEW_QG   # restart from review
+./paw run {key} --fresh                  # full restart (clear state)
+./paw run {key} --dry-run               # preview what would run
+
+./paw sprint                            # run incomplete stories in active sprint
+./paw sprint s3 --continue              # named sprint, finish in-progress first
+./paw remediate --quick --dry-run       # preview remediation plan
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw run {key} --from=DEV_STORY        # restart from dev step\n./paw run {key} --from=CODE_REVIEW_QG   # restart from review\n./paw run {key} --fresh                  # full restart (clear state)\n./paw run {key} --dry-run               # preview what would run\n\n./paw sprint                            # run incomplete stories in active sprint\n./paw sprint s3 --continue              # named sprint, finish in-progress first\n./paw remediate --quick --dry-run       # preview remediation plan')">Copy</button></div>
+</div></details>
+<details><summary>Get Help</summary><div class="section-content">
+<p>Start a Claude Code conversation and type:</p>
+
+<div style="position:relative;"><pre><code>
+/bmad:pcc
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('/bmad:pcc')">Copy</button></div>
+
+<p>The PCC agent (Nova) guides you through any lifecycle decision. You can ask:</p>
+
+<ul>
+<li>&quot;What should I do next?&quot;</li>
+<li>&quot;Story X is stuck — what&#x27;s wrong?&quot;</li>
+<li>&quot;Can I close the sprint with these gaps?&quot;</li>
+<li>&quot;Which epic stories are still blocking validation?&quot;</li>
+</ul>
+
+<p>For per-workflow usage details:</p>
+<p>→ <code>_bmad/pcc/docs/lifecycle-hierarchy.md</code> — full state machines</p>
+<p>→ <code>_bmad/pcc/docs/sprint-scoping-model.md</code> — sprint YAML schema</p>
+<p>→ <code>docs/specification/pcc-workflow-catalog.md</code> — all 71 workflows</p></div></details>
+</div></div>
+
+
+  <footer>Generated by PCC Dashboard &middot; 2026-03-05 05:37</footer>
 </div>
 <script>
 function switchTab(tabId) {
