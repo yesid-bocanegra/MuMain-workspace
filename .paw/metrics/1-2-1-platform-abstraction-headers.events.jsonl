@@ -5,3 +5,5 @@
 {"timestamp":"2026-03-05T02:39:48.734526+00:00","event_type":"step_passed","story_key":"1-2-1-platform-abstraction-headers","step":"validate-story","sprint":null,"epic":"1","data":{"duration_seconds":132.7,"input_tokens":5,"output_tokens":446}}
 {"timestamp":"2026-03-05T02:39:49.740868+00:00","event_type":"step_started","story_key":"1-2-1-platform-abstraction-headers","step":"atdd","sprint":null,"epic":"1","data":{}}
 {"timestamp":"2026-03-05T02:39:53.283609+00:00","event_type":"story_failed","story_key":"1-2-1-platform-abstraction-headers","step":"atdd","sprint":null,"epic":"1","data":{"failed_step":"atdd","retries_used":0,"regressions_used":0,"error":"INTERRUPTED","duration_seconds":463.9}}
+{"timestamp":"2026-03-05T02:46:10.909862+00:00","event_type":"story_started","story_key":"1-2-1-platform-abstraction-headers","step":null,"sprint":null,"epic":"1","data":{"from_step":"atdd","to_step":"code-review-finalize","planned_steps":10,"fresh":false}}
+{"timestamp":"2026-03-05T02:46:10.911053+00:00","event_type":"step_started","story_key":"1-2-1-platform-abstraction-headers","step":"atdd","sprint":null,"epic":"1","data":{}}
