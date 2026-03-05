@@ -97,3 +97,5 @@
 {"timestamp":"2026-03-05T00:28:58.741061+00:00","event_type":"step_started","story_key":"1-1-2-linux-cmake-toolchain","step":"code-review-analysis","sprint":null,"epic":"1","data":{}}
 {"timestamp":"2026-03-05T00:39:51.893297+00:00","event_type":"step_passed","story_key":"1-1-2-linux-cmake-toolchain","step":"code-review-analysis","sprint":null,"epic":"1","data":{"duration_seconds":653.2,"input_tokens":4,"output_tokens":448}}
 {"timestamp":"2026-03-05T00:39:52.905229+00:00","event_type":"step_started","story_key":"1-1-2-linux-cmake-toolchain","step":"ac-validation","sprint":null,"epic":"1","data":{}}
+{"timestamp":"2026-03-05T00:42:17.843885+00:00","event_type":"step_passed","story_key":"1-1-2-linux-cmake-toolchain","step":"ac-validation","sprint":null,"epic":"1","data":{"duration_seconds":144.9,"input_tokens":16,"output_tokens":6403}}
+{"timestamp":"2026-03-05T00:42:18.855292+00:00","event_type":"step_started","story_key":"1-1-2-linux-cmake-toolchain","step":"ui-validation","sprint":null,"epic":"1","data":{}}
