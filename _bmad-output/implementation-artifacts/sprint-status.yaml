@@ -35,10 +35,11 @@
 sprints:
   sprint-1:
     name: "Sprint 1"
-    status: active
+    status: complete
     milestones: [M1]
     start_date: "2026-03-03"
     end_date: "2026-03-16"
+    completed_date: "2026-03-05"
     planned_points: 18
     stories:
       - 1-1-1-macos-cmake-toolchain
@@ -47,9 +48,9 @@ sprints:
       - 1-2-2-platform-library-backends
       - 1-3-1-sdl3-dependency-integration
       - 1-4-1-build-documentation
-    velocity: null
-    delivered_points: null
-    commitment_reliability: null
+    velocity: 18
+    delivered_points: 18
+    commitment_reliability: 1.0
     scope_changes:
       added: []
       removed: []
@@ -59,12 +60,16 @@ sprints:
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: null  # First sprint, no data yet
-    rolling_average: null
-    trend: null
+    current_sprint: 18   # Sprint 1: 18 pts delivered (6/6 stories)
+    rolling_average: null  # First sprint, no rolling average yet
+    trend: null            # First sprint, no trend yet
+  flow_time_avg_hours: 12.71   # avg lead time hours across 6 stories
+  flow_efficiency_pct: 26.4    # avg active/total time across 6 stories
+  commitment_reliability_pct: 100.0
   wip_limits:
     in_progress: 2
     review: 3
+  wip_violations: 0
   flow_distribution:
     Feature: 0      # 0 feature stories in sprint-1
     Enabler: 6      # 6 enabler stories (all EPIC-1)
@@ -162,7 +167,8 @@ epic_completion_gates:
       - sdl3_available_as_linked_dependency
       - mingw_ci_remains_green
       - build_docs_cover_all_platforms
-    status: pending
+    status: done
+    completed_date: "2026-03-05"
   epic_2:
     name: "SDL3 Windowing & Input Migration"
     criteria:
@@ -228,7 +234,7 @@ epic_completion_gates:
 # =====================
 development_status:
   # EPIC-1: Platform Foundation & Build System [VS-0] [Enabler] (18 pts)
-  epic-1: in-progress
+  epic-1: done
   1-1-1-macos-cmake-toolchain: done               # 3 pts | Flow:E | No deps
   1-1-2-linux-cmake-toolchain: done               # 2 pts | Flow:E | No deps
   1-2-1-platform-abstraction-headers: done           # 3 pts | Flow:E | No deps

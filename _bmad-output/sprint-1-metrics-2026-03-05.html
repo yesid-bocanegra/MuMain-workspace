@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint 1 Metrics Dashboard — 2026-03-05</title>
+<style>
+  :root { --green: #22c55e; --yellow: #eab308; --red: #ef4444; --blue: #3b82f6; --purple: #a855f7; --gray: #6b7280; --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --border: #334155; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 24px; }
+  .dashboard { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 8px; }
+  .subtitle { color: var(--gray); margin-bottom: 24px; font-size: 14px; }
+  .health { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 14px; }
+  .health-healthy { background: var(--green); color: #000; }
+  .health-at-risk { background: var(--yellow); color: #000; }
+  .health-critical { background: var(--red); color: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; }
+  .card-value { font-size: 28px; font-weight: 700; margin: 6px 0 4px; }
+  .card-sub { font-size: 12px; color: var(--gray); }
+  .trend-up { color: var(--green); }
+  .trend-down { color: var(--red); }
+  .trend-flat { color: var(--gray); }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .section h2 { font-size: 15px; font-weight: 600; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--border); color: var(--gray); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  .bar-container { background: var(--border); border-radius: 4px; height: 8px; width: 100%; min-width: 80px; }
+  .bar-fill { height: 8px; border-radius: 4px; }
+  .bar-green { background: var(--green); }
+  .bar-yellow { background: var(--yellow); }
+  .bar-red { background: var(--red); }
+  .bar-blue { background: var(--blue); }
+  .bar-purple { background: var(--purple); }
+  .chart { font-family: 'Courier New', monospace; font-size: 12px; white-space: pre; background: #0a0f1e; padding: 16px; border-radius: 6px; overflow-x: auto; line-height: 1.5; color: #94a3b8; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+  .badge-pass { background: #166534; color: var(--green); }
+  .badge-fail { background: #7f1d1d; color: var(--red); }
+  .badge-retry { background: #713f12; color: var(--yellow); }
+  .badge-na { background: #1e293b; color: var(--gray); border: 1px solid var(--border); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+  .kpi-green .card-value { color: var(--green); }
+  .kpi-yellow .card-value { color: var(--yellow); }
+  .kpi-blue .card-value { color: var(--blue); }
+  .kpi-gray .card-value { color: var(--gray); }
+  .note { font-size: 12px; color: var(--gray); margin-top: 10px; font-style: italic; }
+  .tag { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px; background: #1e3a5f; color: #60a5fa; margin-right: 4px; }
+  .tag-enabler { background: #1e3a5f; color: #60a5fa; }
+  footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .spi-ahead { color: var(--green); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="dashboard">
+  <h1>Sprint 1 Metrics Dashboard</h1>
+  <p class="subtitle">2026-03-05 &middot; Sprint 1 (sprint-1) &middot; 6 stories &middot; Report: full &middot; <span class="health health-healthy">HEALTHY</span></p>
+
+  <!-- KPI Cards -->
+  <div class="grid">
+    <div class="card kpi-green">
+      <div class="card-label">Velocity</div>
+      <div class="card-value">18</div>
+      <div class="card-sub trend-flat">pts &mdash; first sprint</div>
+    </div>
+    <div class="card kpi-green">
+      <div class="card-label">Throughput</div>
+      <div class="card-value">6</div>
+      <div class="card-sub trend-flat">stories delivered</div>
+    </div>
+    <div class="card kpi-blue">
+      <div class="card-label">Avg Lead Time</div>
+      <div class="card-value">0.53d</div>
+      <div class="card-sub">12.71 h avg</div>
+    </div>
+    <div class="card kpi-blue">
+      <div class="card-label">Flow Efficiency</div>
+      <div class="card-value">26.4%</div>
+      <div class="card-sub trend-up">Above 15-25% benchmark</div>
+    </div>
+    <div class="card kpi-green">
+      <div class="card-label">Predictability</div>
+      <div class="card-value">100%</div>
+      <div class="card-sub trend-up">HIGH reliability</div>
+    </div>
+    <div class="card kpi-green">
+      <div class="card-label">SPI</div>
+      <div class="card-value spi-ahead">6.50</div>
+      <div class="card-sub trend-up">AHEAD (Day 2 of 13)</div>
+    </div>
+    <div class="card kpi-yellow">
+      <div class="card-label">Gate Failure Rate</div>
+      <div class="card-value">20%</div>
+      <div class="card-sub trend-down">code-review-qg bottleneck</div>
+    </div>
+    <div class="card kpi-green">
+      <div class="card-label">WIP Violations</div>
+      <div class="card-value">0</div>
+      <div class="card-sub trend-up">OK (limit: 2/3)</div>
+    </div>
+    <div class="card kpi-gray">
+      <div class="card-label">Est. Cost</div>
+      <div class="card-value">~$5</div>
+      <div class="card-sub">338,772 tokens &middot; $0.28/pt</div>
+    </div>
+  </div>
+
+  <!-- Sprint Burndown -->
+  <div class="section">
+    <h2>Sprint Burndown</h2>
+    <div class="chart">Points
+   18 ├─● Planned (linear)
+      │   ╲
+   16 │    ╲          ● Actual: all 18 pts delivered by Day 2
+      │     ╲         ↑
+   12 │      ╲
+      │       ╲
+    8 │        ╲
+      │         ╲
+    4 │          ╲
+      │           ╲
+    0 ├────────────●──────────────────────────────────
+      D1   D2   D3   D4   D5   D6   D7  ... D13
+
+─── Planned (linear)    ●── Actual
+Completed 11 days ahead of sprint window end (2026-03-16)</div>
+    <p class="note">Sprint started 2026-03-03. All 18 points delivered by 2026-03-05 (Day 2 of 13). SPI = 6.50.</p>
+  </div>
+
+  <!-- Flow Distribution -->
+  <div class="two-col">
+    <div class="section">
+      <h2>Flow Distribution</h2>
+      <table>
+        <tr><th>Type</th><th>Count</th><th>Points</th><th>Distribution</th></tr>
+        <tr>
+          <td><span class="tag tag-enabler">Enabler</span></td>
+          <td>6</td><td>18</td>
+          <td><div class="bar-container"><div class="bar-fill bar-blue" style="width:100%"></div></div><span style="font-size:11px;color:var(--gray);margin-left:6px">100%</span></td>
+        </tr>
+        <tr>
+          <td>Feature</td><td>0</td><td>0</td>
+          <td><div class="bar-container"><div class="bar-fill bar-green" style="width:0%"></div></div><span style="font-size:11px;color:var(--gray);margin-left:6px">0%</span></td>
+        </tr>
+        <tr>
+          <td>Defect</td><td>0</td><td>0</td>
+          <td><div class="bar-container"><div class="bar-fill bar-red" style="width:0%"></div></div><span style="font-size:11px;color:var(--gray);margin-left:6px">0%</span></td>
+        </tr>
+        <tr>
+          <td>Debt</td><td>0</td><td>0</td>
+          <td><div class="bar-container"><div class="bar-fill bar-yellow" style="width:0%"></div></div><span style="font-size:11px;color:var(--gray);margin-left:6px">0%</span></td>
+        </tr>
+      </table>
+      <p class="note">Sprint 1 is 100% Enabler (platform infrastructure). Feature distribution begins Sprint 2 (EPIC-2).</p>
+    </div>
+
+    <div class="section">
+      <h2>EVM Indicators</h2>
+      <table>
+        <tr><th>Metric</th><th>Value</th></tr>
+        <tr><td>BAC</td><td>18 pts</td></tr>
+        <tr><td>Days Elapsed</td><td>2 of 13</td></tr>
+        <tr><td>PV (Planned Value)</td><td>2.77 pts</td></tr>
+        <tr><td>EV (Earned Value)</td><td>18 pts</td></tr>
+        <tr><td>SPI</td><td style="color:var(--green);font-weight:700">6.50 — AHEAD</td></tr>
+        <tr><td>SV (Schedule Variance)</td><td style="color:var(--green)">+15.23 pts</td></tr>
+      </table>
+      <p class="note">Sprint completed 11 days ahead of window. SPI reflects fully-automated AI pipeline with no calendar pacing constraint.</p>
+    </div>
+  </div>
+
+  <!-- Pipeline Gate Results -->
+  <div class="section">
+    <h2>Pipeline Gate Results</h2>
+    <table>
+      <tr>
+        <th>Story</th><th>Pts</th>
+        <th>create</th><th>validate</th><th>atdd</th><th>dev</th>
+        <th>completeness</th><th>cr-analysis</th><th>cr-qg</th><th>cr-finalize</th><th>Clean?</th>
+      </tr>
+      <tr>
+        <td>1-1-1 macOS toolchain</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td style="color:var(--green)">YES</td>
+      </tr>
+      <tr>
+        <td>1-1-2 Linux toolchain</td><td>2</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-retry">RETRY</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-retry">RETRY×7</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td style="color:var(--red)">NO</td>
+      </tr>
+      <tr>
+        <td>1-2-1 Platform headers</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td style="color:var(--green)">YES</td>
+      </tr>
+      <tr>
+        <td>1-2-2 Library backends</td><td>5</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-retry">RETRY</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td style="color:var(--yellow)">NO*</td>
+      </tr>
+      <tr>
+        <td>1-3-1 SDL3 integration</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td style="color:var(--yellow)">NO**</td>
+      </tr>
+      <tr>
+        <td>1-4-1 Build docs</td><td>2</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-na">IN PROG</span></td>
+        <td><span class="badge badge-na">N/A</span></td>
+        <td style="color:var(--green)">YES</td>
+      </tr>
+    </table>
+    <p class="note">* 1-2-2: completeness-gate needed 1 retry &nbsp;&nbsp; ** 1-3-1: ui-validation needed 1 retry (infra story, expected)</p>
+  </div>
+
+  <!-- Story Details -->
+  <div class="section">
+    <h2>Story Details — Lead Time &amp; Flow Efficiency</h2>
+    <table>
+      <tr><th>Story</th><th>Pts</th><th>Type</th><th>Lead Time</th><th>Active</th><th>Flow Eff</th><th>Retries</th><th>Regressions</th><th>Tokens</th></tr>
+      <tr>
+        <td>1-1-1 macOS CMake Toolchain</td><td>3</td><td><span class="tag tag-enabler">Enabler</span></td>
+        <td>14.38 h</td><td>1.38 h</td>
+        <td>
+          <div class="bar-container" style="width:80px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-yellow" style="width:9.6%"></div></div>
+          <span style="margin-left:4px">9.6%</span>
+        </td>
+        <td>0</td><td>0</td><td>66,779</td>
+      </tr>
+      <tr>
+        <td>1-1-2 Linux CMake Toolchain</td><td>2</td><td><span class="tag tag-enabler">Enabler</span></td>
+        <td>27.28 h</td><td>1.10 h</td>
+        <td>
+          <div class="bar-container" style="width:80px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-red" style="width:4%"></div></div>
+          <span style="margin-left:4px">4.0%</span>
+        </td>
+        <td style="color:var(--yellow)">7</td><td style="color:var(--yellow)">4</td><td>34,942</td>
+      </tr>
+      <tr>
+        <td>1-2-1 Platform Abstraction Headers</td><td>3</td><td><span class="tag tag-enabler">Enabler</span></td>
+        <td>13.18 h</td><td>1.89 h</td>
+        <td>
+          <div class="bar-container" style="width:80px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-yellow" style="width:14.3%"></div></div>
+          <span style="margin-left:4px">14.3%</span>
+        </td>
+        <td>0</td><td>0</td><td>87,312</td>
+      </tr>
+      <tr>
+        <td>1-2-2 Platform Library Backends</td><td>5</td><td><span class="tag tag-enabler">Enabler</span></td>
+        <td>11.44 h</td><td>2.24 h</td>
+        <td>
+          <div class="bar-container" style="width:80px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:19.6%"></div></div>
+          <span style="margin-left:4px">19.6%</span>
+        </td>
+        <td>1</td><td>0</td><td>73,844</td>
+      </tr>
+      <tr>
+        <td>1-3-1 SDL3 Dependency Integration</td><td>3</td><td><span class="tag tag-enabler">Enabler</span></td>
+        <td>8.97 h</td><td>1.60 h</td>
+        <td>
+          <div class="bar-container" style="width:80px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:17.9%"></div></div>
+          <span style="margin-left:4px">17.9%</span>
+        </td>
+        <td>1</td><td>0</td><td>58,650</td>
+      </tr>
+      <tr>
+        <td>1-4-1 Build Documentation</td><td>2</td><td><span class="tag tag-enabler">Enabler</span></td>
+        <td>1.00 h</td><td>0.93 h</td>
+        <td>
+          <div class="bar-container" style="width:80px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-green" style="width:93.2%"></div></div>
+          <span style="margin-left:4px">93.2%</span>
+        </td>
+        <td>0</td><td>0</td><td>17,245</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Pipeline Step Durations -->
+  <div class="section">
+    <h2>Pipeline Step Duration Analysis</h2>
+    <table>
+      <tr><th>Step</th><th>n</th><th>Avg</th><th>Min</th><th>Max</th><th>% Active Time</th></tr>
+      <tr><td>create-story</td><td>6</td><td>276 s</td><td>203 s</td><td>338 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:5%"></div></div> 5.0%</td></tr>
+      <tr><td>validate-story</td><td>6</td><td>149 s</td><td>125 s</td><td>195 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:2.7%"></div></div> 2.7%</td></tr>
+      <tr><td>atdd</td><td>6</td><td>259 s</td><td>175 s</td><td>307 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:4.7%"></div></div> 4.7%</td></tr>
+      <tr><td>dev-story</td><td>6</td><td>1,077 s</td><td>287 s</td><td>2,398 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:19.6%"></div></div> 19.6%</td></tr>
+      <tr><td>completeness-gate</td><td>6</td><td>132 s</td><td>91 s</td><td>195 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:2.4%"></div></div> 2.4%</td></tr>
+      <tr><td>code-review-analysis</td><td>5</td><td>574 s</td><td>290 s</td><td>940 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-yellow" style="width:8.7%"></div></div> 8.7%</td></tr>
+      <tr><td style="color:var(--yellow);font-weight:600">code-review-qg &#9654; BOTTLENECK</td><td>5</td><td>1,332 s</td><td>1,039 s</td><td>1,907 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-red" style="width:20.2%"></div></div> 20.2%</td></tr>
+      <tr><td>code-review-finalize</td><td>5</td><td>568 s</td><td>297 s</td><td>1,005 s</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:8.6%"></div></div> 8.6%</td></tr>
+    </table>
+    <p class="note">code-review-qg: highest duration AND highest failure rate (20%). Priority optimization target for Sprint 2.</p>
+  </div>
+
+  <!-- Token Usage -->
+  <div class="section">
+    <h2>Token Usage &amp; Cost (Estimated)</h2>
+    <table>
+      <tr><th>Story</th><th>Points</th><th>Input Tokens</th><th>Output Tokens</th><th>Total</th><th>Tokens/Pt</th></tr>
+      <tr><td>1-1-1 macOS Toolchain</td><td>3</td><td>4,380</td><td>62,399</td><td>66,779</td><td>22,260</td></tr>
+      <tr><td>1-1-2 Linux Toolchain</td><td>2</td><td>811</td><td>34,131</td><td>34,942</td><td>17,471</td></tr>
+      <tr><td>1-2-1 Platform Headers</td><td>3</td><td>1,005</td><td>86,307</td><td style="color:var(--yellow)">87,312</td><td style="color:var(--yellow)">29,104</td></tr>
+      <tr><td>1-2-2 Library Backends</td><td>5</td><td>249</td><td>73,595</td><td>73,844</td><td>14,769</td></tr>
+      <tr><td>1-3-1 SDL3 Integration</td><td>3</td><td>194</td><td>58,456</td><td>58,650</td><td>19,550</td></tr>
+      <tr><td>1-4-1 Build Docs</td><td>2</td><td>69</td><td>17,176</td><td>17,245</td><td style="color:var(--green)">8,623</td></tr>
+      <tr style="font-weight:700;border-top:2px solid var(--border)">
+        <td>Sprint Total</td><td>18</td><td>6,708</td><td>332,064</td><td>338,772</td><td>18,821</td>
+      </tr>
+    </table>
+    <p class="note">Est. cost: ~$5.00 total | ~$0.83/story | ~$0.28/point. Output tokens = 98% (code generation workload). Historical trend: N/A (first sprint).</p>
+  </div>
+
+  <!-- Epic Progress -->
+  <div class="section">
+    <h2>Epic Progress (Project View)</h2>
+    <table>
+      <tr><th>Epic</th><th>Stories</th><th>Done</th><th>Remaining</th><th>Points</th><th>Progress</th></tr>
+      <tr>
+        <td style="color:var(--green);font-weight:600">EPIC-1 Platform Foundation</td><td>6</td><td>6</td><td>0</td><td>18</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-green" style="width:100%"></div></div> 100% DONE</td>
+      </tr>
+      <tr>
+        <td>EPIC-2 SDL3 Windowing</td><td>5</td><td>0</td><td>5</td><td>17</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:0%"></div></div> 0%</td>
+      </tr>
+      <tr>
+        <td>EPIC-3 .NET AOT Networking</td><td>7</td><td>0</td><td>7</td><td>24</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:0%"></div></div> 0%</td>
+      </tr>
+      <tr>
+        <td>EPIC-4 Rendering Pipeline</td><td>9</td><td>0</td><td>9</td><td>48</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:0%"></div></div> 0%</td>
+      </tr>
+      <tr>
+        <td>EPIC-5 Audio System</td><td>5</td><td>0</td><td>5</td><td>18</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:0%"></div></div> 0%</td>
+      </tr>
+      <tr>
+        <td>EPIC-6 Gameplay Validation</td><td>7</td><td>0</td><td>7</td><td>23</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:0%"></div></div> 0%</td>
+      </tr>
+      <tr>
+        <td>EPIC-7 Stability &amp; Diagnostics</td><td>6</td><td>0</td><td>6</td><td>24</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-blue" style="width:0%"></div></div> 0%</td>
+      </tr>
+      <tr style="font-weight:700;border-top:2px solid var(--border)">
+        <td>Project Total</td><td>45</td><td>6</td><td>39</td><td>172</td>
+        <td><div class="bar-container" style="width:120px;display:inline-block;vertical-align:middle"><div class="bar-fill bar-green" style="width:10.5%"></div></div> 10.5%</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Monte Carlo -->
+  <div class="section">
+    <h2>Monte Carlo Forecast</h2>
+    <p style="color:var(--gray);font-size:13px">Monte Carlo simulation requires 3+ completed sprints. Available: 1 sprint. Forecast will be available after Sprint 3.</p>
+    <br>
+    <p style="font-size:13px;color:#94a3b8"><strong>Linear projection</strong> (18 pts/sprint, based on Sprint 1 velocity only):</p>
+    <table style="margin-top:10px">
+      <tr><th>Epic</th><th>Remaining Pts</th><th>Est. Sprints</th><th>Est. Completion</th></tr>
+      <tr><td>EPIC-2 SDL3 Windowing</td><td>17</td><td>~1</td><td>Sprint 2</td></tr>
+      <tr><td>EPIC-3 .NET AOT</td><td>24</td><td>~1-2</td><td>Sprint 3-4</td></tr>
+      <tr><td>EPIC-4 Rendering</td><td>48</td><td>~2-3</td><td>Sprint 4-6</td></tr>
+      <tr><td>EPIC-5 Audio</td><td>18</td><td>~1</td><td>Sprint 3-4 (parallel)</td></tr>
+      <tr><td>EPIC-6 Gameplay</td><td>23</td><td>~1-2</td><td>Sprint 6-7</td></tr>
+      <tr><td>EPIC-7 Stability</td><td>24</td><td>~1-2</td><td>Sprint 7-8</td></tr>
+    </table>
+    <p class="note">Projections assume 18 pts/sprint velocity and sequential epic dependencies. Parallel execution per critical path will accelerate delivery. Run after Sprint 3 for Monte Carlo confidence intervals.</p>
+  </div>
+
+  <footer>
+    Generated by PCC sprint-complete workflow v1.0.0 &middot; 2026-03-05 &middot; MuMain-workspace Sprint 1
+  </footer>
+</div>
+</body>
+</html>
