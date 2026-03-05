@@ -380,6 +380,7 @@ _None — story creation only._
 
 ### Completion Notes List
 
+- design-screen step skipped 2026-03-05 — infrastructure story with no Visual Design Specification; story type=infrastructure (CMake build system only), pencil.style_guide.initialized=false, webskip=true applies; advanced to dev-story
 - Story created 2026-03-05 via create-story workflow (agent: claude-sonnet-4-6)
 - No specification corpus available (specification-index.yaml not found)
 - No story partials found in docs/story-partials/
