@@ -11,19 +11,19 @@
 
 | AC | Description | Verification Method | Status |
 |----|-------------|---------------------|--------|
-| AC-1 | macOS build section in development-guide.md | Manual: verify section exists with prerequisites, cmake preset command, run instructions | Pending |
-| AC-2 | Linux native build section in development-guide.md | Manual: verify section exists, distinct from MinGW/WSL section | Pending |
-| AC-3 | Toolchain requirements and versions per platform | Manual: verify Clang version (macOS), GCC version (Linux), SDL3 FetchContent notes | Pending |
-| AC-4 | Troubleshooting section updated per platform | Manual: verify macOS and Linux failure modes documented | Pending |
-| AC-5 | CLAUDE.md build commands updated | Manual: verify macos-arm64, linux-x64 presets added | Pending |
-| AC-STD-1 | Documentation follows existing style | Manual: verify Markdown tables, header hierarchy, tone consistency | Pending |
-| AC-STD-4 | CI quality gate remains green | Automated: `./ctl check` passes | Pending |
-| AC-STD-5 | Conventional commit format | Manual: verify commit message matches `docs(platform): ...` | Pending |
-| AC-STD-13 | Quality gate passes | Automated: `./ctl check` (format-check + lint) | Pending |
-| AC-STD-15 | Git safety | Manual: no incomplete rebase, no force push | Pending |
-| AC-STD-20 | Contract reachability — no API/event entries | Manual: verify no API/event catalog entries produced | Pending |
-| AC-VAL-1 | Fresh clone macOS arm64 configure succeeds | Manual: `cmake --preset macos-arm64` on fresh clone following updated docs | Pending |
-| AC-VAL-2 | Fresh clone Linux x64 configure succeeds | Manual: `cmake --preset linux-x64` on fresh clone following updated docs | Pending |
+| AC-1 | macOS build section in development-guide.md | Manual: verify section exists with prerequisites, cmake preset command, run instructions | Verified |
+| AC-2 | Linux native build section in development-guide.md | Manual: verify section exists, distinct from MinGW/WSL section | Verified |
+| AC-3 | Toolchain requirements and versions per platform | Manual: verify Clang version (macOS), GCC version (Linux), SDL3 FetchContent notes | Verified |
+| AC-4 | Troubleshooting section updated per platform | Manual: verify macOS and Linux failure modes documented | Verified |
+| AC-5 | CLAUDE.md build commands updated | Manual: verify macos-arm64, linux-x64 presets added | Verified |
+| AC-STD-1 | Documentation follows existing style | Manual: verify Markdown tables, header hierarchy, tone consistency | Verified |
+| AC-STD-4 | CI quality gate remains green | Automated: `./ctl check` passes | Verified |
+| AC-STD-5 | Conventional commit format | Manual: verify commit message matches `docs(platform): ...` | Verified (scope `build` vs suggested `platform` — both valid) |
+| AC-STD-13 | Quality gate passes | Automated: `./ctl check` (format-check + lint) | Verified |
+| AC-STD-15 | Git safety | Manual: no incomplete rebase, no force push | Verified |
+| AC-STD-20 | Contract reachability — no API/event entries | Manual: verify no API/event catalog entries produced | Verified |
+| AC-VAL-1 | Fresh clone macOS arm64 configure succeeds | Manual: `cmake --preset macos-arm64` on fresh clone following updated docs | Deferred (requires manual validation) |
+| AC-VAL-2 | Fresh clone Linux x64 configure succeeds | Manual: `cmake --preset linux-x64` on fresh clone following updated docs | Deferred (requires manual validation) |
 
 ---
 
@@ -33,7 +33,7 @@
 
 - [x] 1.1 Add "macOS — Native Build (arm64 + x64)" subsection after existing "macOS — Quality Gates Only" section
 - [x] 1.2 List prerequisites: Xcode CLI tools (Clang 15+ for C++20), cmake, ninja via brew
-- [x] 1.3 Document `cmake --preset macos-arm64` and `cmake --preset macos-x64` configure commands
+- [x] 1.3 Document `cmake --preset macos-arm64` configure command (`macos-x64` preset does not exist)
 - [x] 1.4 Document `cmake --build --preset macos-arm64-debug` build step
 - [x] 1.5 Note SDL3 FetchContent behavior (internet required, ~30 sec on first configure)
 - [x] 1.6 Note .NET SDK requirement for server connectivity

@@ -84,6 +84,8 @@ cmake --build --preset macos-arm64-debug
 
 > **Current limitation:** `cmake --build` will fail on translation units that include Win32 headers (`windows.h`, DirectX). This is expected — the SDL3 cross-platform migration (EPIC-2+) will progressively remove these dependencies. The configure step validates that CMake, toolchains, and SDL3 integration are working correctly.
 
+> **Running:** No runnable binary is produced on macOS until EPIC-2 completes the Win32→SDL3 windowing migration. Once available, the binary will be at `build-macos-arm64/bin/MuMain`. For now, use the MinGW cross-compile on WSL to produce a runnable Windows `.exe`.
+
 #### Linux / WSL — Full Build (Recommended)
 
 MinGW cross-compiles a 32-bit Windows `.exe` from Linux. **WSL is the recommended daily-dev environment** — fastest iteration with Claude Code.
@@ -138,6 +140,8 @@ cmake --build --preset linux-x64-debug
 > **Note:** The native Linux build produces a native Linux binary (not a Windows `.exe`). Game logic still includes Win32 headers, but cross-platform abstraction headers from EPIC-1 guard them. Full compilation will succeed progressively as EPIC-2+ removes Win32 dependencies.
 
 > **Note:** .NET SDK is required for server connectivity. On native Linux without Windows, the .NET DLL is skipped — the game configures but cannot connect to servers.
+
+> **Running:** No runnable binary is produced on native Linux until EPIC-2 completes the Win32→SDL3 windowing migration. Once available, the binary will be at `build-linux-x64/bin/MuMain`. For now, use the MinGW cross-compile (above) to produce a runnable Windows `.exe`.
 
 #### Windows — MSVC Presets
 

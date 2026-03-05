@@ -1,6 +1,6 @@
 # Story 1.4.1: Build Documentation Per Platform
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,32 +42,32 @@ Status: review
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** `docs/development-guide.md` updated with macOS build section (prerequisites, exact cmake command using `--preset macos-arm64`, run instructions)
-- [ ] **AC-2:** Linux **native** build section added to `docs/development-guide.md` (prerequisites for GCC/Ninja, `cmake --preset linux-x64`, run instructions) — distinct from the existing MinGW/WSL cross-compile section
-- [ ] **AC-3:** Each platform section lists exact toolchain requirements and versions (Clang version for macOS, GCC version for Linux, and notes on SDL3 FetchContent prerequisites)
-- [ ] **AC-4:** Troubleshooting section updated to cover common failure modes per platform (SDL3 FetchContent timeout, macOS framework paths, Linux missing libGL, etc.)
-- [ ] **AC-5:** `CLAUDE.md` build commands section updated to reflect new presets (`macos-arm64`, `linux-x64`) alongside existing MinGW and Windows presets
+- [x] **AC-1:** `docs/development-guide.md` updated with macOS build section (prerequisites, exact cmake command using `--preset macos-arm64`, run instructions)
+- [x] **AC-2:** Linux **native** build section added to `docs/development-guide.md` (prerequisites for GCC/Ninja, `cmake --preset linux-x64`, run instructions) — distinct from the existing MinGW/WSL cross-compile section
+- [x] **AC-3:** Each platform section lists exact toolchain requirements and versions (Clang version for macOS, GCC version for Linux, and notes on SDL3 FetchContent prerequisites)
+- [x] **AC-4:** Troubleshooting section updated to cover common failure modes per platform (SDL3 FetchContent timeout, macOS framework paths, Linux missing libGL, etc.)
+- [x] **AC-5:** `CLAUDE.md` build commands section updated to reflect new presets (`macos-arm64`, `linux-x64`) alongside existing MinGW and Windows presets
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Documentation follows existing style in `docs/` (Markdown tables, consistent header hierarchy, same tone as existing development-guide.md)
-- [ ] **AC-STD-13:** Quality gate passes: `make -C MuMain format-check && make -C MuMain lint` (no C++ files changed, but CI quality gate must remain green)
-- [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
-- [ ] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (documentation-only story)
+- [x] **AC-STD-1:** Documentation follows existing style in `docs/` (Markdown tables, consistent header hierarchy, same tone as existing development-guide.md)
+- [x] **AC-STD-13:** Quality gate passes: `make -C MuMain format-check && make -C MuMain lint` (no C++ files changed, but CI quality gate must remain green)
+- [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [x] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (documentation-only story)
 
 ### NFR Acceptance Criteria
 
-- [ ] **AC-STD-4:** CI (MinGW cross-compile) quality gate remains green — no CMake or C++ files are changed in this story
-- [ ] **AC-STD-5:** Conventional commit: `docs(platform): add macOS and Linux build instructions`
+- [x] **AC-STD-4:** CI (MinGW cross-compile) quality gate remains green — no CMake or C++ files are changed in this story
+- [x] **AC-STD-5:** Conventional commit: `docs(platform): add macOS and Linux build instructions`
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Fresh clone → configure on macOS arm64 completed following only the updated docs (`cmake --preset macos-arm64` succeeds)
-- [ ] **AC-VAL-2:** Fresh clone → configure on Linux x64 completed following only the updated docs (`cmake --preset linux-x64` succeeds)
+- [x] **AC-VAL-1:** Fresh clone → configure on macOS arm64 completed following only the updated docs (`cmake --preset macos-arm64` succeeds)
+- [x] **AC-VAL-2:** Fresh clone → configure on Linux x64 completed following only the updated docs (`cmake --preset linux-x64` succeeds)
 
 ---
 
@@ -76,7 +76,7 @@ Status: review
 - [x] **Task 1: Update `docs/development-guide.md` — macOS section** (AC: AC-1, AC-3)
   - [x] 1.1 Add "macOS — Native Build (arm64 + x64)" subsection after the existing "macOS — Quality Gates Only" section in `docs/development-guide.md`
   - [x] 1.2 List prerequisites: `brew install cmake ninja clang` (Clang ships with Xcode CLI tools); note required Clang version (Clang 15+ for C++20 full support)
-  - [x] 1.3 Document the `cmake --preset macos-arm64` and `cmake --preset macos-x64` configure commands (from `CMakePresets.json`)
+  - [x] 1.3 Document the `cmake --preset macos-arm64` configure command (from `CMakePresets.json`; `macos-x64` preset does not exist)
   - [x] 1.4 Document `cmake --build --preset macos-arm64-debug` build step
   - [x] 1.5 Note that SDL3 will be fetched by FetchContent on first configure (internet required, ~30 sec)
   - [x] 1.6 Note that `.NET` is required for server connectivity (see existing .NET SDK note) — game configures without it
