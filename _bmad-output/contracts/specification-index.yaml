@@ -397,9 +397,11 @@ stories:
     epic: EPIC-2
     feature: "2.2"
     type: infrastructure
-    status: backlog
+    status: ready-for-dev
     points: 3
     value_stream: "VS-1"
+    flow_code: VS1-SDL-INPUT-KEYBOARD
+    story_file: "_bmad-output/stories/2-2-1-sdl3-keyboard-input/story.md"
 
   2-2-2-sdl3-mouse-input:
     name: "SDL3 Mouse Input"
@@ -722,6 +724,9 @@ catalogs:
       value_stream: VS-1
     - code: VS1-SDL-WINDOW-FOCUS
       story: 2-1-2-sdl3-window-focus-display
+      value_stream: VS-1
+    - code: VS1-SDL-INPUT-KEYBOARD
+      story: 2-2-1-sdl3-keyboard-input
       value_stream: VS-1
 
 # =====================
