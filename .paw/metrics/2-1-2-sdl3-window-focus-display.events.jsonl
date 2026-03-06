@@ -1,2 +1,4 @@
 {"timestamp":"2026-03-06T14:16:04.375428+00:00","event_type":"story_started","story_key":"2-1-2-sdl3-window-focus-display","step":null,"sprint":null,"epic":"2","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-06T14:16:04.375896+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"create-story","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T14:21:42.672229+00:00","event_type":"step_passed","story_key":"2-1-2-sdl3-window-focus-display","step":"create-story","sprint":null,"epic":"2","data":{"duration_seconds":338.3,"input_tokens":7,"output_tokens":630}}
+{"timestamp":"2026-03-06T14:21:43.678536+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"validate-story","sprint":null,"epic":"2","data":{}}

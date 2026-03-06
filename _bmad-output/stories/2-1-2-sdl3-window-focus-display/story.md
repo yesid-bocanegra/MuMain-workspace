@@ -59,6 +59,7 @@ Status: ready-for-dev
 - [ ] **AC-STD-11:** Flow code `VS1-SDL-WINDOW-FOCUS` appears in log output (`g_ErrorReport.Write`), test names, and story artifacts.
 - [ ] **AC-STD-12:** SLI/SLO targets — N/A for platform infrastructure story; window operations (focus, fullscreen toggle) must complete without blocking the game loop frame (verified by unit tests being non-blocking).
 - [ ] **AC-STD-13:** Quality gate passes: `make -C MuMain format-check && make -C MuMain lint`
+- [ ] **AC-STD-14:** Observability — N/A for infrastructure story; error surfacing handled by AC-STD-8 (`g_ErrorReport.Write()` with `MU_ERR_*` prefix) and AC-STD-11 (flow code `VS1-SDL-WINDOW-FOCUS` in log output).
 - [ ] **AC-STD-15:** Git safety — clean merge, no force push, no incomplete rebase.
 - [ ] **AC-STD-16:** Correct test infrastructure — Catch2 v3.7.1 via FetchContent, tests in `MuMain/tests/platform/`, `BUILD_TESTING=ON` opt-in.
 - [ ] **AC-STD-20:** N/A — no HTTP endpoints, event-bus entries, or nav-catalog screens in this story.
