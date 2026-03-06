@@ -428,6 +428,7 @@ claude-opus-4-6 (dev-story workflow)
 
 - 2026-03-06: Implementation complete — all tasks 1-8 done in single session
 - 2026-03-06: Code review finalize — 7 issues fixed (1 HIGH, 5 MEDIUM, 1 LOW), quality gate passed, story marked done
+- 2026-03-06: BMM code review — 3 MEDIUM, 2 LOW found. Fixed: stale RED PHASE header in CMake test, corrected File List statuses (EXISTING→MODIFIED/NEW), standardized g_bUseWindowMode comparison style in Winmain.cpp SDL3 block
 
 ### File List
 
@@ -442,7 +443,7 @@ claude-opus-4-6 (dev-story workflow)
 | `MuMain/src/source/Platform/win32/Win32Window.h` | MODIFIED | Added method declarations |
 | `MuMain/src/source/Platform/win32/Win32Window.cpp` | MODIFIED | Added SetFullscreen/SetMouseGrab no-op stubs, GetDisplaySize via GetSystemMetrics |
 | `MuMain/src/source/Main/Winmain.cpp` | MODIFIED | Made g_TargetFpsBeforeInactive/g_HasInactiveFpsOverride non-static; added SDL3 display query in MuMain() init |
-| `MuMain/tests/platform/test_platform_window.cpp` | EXISTING | 6 test cases from ATDD RED phase now pass (GREEN) |
-| `MuMain/tests/platform/test_ac_std11_flow_code_2_1_2.cmake` | EXISTING | CMake script test for VS1-SDL-WINDOW-FOCUS flow code — now passes |
+| `MuMain/tests/platform/test_platform_window.cpp` | MODIFIED | Added 6 test cases for story 2.1.2 (null-guard + active-window tests) |
+| `MuMain/tests/platform/test_ac_std11_flow_code_2_1_2.cmake` | NEW | CMake script test verifying VS1-SDL-WINDOW-FOCUS flow code in SDLEventLoop.cpp |
 | `docs/error-catalog.md` | NEW | Error catalog with MU_ERR_FULLSCREEN_FAILED and MU_ERR_DISPLAY_QUERY_FAILED |
 | `_bmad-output/test-scenarios/epic-2/2-1-2-window-focus-display.md` | NEW | Test scenarios for AC validation |

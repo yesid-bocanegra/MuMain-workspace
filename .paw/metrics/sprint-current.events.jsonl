@@ -37,3 +37,5 @@
 {"timestamp":"2026-03-06T15:15:00Z","event_type":"workflow_metric:code_review_completed","story_key":"2-1-2-sdl3-window-focus-display","step":"code-review-finalize","sprint":null,"epic":"2","data":{"final_status":"done","issues_fixed":7,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
 {"timestamp":"2026-03-06T15:21:13.289177+00:00","event_type":"step_passed","story_key":"2-1-2-sdl3-window-focus-display","step":"dev-story","sprint":null,"epic":"2","data":{"duration_seconds":3102.5,"input_tokens":1736,"output_tokens":43162}}
 {"timestamp":"2026-03-06T15:21:14.292611+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T15:25:18.842066+00:00","event_type":"step_passed","story_key":"2-1-2-sdl3-window-focus-display","step":"completeness-gate","sprint":null,"epic":"2","data":{"duration_seconds":244.6,"input_tokens":18,"output_tokens":8840}}
+{"timestamp":"2026-03-06T15:25:19.848187+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"code-review","sprint":null,"epic":"2","data":{}}
