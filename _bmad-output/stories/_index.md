@@ -1,8 +1,9 @@
 # Story Index
 
 *Auto-generated 2026-03-05 by reorganize-docs workflow*
+*Updated 2026-03-06 — added stories 2-2-1, 2-2-2*
 
-## Stories (6)
+## Stories (9)
 
 ### Epic 1.1 — CMake Toolchains
 
@@ -29,3 +30,17 @@
 | Key | Name | Artifacts |
 |-----|------|-----------|
 | [1-4-1](1-4-1-build-documentation/) | Build Documentation | story, atdd, review, progress |
+
+### Epic 2.1 — SDL3 Windowing
+
+| Key | Name | Artifacts |
+|-----|------|-----------|
+| [2-1-1](2-1-1-sdl3-window-event-loop/) | SDL3 Window & Event Loop | story, progress, session-summary, validation-report |
+| [2-1-2](2-1-2-sdl3-window-focus-display/) | SDL3 Window Focus & Display | story, review, progress, session-summary |
+
+### Epic 2.2 — SDL3 Input
+
+| Key | Name | Artifacts |
+|-----|------|-----------|
+| [2-2-1](2-2-1-sdl3-keyboard-input/) | SDL3 Keyboard Input Migration | story, atdd, review, session-summary |
+| [2-2-2](2-2-2-sdl3-mouse-input/) | SDL3 Mouse Input Migration | story |
