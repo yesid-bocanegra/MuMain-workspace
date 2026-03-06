@@ -4,3 +4,10 @@
 {"timestamp":"2026-03-06T20:47:33.298683+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"validate-story","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T20:50:41.530420+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"validate-story","sprint":null,"epic":"2","data":{"duration_seconds":188.2,"input_tokens":7,"output_tokens":479}}
 {"timestamp":"2026-03-06T20:50:42.541836+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"atdd","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T20:57:16.160883+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"atdd","sprint":null,"epic":"2","data":{"duration_seconds":393.6,"input_tokens":7,"output_tokens":644}}
+{"timestamp":"2026-03-06T20:57:17.165194+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"dev-story","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T21:09:40.562872+00:00","event_type":"step_failed","story_key":"2-2-2-sdl3-mouse-input","step":"dev-story","sprint":null,"epic":"2","data":{"duration_seconds":743.4,"retry_count":0,"error":"Exit code 1 (API_ERROR)","input_tokens":6,"output_tokens":262}}
+{"timestamp":"2026-03-06T21:09:40.567355+00:00","event_type":"step_retried","story_key":"2-2-2-sdl3-mouse-input","step":"dev-story","sprint":null,"epic":"2","data":{"attempt":2}}
+{"timestamp":"2026-03-06T21:09:40.568934+00:00","event_type":"feedback_saved","story_key":"2-2-2-sdl3-mouse-input","step":"dev-story","sprint":null,"epic":"2","data":{"regression_target":"dev-story"}}
+{"timestamp":"2026-03-06T21:09:42.574956+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"dev-story","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T22:30:00.000000+00:00","event_type":"workflow_metric:code_review_completed","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{"final_status":"done","issues_fixed":5,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}

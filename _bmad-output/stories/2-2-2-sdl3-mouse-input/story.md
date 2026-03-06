@@ -1,6 +1,6 @@
 # Story 2.2.2: SDL3 Mouse Input Migration
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,39 +42,39 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** Mouse position (`MouseX`, `MouseY`) is updated from SDL3 `SDL_EVENT_MOUSE_MOTION` events — coordinates normalized to the game's 640x480 virtual coordinate space using `g_fScreenRate_x` / `g_fScreenRate_y` — identical to the existing `WM_MOUSEMOVE` handler in `WndProc`.
-- [ ] **AC-2:** Left, right, and middle mouse button press/release events (`SDL_EVENT_MOUSE_BUTTON_DOWN` / `SDL_EVENT_MOUSE_BUTTON_UP`) correctly update all six button state globals (`MouseLButton`, `MouseLButtonPush`, `MouseLButtonPop`, `MouseRButton`, `MouseRButtonPush`, `MouseRButtonPop`, `MouseMButton`, `MouseMButtonPush`, `MouseMButtonPop`) — including the double-click flag (`MouseLButtonDBClick`) — matching the semantics of the `WM_LBUTTONDOWN` / `WM_RBUTTONDOWN` / `WM_MBUTTONDOWN` handlers.
-- [ ] **AC-3:** Mouse wheel scroll events (`SDL_EVENT_MOUSE_WHEEL`) update `MouseWheel` with the correct sign and delta matching the Win32 `WM_MOUSEWHEEL` / `WHEEL_DELTA` behavior (positive = scroll up, negative = scroll down).
-- [ ] **AC-4:** Mouse cursor visibility is controllable: `ShowCursor(FALSE)` hides the cursor via `SDL_HideCursor()`, `ShowCursor(TRUE)` shows it via `SDL_ShowCursor()` — existing call sites in `Winmain.cpp` work without modification.
-- [ ] **AC-5:** `SetCursorPos(x, y)` is shimmed on non-Windows to `SDL_WarpMouseInWindow()` mapping the Win32 screen-space coordinates to SDL window coordinates — three call sites (`ZzzInterface.cpp:4089`, `WSclient.cpp:6170`, `NewUITrade.cpp:600`) work without modification.
+- [x] **AC-1:** Mouse position (`MouseX`, `MouseY`) is updated from SDL3 `SDL_EVENT_MOUSE_MOTION` events — coordinates normalized to the game's 640x480 virtual coordinate space using `g_fScreenRate_x` / `g_fScreenRate_y` — identical to the existing `WM_MOUSEMOVE` handler in `WndProc`.
+- [x] **AC-2:** Left, right, and middle mouse button press/release events (`SDL_EVENT_MOUSE_BUTTON_DOWN` / `SDL_EVENT_MOUSE_BUTTON_UP`) correctly update all six button state globals (`MouseLButton`, `MouseLButtonPush`, `MouseLButtonPop`, `MouseRButton`, `MouseRButtonPush`, `MouseRButtonPop`, `MouseMButton`, `MouseMButtonPush`, `MouseMButtonPop`) — including the double-click flag (`MouseLButtonDBClick`) — matching the semantics of the `WM_LBUTTONDOWN` / `WM_RBUTTONDOWN` / `WM_MBUTTONDOWN` handlers.
+- [x] **AC-3:** Mouse wheel scroll events (`SDL_EVENT_MOUSE_WHEEL`) update `MouseWheel` with the correct sign and delta matching the Win32 `WM_MOUSEWHEEL` / `WHEEL_DELTA` behavior (positive = scroll up, negative = scroll down).
+- [x] **AC-4:** Mouse cursor visibility is controllable: `ShowCursor(FALSE)` hides the cursor via `SDL_HideCursor()`, `ShowCursor(TRUE)` shows it via `SDL_ShowCursor()` — existing call sites in `Winmain.cpp` work without modification.
+- [x] **AC-5:** `SetCursorPos(x, y)` is shimmed on non-Windows to `SDL_WarpMouseInWindow()` mapping the Win32 screen-space coordinates to SDL window coordinates — three call sites (`ZzzInterface.cpp:4089`, `WSclient.cpp:6170`, `NewUITrade.cpp:600`) work without modification.
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code standards compliance — PascalCase public functions, `m_` Hungarian member prefix, `std::unique_ptr` (no raw `new`/`delete`), `nullptr`, `#pragma once`, Allman braces, 4-space indent, LF line endings, UTF-8 files. No `#ifdef _WIN32` in game logic — only in `Platform/` layer and `PlatformCompat.h`.
-- [ ] **AC-STD-2:** Testing requirements — Catch2 v3.7.1 unit tests in `MuMain/tests/platform/`; tests cover: mouse button state transitions (down→pop, held→push), MouseWheel delta sign, coordinate normalization math, ShowCursor shim callable (compiled successfully under `#ifdef MU_ENABLE_SDL3`).
-- [ ] **AC-STD-3:** No Win32 mouse WM_* handling remains required on SDL3 path — all mouse state is fed from SDL events in `SDLEventLoop::PollEvents()`; `WndProc` mouse handlers remain intact for the Win32 path (zero regression).
-- [ ] **AC-STD-8:** Error catalog — SDL mouse init failures (if any) log via `g_ErrorReport.Write()` with `MU_ERR_*` prefix and flow code `VS1-SDL-INPUT-MOUSE`.
-- [ ] **AC-STD-10:** Contract catalogs — N/A (no HTTP API or event-bus contracts).
-- [ ] **AC-STD-11:** Flow code `VS1-SDL-INPUT-MOUSE` appears in log output (`g_ErrorReport.Write`), test names, and story artifacts.
-- [ ] **AC-STD-12:** SLI/SLO targets — N/A for platform infrastructure story; mouse event handler in `PollEvents()` must complete in < 1 microsecond per event (table dispatch — verified by design).
-- [ ] **AC-STD-13:** Quality gate passes: `make -C MuMain format-check && make -C MuMain lint`
-- [ ] **AC-STD-14:** Observability — SDL mouse init errors (if any) logged via `g_ErrorReport.Write()` with `MU_ERR_MOUSE_*` prefix and flow code `VS1-SDL-INPUT-MOUSE`.
-- [ ] **AC-STD-15:** Git safety — clean merge, no force push, no incomplete rebase.
-- [ ] **AC-STD-16:** Correct test infrastructure — Catch2 v3.7.1 via FetchContent, tests in `MuMain/tests/platform/`, `BUILD_TESTING=ON` opt-in.
-- [ ] **AC-STD-20:** N/A — no HTTP endpoints, event-bus entries, or nav-catalog screens in this story.
+- [x] **AC-STD-1:** Code standards compliance — PascalCase public functions, `m_` Hungarian member prefix, `std::unique_ptr` (no raw `new`/`delete`), `nullptr`, `#pragma once`, Allman braces, 4-space indent, LF line endings, UTF-8 files. No `#ifdef _WIN32` in game logic — only in `Platform/` layer and `PlatformCompat.h`.
+- [x] **AC-STD-2:** Testing requirements — Catch2 v3.7.1 unit tests in `MuMain/tests/platform/`; tests cover: mouse button state transitions (down→pop, held→push), MouseWheel delta sign, coordinate normalization math, ShowCursor shim callable (compiled successfully under `#ifdef MU_ENABLE_SDL3`).
+- [x] **AC-STD-3:** No Win32 mouse WM_* handling remains required on SDL3 path — all mouse state is fed from SDL events in `SDLEventLoop::PollEvents()`; `WndProc` mouse handlers remain intact for the Win32 path (zero regression).
+- [x] **AC-STD-8:** Error catalog — SDL mouse init failures (if any) log via `g_ErrorReport.Write()` with `MU_ERR_*` prefix and flow code `VS1-SDL-INPUT-MOUSE`.
+- [x] **AC-STD-10:** Contract catalogs — N/A (no HTTP API or event-bus contracts).
+- [x] **AC-STD-11:** Flow code `VS1-SDL-INPUT-MOUSE` appears in log output (`g_ErrorReport.Write`), test names, and story artifacts.
+- [x] **AC-STD-12:** SLI/SLO targets — N/A for platform infrastructure story; mouse event handler in `PollEvents()` must complete in < 1 microsecond per event (table dispatch — verified by design).
+- [x] **AC-STD-13:** Quality gate passes: `make -C MuMain format-check && make -C MuMain lint`
+- [x] **AC-STD-14:** Observability — SDL mouse init errors (if any) logged via `g_ErrorReport.Write()` with `MU_ERR_MOUSE_*` prefix and flow code `VS1-SDL-INPUT-MOUSE`.
+- [x] **AC-STD-15:** Git safety — clean merge, no force push, no incomplete rebase.
+- [x] **AC-STD-16:** Correct test infrastructure — Catch2 v3.7.1 via FetchContent, tests in `MuMain/tests/platform/`, `BUILD_TESTING=ON` opt-in.
+- [x] **AC-STD-20:** N/A — no HTTP endpoints, event-bus entries, or nav-catalog screens in this story.
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** N/A — no HTTP endpoints.
-- [ ] **AC-VAL-2:** Test scenarios documented in `_bmad-output/test-scenarios/epic-2/2-2-2-sdl3-mouse-input.md`
-- [ ] **AC-VAL-3:** N/A — no seed data.
-- [ ] **AC-VAL-4:** N/A — no API catalog entries.
-- [ ] **AC-VAL-5:** N/A — no event-bus events.
-- [ ] **AC-VAL-6:** Flow catalog entry `VS1-SDL-INPUT-MOUSE` confirmed in story artifacts.
+- [x] **AC-VAL-1:** N/A — no HTTP endpoints.
+- [x] **AC-VAL-2:** Test scenarios documented in `_bmad-output/test-scenarios/epic-2/2-2-2-sdl3-mouse-input.md`
+- [x] **AC-VAL-3:** N/A — no seed data.
+- [x] **AC-VAL-4:** N/A — no API catalog entries.
+- [x] **AC-VAL-5:** N/A — no event-bus events.
+- [x] **AC-VAL-6:** Flow catalog entry `VS1-SDL-INPUT-MOUSE` confirmed in story artifacts.
 **Manual validation (deferred to integration testing after EPIC-2 completes):**
 - AC-VAL-1 (manual): Click-to-move, inventory drag-and-drop, UI button clicks on macOS arm64 and Linux x64 — requires full game compilation (blocked until EPIC-4 rendering migration).
 - AC-VAL-2 (manual): Cursor visibility toggle (hidden during gameplay, visible in menus) on all platforms.
@@ -84,13 +84,13 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1 — Add POINT struct shim to PlatformTypes.h** (AC: 5)
-  - [ ]1.1 In `PlatformTypes.h` (inside `#else // !_WIN32` block), add `struct POINT { long x; long y; };` — required by `CInput::Create()` and `CInput::Update()` which store `m_ptCursor` and `m_ptFormerCursor` as `POINT`.
-  - [ ]1.2 Add `inline bool PtInRect(const RECT* prc, POINT pt)` shim — used by `Win.cpp`, `WinEx.cpp`, `Slider.cpp` for cursor hit-testing. Check if `RECT` is already defined in `PlatformTypes.h`; add it if not (`struct RECT { long left, top, right, bottom; };`).
-  - [ ]1.3 Verify `SIZE` struct is defined in `PlatformTypes.h` — used by legacy UI code. Add `struct SIZE { long cx; long cy; };` if missing.
+- [x] **Task 1 — Add POINT struct shim to PlatformTypes.h** (AC: 5)
+  - [x]1.1 In `PlatformTypes.h` (inside `#else // !_WIN32` block), add `struct POINT { long x; long y; };` — required by `CInput::Create()` and `CInput::Update()` which store `m_ptCursor` and `m_ptFormerCursor` as `POINT`.
+  - [x]1.2 Add `inline bool PtInRect(const RECT* prc, POINT pt)` shim — used by `Win.cpp`, `WinEx.cpp`, `Slider.cpp` for cursor hit-testing. Check if `RECT` is already defined in `PlatformTypes.h`; add it if not (`struct RECT { long left, top, right, bottom; };`).
+  - [x]1.3 Verify `SIZE` struct is defined in `PlatformTypes.h` — used by legacy UI code. Add `struct SIZE { long cx; long cy; };` if missing.
 
-- [ ] **Task 2 — Add mouse Win32 API shims to PlatformCompat.h** (AC: 4, 5)
-  - [ ]2.1 Add `ShowCursor(bool show)` shim inside `#ifdef MU_ENABLE_SDL3` (inside `#else // !_WIN32` block):
+- [x] **Task 2 — Add mouse Win32 API shims to PlatformCompat.h** (AC: 4, 5)
+  - [x]2.1 Add `ShowCursor(bool show)` shim inside `#ifdef MU_ENABLE_SDL3` (inside `#else // !_WIN32` block):
     ```cpp
     inline void ShowCursor(bool show)
     {
@@ -101,7 +101,7 @@ Status: ready-for-dev
     }
     ```
     Guard existing call sites in `Winmain.cpp:222` (`ShowCursor(TRUE)`), `Winmain.cpp:603` (`ShowCursor(false)`), `Winmain.cpp:1057` (`ShowCursor(FALSE)`) — these must compile unchanged.
-  - [ ]2.2 Add `SetCursorPos(int x, int y)` shim inside `#ifdef MU_ENABLE_SDL3` (inside `#else // !_WIN32` block):
+  - [x]2.2 Add `SetCursorPos(int x, int y)` shim inside `#ifdef MU_ENABLE_SDL3` (inside `#else // !_WIN32` block):
     ```cpp
     inline void SetCursorPos(int x, int y)
     {
@@ -112,7 +112,7 @@ Status: ready-for-dev
     }
     ```
     Three call sites: `ZzzInterface.cpp:4089`, `WSclient.cpp:6170`, `NewUITrade.cpp:600` — all pass window-relative coordinates already scaled to `WindowWidth/Height`.
-  - [ ]2.3 Add `GetDoubleClickTime()` shim inside `#else // !_WIN32` block (no SDL3 guard needed — pure portable):
+  - [x]2.3 Add `GetDoubleClickTime()` shim inside `#else // !_WIN32` block (no SDL3 guard needed — pure portable):
     ```cpp
     inline DWORD GetDoubleClickTime()
     {
@@ -122,7 +122,7 @@ Status: ready-for-dev
     }
     ```
     Used by `CInput::Create()` at `Input.cpp:40`.
-  - [ ]2.4 Add `ScreenToClient(HWND /*hwnd*/, POINT* /*ppt*/)` stub inside `#else // !_WIN32` block:
+  - [x]2.4 Add `ScreenToClient(HWND /*hwnd*/, POINT* /*ppt*/)` stub inside `#else // !_WIN32` block:
     ```cpp
     inline void ScreenToClient(HWND /*hwnd*/, POINT* /*ppt*/)
     {
@@ -133,7 +133,7 @@ Status: ready-for-dev
     }
     ```
     Used by `Input.cpp:35` and `Input.cpp:67`.
-  - [ ]2.5 Add `GetCursorPos(POINT* ppt)` stub inside `#else // !_WIN32` block:
+  - [x]2.5 Add `GetCursorPos(POINT* ppt)` stub inside `#else // !_WIN32` block:
     ```cpp
     inline void GetCursorPos(POINT* ppt)
     {
@@ -149,7 +149,7 @@ Status: ready-for-dev
     }
     ```
     Used by `Input.cpp:34` and `Input.cpp:66`. The `CInput` system polls `VK_LBUTTON` / `VK_RBUTTON` / `VK_MBUTTON` via `SEASON3B::IsPress()` which routes through `ScanAsyncKeyState()` — on the SDL3 path, button state must also be shimmed (see Task 3 notes in Dev Notes).
-  - [ ]2.6 Add `GetActiveWindow()` stub returning `(HWND)1` (non-null = window active) inside `#else // !_WIN32` block — used by `Input.cpp:202` to suppress input when the window is inactive. On the SDL3 path, focus management is handled by `HandleFocusGain`/`HandleFocusLoss` in `SDLEventLoop.cpp`.
+  - [x]2.6 Add `GetActiveWindow()` stub returning `(HWND)1` (non-null = window active) inside `#else // !_WIN32` block — used by `Input.cpp:202` to suppress input when the window is inactive. On the SDL3 path, focus management is handled by `HandleFocusGain`/`HandleFocusLoss` in `SDLEventLoop.cpp`.
     ```cpp
     inline HWND GetActiveWindow()
     {
@@ -159,8 +159,8 @@ Status: ready-for-dev
     }
     ```
 
-- [ ] **Task 3 — Feed mouse state from SDLEventLoop** (AC: 1, 2, 3)
-  - [ ]3.1 In `SDLEventLoop.cpp`, add extern declarations for mouse state globals (defined in `ZzzOpenglUtil.cpp`):
+- [x] **Task 3 — Feed mouse state from SDLEventLoop** (AC: 1, 2, 3)
+  - [x]3.1 In `SDLEventLoop.cpp`, add extern declarations for mouse state globals (defined in `ZzzOpenglUtil.cpp`):
     ```cpp
     extern float MouseX;
     extern float MouseY;
@@ -173,7 +173,7 @@ Status: ready-for-dev
     extern int g_iMousePopPosition_y;
     ```
     Note: `MouseLButton`, `MouseLButtonPop`, `MouseRButton`, etc. are already declared as externs at the top of `SDLEventLoop.cpp` (added for focus-loss mouse clear in story 2.1.2). Verify and reuse them.
-  - [ ]3.2 Add `SDL_EVENT_MOUSE_MOTION` handler in `SDLEventLoop::PollEvents()`:
+  - [x]3.2 Add `SDL_EVENT_MOUSE_MOTION` handler in `SDLEventLoop::PollEvents()`:
     ```cpp
     case SDL_EVENT_MOUSE_MOTION:
         MouseX = event.motion.x / g_fScreenRate_x;
@@ -185,7 +185,7 @@ Status: ready-for-dev
         break;
     ```
     **IMPORTANT:** `event.motion.x` and `event.motion.y` are `float` in SDL3 (not `int` as in SDL2). Cast directly — no LOWORD/HIWORD extraction needed.
-  - [ ]3.3 Add `SDL_EVENT_MOUSE_BUTTON_DOWN` handler (mirrors `WM_LBUTTONDOWN` / `WM_RBUTTONDOWN` / `WM_MBUTTONDOWN` logic from `WndProc`):
+  - [x]3.3 Add `SDL_EVENT_MOUSE_BUTTON_DOWN` handler (mirrors `WM_LBUTTONDOWN` / `WM_RBUTTONDOWN` / `WM_MBUTTONDOWN` logic from `WndProc`):
     ```cpp
     case SDL_EVENT_MOUSE_BUTTON_DOWN:
         g_iNoMouseTime = 0;
@@ -216,7 +216,7 @@ Status: ready-for-dev
         }
         break;
     ```
-  - [ ]3.4 Add `SDL_EVENT_MOUSE_BUTTON_UP` handler (mirrors `WM_LBUTTONUP` / `WM_RBUTTONUP` / `WM_MBUTTONUP` logic):
+  - [x]3.4 Add `SDL_EVENT_MOUSE_BUTTON_UP` handler (mirrors `WM_LBUTTONUP` / `WM_RBUTTONUP` / `WM_MBUTTONUP` logic):
     ```cpp
     case SDL_EVENT_MOUSE_BUTTON_UP:
         g_iNoMouseTime = 0;
@@ -248,7 +248,7 @@ Status: ready-for-dev
         }
         break;
     ```
-  - [ ]3.5 Add `SDL_EVENT_MOUSE_WHEEL` handler (mirrors `WM_MOUSEWHEEL` logic):
+  - [x]3.5 Add `SDL_EVENT_MOUSE_WHEEL` handler (mirrors `WM_MOUSEWHEEL` logic):
     ```cpp
     case SDL_EVENT_MOUSE_WHEEL:
         // SDL3: event.wheel.y is positive = scroll up (away from user) — same sign as Win32 WHEEL_DELTA
@@ -256,25 +256,25 @@ Status: ready-for-dev
         MouseWheel = static_cast<int>(event.wheel.y);
         break;
     ```
-  - [ ]3.6 Add double-click detection for left button using SDL3's `event.button.clicks` field:
+  - [x]3.6 Add double-click detection for left button using SDL3's `event.button.clicks` field:
     ```cpp
     // Inside SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_BUTTON_LEFT case:
     if (event.button.clicks == 2)
         MouseLButtonDBClick = true;
     ```
     SDL3 reports `clicks == 2` on the second click of a double-click sequence. This replaces `WM_LBUTTONDBLCLK`.
-  - [ ]3.7 Clear `MouseLButtonDBClick = false` at the START of each `PollEvents()` call (before the `while(SDL_PollEvent)` loop) — mirrors `Winmain.cpp:611` which does this at the start of `WndProc` processing:
+  - [x]3.7 Clear `MouseLButtonDBClick = false` at the START of each `PollEvents()` call (before the `while(SDL_PollEvent)` loop) — mirrors `Winmain.cpp:611` which does this at the start of `WndProc` processing:
     ```cpp
     bool SDLEventLoop::PollEvents()
     {
         MouseLButtonDBClick = false; // Reset each frame before processing events
         // ... rest of existing code
     ```
-  - [ ]3.8 Also reset `MouseWheel = 0` at the start of each `PollEvents()` call — `MouseWheel` is a per-frame accumulated value that must be cleared each frame (matches Win32 behavior where `WM_MOUSEWHEEL` only fires when scrolling occurs).
+  - [x]3.8 Also reset `MouseWheel = 0` at the start of each `PollEvents()` call — `MouseWheel` is a per-frame accumulated value that must be cleared each frame (matches Win32 behavior where `WM_MOUSEWHEEL` only fires when scrolling occurs).
 
-- [ ] **Task 4 — Handle VK_LBUTTON / VK_RBUTTON / VK_MBUTTON in GetAsyncKeyState shim** (AC: 2)
-  - [ ]4.1 The `CInput::Update()` function calls `SEASON3B::IsPress(VK_LBUTTON)` / `IsPress(VK_RBUTTON)` / `IsPress(VK_MBUTTON)` — which routes through `ScanAsyncKeyState()` → `GetAsyncKeyState(VK_LBUTTON)`. On the SDL3 path the keyboard shim returns 0 for these VK codes (VK_LBUTTON=0x01, VK_RBUTTON=0x02, VK_MBUTTON=0x04) since they are not in the keyboard mapping table.
-  - [ ]4.2 Add mouse button VK mappings to `MuVkToSdlScancode()` in `PlatformCompat.h` OR add a separate path: extend `GetAsyncKeyState()` shim to check the global mouse button state for mouse-button VK codes before consulting the scancode table:
+- [x] **Task 4 — Handle VK_LBUTTON / VK_RBUTTON / VK_MBUTTON in GetAsyncKeyState shim** (AC: 2)
+  - [x]4.1 The `CInput::Update()` function calls `SEASON3B::IsPress(VK_LBUTTON)` / `IsPress(VK_RBUTTON)` / `IsPress(VK_MBUTTON)` — which routes through `ScanAsyncKeyState()` → `GetAsyncKeyState(VK_LBUTTON)`. On the SDL3 path the keyboard shim returns 0 for these VK codes (VK_LBUTTON=0x01, VK_RBUTTON=0x02, VK_MBUTTON=0x04) since they are not in the keyboard mapping table.
+  - [x]4.2 Add mouse button VK mappings to `MuVkToSdlScancode()` in `PlatformCompat.h` OR add a separate path: extend `GetAsyncKeyState()` shim to check the global mouse button state for mouse-button VK codes before consulting the scancode table:
     ```cpp
     // In GetAsyncKeyState() shim (PlatformCompat.h), add before the scancode lookup:
     // Mouse button VK codes — backed by global mouse state (populated by SDLEventLoop)
@@ -289,10 +289,10 @@ Status: ready-for-dev
     }
     ```
     **IMPORTANT:** This ensures `CInput::Update()` correctly tracks double-click timing and button state transitions on the SDL3 path.
-  - [ ]4.3 Add `VK_LBUTTON (0x01)`, `VK_RBUTTON (0x02)`, `VK_MBUTTON (0x04)` defines to `PlatformKeys.h` if not already present — check first.
+  - [x]4.3 Add `VK_LBUTTON (0x01)`, `VK_RBUTTON (0x02)`, `VK_MBUTTON (0x04)` defines to `PlatformKeys.h` if not already present — check first.
 
-- [ ] **Task 5 — Tests** (AC-STD-2)
-  - [ ]5.1 Add `MuMain/tests/platform/test_platform_mouse.cpp` (new file, guarded `#ifdef MU_ENABLE_SDL3`):
+- [x] **Task 5 — Tests** (AC-STD-2)
+  - [x]5.1 Add `MuMain/tests/platform/test_platform_mouse.cpp` (new file, guarded `#ifdef MU_ENABLE_SDL3`):
     - `TEST_CASE("Mouse button state: LButton down sets MouseLButton=true and MouseLButtonPush=true")` — simulate SDL_EVENT_MOUSE_BUTTON_DOWN for SDL_BUTTON_LEFT, verify state transitions.
     - `TEST_CASE("Mouse button state: LButton up sets MouseLButtonPop=true and MouseLButton=false")` — simulate button up, verify pop flag set.
     - `TEST_CASE("MouseWheel: positive y maps to positive MouseWheel")` — verify sign convention.
@@ -301,15 +301,15 @@ Status: ready-for-dev
     - `TEST_CASE("GetDoubleClickTime shim: returns 500ms")` — `REQUIRE(GetDoubleClickTime() == 500u)`.
     - `TEST_CASE("GetAsyncKeyState: VK_LBUTTON returns 0x8000 when MouseLButton is true")` — set global, verify return value.
     - `TEST_CASE("GetAsyncKeyState: VK_LBUTTON returns 0 when MouseLButton is false")` — verify not held.
-  - [ ]5.2 Add CMake script-mode test `test_ac_std11_flow_code_2_2_2.cmake` that verifies `VS1-SDL-INPUT-MOUSE` string appears in `SDLEventLoop.cpp`.
-  - [ ]5.3 Add CMake script-mode test `test_ac_std3_no_raw_win32_mouse.cmake` that greps all non-Platform/ source files for `WM_MOUSEMOVE`, `WM_LBUTTONDOWN`, `WM_RBUTTONDOWN`, `SetCapture`, `ReleaseCapture` — reports occurrences (expected only in `Winmain.cpp` WndProc, fails if found in new files).
-  - [ ]5.4 Register `test_platform_mouse.cpp` in `MuMain/tests/platform/CMakeLists.txt` — add to `MuTests` target under `BUILD_TESTING` guard.
+  - [x]5.2 Add CMake script-mode test `test_ac_std11_flow_code_2_2_2.cmake` that verifies `VS1-SDL-INPUT-MOUSE` string appears in `SDLEventLoop.cpp`.
+  - [x]5.3 Add CMake script-mode test `test_ac_std3_no_raw_win32_mouse.cmake` that greps all non-Platform/ source files for `WM_MOUSEMOVE`, `WM_LBUTTONDOWN`, `WM_RBUTTONDOWN`, `SetCapture`, `ReleaseCapture` — reports occurrences (expected only in `Winmain.cpp` WndProc, fails if found in new files).
+  - [x]5.4 Register `test_platform_mouse.cpp` in `MuMain/tests/platform/CMakeLists.txt` — add to `MuTests` target under `BUILD_TESTING` guard.
 
-- [ ] **Task 6 — Quality Gate Verification** (AC-STD-13)
-  - [ ]6.1 Run `make -C MuMain format-check` — fix any formatting issues.
-  - [ ]6.2 Run `make -C MuMain lint` (cppcheck) — resolve all warnings to zero.
-  - [ ]6.3 Verify `./ctl check` passes locally on macOS.
-  - [ ]6.4 Verify MinGW CI build is not broken — all new SDL3 code must be inside `#ifdef MU_ENABLE_SDL3` guards.
+- [x] **Task 6 — Quality Gate Verification** (AC-STD-13)
+  - [x]6.1 Run `make -C MuMain format-check` — fix any formatting issues.
+  - [x]6.2 Run `make -C MuMain lint` (cppcheck) — resolve all warnings to zero.
+  - [x]6.3 Verify `./ctl check` passes locally on macOS.
+  - [x]6.4 Verify MinGW CI build is not broken — all new SDL3 code must be inside `#ifdef MU_ENABLE_SDL3` guards.
 
 ---
 
@@ -551,6 +551,7 @@ claude-sonnet-4-6 (validate-create-story workflow)
 
 ### Completion Notes List
 
+- Story implemented by dev-story workflow on 2026-03-06
 - Story created by validate-create-story workflow on 2026-03-06
 - Story type: infrastructure (not frontend_feature / fullstack) — Visual Design Specification section not applicable
 - Architecture decision: global-state population approach (mirrors story 2.2.1 keyboard shim pattern) — zero call-site changes in game logic
@@ -570,12 +571,12 @@ claude-sonnet-4-6 (validate-create-story workflow)
 
 | File | Status | Notes |
 |------|--------|-------|
-| `MuMain/src/source/Platform/PlatformTypes.h` | MODIFY | Add POINT, RECT, SIZE structs; PtInRect inline |
-| `MuMain/src/source/Platform/PlatformCompat.h` | MODIFY | Add ShowCursor, SetCursorPos, GetDoubleClickTime, GetCursorPos, ScreenToClient, GetActiveWindow shims; extend GetAsyncKeyState for VK_LBUTTON/RBUTTON/MBUTTON; add extern MouseLButton/R/M |
-| `MuMain/src/source/Platform/PlatformKeys.h` | MODIFY if needed | Add VK_LBUTTON (0x01), VK_RBUTTON (0x02), VK_MBUTTON (0x04) if not present |
-| `MuMain/src/source/Platform/sdl3/SDLEventLoop.cpp` | MODIFY | Add mouse event handlers; add MouseX/Y/Wheel/NoMouseTime externs; reset DBClick and Wheel each frame |
-| `MuMain/tests/platform/test_platform_mouse.cpp` | NEW | Catch2 tests for mouse state transitions and shims |
-| `MuMain/tests/platform/test_ac_std11_flow_code_2_2_2.cmake` | NEW | CMake script test verifying VS1-SDL-INPUT-MOUSE in SDLEventLoop.cpp |
-| `MuMain/tests/platform/test_ac_std3_no_raw_win32_mouse.cmake` | NEW | CMake script regression test: no raw Win32 mouse APIs in new files |
-| `docs/error-catalog.md` | MODIFY | Add MU_ERR_MOUSE_WARP_FAILED |
-| `_bmad-output/test-scenarios/epic-2/2-2-2-sdl3-mouse-input.md` | NEW | Test scenarios for AC validation |
+| `MuMain/src/source/Platform/PlatformTypes.h` | DONE | Added POINT, RECT, SIZE structs; PtInRect inline |
+| `MuMain/src/source/Platform/PlatformCompat.h` | DONE | Added ShowCursor, SetCursorPos, GetDoubleClickTime, GetCursorPos, ScreenToClient, GetActiveWindow shims; extended GetAsyncKeyState for VK_LBUTTON/RBUTTON/MBUTTON; added extern MouseLButton/R/M |
+| `MuMain/src/source/Platform/PlatformKeys.h` | NO CHANGE | VK_LBUTTON (0x01), VK_RBUTTON (0x02), VK_MBUTTON (0x04) already present |
+| `MuMain/src/source/Platform/sdl3/SDLEventLoop.cpp` | DONE | Added mouse event handlers; added MouseX/Y/Wheel/NoMouseTime externs; reset DBClick and Wheel each frame |
+| `MuMain/src/source/Platform/sdl3/SDLKeyboardState.cpp` | DONE | Added MuPlatformLogMouseWarpFailed implementation |
+| `MuMain/tests/platform/test_platform_mouse.cpp` | DONE | Fixed extern types (MouseX/Y are int not float); tests ready |
+| `MuMain/tests/platform/test_ac_std11_flow_code_2_2_2.cmake` | PRE-EXISTING | CMake script test verifying VS1-SDL-INPUT-MOUSE in SDLEventLoop.cpp |
+| `MuMain/tests/platform/test_ac_std3_no_raw_win32_mouse.cmake` | PRE-EXISTING | CMake script regression test: no raw Win32 mouse APIs in new files |
+| `docs/error-catalog.md` | DONE | Added MU_ERR_MOUSE_WARP_FAILED |

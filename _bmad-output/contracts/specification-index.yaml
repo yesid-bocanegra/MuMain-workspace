@@ -39,7 +39,7 @@ epics:
     features:
       - "2.1 Windowing"
       - "2.2 Input"
-    completion_pct: 60  # 3 of 5 stories done
+    completion_pct: 80  # 4 of 5 stories done
 
   EPIC-3:
     name: ".NET AOT Cross-Platform Networking"
@@ -160,7 +160,7 @@ features:
     epic: EPIC-2
     stories: ["2-2-1", "2-2-2", "2-2-3"]
     points: 9
-    completion_pct: 33  # 1 of 3 stories done (2-2-1)
+    completion_pct: 67  # 2 of 3 stories done (2-2-1, 2-2-2)
   "3.1":
     name: "Build Integration"
     epic: EPIC-3
@@ -407,13 +407,18 @@ stories:
     error_codes: ["MU_ERR_INPUT_UNMAPPED_VK"]
 
   2-2-2-sdl3-mouse-input:
-    name: "SDL3 Mouse Input"
+    name: "SDL3 Mouse Input Migration"
     epic: EPIC-2
     feature: "2.2"
     type: infrastructure
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-1"
+    flow_code: VS1-SDL-INPUT-MOUSE
+    story_file: "_bmad-output/stories/2-2-2-sdl3-mouse-input/story.md"
+    atdd_checklist: "_bmad-output/stories/2-2-2-sdl3-mouse-input/atdd.md"
+    review_file: "_bmad-output/stories/2-2-2-sdl3-mouse-input/review.md"
+    error_codes: ["MU_ERR_MOUSE_WARP_FAILED"]
 
   2-2-3-sdl3-text-input:
     name: "SDL3 Text Input"
@@ -707,6 +712,11 @@ catalogs:
       flow_code: VS1-SDL-INPUT-KEYBOARD
       category: Platform
       logged_via: g_ErrorReport.Write
+    - code: MU_ERR_MOUSE_WARP_FAILED
+      story: 2-2-2-sdl3-mouse-input
+      flow_code: VS1-SDL-INPUT-MOUSE
+      category: Platform
+      logged_via: g_ErrorReport.Write
   events: []              # No event catalog yet
   flow_codes:
     - code: VS0-PLAT-CMAKE-MACOS
@@ -736,6 +746,9 @@ catalogs:
     - code: VS1-SDL-INPUT-KEYBOARD
       story: 2-2-1-sdl3-keyboard-input
       value_stream: VS-1
+    - code: VS1-SDL-INPUT-MOUSE
+      story: 2-2-2-sdl3-mouse-input
+      value_stream: VS-1
 
 # =====================
 # STATISTICS
@@ -746,15 +759,15 @@ statistics:
   total_stories: 45
   total_points: 172
   total_endpoints: 0
-  total_error_codes: 1
+  total_error_codes: 2
   total_events: 0
-  total_flow_codes: 9
+  total_flow_codes: 10
   total_test_scenarios: 0
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 9
-  stories_backlog: 36
-  completion_rate: 20.0    # 9/45 stories done
-  points_done: 29          # 3+2+3+5+3+2+5+3+3
-  points_remaining: 143
-  points_completion_rate: 16.9  # 29/172
+  stories_done: 10
+  stories_backlog: 35
+  completion_rate: 22.2    # 10/45 stories done
+  points_done: 32          # 3+2+3+5+3+2+5+3+3+3
+  points_remaining: 140
+  points_completion_rate: 18.6  # 32/172
