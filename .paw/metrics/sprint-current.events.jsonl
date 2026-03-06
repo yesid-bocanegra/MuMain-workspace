@@ -69,3 +69,5 @@
 {"timestamp":"2026-03-06T19:00:46.677163+00:00","event_type":"step_started","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T19:15:00Z","event_type":"workflow_metric:code_review_completed","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{"final_status":"done","issues_fixed":6,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
 {"timestamp":"2026-03-06T19:15:01Z","event_type":"story_completed","story_key":"2-2-1-sdl3-keyboard-input","step":null,"sprint":null,"epic":"2","data":{"total_steps":12,"total_retries":0,"total_regressions":0,"final_status":"done"}}
+{"timestamp":"2026-03-06T19:46:46.238931+00:00","event_type":"step_passed","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review","sprint":null,"epic":"2","data":{"duration_seconds":2759.6,"input_tokens":60,"output_tokens":12805}}
+{"timestamp":"2026-03-06T19:46:47.247734+00:00","event_type":"step_started","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review-qg","sprint":null,"epic":"2","data":{}}
