@@ -4,7 +4,7 @@ milestones:
   M1:
     name: "Platform Foundation"
     contributing_epics: [EPIC-1, EPIC-7]
-    linked_sprints: [sprint-1]
+    linked_sprints: [sprint-1, sprint-2]
     status: active
     validated_at: null
     report: null
@@ -22,7 +22,7 @@ milestones:
   M2:
     name: "Cross-Platform I/O"
     contributing_epics: [EPIC-2, EPIC-3]
-    linked_sprints: []
+    linked_sprints: [sprint-2]
     status: active
     validated_at: null
     report: null

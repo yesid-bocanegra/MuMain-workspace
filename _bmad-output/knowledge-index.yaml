@@ -1,0 +1,738 @@
+knowledge_index:
+  metadata:
+    generated_at: "2026-03-06T12:55:00-05:00"
+    scope: "all"
+    project_root: "/Users/joseybv/workspace/mu/MuMain-workspace"
+    project_name: "MuMain-workspace"
+    generator: "generate-knowledge-index.xml"
+
+  # =====================
+  # TERMS
+  # =====================
+  terms:
+    - name: MuMain
+      definition: "MU Online game client (Season 5.2-6), C++20 monolithic game loop"
+      defined_in: docs/index.md
+      category: project
+
+    - name: ClientLibrary
+      definition: ".NET 10 Native AOT network bridge for OpenMU server connectivity"
+      defined_in: docs/index.md
+      category: project
+
+    - name: ConstantsReplacer
+      definition: "XSLT code generation tool that syncs SQL constants to C++ headers"
+      defined_in: docs/index.md
+      category: project
+
+    - name: MuEditor
+      definition: "Debug editor overlay using Dear ImGui, enabled via _EDITOR builds"
+      defined_in: docs/index.md
+      category: project
+
+    - name: MuPlatform
+      definition: "Platform abstraction facade providing static methods for window management, input, and platform-specific operations"
+      defined_in: MuMain/src/source/Platform/MuPlatform.h
+      category: architecture
+
+    - name: IPlatformWindow
+      definition: "Abstract interface for platform window operations (Create, Destroy, SetFullscreen, SetMouseGrab, GetDisplaySize)"
+      defined_in: MuMain/src/source/Platform/IPlatformWindow.h
+      category: architecture
+
+    - name: IPlatformEventLoop
+      definition: "Abstract interface for platform event loop with PollEvents() method"
+      defined_in: MuMain/src/source/Platform/IPlatformEventLoop.h
+      category: architecture
+
+    - name: PlatformTypes
+      definition: "Cross-platform type aliases for Win32 types (BYTE, WORD, DWORD, BOOL, HINSTANCE, etc.)"
+      defined_in: MuMain/src/source/Platform/PlatformTypes.h
+      category: platform
+
+    - name: PlatformCompat
+      definition: "Win32 API shims providing cross-platform equivalents (GetTickCount, timeGetTime, etc.)"
+      defined_in: MuMain/src/source/Platform/PlatformCompat.h
+      category: platform
+
+    - name: PlatformKeys
+      definition: "Cross-platform key code definitions mapping virtual keys"
+      defined_in: MuMain/src/source/Platform/PlatformKeys.h
+      category: platform
+
+    - name: PlatformLibrary
+      definition: "Dynamic library loading abstraction with win32 (LoadLibrary) and posix (dlopen) backends"
+      defined_in: MuMain/src/source/Platform/PlatformLibrary.h
+      category: platform
+
+    - name: SDL3
+      definition: "Simple DirectMedia Layer 3 — cross-platform windowing, input, and rendering library replacing Win32 APIs"
+      defined_in: _bmad-output/planning-artifacts/architecture.md
+      category: dependency
+
+    - name: FetchContent
+      definition: "CMake module used to download and build SDL3 as part of the build process"
+      defined_in: _bmad-output/stories/1-3-1-sdl3-dependency-integration/story.md
+      category: build
+
+    - name: MinGW
+      definition: "MinGW-w64 i686 cross-compiler used in CI to build Windows x86 .exe from Linux"
+      defined_in: _bmad-output/project-context.md
+      category: build
+
+    - name: Native AOT
+      definition: ".NET ahead-of-time compilation producing native .dll/.dylib/.so for C++ interop"
+      defined_in: _bmad-output/project-context.md
+      category: technology
+
+    - name: Hungarian Notation
+      definition: "Variable naming convention using prefixes (by=BYTE, w=WORD, dw=DWORD, sz=string, p=pointer, m_=member)"
+      defined_in: _bmad-output/project-context.md
+      category: convention
+
+    - name: Value Stream VS-0
+      definition: "Platform Foundation — infrastructure, build system, platform abstraction, CI, diagnostics"
+      defined_in: _bmad-output/planning-artifacts/epics.md
+      category: planning
+
+    - name: Value Stream VS-1
+      definition: "Core Experience — rendering, audio, input, networking, gameplay"
+      defined_in: _bmad-output/planning-artifacts/epics.md
+      category: planning
+
+    - name: ACTIVE_FOCUS_OUT
+      definition: "Preprocessor guard in Winmain.h controlling fullscreen-only inactive state behavior"
+      defined_in: MuMain/src/source/Main/Winmain.h
+      category: code
+
+    - name: g_ErrorReport
+      definition: "Global error reporting object using Write() for post-mortem MuError.log diagnostics"
+      defined_in: docs/development-standards.md
+      category: logging
+
+    - name: g_ConsoleDebug
+      definition: "Global console debug object using Write() for live debug output"
+      defined_in: docs/development-standards.md
+      category: logging
+
+    - name: GAME_TEXT
+      definition: "i18n macro for user-facing strings in the game client"
+      defined_in: MuMain/src/source/Translation/i18n.h
+      category: i18n
+
+    - name: EDITOR_TEXT
+      definition: "i18n macro for strings in editor builds only"
+      defined_in: MuMain/src/source/Translation/i18n.h
+      category: i18n
+
+    - name: Conventional Commits
+      definition: "Commit message format: type(scope): description (feat, fix, refactor, etc.)"
+      defined_in: docs/development-standards.md
+      category: convention
+
+  # =====================
+  # CONCEPTS
+  # =====================
+  concepts:
+    - name: Cross-Platform Migration
+      description: "10-phase SDL3 migration from Win32 to cross-platform (macOS, Linux, Windows)"
+      files:
+        - docs/CROSS_PLATFORM_PLAN.md
+        - docs/CROSS_PLATFORM_DECISIONS.md
+        - _bmad-output/planning-artifacts/architecture.md
+      related: [SDL3, MuPlatform, Platform Abstraction]
+
+    - name: Platform Abstraction Layer
+      description: "Compile-time CMake backends (win32/, posix/, sdl3/) isolating platform APIs from game logic"
+      files:
+        - MuMain/src/source/Platform/
+        - docs/modular-reorganization.md
+      related: [IPlatformWindow, IPlatformEventLoop, MuPlatform]
+
+    - name: Rendering Pipeline
+      description: "OpenGL 1.x immediate mode rendering, planned migration to SDL_gpu with MuRenderer abstraction"
+      files:
+        - docs/architecture-rendering.md
+        - docs/CROSS_PLATFORM_DECISIONS.md
+      related: [MuRenderer, SDL_gpu, Ground Truth]
+
+    - name: Network Protocol
+      description: "Packet-based communication with OpenMU server via .NET Native AOT bridge"
+      files:
+        - docs/packet-protocol-reference.md
+        - docs/architecture-clientlibrary.md
+      related: [ClientLibrary, Native AOT, SimpleModulus]
+
+    - name: Game Loop
+      description: "Monolithic main loop in Winmain.cpp with fixed timestep and SDL3 event polling"
+      files:
+        - MuMain/src/source/Main/Winmain.cpp
+        - docs/architecture-mumain.md
+      related: [SDLEventLoop, Win32EventLoop]
+
+    - name: Quality Gates
+      description: "CI pipeline enforcing clang-format, cppcheck, clang-tidy, and MinGW build success"
+      files:
+        - docs/ci-workflows.md
+        - MuMain/.github/workflows/ci.yml
+      related: [MinGW, clang-format, cppcheck]
+
+    - name: Module Structure
+      description: "20 module directories under MuMain/src/source/ organized by functional domain"
+      files:
+        - docs/modular-reorganization.md
+        - docs/source-tree-analysis.md
+      related: [CMake Targets, MUCore, MUPlatform, MURenderFX]
+
+    - name: SAFe Flow Metrics
+      description: "Scaled Agile Framework metrics tracking velocity, flow time, WIP limits, commitment reliability"
+      files:
+        - _bmad-output/implementation-artifacts/sprint-status.yaml
+        - _bmad-output/sprint-1-metrics-2026-03-05.md
+      related: [Sprint Planning, Velocity, Story Points]
+
+    - name: ATDD
+      description: "Acceptance Test Driven Development — failing tests written before implementation"
+      files:
+        - _bmad-output/implementation-artifacts/atdd-checklist-2-1-1.md
+        - _bmad-output/implementation-artifacts/atdd-checklist-2-1-2-sdl3-window-focus-display.md
+      related: [Catch2, Quality Gates]
+
+    - name: Code Review Pipeline
+      description: "Multi-phase code review: quality gate (lint/format), analysis (adversarial review), finalize (fix issues)"
+      files:
+        - _bmad/pcc/workflows/code-review-quality-gate/
+        - _bmad/pcc/workflows/code-review-analysis/
+        - _bmad/pcc/workflows/code-review-finalize/
+      related: [Quality Gates, ATDD]
+
+  # =====================
+  # FILES (documentation inventory)
+  # =====================
+  files:
+    # --- Core Documentation ---
+    - path: docs/index.md
+      title: "Documentation Index"
+      type: documentation
+      description: "Primary entry point for AI-assisted development with load-on-demand table"
+
+    - path: docs/project-overview.md
+      title: "Project Overview"
+      type: documentation
+      description: "Executive summary, tech stack, key metrics"
+
+    - path: docs/architecture-mumain.md
+      title: "Architecture: MuMain"
+      type: documentation
+      description: "Game client architecture: rendering, scenes, UI, state management"
+
+    - path: docs/architecture-rendering.md
+      title: "Architecture: Rendering"
+      type: documentation
+      description: "OpenGL pipeline, MuRenderer abstraction, SDL_gpu migration plan"
+
+    - path: docs/architecture-clientlibrary.md
+      title: "Architecture: ClientLibrary"
+      type: documentation
+      description: "Network layer: packets, marshaling, XSLT pipeline"
+
+    - path: docs/development-standards.md
+      title: "Development Standards"
+      type: documentation
+      description: "Coding conventions, banned APIs, cross-platform rules, error handling, logging"
+      concepts: [Banned APIs, C++ Standards, Error Handling, Logging, i18n, Conventional Commits]
+
+    - path: docs/development-guide.md
+      title: "Development Guide"
+      type: documentation
+      description: "Build, run, test, environment setup per platform"
+
+    - path: docs/game-systems-reference.md
+      title: "Game Systems Reference"
+      type: documentation
+      description: "All gameplay subsystems, entry points, data flow"
+      concepts: [Core Loop, Global State, Gameplay Systems, Map/World, UI System]
+
+    - path: docs/packet-protocol-reference.md
+      title: "Packet Protocol Reference"
+      type: documentation
+      description: "Network protocol, encryption, C++/C# boundary"
+      concepts: [Framing, Encryption, C++/C# Boundary, Code Gen]
+
+    - path: docs/asset-pipeline.md
+      title: "Asset Pipeline"
+      type: documentation
+      description: "Asset formats, directory structure, loading pipeline"
+
+    - path: docs/CROSS_PLATFORM_PLAN.md
+      title: "Cross-Platform Plan"
+      type: documentation
+      description: "10-phase, 58-session SDL3/SDL_gpu migration roadmap (970 lines)"
+
+    - path: docs/CROSS_PLATFORM_DECISIONS.md
+      title: "Cross-Platform Decisions"
+      type: documentation
+      description: "Research, library decisions, OpenGL audit, shader specs"
+
+    - path: docs/modular-reorganization.md
+      title: "Modular Reorganization"
+      type: documentation
+      description: "Module directory structure, CMake library targets, dependency map"
+
+    - path: docs/implementation-recipes.md
+      title: "Implementation Recipes"
+      type: documentation
+      description: "Step-by-step guides: add UI window, packet, manager, item, map, flag, scene"
+
+    - path: docs/feature-impact-maps.md
+      title: "Feature Impact Maps"
+      type: documentation
+      description: "Change blast radius per system, dependency chains, feature flags"
+
+    - path: docs/testing-strategy.md
+      title: "Testing Strategy"
+      type: documentation
+      description: "Test approach, ground truth capture, CI validation"
+
+    - path: docs/security-guidelines.md
+      title: "Security Guidelines"
+      type: documentation
+      description: "Input validation, memory safety, crypto migration, logging security"
+
+    - path: docs/performance-guidelines.md
+      title: "Performance Guidelines"
+      type: documentation
+      description: "Game loop constraints, timing, memory, rendering, .NET hot paths"
+
+    - path: docs/ci-workflows.md
+      title: "CI Workflows"
+      type: documentation
+      description: "Quality gates + build pipeline, Makefile as source of truth"
+
+    - path: docs/troubleshooting.md
+      title: "Troubleshooting"
+      type: documentation
+      description: "Common build/runtime issues and solutions"
+
+    - path: docs/cppcheck-guidance.md
+      title: "cppcheck Guidance"
+      type: documentation
+      description: "Static analysis suppression policy and fix examples"
+
+    - path: docs/error-catalog.md
+      title: "Error Catalog"
+      type: documentation
+      description: "Error codes used with g_ErrorReport.Write() for post-mortem diagnostics"
+
+    - path: docs/executor-runbook.md
+      title: "Executor Runbook"
+      type: documentation
+      description: "Operational runbook for the executor agent"
+
+    # --- Planning Artifacts ---
+    - path: _bmad-output/project-context.md
+      title: "Project Context for AI Agents"
+      type: documentation
+      description: "47 critical rules and patterns for AI agents (technology, naming, error handling, memory)"
+
+    - path: _bmad-output/planning-artifacts/prd.md
+      title: "Product Requirements Document"
+      type: planning
+      description: "Complete PRD for cross-platform migration"
+
+    - path: _bmad-output/planning-artifacts/architecture.md
+      title: "Architecture Design"
+      type: planning
+      description: "Architectural decisions for SDL3 migration"
+
+    - path: _bmad-output/planning-artifacts/epics.md
+      title: "Epic Breakdown"
+      type: planning
+      description: "7 epics, 45 stories, 172 story points for cross-platform migration"
+
+    # --- Milestone Plans ---
+    - path: _bmad-output/milestones/M1-plan.md
+      title: "M1: Platform Foundation"
+      type: planning
+      description: "Milestone plan for EPIC-1 and EPIC-7 Phase 0"
+
+    - path: _bmad-output/milestones/M2-plan.md
+      title: "M2: Cross-Platform I/O"
+      type: planning
+      description: "Milestone plan for EPIC-2 and EPIC-3"
+
+    - path: _bmad-output/milestones/M3-plan.md
+      title: "M3: Rendering Migration"
+      type: planning
+      description: "Milestone plan for EPIC-4"
+
+    - path: _bmad-output/milestones/M4-plan.md
+      title: "M4: Audio Migration"
+      type: planning
+      description: "Milestone plan for EPIC-5"
+
+    - path: _bmad-output/milestones/M5-plan.md
+      title: "M5: MVP Complete"
+      type: planning
+      description: "Milestone plan for EPIC-6 and EPIC-7 completion"
+
+    # --- Sprint Artifacts ---
+    - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+      title: "Sprint Status"
+      type: tracking
+      description: "Sprint definitions, SAFe flow metrics, critical path analysis, development status"
+
+    - path: _bmad-output/implementation-artifacts/milestone-status.yaml
+      title: "Milestone Status Registry"
+      type: tracking
+      description: "5 milestones with success criteria and validation status"
+
+    - path: _bmad-output/sprint-1-completion.md
+      title: "Sprint 1 Completion Report"
+      type: tracking
+      description: "Sprint 1 completion verification and metrics"
+
+    - path: _bmad-output/sprint-1-metrics-2026-03-05.md
+      title: "Sprint 1 Metrics Dashboard"
+      type: tracking
+      description: "Full SAFe metrics report for Sprint 1"
+
+    - path: _bmad-output/sprint-1-retrospective.md
+      title: "Sprint 1 Retrospective"
+      type: tracking
+      description: "Lessons learned and process improvements from Sprint 1"
+
+    # --- Story Files (completed) ---
+    - path: _bmad-output/stories/1-1-1-macos-cmake-toolchain/story.md
+      title: "Story 1.1.1: macOS CMake Toolchain"
+      type: story
+      story_key: 1-1-1
+      status: done
+
+    - path: _bmad-output/stories/1-1-2-linux-cmake-toolchain/story.md
+      title: "Story 1.1.2: Linux CMake Toolchain"
+      type: story
+      story_key: 1-1-2
+      status: done
+
+    - path: _bmad-output/stories/1-2-1-platform-abstraction-headers/story.md
+      title: "Story 1.2.1: Platform Abstraction Headers"
+      type: story
+      story_key: 1-2-1
+      status: done
+
+    - path: _bmad-output/stories/1-2-2-platform-library-backends/story.md
+      title: "Story 1.2.2: Platform Library Backends"
+      type: story
+      story_key: 1-2-2
+      status: done
+
+    - path: _bmad-output/stories/1-3-1-sdl3-dependency-integration/story.md
+      title: "Story 1.3.1: SDL3 Dependency Integration"
+      type: story
+      story_key: 1-3-1
+      status: done
+
+    - path: _bmad-output/stories/1-4-1-build-documentation/story.md
+      title: "Story 1.4.1: Build Documentation"
+      type: story
+      story_key: 1-4-1
+      status: done
+
+    - path: _bmad-output/stories/2-1-1-sdl3-window-event-loop/story.md
+      title: "Story 2.1.1: SDL3 Window & Event Loop"
+      type: story
+      story_key: 2-1-1
+      status: done
+
+    - path: _bmad-output/stories/2-1-2-sdl3-window-focus-display/story.md
+      title: "Story 2.1.2: SDL3 Window Focus & Display"
+      type: story
+      story_key: 2-1-2
+      status: done
+
+    # --- Test Artifacts ---
+    - path: _bmad-output/test-artifacts/test-design-architecture.md
+      title: "Test Design Architecture"
+      type: test
+      description: "System-level test architecture and design"
+
+    - path: _bmad-output/test-scenarios/epic-1/test-scenarios.md
+      title: "Epic 1 Test Scenarios"
+      type: test
+      description: "Test scenarios for Platform Foundation epic"
+
+    - path: _bmad-output/test-scenarios/epic-1/epic-validation.md
+      title: "Epic 1 Validation"
+      type: test
+      description: "Epic 1 completion validation results"
+
+    - path: _bmad-output/test-scenarios/epic-2/2-1-2-window-focus-display.md
+      title: "Story 2.1.2 Test Scenarios"
+      type: test
+      description: "Test scenarios for window focus and display management"
+
+    # --- Contracts ---
+    - path: _bmad-output/contracts/specification-index.yaml
+      title: "Specification Index"
+      type: contract
+      description: "Comprehensive index mapping stories to artifacts, epics, and catalogs"
+
+  # =====================
+  # SYMBOLS (C++ code)
+  # =====================
+  symbols:
+    # --- Interfaces ---
+    - name: IPlatformWindow
+      type: interface
+      file: MuMain/src/source/Platform/IPlatformWindow.h
+      methods: [Create, Destroy, GetNativeHandle, SetTitle, SetSize, SetFullscreen, SetMouseGrab, GetDisplaySize]
+      description: "Abstract window interface for platform backends"
+
+    - name: IPlatformEventLoop
+      type: interface
+      file: MuMain/src/source/Platform/IPlatformEventLoop.h
+      methods: [PollEvents]
+      description: "Abstract event loop interface"
+
+    # --- SDL3 Backend ---
+    - name: SDLWindow
+      type: class
+      file: MuMain/src/source/Platform/sdl3/SDLWindow.h
+      implements: IPlatformWindow
+      methods: [Create, Destroy, GetNativeHandle, SetTitle, SetSize, SetFullscreen, SetMouseGrab, GetDisplaySize]
+      description: "SDL3 window backend implementation"
+
+    - name: SDLEventLoop
+      type: class
+      file: MuMain/src/source/Platform/sdl3/SDLEventLoop.h
+      implements: IPlatformEventLoop
+      methods: [PollEvents]
+      description: "SDL3 event loop with focus, minimize, restore handlers"
+
+    # --- Win32 Backend ---
+    - name: Win32Window
+      type: class
+      file: MuMain/src/source/Platform/win32/Win32Window.h
+      implements: IPlatformWindow
+      methods: [Create, Destroy, GetNativeHandle, SetTitle, SetSize, SetFullscreen, SetMouseGrab, GetDisplaySize]
+      description: "Win32 window backend (stubs for SDL3-specific operations)"
+
+    - name: Win32EventLoop
+      type: class
+      file: MuMain/src/source/Platform/win32/Win32EventLoop.h
+      implements: IPlatformEventLoop
+      methods: [PollEvents]
+      description: "Win32 message pump event loop"
+
+    # --- Facade ---
+    - name: MuPlatform
+      type: class
+      file: MuMain/src/source/Platform/MuPlatform.h
+      methods: [Shutdown, SetFullscreen, SetMouseGrab]
+      description: "Static facade delegating to platform-specific window instances"
+
+    # --- Platform Headers ---
+    - name: PlatformTypes.h
+      type: header
+      file: MuMain/src/source/Platform/PlatformTypes.h
+      description: "Win32 type aliases (BYTE, WORD, DWORD, BOOL, HANDLE, etc.) for cross-platform builds"
+
+    - name: PlatformCompat.h
+      type: header
+      file: MuMain/src/source/Platform/PlatformCompat.h
+      description: "Win32 API shims (GetTickCount, timeGetTime, etc.) for non-Windows platforms"
+
+    - name: PlatformKeys.h
+      type: header
+      file: MuMain/src/source/Platform/PlatformKeys.h
+      description: "Cross-platform virtual key code definitions"
+
+    - name: PlatformLibrary.h
+      type: header
+      file: MuMain/src/source/Platform/PlatformLibrary.h
+      description: "Dynamic library loading abstraction (LoadLibrary/dlopen)"
+
+  # =====================
+  # CONTRACTS
+  # =====================
+  contracts:
+    # --- Error Codes ---
+    - type: error
+      name: MU_ERR_SDL_INIT_FAILED
+      description: "SDL3 initialization failed"
+      file: docs/error-catalog.md
+      category: Platform
+      introduced: "2.1.1"
+
+    - type: error
+      name: MU_ERR_WINDOW_CREATE_FAILED
+      description: "Window creation via SDL3 failed"
+      file: docs/error-catalog.md
+      category: Platform
+      introduced: "2.1.1"
+
+    - type: error
+      name: MU_ERR_FULLSCREEN_FAILED
+      description: "SDL3 fullscreen set failed"
+      file: docs/error-catalog.md
+      category: Platform
+      introduced: "2.1.2"
+
+    - type: error
+      name: MU_ERR_DISPLAY_QUERY_FAILED
+      description: "SDL3 display mode query failed"
+      file: docs/error-catalog.md
+      category: Platform
+      introduced: "2.1.2"
+
+    # --- Flow Codes ---
+    - type: flow
+      name: VS0-PLAT-CMAKE-MACOS
+      description: "macOS CMake toolchain and presets"
+      value_stream: VS-0
+      story: 1-1-1
+
+    - type: flow
+      name: VS0-PLAT-CMAKE-LINUX
+      description: "Linux CMake toolchain and presets"
+      value_stream: VS-0
+      story: 1-1-2
+
+    - type: flow
+      name: VS0-PLAT-ABSTRACT-HEADERS
+      description: "Platform abstraction type headers"
+      value_stream: VS-0
+      story: 1-2-1
+
+    - type: flow
+      name: VS0-PLAT-LIBRARY-BACKENDS
+      description: "Platform library with win32/posix backends"
+      value_stream: VS-0
+      story: 1-2-2
+
+    - type: flow
+      name: VS0-PLAT-SDL3-INTEGRATE
+      description: "SDL3 dependency integration via FetchContent"
+      value_stream: VS-0
+      story: 1-3-1
+
+    - type: flow
+      name: VS0-PLAT-DOCS-BUILD
+      description: "Build documentation per platform"
+      value_stream: VS-0
+      story: 1-4-1
+
+    - type: flow
+      name: VS1-SDL-WINDOW-CREATE
+      description: "SDL3 window creation and event loop"
+      value_stream: VS-1
+      story: 2-1-1
+
+    - type: flow
+      name: VS1-SDL-WINDOW-FOCUS
+      description: "SDL3 window focus and display management"
+      value_stream: VS-1
+      story: 2-1-2
+
+  # =====================
+  # CROSS-REFERENCES
+  # =====================
+  cross_references:
+    # Platform abstraction → multiple files
+    - source: IPlatformWindow
+      source_type: interface
+      targets:
+        - SDLWindow (implements)
+        - Win32Window (implements)
+        - MuPlatform (uses)
+      relationship: inheritance
+
+    - source: IPlatformEventLoop
+      source_type: interface
+      targets:
+        - SDLEventLoop (implements)
+        - Win32EventLoop (implements)
+      relationship: inheritance
+
+    # Stories → code files
+    - source: "Story 2.1.1"
+      source_type: story
+      targets:
+        - MuMain/src/source/Platform/IPlatformWindow.h
+        - MuMain/src/source/Platform/IPlatformEventLoop.h
+        - MuMain/src/source/Platform/sdl3/SDLWindow.cpp
+        - MuMain/src/source/Platform/sdl3/SDLEventLoop.cpp
+        - MuMain/src/source/Platform/MuPlatform.cpp
+      relationship: implements
+
+    - source: "Story 2.1.2"
+      source_type: story
+      targets:
+        - MuMain/src/source/Platform/sdl3/SDLEventLoop.cpp (focus handlers)
+        - MuMain/src/source/Platform/sdl3/SDLWindow.cpp (fullscreen, display query)
+        - MuMain/src/source/Platform/MuPlatform.h (focus facade methods)
+      relationship: implements
+
+    - source: "Story 1.2.1"
+      source_type: story
+      targets:
+        - MuMain/src/source/Platform/PlatformTypes.h
+        - MuMain/src/source/Platform/PlatformKeys.h
+        - MuMain/src/source/Platform/PlatformCompat.h
+      relationship: implements
+
+    - source: "Story 1.2.2"
+      source_type: story
+      targets:
+        - MuMain/src/source/Platform/PlatformLibrary.h
+        - MuMain/src/source/Platform/win32/PlatformLibrary.cpp
+        - MuMain/src/source/Platform/posix/PlatformLibrary.cpp
+      relationship: implements
+
+    # Documentation cross-references
+    - source: docs/architecture-rendering.md
+      source_type: documentation
+      targets:
+        - docs/CROSS_PLATFORM_DECISIONS.md
+        - _bmad-output/planning-artifacts/architecture.md
+      relationship: references
+
+    - source: docs/packet-protocol-reference.md
+      source_type: documentation
+      targets:
+        - docs/architecture-clientlibrary.md
+        - MuMain/ClientLibrary/
+      relationship: references
+
+    # Error codes → stories
+    - source: MU_ERR_SDL_INIT_FAILED
+      source_type: error
+      targets: ["Story 2.1.1"]
+      relationship: introduced_by
+
+    - source: MU_ERR_WINDOW_CREATE_FAILED
+      source_type: error
+      targets: ["Story 2.1.1"]
+      relationship: introduced_by
+
+    - source: MU_ERR_FULLSCREEN_FAILED
+      source_type: error
+      targets: ["Story 2.1.2"]
+      relationship: introduced_by
+
+    - source: MU_ERR_DISPLAY_QUERY_FAILED
+      source_type: error
+      targets: ["Story 2.1.2"]
+      relationship: introduced_by
+
+  # =====================
+  # STATISTICS
+  # =====================
+  statistics:
+    total_files: 55
+    total_terms: 24
+    total_concepts: 10
+    total_symbols: 11
+    total_contracts: 12
+    total_cross_references: 11

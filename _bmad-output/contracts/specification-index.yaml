@@ -1,0 +1,747 @@
+# Specification Index
+# Generated: 2026-03-06
+# Scope: all
+
+metadata:
+  generated_at: "2026-03-06T12:50:00-05:00"
+  generator: "generate-spec-index.xml"
+  project: "MuMain-workspace"
+
+# =====================
+# EPICS
+# =====================
+epics:
+  EPIC-1:
+    name: "Platform Foundation & Build System"
+    value_stream: "VS-0 (Platform Foundation)"
+    flow_type: Enabler
+    phase: "0"
+    priority: P0
+    status: done
+    total_points: 18
+    stories: 6
+    features:
+      - "1.1 CMake Toolchains"
+      - "1.2 Platform Abstraction"
+      - "1.3 SDL3 Integration"
+      - "1.4 Build Docs & CI"
+    completion_pct: 100
+
+  EPIC-2:
+    name: "SDL3 Windowing & Input Migration"
+    value_stream: "VS-1 (Core Experience)"
+    flow_type: Feature
+    phase: "1-2"
+    priority: P0
+    status: in-progress
+    total_points: 17
+    stories: 5
+    features:
+      - "2.1 Windowing"
+      - "2.2 Input"
+    completion_pct: 40  # 2 of 5 stories done
+
+  EPIC-3:
+    name: ".NET AOT Cross-Platform Networking"
+    value_stream: "VS-1 (Core Experience)"
+    flow_type: Feature
+    phase: "2.5"
+    priority: P0
+    status: backlog
+    total_points: 24
+    stories: 7
+    features:
+      - "3.1 Build Integration"
+      - "3.2 Encoding"
+      - "3.3 Platform Validation"
+      - "3.4 UX & Config"
+    completion_pct: 0
+
+  EPIC-4:
+    name: "Rendering Pipeline Migration"
+    value_stream: "VS-1 (Core Experience)"
+    flow_type: Feature
+    phase: "3-5"
+    priority: P0
+    status: backlog
+    total_points: 48
+    stories: 9
+    features:
+      - "4.1 Ground Truth"
+      - "4.2 MuRenderer Abstraction"
+      - "4.3 SDL_gpu Backend"
+      - "4.4 Texture System"
+    completion_pct: 0
+
+  EPIC-5:
+    name: "Audio System Migration"
+    value_stream: "VS-1 (Core Experience)"
+    flow_type: Feature
+    phase: "6"
+    priority: P0
+    status: backlog
+    total_points: 18
+    stories: 5
+    features:
+      - "5.1 Abstraction"
+      - "5.2 Implementation"
+      - "5.3 Format Support"
+      - "5.4 Volume Controls"
+    completion_pct: 0
+
+  EPIC-6:
+    name: "Cross-Platform Gameplay Validation"
+    value_stream: "VS-1 (Core Experience)"
+    flow_type: Feature
+    phase: "9-10"
+    priority: P0
+    status: backlog
+    total_points: 23
+    stories: 7
+    features:
+      - "6.1 Core Loop"
+      - "6.2 Combat & Economy"
+      - "6.3 Social & Systems"
+      - "6.4 UI Validation"
+    completion_pct: 0
+
+  EPIC-7:
+    name: "Stability, Diagnostics & Quality Gates"
+    value_stream: "VS-0 (Platform Foundation)"
+    flow_type: Enabler
+    phase: "0 + 10"
+    priority: P0
+    status: in-progress
+    total_points: 24
+    stories: 6
+    features:
+      - "7.1 Diagnostics"
+      - "7.2 Performance Instrumentation"
+      - "7.3 Stability Sessions"
+      - "7.4 Native CI"
+    completion_pct: 0
+
+# =====================
+# FEATURES
+# =====================
+features:
+  "1.1":
+    name: "CMake Toolchains"
+    epic: EPIC-1
+    stories: ["1-1-1", "1-1-2"]
+    points: 5
+    completion_pct: 100
+  "1.2":
+    name: "Platform Abstraction"
+    epic: EPIC-1
+    stories: ["1-2-1", "1-2-2"]
+    points: 8
+    completion_pct: 100
+  "1.3":
+    name: "SDL3 Integration"
+    epic: EPIC-1
+    stories: ["1-3-1"]
+    points: 3
+    completion_pct: 100
+  "1.4":
+    name: "Build Docs & CI"
+    epic: EPIC-1
+    stories: ["1-4-1"]
+    points: 2
+    completion_pct: 100
+  "2.1":
+    name: "Windowing"
+    epic: EPIC-2
+    stories: ["2-1-1", "2-1-2"]
+    points: 8
+    completion_pct: 100
+  "2.2":
+    name: "Input"
+    epic: EPIC-2
+    stories: ["2-2-1", "2-2-2", "2-2-3"]
+    points: 9
+    completion_pct: 0
+  "3.1":
+    name: "Build Integration"
+    epic: EPIC-3
+    stories: ["3-1-1", "3-1-2"]
+    points: 8
+    completion_pct: 0
+  "3.2":
+    name: "Encoding"
+    epic: EPIC-3
+    stories: ["3-2-1"]
+    points: 5
+    completion_pct: 0
+  "3.3":
+    name: "Platform Validation"
+    epic: EPIC-3
+    stories: ["3-3-1", "3-3-2"]
+    points: 6
+    completion_pct: 0
+  "3.4":
+    name: "UX & Config"
+    epic: EPIC-3
+    stories: ["3-4-1", "3-4-2"]
+    points: 5
+    completion_pct: 0
+  "4.1":
+    name: "Ground Truth"
+    epic: EPIC-4
+    stories: ["4-1-1"]
+    points: 5
+    completion_pct: 0
+  "4.2":
+    name: "MuRenderer Abstraction"
+    epic: EPIC-4
+    stories: ["4-2-1", "4-2-2", "4-2-3", "4-2-4", "4-2-5"]
+    points: 22  # 8+8+5+3+3 = 27 — wait, per the feature map it says 22
+    completion_pct: 0
+  "4.3":
+    name: "SDL_gpu Backend"
+    epic: EPIC-4
+    stories: ["4-3-1", "4-3-2"]
+    points: 13
+    completion_pct: 0
+  "4.4":
+    name: "Texture System"
+    epic: EPIC-4
+    stories: ["4-4-1"]
+    points: 8
+    completion_pct: 0
+  "5.1":
+    name: "Abstraction"
+    epic: EPIC-5
+    stories: ["5-1-1"]
+    points: 3
+    completion_pct: 0
+  "5.2":
+    name: "Implementation"
+    epic: EPIC-5
+    stories: ["5-2-1", "5-2-2"]
+    points: 10
+    completion_pct: 0
+  "5.3":
+    name: "Format Support"
+    epic: EPIC-5
+    stories: ["5-3-1"]
+    points: 3
+    completion_pct: 0
+  "5.4":
+    name: "Volume Controls"
+    epic: EPIC-5
+    stories: ["5-4-1"]
+    points: 2
+    completion_pct: 0
+  "6.1":
+    name: "Core Loop"
+    epic: EPIC-6
+    stories: ["6-1-1", "6-1-2"]
+    points: 6
+    completion_pct: 0
+  "6.2":
+    name: "Combat & Economy"
+    epic: EPIC-6
+    stories: ["6-2-1", "6-2-2"]
+    points: 6
+    completion_pct: 0
+  "6.3":
+    name: "Social & Systems"
+    epic: EPIC-6
+    stories: ["6-3-1", "6-3-2"]
+    points: 6
+    completion_pct: 0
+  "6.4":
+    name: "UI Validation"
+    epic: EPIC-6
+    stories: ["6-4-1"]
+    points: 5
+    completion_pct: 0
+  "7.1":
+    name: "Diagnostics"
+    epic: EPIC-7
+    stories: ["7-1-1", "7-1-2"]
+    points: 6
+    completion_pct: 0
+  "7.2":
+    name: "Performance Instrumentation"
+    epic: EPIC-7
+    stories: ["7-2-1"]
+    points: 3
+    completion_pct: 0
+  "7.3":
+    name: "Stability Sessions"
+    epic: EPIC-7
+    stories: ["7-3-1", "7-3-2"]
+    points: 8  # 5+5 per sprint status = 10, feature map says 8
+    completion_pct: 0
+  "7.4":
+    name: "Native CI"
+    epic: EPIC-7
+    stories: ["7-4-1"]
+    points: 3  # Sprint status says 5, feature map says 3
+    completion_pct: 0
+
+# =====================
+# STORIES (with artifacts)
+# =====================
+stories:
+  1-1-1-macos-cmake-toolchain:
+    name: "Create macOS CMake Toolchain & Presets"
+    epic: EPIC-1
+    feature: "1.1"
+    type: infrastructure
+    status: done
+    points: 3
+    value_stream: "VS-0"
+    flow_code: VS0-PLAT-CMAKE-MACOS
+    story_file: "_bmad-output/stories/1-1-1-macos-cmake-toolchain/story.md"
+    progress_file: "_bmad-output/stories/1-1-1-macos-cmake-toolchain/progress.md"
+    review_file: "_bmad-output/stories/1-1-1-macos-cmake-toolchain/review.md"
+
+  1-1-2-linux-cmake-toolchain:
+    name: "Create Linux CMake Toolchain & Presets"
+    epic: EPIC-1
+    feature: "1.1"
+    type: infrastructure
+    status: done
+    points: 2
+    value_stream: "VS-0"
+    flow_code: VS0-PLAT-CMAKE-LINUX
+    story_file: "_bmad-output/stories/1-1-2-linux-cmake-toolchain/story.md"
+    progress_file: "_bmad-output/stories/1-1-2-linux-cmake-toolchain/progress.md"
+    review_file: "_bmad-output/stories/1-1-2-linux-cmake-toolchain/review.md"
+
+  1-2-1-platform-abstraction-headers:
+    name: "Platform Abstraction Headers"
+    epic: EPIC-1
+    feature: "1.2"
+    type: infrastructure
+    status: done
+    points: 3
+    value_stream: "VS-0"
+    flow_code: VS0-PLAT-ABSTRACT-HEADERS
+    story_file: "_bmad-output/stories/1-2-1-platform-abstraction-headers/story.md"
+    progress_file: "_bmad-output/stories/1-2-1-platform-abstraction-headers/progress.md"
+    review_file: "_bmad-output/stories/1-2-1-platform-abstraction-headers/review.md"
+
+  1-2-2-platform-library-backends:
+    name: "MUPlatform Library with win32/posix Backends"
+    epic: EPIC-1
+    feature: "1.2"
+    type: infrastructure
+    status: done
+    points: 5
+    value_stream: "VS-0"
+    flow_code: VS0-PLAT-LIBRARY-BACKENDS
+    story_file: "_bmad-output/stories/1-2-2-platform-library-backends/story.md"
+    review_file: "_bmad-output/stories/1-2-2-platform-library-backends/review.md"
+
+  1-3-1-sdl3-dependency-integration:
+    name: "SDL3 Dependency Integration"
+    epic: EPIC-1
+    feature: "1.3"
+    type: infrastructure
+    status: done
+    points: 3
+    value_stream: "VS-0"
+    flow_code: VS0-PLAT-SDL3-INTEGRATE
+    story_file: "_bmad-output/stories/1-3-1-sdl3-dependency-integration/story.md"
+    review_file: "_bmad-output/stories/1-3-1-sdl3-dependency-integration/review.md"
+
+  1-4-1-build-documentation:
+    name: "Build Documentation Per Platform"
+    epic: EPIC-1
+    feature: "1.4"
+    type: infrastructure
+    status: done
+    points: 2
+    value_stream: "VS-0"
+    flow_code: VS0-PLAT-DOCS-BUILD
+    story_file: "_bmad-output/stories/1-4-1-build-documentation/story.md"
+    progress_file: "_bmad-output/stories/1-4-1-build-documentation/progress.md"
+    review_file: "_bmad-output/stories/1-4-1-build-documentation/review.md"
+
+  2-1-1-sdl3-window-event-loop:
+    name: "SDL3 Window Creation & Event Loop"
+    epic: EPIC-2
+    feature: "2.1"
+    type: infrastructure
+    status: done
+    points: 5
+    value_stream: "VS-1"
+    flow_code: VS1-SDL-WINDOW-CREATE
+    story_file: "_bmad-output/stories/2-1-1-sdl3-window-event-loop/story.md"
+    progress_file: "_bmad-output/stories/2-1-1-sdl3-window-event-loop/progress.md"
+    atdd_checklist: "_bmad-output/implementation-artifacts/atdd-checklist-2-1-1.md"
+    code_review: "_bmad-output/implementation-artifacts/code-review-2-1-1.md"
+
+  2-1-2-sdl3-window-focus-display:
+    name: "SDL3 Window Focus & Display Management"
+    epic: EPIC-2
+    feature: "2.1"
+    type: infrastructure
+    status: done
+    points: 3
+    value_stream: "VS-1"
+    flow_code: VS1-SDL-WINDOW-FOCUS
+    story_file: "_bmad-output/stories/2-1-2-sdl3-window-focus-display/story.md"
+    progress_file: "_bmad-output/stories/2-1-2-sdl3-window-focus-display/progress.md"
+    review_file: "_bmad-output/stories/2-1-2-sdl3-window-focus-display/review.md"
+    atdd_checklist: "_bmad-output/implementation-artifacts/atdd-checklist-2-1-2-sdl3-window-focus-display.md"
+    code_review: "_bmad-output/implementation-artifacts/code-review-2-1-2-sdl3-window-focus-display.md"
+
+  # --- Backlog stories (no story files created yet) ---
+  2-2-1-sdl3-keyboard-input:
+    name: "SDL3 Keyboard Input"
+    epic: EPIC-2
+    feature: "2.2"
+    type: infrastructure
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  2-2-2-sdl3-mouse-input:
+    name: "SDL3 Mouse Input"
+    epic: EPIC-2
+    feature: "2.2"
+    type: infrastructure
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  2-2-3-sdl3-text-input:
+    name: "SDL3 Text Input"
+    epic: EPIC-2
+    feature: "2.2"
+    type: infrastructure
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  3-1-1-cmake-rid-detection:
+    name: "CMake RID Detection"
+    epic: EPIC-3
+    feature: "3.1"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  3-1-2-connection-h-crossplatform:
+    name: "Connection.h Cross-Platform"
+    epic: EPIC-3
+    feature: "3.1"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  3-2-1-char16t-encoding:
+    name: "char16_t Encoding"
+    epic: EPIC-3
+    feature: "3.2"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  3-3-1-macos-server-connectivity:
+    name: "macOS Server Connectivity"
+    epic: EPIC-3
+    feature: "3.3"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  3-3-2-linux-server-connectivity:
+    name: "Linux Server Connectivity"
+    epic: EPIC-3
+    feature: "3.3"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  3-4-1-connection-error-messaging:
+    name: "Connection Error Messaging"
+    epic: EPIC-3
+    feature: "3.4"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  3-4-2-server-connection-config:
+    name: "Server Connection Config"
+    epic: EPIC-3
+    feature: "3.4"
+    status: backlog
+    points: 2
+    value_stream: "VS-1"
+
+  4-1-1-ground-truth-capture:
+    name: "Ground Truth Capture"
+    epic: EPIC-4
+    feature: "4.1"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  4-2-1-murenderer-core-api:
+    name: "MuRenderer Core API"
+    epic: EPIC-4
+    feature: "4.2"
+    status: backlog
+    points: 8
+    value_stream: "VS-1"
+
+  4-2-2-migrate-renderbitmap-quad2d:
+    name: "Migrate RenderBitmap & Quad2D"
+    epic: EPIC-4
+    feature: "4.2"
+    status: backlog
+    points: 8
+    value_stream: "VS-1"
+
+  4-2-3-migrate-skeletal-mesh:
+    name: "Migrate Skeletal Mesh"
+    epic: EPIC-4
+    feature: "4.2"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  4-2-4-migrate-trail-effects:
+    name: "Migrate Trail Effects"
+    epic: EPIC-4
+    feature: "4.2"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  4-2-5-migrate-blend-pipeline-state:
+    name: "Migrate Blend & Pipeline State"
+    epic: EPIC-4
+    feature: "4.2"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  4-3-1-sdlgpu-backend:
+    name: "SDL_gpu Backend"
+    epic: EPIC-4
+    feature: "4.3"
+    status: backlog
+    points: 8
+    value_stream: "VS-1"
+
+  4-3-2-shader-programs:
+    name: "Shader Programs"
+    epic: EPIC-4
+    feature: "4.3"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  4-4-1-texture-system-migration:
+    name: "Texture System Migration"
+    epic: EPIC-4
+    feature: "4.4"
+    status: backlog
+    points: 8
+    value_stream: "VS-1"
+
+  5-1-1-muaudio-abstraction-layer:
+    name: "MuAudio Abstraction Layer"
+    epic: EPIC-5
+    feature: "5.1"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  5-2-1-miniaudio-bgm:
+    name: "miniaudio BGM"
+    epic: EPIC-5
+    feature: "5.2"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  5-2-2-miniaudio-sfx:
+    name: "miniaudio SFX"
+    epic: EPIC-5
+    feature: "5.2"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  5-3-1-audio-format-validation:
+    name: "Audio Format Validation"
+    epic: EPIC-5
+    feature: "5.3"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  5-4-1-volume-controls:
+    name: "Volume Controls"
+    epic: EPIC-5
+    feature: "5.4"
+    status: backlog
+    points: 2
+    value_stream: "VS-1"
+
+  6-1-1-auth-character-validation:
+    name: "Auth & Character Validation"
+    epic: EPIC-6
+    feature: "6.1"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  6-1-2-world-navigation-validation:
+    name: "World Navigation Validation"
+    epic: EPIC-6
+    feature: "6.1"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  6-2-1-combat-system-validation:
+    name: "Combat System Validation"
+    epic: EPIC-6
+    feature: "6.2"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  6-2-2-inventory-trading-validation:
+    name: "Inventory & Trading Validation"
+    epic: EPIC-6
+    feature: "6.2"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  6-3-1-social-systems-validation:
+    name: "Social Systems Validation"
+    epic: EPIC-6
+    feature: "6.3"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  6-3-2-advanced-systems-validation:
+    name: "Advanced Systems Validation"
+    epic: EPIC-6
+    feature: "6.3"
+    status: backlog
+    points: 3
+    value_stream: "VS-1"
+
+  6-4-1-ui-windows-validation:
+    name: "UI Windows Validation"
+    epic: EPIC-6
+    feature: "6.4"
+    status: backlog
+    points: 5
+    value_stream: "VS-1"
+
+  7-1-1-crossplatform-error-reporting:
+    name: "Cross-Platform Error Reporting"
+    epic: EPIC-7
+    feature: "7.1"
+    status: backlog
+    points: 3
+    value_stream: "VS-0"
+
+  7-1-2-posix-signal-handlers:
+    name: "POSIX Signal Handlers"
+    epic: EPIC-7
+    feature: "7.1"
+    status: backlog
+    points: 3
+    value_stream: "VS-0"
+
+  7-2-1-frame-time-instrumentation:
+    name: "Frame Time Instrumentation"
+    epic: EPIC-7
+    feature: "7.2"
+    status: backlog
+    points: 3
+    value_stream: "VS-0"
+
+  7-3-1-macos-stability-session:
+    name: "macOS Stability Session"
+    epic: EPIC-7
+    feature: "7.3"
+    status: backlog
+    points: 5
+    value_stream: "VS-0"
+
+  7-3-2-linux-stability-session:
+    name: "Linux Stability Session"
+    epic: EPIC-7
+    feature: "7.3"
+    status: backlog
+    points: 5
+    value_stream: "VS-0"
+
+  7-4-1-native-ci-runners:
+    name: "Native CI Runners"
+    epic: EPIC-7
+    feature: "7.4"
+    status: backlog
+    points: 5
+    value_stream: "VS-0"
+
+# =====================
+# CATALOGS
+# =====================
+catalogs:
+  api_endpoints: []       # N/A — C++ game client, no REST APIs
+  error_codes: []         # No error catalog yet
+  events: []              # No event catalog yet
+  flow_codes:
+    - code: VS0-PLAT-CMAKE-MACOS
+      story: 1-1-1-macos-cmake-toolchain
+      value_stream: VS-0
+    - code: VS0-PLAT-CMAKE-LINUX
+      story: 1-1-2-linux-cmake-toolchain
+      value_stream: VS-0
+    - code: VS0-PLAT-ABSTRACT-HEADERS
+      story: 1-2-1-platform-abstraction-headers
+      value_stream: VS-0
+    - code: VS0-PLAT-LIBRARY-BACKENDS
+      story: 1-2-2-platform-library-backends
+      value_stream: VS-0
+    - code: VS0-PLAT-SDL3-INTEGRATE
+      story: 1-3-1-sdl3-dependency-integration
+      value_stream: VS-0
+    - code: VS0-PLAT-DOCS-BUILD
+      story: 1-4-1-build-documentation
+      value_stream: VS-0
+    - code: VS1-SDL-WINDOW-CREATE
+      story: 2-1-1-sdl3-window-event-loop
+      value_stream: VS-1
+    - code: VS1-SDL-WINDOW-FOCUS
+      story: 2-1-2-sdl3-window-focus-display
+      value_stream: VS-1
+
+# =====================
+# STATISTICS
+# =====================
+statistics:
+  total_epics: 7
+  total_features: 24
+  total_stories: 45
+  total_points: 172
+  total_endpoints: 0
+  total_error_codes: 0
+  total_events: 0
+  total_flow_codes: 8
+  total_test_scenarios: 0
+  total_bruno_collections: 0
+  total_mockups: 0
+  stories_done: 8
+  stories_backlog: 37
+  completion_rate: 17.8    # 8/45 stories done
+  points_done: 26          # 3+2+3+5+3+2+5+3
+  points_remaining: 146
+  points_completion_rate: 15.1  # 26/172

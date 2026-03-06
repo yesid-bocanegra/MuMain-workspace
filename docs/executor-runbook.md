@@ -273,6 +273,23 @@ Re-sequence epics within a milestone, remap epic-milestone assignments, and move
 
 ---
 
+## Ideation (Parking Lot)
+
+Capture ideas for future work that aren't ready to become stories yet.
+
+```bash
+# Start the ideation agent (conversational)
+/bmad:pcc:agents:pcc-ideation
+
+# Or invoke workflows directly
+/bmad:pcc:workflows:idea-capture      # describe an idea, get it scored
+/bmad:pcc:workflows:idea-evaluate     # review/promote/decline captured ideas
+```
+
+Ideas go to `{output_folder}/ideas/registry.md`. The agent asks clarifying questions, maps ideas against the specification-index, and scores them A/B/C/D. Run `idea-evaluate` before sprint planning to surface promotable ideas.
+
+---
+
 ## Retroactive Closure (Backfill)
 
 If a sprint or epic ended without running the proper closing workflows, use backfill instead of manual YAML edits. Backfill **validates first** before writing any status changes.
@@ -420,4 +437,4 @@ The PCC agent (Nova) guides you through any lifecycle decision. You can ask:
 For per-workflow usage details:
 → `_bmad/pcc/docs/lifecycle-hierarchy.md` — full state machines
 → `_bmad/pcc/docs/sprint-scoping-model.md` — sprint YAML schema
-→ `docs/specification/pcc-workflow-catalog.md` — all 71 workflows
+→ `docs/specification/pcc-workflow-catalog.md` — all 74 workflows

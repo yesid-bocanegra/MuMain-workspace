@@ -1,5 +1,5 @@
 # Sprint Status
-# generated: 2026-03-02
+# generated: 2026-03-06
 # project: MuMain-workspace
 # project_key: MUMAIN
 # tracking_system: file-system
@@ -55,24 +55,54 @@ sprints:
       added: []
       removed: []
 
+  sprint-2:
+    name: "Sprint 2"
+    status: planned
+    milestones: [M1, M2]
+    start_date: "2026-03-06"
+    end_date: "2026-03-20"
+    planned_points: 28
+    stories:
+      # Already delivered (completed between sprints, assigned here for tracking)
+      - 2-1-1-sdl3-window-event-loop         # 5 pts | done
+      - 2-1-2-sdl3-window-focus-display       # 3 pts | done
+      # New work — EPIC-2 completion
+      - 2-2-1-sdl3-keyboard-input             # 3 pts | backlog
+      - 2-2-2-sdl3-mouse-input                # 3 pts | backlog
+      - 2-2-3-sdl3-text-input                 # 3 pts | deps: 2-2-1
+      # New work — EPIC-3 start
+      - 3-1-1-cmake-rid-detection             # 5 pts | backlog
+      # New work — EPIC-7 Phase 0 (M1 contribution)
+      - 7-1-1-crossplatform-error-reporting   # 3 pts | backlog
+      - 7-2-1-frame-time-instrumentation      # 3 pts | backlog
+    velocity: null
+    delivered_points: null
+    commitment_reliability: null
+    scope_changes:
+      added:
+        - { story: 2-1-1-sdl3-window-event-loop, reason: "Completed between sprints, assigned retroactively", date: "2026-03-06" }
+        - { story: 2-1-2-sdl3-window-focus-display, reason: "Completed between sprints, assigned retroactively", date: "2026-03-06" }
+      removed: []
+
 # =====================
 # FLOW METRICS (SAFe)
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 18   # Sprint 1: 18 pts delivered (6/6 stories)
-    rolling_average: null  # First sprint, no rolling average yet
-    trend: null            # First sprint, no trend yet
-  flow_time_avg_hours: 12.71   # avg lead time hours across 6 stories
-  flow_efficiency_pct: 26.4    # avg active/total time across 6 stories
+    current_sprint: null       # Sprint 2 not yet started
+    previous_sprint: 18        # Sprint 1: 18 pts delivered
+    rolling_average: 18        # Single sprint data point
+    trend: null                # Need 3+ sprints for trend
+  flow_time_avg_hours: 12.71   # Sprint 1 avg lead time
+  flow_efficiency_pct: 26.4    # Sprint 1 avg active/total
   commitment_reliability_pct: 100.0
   wip_limits:
     in_progress: 2
     review: 3
   wip_violations: 0
   flow_distribution:
-    Feature: 0      # 0 feature stories in sprint-1
-    Enabler: 6      # 6 enabler stories (all EPIC-1)
+    Feature: 5      # EPIC-2 stories (2-2-1, 2-2-2, 2-2-3) + already-done (2-1-1, 2-1-2)
+    Enabler: 3      # EPIC-3 (3-1-1) + EPIC-7 (7-1-1, 7-2-1)
     Defect: 0
     Debt: 0
   flow_load:
@@ -87,65 +117,71 @@ flow_metrics:
 critical_path:
   # Epic Dependency Graph (Project Level):
   #
-  # EPIC-1 (Platform Foundation)
-  #   ├──► EPIC-2 (Windowing & Input) ──┐
-  #   │                                  ├──► EPIC-4 (Rendering) ──┐
-  #   ├──► EPIC-3 (.NET AOT) ──────────┘                           │
-  #   │                                                             ├──► EPIC-6 (Gameplay) ──► EPIC-7.3.1/7.3.2 (Stability)
-  #   ├──► EPIC-5 (Audio) ─────────────────────────────────────────┘
-  #   └──► EPIC-7.1.1–7.2.1 (Diagnostics — Phase 0, parallel with EPIC-1)
-  #                                      EPIC-4 ──► EPIC-7.4.1 (Native CI)
+  # EPIC-1 (Platform Foundation) [DONE]
+  #   ├──> EPIC-2 (Windowing & Input) ──┐
+  #   │                                  ├──> EPIC-4 (Rendering) ──┐
+  #   ├──> EPIC-3 (.NET AOT) ──────────┘                           │
+  #   │                                                             ├──> EPIC-6 (Gameplay) ──> EPIC-7.3.1/7.3.2 (Stability)
+  #   ├──> EPIC-5 (Audio) ─────────────────────────────────────────┘
+  #   └──> EPIC-7.1.1-7.2.1 (Diagnostics — Phase 0, parallel with EPIC-2)
+  #                                      EPIC-4 ──> EPIC-7.4.1 (Native CI)
 
   project_critical_path:
     sequence: "EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.3.1/7.3.2"
     total_points: 111
+    completed_points: 26     # EPIC-1 (18) + 2-1-1 (5) + 2-1-2 (3)
+    remaining_points: 85
     parallel_opportunities:
-      - "EPIC-3 can start after 1.2.2, parallel with EPIC-2"
-      - "EPIC-5 can start after EPIC-1, parallel with EPIC-3/4"
-      - "EPIC-7.1.1-7.2.1 should start with EPIC-1 (Phase 0)"
+      - "EPIC-3 can start now (1.2.2 done), parallel with EPIC-2 completion"
+      - "EPIC-5 can start anytime (no EPIC-1 dep beyond foundation)"
+      - "EPIC-7.1.1-7.2.1 can start now (Phase 0 diagnostics)"
 
-  sprint_1_critical_path:
-    # Track A: 1.1.1/1.1.2 → 1.3.1 → 1.4.1 (10 pts, 4 stories)
-    # Track B: 1.2.1 → 1.2.2 (8 pts, 2 stories)
-    # Tracks A and B run in parallel
-    longest_chain: "1.1.1 → 1.3.1 → 1.4.1 (8 pts)"
+  sprint_2_critical_path:
+    # Track A: 2-2-1 (3) → 2-2-3 (3) = 6 pts (sequential)
+    # Track B: 2-2-2 (3) parallel with Track A
+    # Track C: 3-1-1 (5) independent
+    # Track D: 7-1-1 (3) + 7-2-1 (3) independent, parallel
+    longest_chain: "2-2-1 → 2-2-3 (6 pts, 2 stories)"
     parallel_chains:
-      - track_a: "1.1.1 (3) → 1.3.1 (3) → 1.4.1 (2)"
-        points: 8
-      - track_a_parallel: "1.1.2 (2) feeds into 1.3.1"
-        points: 2
-      - track_b: "1.2.1 (3) → 1.2.2 (5)"
-        points: 8
-    stories_with_no_dependencies: [1-1-1-macos-cmake-toolchain, 1-1-2-linux-cmake-toolchain, 1-2-1-platform-abstraction-headers]
-    stories_that_unblock_other_epics:
-      - story: 1-2-2-platform-library-backends
-        unblocks: "EPIC-3 (3.1.2 Connection.h)"
-      - story: 1-3-1-sdl3-dependency-integration
-        unblocks: "EPIC-2 (2.1.1 SDL3 Window)"
+      - track_a: "2-2-1 (3) → 2-2-3 (3)"
+        points: 6
+        note: "Completes EPIC-2 input migration"
+      - track_b: "2-2-2 (3) parallel with Track A"
+        points: 3
+      - track_c: "3-1-1 (5) independent — starts EPIC-3"
+        points: 5
+      - track_d: "7-1-1 (3) + 7-2-1 (3) independent — EPIC-7 Phase 0"
+        points: 6
+    stories_with_no_dependencies:
+      - 3-1-1-cmake-rid-detection
+      - 7-1-1-crossplatform-error-reporting
+      - 7-2-1-frame-time-instrumentation
+    stories_that_unblock_other_stories:
+      - story: 2-2-1-sdl3-keyboard-input
+        unblocks: "2-2-3-sdl3-text-input"
+      - story: 3-1-1-cmake-rid-detection
+        unblocks: "3-1-2-connection-h-crossplatform (next sprint)"
+      - story: 7-1-1-crossplatform-error-reporting
+        unblocks: "7-1-2-posix-signal-handlers (next sprint)"
 
   blocking_dependencies:
-    - from: 1-2-1-platform-abstraction-headers
-      to: 1-2-2-platform-library-backends
-      type: sequential
-    - from: 1-1-1-macos-cmake-toolchain
-      to: 1-3-1-sdl3-dependency-integration
-      type: sequential
-    - from: 1-1-2-linux-cmake-toolchain
-      to: 1-3-1-sdl3-dependency-integration
-      type: sequential
-    - from: 1-3-1-sdl3-dependency-integration
-      to: 1-4-1-build-documentation
+    - from: 2-2-1-sdl3-keyboard-input
+      to: 2-2-3-sdl3-text-input
       type: sequential
 
   risk_items:
-    - id: R1
-      description: "SDL3 FetchContent may be slow or fail in CI (MinGW cross-compile)"
-      affected_stories: [1-3-1-sdl3-dependency-integration]
-      mitigation: "AC-5 allows SDL3 to be excluded from CI initially"
-    - id: R2
-      description: "macOS arm64 toolchain may need special handling for framework paths"
-      affected_stories: [1-1-1-macos-cmake-toolchain]
-      mitigation: "AC-1 requires correct system framework paths"
+    - id: R3
+      description: "SDL3 keyboard/mouse input mapping may differ across platforms (macOS Cmd vs Ctrl)"
+      affected_stories: [2-2-1-sdl3-keyboard-input, 2-2-2-sdl3-mouse-input]
+      mitigation: "Explicit key mapping table; test on macOS + Linux"
+    - id: R4
+      description: "SDL3 text input (IME) complexity on Linux varies by compositor (X11 vs Wayland)"
+      affected_stories: [2-2-3-sdl3-text-input]
+      mitigation: "X11 first, Wayland deferred if needed"
+    - id: R5
+      description: ".NET AOT RID detection may need special handling for cross-compile scenarios"
+      affected_stories: [3-1-1-cmake-rid-detection]
+      mitigation: "CMake toolchain file provides RID override variable"
 
 # =====================
 # SCHEMA ALIGNMENT
@@ -174,8 +210,8 @@ epic_completion_gates:
       validated_at: "2026-03-05"
       report: "_bmad-output/test-scenarios/epic-1/epic-validation.md"
       automated_checks: PASS
-      catalog_registration: N/A  # Infrastructure/enabler epic — no API, events, or flow catalogs
-      bruno_tests: N/A           # C++ game client — no HTTP server, Bruno not applicable
+      catalog_registration: N/A
+      bruno_tests: N/A
       manual_scenarios: GENERATED
   epic_2:
     name: "SDL3 Windowing & Input Migration"
@@ -185,7 +221,7 @@ epic_completion_gates:
       - keyboard_mouse_text_input_works
       - no_win32_windowing_or_input_apis_in_game_logic
       - mingw_ci_remains_green
-    status: pending
+    status: in-progress
   epic_3:
     name: ".NET AOT Cross-Platform Networking"
     criteria:
@@ -235,7 +271,7 @@ epic_completion_gates:
       - crash_diagnostics_useful_output
       - frame_timer_confirms_30plus_fps
       - native_ci_validates_all_platforms
-    status: pending
+    status: in-progress
 
 # =====================
 # DEVELOPMENT STATUS
@@ -254,16 +290,16 @@ development_status:
 
   # EPIC-2: SDL3 Windowing & Input Migration [VS-1] [Feature] (17 pts)
   epic-2: in-progress
-  2-1-1-sdl3-window-event-loop: done             # 5 pts | Flow:F | Deps: EPIC-1 (1.3.1)
-  2-1-2-sdl3-window-focus-display: done             # 3 pts | Flow:F | Deps: 2.1.1
-  2-2-1-sdl3-keyboard-input: backlog            # 3 pts | Flow:F | Deps: 2.1.1
-  2-2-2-sdl3-mouse-input: backlog               # 3 pts | Flow:F | Deps: 2.1.1
-  2-2-3-sdl3-text-input: backlog                # 3 pts | Flow:F | Deps: 2.2.1
+  2-1-1-sdl3-window-event-loop: done             # 5 pts | Flow:F | Deps: EPIC-1 (1.3.1) | Sprint-2
+  2-1-2-sdl3-window-focus-display: done             # 3 pts | Flow:F | Deps: 2.1.1 | Sprint-2
+  2-2-1-sdl3-keyboard-input: backlog            # 3 pts | Flow:F | Deps: 2.1.1 | Sprint-2
+  2-2-2-sdl3-mouse-input: backlog               # 3 pts | Flow:F | Deps: 2.1.1 | Sprint-2
+  2-2-3-sdl3-text-input: backlog                # 3 pts | Flow:F | Deps: 2.2.1 | Sprint-2
   epic-2-retrospective: optional
 
   # EPIC-3: .NET AOT Cross-Platform Networking [VS-1] [Feature] (24 pts)
   epic-3: backlog
-  3-1-1-cmake-rid-detection: backlog            # 5 pts | Flow:F | Deps: 1.1.1, 1.1.2
+  3-1-1-cmake-rid-detection: backlog            # 5 pts | Flow:F | Deps: 1.1.1, 1.1.2 | Sprint-2
   3-1-2-connection-h-crossplatform: backlog     # 3 pts | Flow:F | Deps: 1.2.2, 3.1.1
   3-2-1-char16t-encoding: backlog               # 5 pts | Flow:F | Deps: 3.1.2
   3-3-1-macos-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.2.1
@@ -306,10 +342,10 @@ development_status:
   epic-6-retrospective: optional
 
   # EPIC-7: Stability, Diagnostics & Quality Gates [VS-0] [Enabler] (24 pts)
-  epic-7: backlog
-  7-1-1-crossplatform-error-reporting: backlog  # 3 pts | Flow:E | Deps: 1.2.1
+  epic-7: in-progress
+  7-1-1-crossplatform-error-reporting: backlog  # 3 pts | Flow:E | Deps: 1.2.1 | Sprint-2
   7-1-2-posix-signal-handlers: backlog          # 3 pts | Flow:E | Deps: 7.1.1
-  7-2-1-frame-time-instrumentation: backlog     # 3 pts | Flow:E | No deps
+  7-2-1-frame-time-instrumentation: backlog     # 3 pts | Flow:E | No deps | Sprint-2
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-4-1-native-ci-runners: backlog              # 5 pts | Flow:E | Deps: EPIC-4
