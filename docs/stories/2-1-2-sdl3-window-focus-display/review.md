@@ -90,8 +90,21 @@ This story targets a C++ game client that requires Win32/DirectX to run. The app
 
 ---
 
+## Second-Pass Adversarial Re-Review (2026-03-06)
+
+Independent adversarial re-review verified all 7 prior fixes in code and found 2 additional issues:
+
+| # | Severity | Category | File | Issue | Resolution |
+|---|----------|----------|------|-------|------------|
+| MEDIUM-6 | MEDIUM | CODE-QUALITY | `Winmain.cpp:1411` | Display size log used `g_ErrorReport.Write()` (informational, not error) — same pattern fixed in SDLEventLoop.cpp (MEDIUM-2) was missed here | Changed to `g_ConsoleDebug->Write(MCD_NORMAL, ...)`. FIXED |
+| LOW-2 | LOW | PORTABILITY | `SDLEventLoop.cpp:12` | Uses Win32 types (`BOOL`/`TRUE`/`FALSE`) via PCH without explicit `PlatformTypes.h` include — will need fixing when PCH is refactored for native non-Windows builds | ACCEPTED (future cross-cutting concern) |
+
+**Post-fix quality gate:** PASSED (688/688 files clean)
+
+---
+
 ## Decision
 
 **APPROVED — Story 2-1-2 passes code review.**
 
-All quality gates green. All 19 acceptance criteria verified (5 functional, 8 standard, 6 validation). 7 issues identified and fixed in a single iteration — including one HIGH-severity behavioral mismatch in focus-loss handling that would have caused SDL3/Win32 behavioral divergence in windowed mode. Story status: `done`.
+All quality gates green. All 19 acceptance criteria verified (5 functional, 8 standard, 6 validation). Two review passes identified 9 total issues (1 HIGH, 6 MEDIUM, 2 LOW) — 8 fixed, 1 accepted as future work. The HIGH-severity behavioral mismatch in focus-loss handling was caught and corrected in the first pass. Story status: `done`.

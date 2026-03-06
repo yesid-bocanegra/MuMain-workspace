@@ -172,6 +172,97 @@ _(empty — audit trail for fix attempts)_
 - **Fix:** Updated test file header from "RED PHASE" to "GREEN PHASE" with known-limitation note. Updated ATDD checklist header from "Phase: RED" to "Phase: GREEN".
 - **Status:** FIXED
 
+## Step 2b: Second-Pass Analysis (Adversarial Re-Review)
+
+**Completed:** 2026-03-06
+**Status:** COMPLETED
+**Reviewer Model:** claude-opus-4-6
+
+### Purpose
+
+Independent adversarial re-review of all fixes from Step 2, plus fresh review of all modified source files.
+
+### Prior Fixes Verification
+
+All 7 fixes from the first analysis pass were verified in code:
+
+| Finding | Verification |
+|---------|-------------|
+| HIGH-1 | CONFIRMED — `HandleFocusLoss()` conditionally sets `g_bWndActive = false` only when `g_bUseWindowMode == FALSE` (line 64) |
+| MEDIUM-1 | CONFIRMED — Cross-reference comment present on `INACTIVE_REFERENCE_FPS` (line 23) |
+| MEDIUM-2 | CONFIRMED — Focus gain/loss use `g_ConsoleDebug->Write()` not `g_ErrorReport.Write()` (lines 56, 92) |
+| MEDIUM-3 | CONFIRMED — Display query placed after `CreateWindow` (Winmain.cpp:1405-1419) |
+| MEDIUM-4 | CONFIRMED — Known-limitation comment in test file header (lines 156-159) |
+| MEDIUM-5 | CONFIRMED — WINDOW_RESIZED case has deferred comment (line 116) |
+| LOW-1 | CONFIRMED — Phase headers updated to GREEN |
+
+### New Findings
+
+#### MEDIUM-6: Inconsistent logging convention in Winmain.cpp display query
+
+- **Category:** CODE-QUALITY
+- **File:** `MuMain/src/source/Main/Winmain.cpp:1411`
+- **Description:** The display size log `g_ErrorReport.Write(L"[VS1-SDL-WINDOW-FOCUS] Display size: %dx%d\r\n", ...)` uses `g_ErrorReport.Write()` for an informational message. The first-pass review (MEDIUM-2) correctly fixed the same pattern in `SDLEventLoop.cpp` but missed this instance. Per project conventions, `g_ErrorReport.Write()` is for post-mortem error diagnostics; informational messages should use `g_ConsoleDebug->Write(MCD_NORMAL, ...)`.
+- **Fix:** Changed to `g_ConsoleDebug->Write(MCD_NORMAL, L"[VS1-SDL-WINDOW-FOCUS] Display size: %dx%d\r\n", nDisplayW, nDisplayH)`.
+- **Status:** FIXED
+
+#### LOW-2: No explicit PlatformTypes.h include in SDLEventLoop.cpp
+
+- **Category:** PORTABILITY
+- **File:** `MuMain/src/source/Platform/sdl3/SDLEventLoop.cpp:12`
+- **Description:** Uses `BOOL`, `TRUE`, `FALSE` (Win32 type aliases) via `extern BOOL g_bUseWindowMode` and comparisons at lines 51, 64, 69, 76. These types are available through the PCH (`stdafx.h` → `<windows.h>`), but the PCH includes `<windows.h>` unconditionally, which won't compile on native macOS/Linux. When the build system is refactored for non-Windows SDL3 builds, `SDLEventLoop.cpp` will need an explicit `#include "../PlatformTypes.h"` (or the PCH will need to conditionally include it). Not a bug in the current build configuration (MinGW targets Windows).
+- **Fix:** Accepted as known limitation — the entire PCH needs refactoring for native non-Windows builds (cross-cutting concern beyond this story). Documented here for future EPIC-2 reference.
+- **Status:** ACCEPTED (future work)
+
+### Severity Summary (Second Pass)
+
+| Severity | Count |
+|----------|-------|
+| BLOCKER | 0 |
+| CRITICAL | 0 |
+| HIGH | 0 |
+| MEDIUM | 1 |
+| LOW | 1 |
+| **Total** | **2** |
+
+### ATDD Audit (Second Pass)
+
+- **Total items:** 33
+- **GREEN (complete):** 33
+- **RED (incomplete):** 0
+- **Coverage:** 100%
+
+### AC Validation (Second Pass)
+
+All 19 acceptance criteria independently verified against source code:
+
+| AC | Verified In | Status |
+|----|-------------|--------|
+| AC-1 | SDLEventLoop.cpp:41-93 (HandleFocusGain/HandleFocusLoss) | VERIFIED |
+| AC-2 | SDLWindow.cpp:88-112 (GetDisplaySize), Winmain.cpp:1405-1419 | VERIFIED |
+| AC-3 | SDLWindow.cpp:67-78 (SetFullscreen), MuPlatform.cpp:102-108 | VERIFIED |
+| AC-4 | SDLWindow.cpp:80-86 (SetMouseGrab), SDLEventLoop.cpp:51-54,90 | VERIFIED |
+| AC-5 | SDLEventLoop.cpp:127-133 (MINIMIZED→HandleFocusLoss, RESTORED→HandleFocusGain) | VERIFIED |
+| AC-STD-1 | All files — PascalCase, m_ prefix, nullptr, Allman braces, no game-logic #ifdef _WIN32 | VERIFIED |
+| AC-STD-2 | test_platform_window.cpp:166-294 — 6 Catch2 test cases | VERIFIED |
+| AC-STD-8 | SDLWindow.cpp:76,98,105 — MU_ERR_FULLSCREEN_FAILED, MU_ERR_DISPLAY_QUERY_FAILED | VERIFIED |
+| AC-STD-11 | SDLEventLoop.cpp:56,92 + Winmain.cpp:1411 + test tags | VERIFIED |
+| AC-STD-13 | `./ctl check` — 688/688 files clean | VERIFIED |
+
+### Post-Fix Quality Gate (Second Pass)
+
+| Check | Status | Details |
+|-------|--------|---------|
+| format-check (clang-format) | PASSED | 688/688 files clean |
+| lint (cppcheck) | PASSED | 688/688 files, 0 violations |
+| `./ctl check` | PASSED | Quality gate passed |
+
+### Files Changed (Second Pass)
+
+| File | Change |
+|------|--------|
+| `MuMain/src/source/Main/Winmain.cpp:1411` | MEDIUM-6: Changed `g_ErrorReport.Write()` to `g_ConsoleDebug->Write(MCD_NORMAL, ...)` |
+
 ## Step 3: Resolution
 
 **Status:** COMPLETED
