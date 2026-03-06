@@ -30,3 +30,8 @@
 {"timestamp":"2026-03-06T14:21:43.678536+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"validate-story","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T14:25:21.359410+00:00","event_type":"step_passed","story_key":"2-1-2-sdl3-window-focus-display","step":"validate-story","sprint":null,"epic":"2","data":{"duration_seconds":217.7,"input_tokens":7,"output_tokens":428}}
 {"timestamp":"2026-03-06T14:25:22.365867+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"atdd","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T14:29:28.780590+00:00","event_type":"step_passed","story_key":"2-1-2-sdl3-window-focus-display","step":"atdd","sprint":null,"epic":"2","data":{"duration_seconds":246.4,"input_tokens":7,"output_tokens":693}}
+{"timestamp":"2026-03-06T14:29:29.786942+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"design-screen","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T14:29:29.791087+00:00","event_type":"step_passed","story_key":"2-1-2-sdl3-window-focus-display","step":"design-screen","sprint":null,"epic":"2","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
+{"timestamp":"2026-03-06T14:29:30.797880+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"dev-story","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T15:15:00Z","event_type":"workflow_metric:code_review_completed","story_key":"2-1-2-sdl3-window-focus-display","step":"code-review-finalize","sprint":null,"epic":"2","data":{"final_status":"done","issues_fixed":7,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
