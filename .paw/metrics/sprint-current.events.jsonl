@@ -22,3 +22,7 @@
 {"timestamp":"2026-03-06T13:45:31.980836+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"ui-validation","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T13:45:31.983129+00:00","event_type":"step_passed","story_key":"2-1-1-sdl3-window-event-loop","step":"ui-validation","sprint":null,"epic":"2","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
 {"timestamp":"2026-03-06T13:45:32.988482+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"code-review-finalize","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T13:55:09.953016+00:00","event_type":"step_passed","story_key":"2-1-1-sdl3-window-event-loop","step":"code-review-finalize","sprint":null,"epic":"2","data":{"duration_seconds":577.0,"input_tokens":24,"output_tokens":5112}}
+{"timestamp":"2026-03-06T13:55:09.954085+00:00","event_type":"story_completed","story_key":"2-1-1-sdl3-window-event-loop","step":null,"sprint":null,"epic":"2","data":{"total_steps":12,"total_retries":0,"total_regressions":0,"duration_seconds":8425.1}}
+{"timestamp":"2026-03-06T14:16:04.375428+00:00","event_type":"story_started","story_key":"2-1-2-sdl3-window-focus-display","step":null,"sprint":null,"epic":"2","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-06T14:16:04.375896+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"create-story","sprint":null,"epic":"2","data":{}}

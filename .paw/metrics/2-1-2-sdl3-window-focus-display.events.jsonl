@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-06T14:16:04.375428+00:00","event_type":"story_started","story_key":"2-1-2-sdl3-window-focus-display","step":null,"sprint":null,"epic":"2","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-06T14:16:04.375896+00:00","event_type":"step_started","story_key":"2-1-2-sdl3-window-focus-display","step":"create-story","sprint":null,"epic":"2","data":{}}
