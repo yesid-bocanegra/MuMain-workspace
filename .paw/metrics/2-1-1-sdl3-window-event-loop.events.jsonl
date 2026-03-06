@@ -12,3 +12,5 @@
 {"timestamp":"2026-03-06T12:54:48.500034+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T12:58:43.915944+00:00","event_type":"step_passed","story_key":"2-1-1-sdl3-window-event-loop","step":"completeness-gate","sprint":null,"epic":"2","data":{"duration_seconds":235.4,"input_tokens":648,"output_tokens":9757}}
 {"timestamp":"2026-03-06T12:58:44.927403+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"code-review","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T13:14:03.545356+00:00","event_type":"step_passed","story_key":"2-1-1-sdl3-window-event-loop","step":"code-review","sprint":null,"epic":"2","data":{"duration_seconds":918.6,"input_tokens":80,"output_tokens":20321}}
+{"timestamp":"2026-03-06T13:14:04.556472+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"code-review-qg","sprint":null,"epic":"2","data":{}}
