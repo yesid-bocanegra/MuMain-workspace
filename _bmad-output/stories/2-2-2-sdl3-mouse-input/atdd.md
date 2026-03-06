@@ -70,7 +70,7 @@
 - [x] `[AC-1]` `extern int g_iNoMouseTime;` extern added (or verified)
 - [x] `[AC-1]` `extern float g_fScreenRate_x / g_fScreenRate_y;` externs added (or verified)
 - [x] `[AC-5]` `extern int g_iMousePopPosition_x / g_iMousePopPosition_y;` externs added (or verified)
-- [x] `[AC-3]` `MouseLButtonDBClick = false;` reset added at the START of `PollEvents()` (before while loop)
+- [x] `[AC-2]` `MouseLButtonDBClick = false;` reset added at the START of `PollEvents()` (before while loop)
 - [x] `[AC-3]` `MouseWheel = 0;` reset added at the START of `PollEvents()` (before while loop)
 - [x] `[AC-1]` `SDL_EVENT_MOUSE_MOTION` handler added: normalizes `event.motion.x / g_fScreenRate_x` → `MouseX`, clamps to [0, 640]; same for Y/480
 - [x] `[AC-2]` `SDL_EVENT_MOUSE_BUTTON_DOWN` handler added for `SDL_BUTTON_LEFT` / `SDL_BUTTON_RIGHT` / `SDL_BUTTON_MIDDLE` — sets Push flags, SDL_CaptureMouse(true)
