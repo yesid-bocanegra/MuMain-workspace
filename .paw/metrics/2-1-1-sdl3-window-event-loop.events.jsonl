@@ -10,3 +10,5 @@
 {"timestamp":"2026-03-06T12:39:22.249414+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"dev-story","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T12:54:47.488569+00:00","event_type":"step_passed","story_key":"2-1-1-sdl3-window-event-loop","step":"dev-story","sprint":null,"epic":"2","data":{"duration_seconds":925.2,"input_tokens":106,"output_tokens":28819}}
 {"timestamp":"2026-03-06T12:54:48.500034+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T12:58:43.915944+00:00","event_type":"step_passed","story_key":"2-1-1-sdl3-window-event-loop","step":"completeness-gate","sprint":null,"epic":"2","data":{"duration_seconds":235.4,"input_tokens":648,"output_tokens":9757}}
+{"timestamp":"2026-03-06T12:58:44.927403+00:00","event_type":"step_started","story_key":"2-1-1-sdl3-window-event-loop","step":"code-review","sprint":null,"epic":"2","data":{}}

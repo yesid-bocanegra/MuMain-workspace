@@ -1,6 +1,6 @@
 # Story 2.1.1: SDL3 Window Creation & Event Loop
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -383,7 +383,34 @@ claude-opus-4-6 (dev-story workflow)
 | `MuMain/src/source/Platform/PlatformCompat.h` | MODIFIED | MessageBoxW SDL3 impl |
 | `MuMain/src/source/Main/Winmain.cpp` | MODIFIED | MuMain() + main() entry point |
 | `MuMain/src/CMakeLists.txt` | MODIFIED | SDL3/Win32 backend sources, MU_ENABLE_SDL3 define |
+| `MuMain/tests/CMakeLists.txt` | MODIFIED | Added test_platform_window.cpp to MuTests target |
+| `MuMain/tests/platform/CMakeLists.txt` | MODIFIED | Added story 2.1.1 CMake script-mode tests |
+| `MuMain/tests/platform/test_platform_window.cpp` | NEW | Catch2 unit tests for platform module |
+| `MuMain/tests/platform/test_ac1_platform_interfaces.cmake` | NEW | CMake test: platform interface headers exist |
+| `MuMain/tests/platform/test_ac7_cmake_sdl3_guard.cmake` | NEW | CMake test: SDL3 sources guarded in CMake |
+| `MuMain/tests/platform/test_ac7_sdl3_ifdef_guard.cmake` | NEW | CMake test: SDL3 files have ifdef guards |
+| `MuMain/tests/platform/test_ac_std11_flow_code.cmake` | NEW | CMake test: flow code and story references |
 
 ### Change Log
 
 - 2026-03-06: Implementation completed — all 8 tasks, 7 ACs + STD ACs satisfied
+- 2026-03-06: Code review fixes — added error logging (AC-STD-8), flow code VS1-SDL-WINDOW-CREATE (AC-STD-11), named MU_WINDOW_FULLSCREEN constant, removed vacuous tests, updated File List
+
+### Senior Developer Review (AI)
+
+**Reviewer:** claude-opus-4-6 (code-review workflow)
+**Date:** 2026-03-06
+**Outcome:** Approved with fixes applied
+
+**Issues Found:** 3 High, 3 Medium, 2 Low
+**Issues Fixed:** 3 High, 2 Medium (all blocking issues resolved)
+**Issues Deferred:** 1 Medium (duplicated wchar_t-to-UTF8 conversion — acceptable for migration phase), 2 Low (naming discrepancy in task docs, extern Destroy coupling)
+
+**Fixed:**
+1. [HIGH] AC-STD-8: Added `g_ErrorReport.Write()` with `MU_ERR_SDL_INIT_FAILED` / `MU_ERR_WINDOW_CREATE_FAILED` error logging and `SDL_GetError()` in `MuPlatform.cpp`
+2. [HIGH] AC-STD-11: Added flow code `VS1-SDL-WINDOW-CREATE` to test file header; strengthened CMake test to verify flow code string
+3. [HIGH] Removed 6 vacuous `SUCCEED()` test cases, replaced with real assertions (AC-6 → uninitialized PollEvents test, AC-4 → MU_WINDOW_FULLSCREEN constant test, AC-STD-16 → Catch2 version macro check)
+4. [MEDIUM] Story File List updated with 8 missing files (tests CMakeLists, Catch2 tests, 4 CMake script tests)
+5. [MEDIUM] Replaced magic number `0x1` with named constant `mu::MU_WINDOW_FULLSCREEN` in `IPlatformWindow.h`, `SDLWindow.cpp`, `Winmain.cpp`
+
+**Quality Gate:** `./ctl check` passes (format-check + cppcheck lint)
