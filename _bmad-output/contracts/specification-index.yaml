@@ -39,7 +39,7 @@ epics:
     features:
       - "2.1 Windowing"
       - "2.2 Input"
-    completion_pct: 40  # 2 of 5 stories done
+    completion_pct: 60  # 3 of 5 stories done
 
   EPIC-3:
     name: ".NET AOT Cross-Platform Networking"
@@ -160,7 +160,7 @@ features:
     epic: EPIC-2
     stories: ["2-2-1", "2-2-2", "2-2-3"]
     points: 9
-    completion_pct: 0
+    completion_pct: 33  # 1 of 3 stories done (2-2-1)
   "3.1":
     name: "Build Integration"
     epic: EPIC-3
@@ -393,15 +393,18 @@ stories:
 
   # --- Backlog stories (no story files created yet) ---
   2-2-1-sdl3-keyboard-input:
-    name: "SDL3 Keyboard Input"
+    name: "SDL3 Keyboard Input Migration"
     epic: EPIC-2
     feature: "2.2"
     type: infrastructure
-    status: ready-for-dev
+    status: done
     points: 3
     value_stream: "VS-1"
     flow_code: VS1-SDL-INPUT-KEYBOARD
     story_file: "_bmad-output/stories/2-2-1-sdl3-keyboard-input/story.md"
+    atdd_checklist: "_bmad-output/stories/2-2-1-sdl3-keyboard-input/atdd.md"
+    review_file: "_bmad-output/stories/2-2-1-sdl3-keyboard-input/review.md"
+    error_codes: ["MU_ERR_INPUT_UNMAPPED_VK"]
 
   2-2-2-sdl3-mouse-input:
     name: "SDL3 Mouse Input"
@@ -698,7 +701,12 @@ stories:
 # =====================
 catalogs:
   api_endpoints: []       # N/A — C++ game client, no REST APIs
-  error_codes: []         # No error catalog yet
+  error_codes:
+    - code: MU_ERR_INPUT_UNMAPPED_VK
+      story: 2-2-1-sdl3-keyboard-input
+      flow_code: VS1-SDL-INPUT-KEYBOARD
+      category: Platform
+      logged_via: g_ErrorReport.Write
   events: []              # No event catalog yet
   flow_codes:
     - code: VS0-PLAT-CMAKE-MACOS
@@ -738,15 +746,15 @@ statistics:
   total_stories: 45
   total_points: 172
   total_endpoints: 0
-  total_error_codes: 0
+  total_error_codes: 1
   total_events: 0
-  total_flow_codes: 8
+  total_flow_codes: 9
   total_test_scenarios: 0
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 8
-  stories_backlog: 37
-  completion_rate: 17.8    # 8/45 stories done
-  points_done: 26          # 3+2+3+5+3+2+5+3
-  points_remaining: 146
-  points_completion_rate: 15.1  # 26/172
+  stories_done: 9
+  stories_backlog: 36
+  completion_rate: 20.0    # 9/45 stories done
+  points_done: 29          # 3+2+3+5+3+2+5+3+3
+  points_remaining: 143
+  points_completion_rate: 16.9  # 29/172

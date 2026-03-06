@@ -11,3 +11,8 @@
 {"timestamp":"2026-03-06T18:38:52.492524+00:00","event_type":"step_started","story_key":"2-2-1-sdl3-keyboard-input","step":"dev-story","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T18:57:53.806249+00:00","event_type":"step_passed","story_key":"2-2-1-sdl3-keyboard-input","step":"dev-story","sprint":null,"epic":"2","data":{"duration_seconds":1141.3,"input_tokens":16009,"output_tokens":33940}}
 {"timestamp":"2026-03-06T18:57:54.817188+00:00","event_type":"step_started","story_key":"2-2-1-sdl3-keyboard-input","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T19:00:45.665901+00:00","event_type":"step_passed","story_key":"2-2-1-sdl3-keyboard-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"duration_seconds":170.8,"input_tokens":5161,"output_tokens":7594}}
+{"timestamp":"2026-03-06T19:00:46.677163+00:00","event_type":"step_started","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T19:15:00Z","event_type":"workflow_metric:code_review_completed","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{"final_status":"done","issues_fixed":6,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
+{"timestamp":"2026-03-06T19:15:00Z","event_type":"step_passed","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{"duration_seconds":840.0,"issues_fixed":6,"final_status":"done"}}
+{"timestamp":"2026-03-06T19:15:01Z","event_type":"story_completed","story_key":"2-2-1-sdl3-keyboard-input","step":null,"sprint":null,"epic":"2","data":{"total_steps":12,"total_retries":0,"total_regressions":0,"final_status":"done"}}
