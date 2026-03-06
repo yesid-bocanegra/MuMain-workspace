@@ -185,5 +185,5 @@ Invoke workflows directly:
 - `project-docs` — documentation (./_bmad-output) [documentation]
 - `mumain` — cpp-cmake (./MuMain) [backend]
 
-**Pencil design screens:** enabled
+**Pencil design screens:** disabled
 <!-- PCC-END -->

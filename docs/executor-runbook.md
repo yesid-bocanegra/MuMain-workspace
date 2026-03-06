@@ -380,6 +380,8 @@ Auto-generation reads `development-standards.md` for your commit format (convent
 
 ./paw sync-atdd 2-3-4    # mark ATDD checklist items complete
 
+./paw spec-index         # generate/regenerate specification-index.yaml
+./paw spec-index --check # regenerate only if stale or missing
 ./paw corpus stats       # specification index statistics
 ./paw corpus context X   # get story context from corpus
 ./paw corpus validate X  # validate dependencies in corpus
