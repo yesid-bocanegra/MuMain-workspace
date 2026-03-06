@@ -1,6 +1,6 @@
 {
   "story_key": "2-2-1-sdl3-keyboard-input",
-  "current_step": "dev-story",
-  "status": "atdd-complete",
-  "last_run": "2026-03-06T13:35:00.000000"
+  "current_step": "atdd",
+  "status": "completed",
+  "last_run": "2026-03-06T13:30:34.013781"
 }
