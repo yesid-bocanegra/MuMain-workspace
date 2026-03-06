@@ -1,12 +1,12 @@
 # Progress: Story 2-1-1 — SDL3 Window Creation & Event Loop
 
 ## Quick Resume
-- **Next Action:** Code review (story complete)
+- **Next Action:** None (story fully complete)
 - **Active File:** N/A
 - **Blocker:** None
 
 ## Current Position
-- **Status:** review
+- **Status:** done
 - **Started:** 2026-03-06
 - **Last Updated:** 2026-03-06
 - **Session Count:** 1
