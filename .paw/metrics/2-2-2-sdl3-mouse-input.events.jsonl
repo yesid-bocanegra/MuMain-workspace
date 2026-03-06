@@ -19,3 +19,5 @@
 {"timestamp":"2026-03-06T23:02:12.238864+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T23:03:02.394901+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"duration_seconds":50.2,"input_tokens":8,"output_tokens":950}}
 {"timestamp":"2026-03-06T23:03:03.401681+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"code-review","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T23:21:05.481445+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"code-review","sprint":null,"epic":"2","data":{"duration_seconds":1082.1,"input_tokens":63,"output_tokens":27133}}
+{"timestamp":"2026-03-06T23:21:06.488137+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-qg","sprint":null,"epic":"2","data":{}}
