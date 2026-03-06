@@ -59,6 +59,7 @@ Status: ready-for-dev
 - [ ] **AC-STD-8:** Error codes — any new `MU_ERR_*` codes added to error catalog; SDL3 error strings surfaced via `g_ErrorReport.Write()`.
 - [ ] **AC-STD-10:** Contract catalogs — this story introduces no HTTP API or event-bus contracts; N/A.
 - [ ] **AC-STD-11:** Flow code `VS1-SDL-WINDOW-CREATE` appears in relevant log output, test names, and story artifacts.
+- [ ] **AC-STD-12:** SLI/SLO targets — N/A for this platform infrastructure story (no HTTP endpoints, no latency SLOs). Platform initialization must succeed (SDL_Init return value checked) and window creation must complete without blocking (verified by unit test in Task 6).
 - [ ] **AC-STD-13:** Quality gate passes: `make -C MuMain format-check && make -C MuMain lint`
 - [ ] **AC-STD-15:** Git safety — clean merge, no force push, no incomplete rebase.
 - [ ] **AC-STD-16:** Correct test infrastructure — Catch2 v3.7.1 via FetchContent, tests in `MuMain/tests/platform/`, `BUILD_TESTING=ON` opt-in.
@@ -348,5 +349,6 @@ claude-sonnet-4-6 (create-story workflow)
 - Infrastructure story type — Visual Design Specification section not applicable (removed)
 - Schema alignment: N/A (C++20 game client, no HTTP API schemas)
 - Previous story intelligence from 1.3.1 incorporated
+- Validated by validate-create-story workflow on 2026-03-06 — PASSED (auto-fix applied: AC-STD-12 added as N/A for infrastructure story)
 
 ### File List
