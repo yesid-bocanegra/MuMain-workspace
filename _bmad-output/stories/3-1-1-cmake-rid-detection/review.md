@@ -12,7 +12,7 @@
 |------|--------|
 | 1. Quality Gate | PASSED |
 | 2. Code Review Analysis | COMPLETED — 2026-03-06 |
-| 3. Finalize | pending |
+| 3. Finalize | COMPLETED — 2026-03-06 |
 
 ## Quality Gate Progress
 
@@ -277,11 +277,17 @@ CMake convention: this call belongs only in `CMakeLists.txt` files.
 
 ## Review Decision
 
-**CONDITIONAL APPROVAL** — All ACs pass. 1 HIGH finding (F-1: duplicate parallel dotnet build system in `src/CMakeLists.txt` not reconciled), 2 MEDIUM findings (F-2: CMAKE_RUNTIME_OUTPUT_DIRECTORY unset; F-3: DOTNET_EXECUTABLE cache collision), 2 LOW findings (F-4: doc-only; F-5: process). No BLOCKER or CRITICAL issues.
+**APPROVED** — All findings resolved in code-review-finalize step.
 
-F-1 and F-2 are the substantive issues to address in story 3-1-2 (Connection.h migration), which is the natural follow-on. F-3 is fragile but currently harmless. F-4 and F-5 require no code changes.
+### Finding Resolution Summary
 
-Story may advance to finalize. Fixes for F-1 and F-2 should be tracked as tasks in story 3-1-2.
+| Finding | Severity | Resolution |
+|---------|----------|-----------|
+| F-1 | HIGH | FIXED — Gated legacy `ClientLibrary` target in `src/CMakeLists.txt` behind `if(NOT MU_ENABLE_DOTNET)` guard. Moved `option(MU_ENABLE_DOTNET ...)` before `add_subdirectory("src")` so the guard works on first configure. `ConstantsReplacer` target unaffected. |
+| F-2 | MEDIUM | FIXED — Changed `BuildDotNetAOT` copy destination from `${CMAKE_RUNTIME_OUTPUT_DIRECTORY}` (often unset) to `$<TARGET_FILE_DIR:Main>` (generator expression resolved at build time, always correct). |
+| F-3 | MEDIUM | FIXED — Renamed `DOTNET_EXECUTABLE` to `DOTNETAOT_EXECUTABLE` throughout `FindDotnetAOT.cmake` and `CMakeLists.txt`. Eliminates cache collision with legacy `src/CMakeLists.txt` `find_program(DOTNET_EXECUTABLE ...)`. Updated `test_ac6_dotnet_graceful_failure.cmake` to check for `DOTNETAOT_EXECUTABLE`. |
+| F-4 | LOW | NOT FIXED — Documentation-only issue (invalid `--no-self-contained false` in Dev Notes). No code change needed; actual implementation is correct. |
+| F-5 | LOW | NOT FIXED — Process issue (wrong commit type for ATDD tests). Tests exist and pass; no rework required. |
 
 
 ---
@@ -307,19 +313,41 @@ Story may advance to finalize. Fixes for F-1 and F-2 should be tracked as tasks 
 
 The story is cleared to advance to **`code-review-finalize`** (Step 3). F-1 and F-2 are tracked as known pre-existing issues to resolve in story 3-1-2, not blockers for this story's completion.
 
-📋 Result:
-Code review analysis complete for story **3-1-1-cmake-rid-detection**.
+---
 
-**Summary:** Conditional Approval — 0 blockers, 0 criticals, 1 HIGH, 2 MEDIUM, 2 LOW
+## Step 3: Finalize — COMPLETED
 
-| Finding | Severity | Issue |
-|---------|----------|-------|
-| F-1 | HIGH | Duplicate legacy dotnet build in `src/CMakeLists.txt` not removed — both old and new targets active simultaneously. Deferred to 3-1-2. |
-| F-2 | MEDIUM | `CMAKE_RUNTIME_OUTPUT_DIRECTORY` unset — `BuildDotNetAOT` POST_BUILD copies to empty path. Deferred to 3-1-2. |
-| F-3 | MEDIUM | `DOTNET_EXECUTABLE` cache collision — old find silently overrides `FindDotnetAOT.cmake` hints. |
-| F-4 | LOW | Dev notes contain invalid `--no-self-contained false` CLI flag (doc-only). |
-| F-5 | LOW | ATDD commit used wrong type (`chore(paw)` instead of `build`/`test`). |
+**Date:** 2026-03-06
+**Agent:** claude-sonnet-4-6
 
-**ATDD:** 7/7 items GREEN (100%). All 4 CMake tests verified passing. All 17 ACs confirmed implemented.
+### Fixes Applied
 
-The story is cleared to advance to **`code-review-finalize`** (Step 3). F-1 and F-2 are tracked as known pre-existing issues to resolve in story 3-1-2, not blockers for this story's completion.
+**Fix F-1 (HIGH) — Duplicate parallel dotnet build system:**
+- Moved `option(MU_ENABLE_DOTNET ...)` to before `add_subdirectory("src")` in `MuMain/CMakeLists.txt` (line 10) so the option is available in subdirectory processing.
+- Added `if(NOT MU_ENABLE_DOTNET) ... endif()` guard in `MuMain/src/CMakeLists.txt` around the legacy `ClientLibrary` `add_custom_command`/`add_custom_target`/`add_dependencies`/POST_BUILD blocks (lines 537-566).
+- `ConstantsReplacer` target is outside the guard — continues to build when dotnet is available.
+- Result: when `MU_ENABLE_DOTNET=ON` (default), only the new `BuildDotNetAOT` system runs; legacy `ClientLibrary` with hardcoded `win-x64` RID is suppressed.
+
+**Fix F-2 (MEDIUM) — `CMAKE_RUNTIME_OUTPUT_DIRECTORY` unset:**
+- Changed `BuildDotNetAOT` POST_BUILD copy destination from `${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/...` to `$<TARGET_FILE_DIR:Main>/...`.
+- Generator expression resolved at build time — always places the library next to the game binary regardless of `CMAKE_RUNTIME_OUTPUT_DIRECTORY` configuration.
+
+**Fix F-3 (MEDIUM) — `DOTNET_EXECUTABLE` cache collision:**
+- Renamed `DOTNET_EXECUTABLE` → `DOTNETAOT_EXECUTABLE` throughout `FindDotnetAOT.cmake` (header comment, WSL set, `find_program`, NOT check, status message).
+- Updated `CMakeLists.txt` line 36: `"${DOTNETAOT_EXECUTABLE}" publish ...`.
+- Updated `tests/build/test_ac6_dotnet_graceful_failure.cmake` check at line 37 to match renamed variable.
+- Cache no longer collides with the legacy `DOTNET_EXECUTABLE` set by `src/CMakeLists.txt`.
+
+### Post-Fix Verification
+
+| Check | Result |
+|-------|--------|
+| `./ctl check` (clang-format + cppcheck) | PASS — 689 files, 0 violations |
+| ATDD `3.1.1-AC-1:dotnet-rid-detection` | PASS |
+| ATDD `3.1.1-AC-2:dotnet-lib-ext` | PASS |
+| ATDD `3.1.1-AC-6:dotnet-graceful-failure` | PASS (updated to check DOTNETAOT_EXECUTABLE) |
+| ATDD `3.1.1-AC-STD-11:flow-code-traceability` | PASS |
+
+### Story Status
+
+All acceptance criteria satisfied. All HIGH and MEDIUM findings resolved. Story remains **done**.
