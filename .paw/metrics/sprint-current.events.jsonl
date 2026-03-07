@@ -3,3 +3,6 @@
 {"timestamp":"2026-03-07T17:08:05.914833+00:00","event_type":"step_started","story_key":"3-1-2-connection-h-crossplatform","step":"create-story","sprint":null,"epic":"3","data":{}}
 {"timestamp":"2026-03-07T17:14:33.977824+00:00","event_type":"step_passed","story_key":"3-1-2-connection-h-crossplatform","step":"create-story","sprint":null,"epic":"3","data":{"duration_seconds":388.1,"input_tokens":7,"output_tokens":461,"num_turns":5,"num_tool_calls":0}}
 {"timestamp":"2026-03-07T17:14:34.984072+00:00","event_type":"step_started","story_key":"3-1-2-connection-h-crossplatform","step":"validate-story","sprint":null,"epic":"3","data":{}}
+{"timestamp":"2026-03-07T17:17:42.898752+00:00","event_type":"step_passed","story_key":"3-1-2-connection-h-crossplatform","step":"validate-story","sprint":null,"epic":"3","data":{"duration_seconds":187.9,"input_tokens":7,"output_tokens":238,"num_turns":4,"num_tool_calls":0}}
+{"timestamp":"2026-03-07T17:17:43.904617+00:00","event_type":"step_started","story_key":"3-1-2-connection-h-crossplatform","step":"atdd","sprint":null,"epic":"3","data":{}}
+{"event":"atdd-complete","story":"3-1-2-connection-h-crossplatform","timestamp":"2026-03-07T12:17:43.912725"}
