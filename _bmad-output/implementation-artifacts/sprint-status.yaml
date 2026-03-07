@@ -231,7 +231,7 @@ epic_completion_gates:
       - char16t_encoding_correct
       - error_messages_diagnose_failures
       - game_launches_without_dotnet_library
-    status: pending
+    status: in-progress
   epic_4:
     name: "Rendering Pipeline Migration"
     criteria:
@@ -298,8 +298,8 @@ development_status:
   epic-2-retrospective: optional
 
   # EPIC-3: .NET AOT Cross-Platform Networking [VS-1] [Feature] (24 pts)
-  epic-3: backlog
-  3-1-1-cmake-rid-detection: backlog            # 5 pts | Flow:F | Deps: 1.1.1, 1.1.2 | Sprint-2
+  epic-3: in-progress
+  3-1-1-cmake-rid-detection: ready-for-dev      # 5 pts | Flow:F | Deps: 1.1.1, 1.1.2 | Sprint-2
   3-1-2-connection-h-crossplatform: backlog     # 3 pts | Flow:F | Deps: 1.2.2, 3.1.1
   3-2-1-char16t-encoding: backlog               # 5 pts | Flow:F | Deps: 3.1.2
   3-3-1-macos-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.2.1
