@@ -156,3 +156,5 @@
 {"timestamp":"2026-03-07T02:48:29.020457+00:00","event_type":"step_started","story_key":"3-1-1-cmake-rid-detection","step":"validate-story","sprint":null,"epic":"3","data":{}}
 {"timestamp":"2026-03-07T02:51:05.858130+00:00","event_type":"step_passed","story_key":"3-1-1-cmake-rid-detection","step":"validate-story","sprint":null,"epic":"3","data":{"duration_seconds":156.8,"input_tokens":7,"output_tokens":640}}
 {"timestamp":"2026-03-07T02:51:06.868908+00:00","event_type":"step_started","story_key":"3-1-1-cmake-rid-detection","step":"atdd","sprint":null,"epic":"3","data":{}}
+{"timestamp":"2026-03-07T02:55:48.336890+00:00","event_type":"step_passed","story_key":"3-1-1-cmake-rid-detection","step":"atdd","sprint":null,"epic":"3","data":{"duration_seconds":281.5,"input_tokens":11,"output_tokens":1056}}
+{"timestamp":"2026-03-07T02:55:49.346080+00:00","event_type":"step_started","story_key":"3-1-1-cmake-rid-detection","step":"dev-story","sprint":null,"epic":"3","data":{}}
