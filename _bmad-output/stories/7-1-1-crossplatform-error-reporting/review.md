@@ -11,8 +11,8 @@
 | Step | Status |
 |------|--------|
 | 1. Quality Gate | PASSED |
-| 2. Code Review Analysis | PENDING |
-| 3. Finalize | PENDING |
+| 2. Code Review Analysis | APPROVED |
+| 3. Finalize | PASSED — 2026-03-07 |
 
 ## Quality Gate Progress
 
@@ -206,9 +206,41 @@ No new attack surface introduced. `ErrorReport.cpp` is a diagnostic file writer 
 
 ---
 
-## Step 3: Finalize — PENDING
+## Step 3: Resolution
 
-_(To be completed in code-review-finalize step)_
+**Completed:** 2026-03-07
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 2 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **M1:** fixed — `HexWrite:181` pointer `(DWORD*)pBuffer` → `(DWORD)(uintptr_t)pBuffer` (applied during analysis)
+- **L1:** fixed — `WideToUtf8` surrogate skip added (applied during analysis)
+- **L2:** documented — `CutHead` byte-level split; benign for diagnostic log; no fix required
+- **INFO:** documented — `vswprintf` truncation at 1024 chars; pre-existing behavior; no fix required
+
+### Story Status Update
+
+- **Previous Status:** ready-for-review
+- **New Status:** done
+- **Story File Updated:** `_bmad-output/stories/7-1-1-crossplatform-error-reporting/story.md`
+- **ATDD Checklist Synchronized:** Yes
+
+### Files Modified
+
+- `MuMain/src/source/Core/ErrorReport.h` - MODIFY: replaced `HANDLE m_hFile` with `std::ofstream m_fileStream`, replaced `wchar_t m_lpszFileName[MAX_PATH]` with `std::filesystem::path m_filePath`, removed Win32 `WriteFile()` wrapper, guarded Win32 diagnostic methods with `#ifdef _WIN32`
+- `MuMain/src/source/Core/ErrorReport.cpp` - MODIFY: replaced all Win32 file I/O with std::ofstream/std::filesystem; added `WideToUtf8()` helper with surrogate skip guard; replaced `GetLocalTime`/`SYSTEMTIME` with `std::chrono`; guarded Win32 diagnostic methods with `#ifdef _WIN32`; added `flush()` for crash safety; added defensive close guard in `Create()`; fixed `HexWrite` pointer UB `(DWORD)(uintptr_t)pBuffer`
+- `MuMain/tests/core/test_error_report.cpp` - CREATE: Catch2 tests for file write, HexWrite, WriteCurrentTime, CutHead, NFR-1, NFR-2
+- `MuMain/tests/build/test_ac3_no_win32_error_report.cmake` - CREATE: CMake script verifying no Win32 API calls in cross-platform path
+- `MuMain/tests/build/test_ac_std11_flow_code_7_1_1.cmake` - CREATE: CMake script verifying flow code traceability
+- `MuMain/tests/CMakeLists.txt` - MODIFY: registered `test_error_report.cpp` in `MuTests` target via `target_sources`
+- `MuMain/tests/build/CMakeLists.txt` - MODIFY: registered AC-3 and AC-STD-11 cmake validation tests
 
 
 ---
