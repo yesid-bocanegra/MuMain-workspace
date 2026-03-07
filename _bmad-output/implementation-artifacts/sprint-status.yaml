@@ -1,5 +1,5 @@
 # Sprint Status
-# generated: 2026-03-06
+# generated: 2026-03-07
 # project: MuMain-workspace
 # project_key: MUMAIN
 # tracking_system: file-system
@@ -85,25 +85,49 @@ sprints:
         - { story: 2-1-2-sdl3-window-focus-display, reason: "Completed between sprints, assigned retroactively", date: "2026-03-06" }
       removed: []
 
+  sprint-3:
+    name: "Sprint 3"
+    status: planned
+    milestones: [M1, M2]
+    start_date: "2026-03-07"
+    end_date: "2026-03-21"
+    planned_points: 22
+    stories:
+      # EPIC-3 completion — .NET AOT Cross-Platform Networking
+      - 3-1-2-connection-h-crossplatform        # 3 pts | Deps: 1.2.2 ✓, 3.1.1 ✓
+      - 3-2-1-char16t-encoding                  # 5 pts | Deps: 3.1.2
+      - 3-3-1-macos-server-connectivity         # 3 pts | Deps: 3.2.1
+      - 3-3-2-linux-server-connectivity         # 3 pts | Deps: 3.2.1 (parallel w/ 3-3-1)
+      - 3-4-1-connection-error-messaging        # 3 pts | Deps: 3.1.2 (parallel w/ 3-2-1)
+      - 3-4-2-server-connection-config          # 2 pts | Deps: 3.3.1, 3.3.2
+      # EPIC-7 Phase 0 continuation (M1 contribution)
+      - 7-1-2-posix-signal-handlers             # 3 pts | Deps: 7.1.1 ✓ (independent)
+    velocity: null
+    delivered_points: null
+    commitment_reliability: null
+    scope_changes:
+      added: []
+      removed: []
+
 # =====================
 # FLOW METRICS (SAFe)
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 28         # Sprint 2: 28 pts delivered
-    previous_sprint: 18        # Sprint 1: 18 pts delivered
+    current_sprint: null       # Sprint 3: planned, not yet started
+    previous_sprint: 28        # Sprint 2: 28 pts delivered
     rolling_average: 23        # 2-sprint average: (18+28)/2
-    trend: increasing          # +55.6% vs Sprint 1 (need 3+ sprints for statistical trend)
-  flow_time_avg_hours: 2.29    # Sprint 2 avg flow time (vs 12.71h Sprint 1 — batch execution)
-  flow_efficiency_pct: 95.1    # Sprint 2 avg active/total (vs 26.4% Sprint 1 — batch mode)
-  commitment_reliability_pct: 100.0
+    trend: increasing          # +55.6% Sprint 1→2 (need 3+ sprints for statistical trend)
+  flow_time_avg_hours: null    # Sprint 3: not yet started
+  flow_efficiency_pct: null    # Sprint 3: not yet started
+  commitment_reliability_pct: 100.0  # 2/2 sprints at 100%
   wip_limits:
     in_progress: 2
     review: 3
   wip_violations: 0
-  flow_distribution:
-    Feature: 5      # EPIC-2 stories: 2-1-1, 2-1-2, 2-2-1, 2-2-2, 2-2-3 (17 pts)
-    Enabler: 3      # EPIC-3 (3-1-1) + EPIC-7 (7-1-1, 7-2-1) (11 pts)
+  flow_distribution:           # Sprint 3 planned distribution
+    Feature: 6      # EPIC-3 stories: 3-1-2, 3-2-1, 3-3-1, 3-3-2, 3-4-1, 3-4-2 (19 pts)
+    Enabler: 1      # EPIC-7: 7-1-2 (3 pts)
     Defect: 0
     Debt: 0
   flow_load:
@@ -130,59 +154,82 @@ critical_path:
   project_critical_path:
     sequence: "EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.3.1/7.3.2"
     total_points: 111
-    completed_points: 26     # EPIC-1 (18) + 2-1-1 (5) + 2-1-2 (3)
-    remaining_points: 85
+    completed_points: 40     # EPIC-1 (18) + EPIC-2 (17) + 3-1-1 (5)
+    remaining_points: 71
     parallel_opportunities:
-      - "EPIC-3 can start now (1.2.2 done), parallel with EPIC-2 completion"
-      - "EPIC-5 can start anytime (no EPIC-1 dep beyond foundation)"
-      - "EPIC-7.1.1-7.2.1 can start now (Phase 0 diagnostics)"
+      - "EPIC-3 completing this sprint — unblocks EPIC-4 dependency (with EPIC-2 done)"
+      - "EPIC-5 can start anytime (no dependency beyond foundation)"
+      - "EPIC-4 can start next sprint (EPIC-2 done, EPIC-3 completing)"
 
-  sprint_2_critical_path:
-    # Track A: 2-2-1 (3) → 2-2-3 (3) = 6 pts (sequential)
-    # Track B: 2-2-2 (3) parallel with Track A
-    # Track C: 3-1-1 (5) independent
-    # Track D: 7-1-1 (3) + 7-2-1 (3) independent, parallel
-    longest_chain: "2-2-1 → 2-2-3 (6 pts, 2 stories)"
+  sprint_3_critical_path:
+    # Track A: 3-1-2 (3) → 3-2-1 (5) → 3-3-1 (3) → 3-4-2 (2) = 13 pts (longest chain)
+    # Track B: 3-1-2 (3) → 3-4-1 (3) parallel with Track A after 3-1-2
+    # Track C: 3-2-1 (5) → 3-3-2 (3) parallel with 3-3-1
+    # Track D: 7-1-2 (3) independent, parallel with everything
+    longest_chain: "3-1-2 → 3-2-1 → 3-3-1 → 3-4-2 (13 pts, 4 stories)"
     parallel_chains:
-      - track_a: "2-2-1 (3) → 2-2-3 (3)"
+      - track_a: "3-1-2 (3) → 3-2-1 (5) → 3-3-1 (3) → 3-4-2 (2)"
+        points: 13
+        note: "Critical path — completes EPIC-3 connectivity chain"
+      - track_b: "3-1-2 (3) → 3-4-1 (3)"
         points: 6
-        note: "Completes EPIC-2 input migration"
-      - track_b: "2-2-2 (3) parallel with Track A"
+        note: "Error messaging, parallel with encoding after 3-1-2"
+      - track_c: "3-2-1 (5) → 3-3-2 (3)"
+        points: 8
+        note: "Linux connectivity, parallel with macOS (3-3-1)"
+      - track_d: "7-1-2 (3) independent"
         points: 3
-      - track_c: "3-1-1 (5) independent — starts EPIC-3"
-        points: 5
-      - track_d: "7-1-1 (3) + 7-2-1 (3) independent — EPIC-7 Phase 0"
-        points: 6
+        note: "POSIX signal handlers — M1 contribution, no EPIC-3 deps"
     stories_with_no_dependencies:
-      - 3-1-1-cmake-rid-detection
-      - 7-1-1-crossplatform-error-reporting
-      - 7-2-1-frame-time-instrumentation
+      - 3-1-2-connection-h-crossplatform    # deps already met: 1.2.2 ✓, 3.1.1 ✓
+      - 7-1-2-posix-signal-handlers         # dep already met: 7.1.1 ✓
     stories_that_unblock_other_stories:
-      - story: 2-2-1-sdl3-keyboard-input
-        unblocks: "2-2-3-sdl3-text-input"
-      - story: 3-1-1-cmake-rid-detection
-        unblocks: "3-1-2-connection-h-crossplatform (next sprint)"
-      - story: 7-1-1-crossplatform-error-reporting
-        unblocks: "7-1-2-posix-signal-handlers (next sprint)"
+      - story: 3-1-2-connection-h-crossplatform
+        unblocks: "3-2-1-char16t-encoding, 3-4-1-connection-error-messaging"
+      - story: 3-2-1-char16t-encoding
+        unblocks: "3-3-1-macos-server-connectivity, 3-3-2-linux-server-connectivity"
+      - story: 3-3-1-macos-server-connectivity
+        unblocks: "3-4-2-server-connection-config (with 3-3-2)"
+      - story: 3-3-2-linux-server-connectivity
+        unblocks: "3-4-2-server-connection-config (with 3-3-1)"
 
   blocking_dependencies:
-    - from: 2-2-1-sdl3-keyboard-input
-      to: 2-2-3-sdl3-text-input
+    - from: 3-1-2-connection-h-crossplatform
+      to: 3-2-1-char16t-encoding
+      type: sequential
+    - from: 3-1-2-connection-h-crossplatform
+      to: 3-4-1-connection-error-messaging
+      type: sequential
+    - from: 3-2-1-char16t-encoding
+      to: 3-3-1-macos-server-connectivity
+      type: sequential
+    - from: 3-2-1-char16t-encoding
+      to: 3-3-2-linux-server-connectivity
+      type: sequential
+    - from: 3-3-1-macos-server-connectivity
+      to: 3-4-2-server-connection-config
+      type: sequential
+    - from: 3-3-2-linux-server-connectivity
+      to: 3-4-2-server-connection-config
       type: sequential
 
   risk_items:
-    - id: R3
-      description: "SDL3 keyboard/mouse input mapping may differ across platforms (macOS Cmd vs Ctrl)"
-      affected_stories: [2-2-1-sdl3-keyboard-input, 2-2-2-sdl3-mouse-input]
-      mitigation: "Explicit key mapping table; test on macOS + Linux"
-    - id: R4
-      description: "SDL3 text input (IME) complexity on Linux varies by compositor (X11 vs Wayland)"
-      affected_stories: [2-2-3-sdl3-text-input]
-      mitigation: "X11 first, Wayland deferred if needed"
-    - id: R5
-      description: ".NET AOT RID detection may need special handling for cross-compile scenarios"
-      affected_stories: [3-1-1-cmake-rid-detection]
-      mitigation: "CMake toolchain file provides RID override variable"
+    - id: R6
+      description: ".NET AOT native library loading differs per platform (dlopen vs LoadLibrary path resolution)"
+      affected_stories: [3-1-2-connection-h-crossplatform, 3-3-1-macos-server-connectivity, 3-3-2-linux-server-connectivity]
+      mitigation: "Abstract library loading behind PlatformLibrary; test with stub .so/.dylib first"
+    - id: R7
+      description: "char16_t encoding conversion may produce different results on GCC vs MSVC for edge cases"
+      affected_stories: [3-2-1-char16t-encoding]
+      mitigation: "Unit tests with known packet byte sequences; validate round-trip encoding"
+    - id: R8
+      description: "POSIX signal handlers may interfere with .NET AOT runtime signal handling"
+      affected_stories: [7-1-2-posix-signal-handlers]
+      mitigation: "Install signal handlers after .NET AOT init; chain to previous handlers"
+    - id: R9
+      description: ".NET SDK interop path resolution (WSL → Windows dotnet.exe) fragile for cross-compile"
+      affected_stories: [3-3-1-macos-server-connectivity, 3-3-2-linux-server-connectivity]
+      mitigation: "CMake detect dotnet at configure time; graceful fallback if missing"
 
 # =====================
 # SCHEMA ALIGNMENT
@@ -311,12 +358,12 @@ development_status:
   # EPIC-3: .NET AOT Cross-Platform Networking [VS-1] [Feature] (24 pts)
   epic-3: in-progress
   3-1-1-cmake-rid-detection: done               # 5 pts | Flow:F | Deps: 1.1.1, 1.1.2 | Sprint-2
-  3-1-2-connection-h-crossplatform: backlog     # 3 pts | Flow:F | Deps: 1.2.2, 3.1.1
-  3-2-1-char16t-encoding: backlog               # 5 pts | Flow:F | Deps: 3.1.2
-  3-3-1-macos-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.2.1
-  3-3-2-linux-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.2.1
-  3-4-1-connection-error-messaging: backlog     # 3 pts | Flow:F | Deps: 3.1.2
-  3-4-2-server-connection-config: backlog       # 2 pts | Flow:F | Deps: 3.3.1/3.3.2
+  3-1-2-connection-h-crossplatform: backlog     # 3 pts | Flow:F | Deps: 1.2.2 ✓, 3.1.1 ✓ | Sprint-3
+  3-2-1-char16t-encoding: backlog               # 5 pts | Flow:F | Deps: 3.1.2 | Sprint-3
+  3-3-1-macos-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.2.1 | Sprint-3
+  3-3-2-linux-server-connectivity: backlog      # 3 pts | Flow:F | Deps: 3.2.1 | Sprint-3
+  3-4-1-connection-error-messaging: backlog     # 3 pts | Flow:F | Deps: 3.1.2 | Sprint-3
+  3-4-2-server-connection-config: backlog       # 2 pts | Flow:F | Deps: 3.3.1/3.3.2 | Sprint-3
   epic-3-retrospective: optional
 
   # EPIC-4: Rendering Pipeline Migration [VS-1] [Feature] (48 pts)
@@ -355,7 +402,7 @@ development_status:
   # EPIC-7: Stability, Diagnostics & Quality Gates [VS-0] [Enabler] (24 pts)
   epic-7: in-progress
   7-1-1-crossplatform-error-reporting: done             # 3 pts | Flow:E | Deps: 1.2.1 | Sprint-2
-  7-1-2-posix-signal-handlers: backlog          # 3 pts | Flow:E | Deps: 7.1.1
+  7-1-2-posix-signal-handlers: backlog          # 3 pts | Flow:E | Deps: 7.1.1 ✓ | Sprint-3
   7-2-1-frame-time-instrumentation: done           # 3 pts | Flow:E | No deps | Sprint-2
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
