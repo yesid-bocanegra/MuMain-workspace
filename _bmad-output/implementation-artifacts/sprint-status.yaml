@@ -343,7 +343,7 @@ development_status:
 
   # EPIC-7: Stability, Diagnostics & Quality Gates [VS-0] [Enabler] (24 pts)
   epic-7: in-progress
-  7-1-1-crossplatform-error-reporting: ready-for-dev  # 3 pts | Flow:E | Deps: 1.2.1 | Sprint-2
+  7-1-1-crossplatform-error-reporting: done             # 3 pts | Flow:E | Deps: 1.2.1 | Sprint-2
   7-1-2-posix-signal-handlers: backlog          # 3 pts | Flow:E | Deps: 7.1.1
   7-2-1-frame-time-instrumentation: backlog     # 3 pts | Flow:E | No deps | Sprint-2
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
