@@ -3,3 +3,5 @@
 {"timestamp":"2026-03-07T18:56:39.953764+00:00","event_type":"step_passed","story_key":"3-2-1-char16t-encoding","step":"create-story","sprint":null,"epic":"3","data":{"duration_seconds":391.9,"input_tokens":6967,"output_tokens":18878,"num_turns":70,"num_tool_calls":0}}
 {"timestamp":"2026-03-07T18:56:40.965738+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"validate-story","sprint":null,"epic":"3","data":{}}
 {"timestamp":"2026-03-07T19:10:00.000000+00:00","event_type":"step_passed","story_key":"3-2-1-char16t-encoding","step":"validate-story","sprint":null,"epic":"3","data":{"duration_seconds":799.0,"auto_fixed":1,"issues_found":1,"issues_fixed":1,"pass_rate":93,"critical_count":0,"warning_count":1}}
+{"timestamp":"2026-03-07T19:00:05.342884+00:00","event_type":"step_passed","story_key":"3-2-1-char16t-encoding","step":"validate-story","sprint":null,"epic":"3","data":{"duration_seconds":204.4,"input_tokens":7,"output_tokens":430,"num_turns":5,"num_tool_calls":0}}
+{"timestamp":"2026-03-07T19:00:06.349346+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"atdd","sprint":null,"epic":"3","data":{}}
