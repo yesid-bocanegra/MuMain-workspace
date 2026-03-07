@@ -73,7 +73,7 @@ Status: ready-for-dev
 ## Validation Artifacts
 
 - [ ] **AC-VAL-1:** Catch2 string round-trip tests pass (`test_char16t_encoding.cpp`)
-- [ ] **AC-VAL-2:** Byte-level output for Korean string `L"한국어"` matches UTF-16LE baseline `{0x55, 0xD5, 0xB5, 0xAD, 0xB4, 0xC5}` on all platforms
+- [ ] **AC-VAL-2:** Byte-level output for Korean string `L"한국어"` matches UTF-16LE baseline `{0x5C, 0xD5, 0x6D, 0xAD, 0xB4, 0xC5}` on all platforms
 - [ ] **AC-VAL-3:** ATDD CMake script `MuMain/tests/build/test_ac_std11_flow_code_3_2_1.cmake` verifies `VS1-NET-CHAR16T-ENCODING` is present in `Connection.h` AND `const wchar_t*` does NOT appear in `Common.xslt` nativetype String mapping
 - [ ] **AC-VAL-4:** cppcheck passes on all changed files with zero violations
 
@@ -202,7 +202,7 @@ Status: ready-for-dev
     - `TEST_CASE("mu_wchar_to_char16 — Latin ASCII roundtrip")`
       - Convert `L"hello"` → `char16_t*` → back via `mu_char16_to_wchar` → compare with original
     - `TEST_CASE("mu_wchar_to_char16 — Korean roundtrip")`
-      - Convert `L"\xD55C\xAD6D\xC5B4"` (한국어) → verify UTF-16LE bytes: `{0x55, 0xD5, 0xAD, 0x6D, 0xB4, 0xC5}` in little-endian memory layout
+      - Convert `L"\xD55C\xAD6D\xC5B4"` (한국어) → verify UTF-16LE bytes: `{0x5C, 0xD5, 0x6D, 0xAD, 0xB4, 0xC5}` in little-endian memory layout
     - `TEST_CASE("mu_wchar_to_char16 — mixed script roundtrip")`
       - Convert `L"Hello \xD55C\xAD6D\xC5B4!"` → `char16_t*` → `mu_char16_to_wchar` → compare with original
     - `TEST_CASE("mu_wchar_to_char16 — null input")`
@@ -385,7 +385,7 @@ Sprint status identified Risk R7: "char16_t encoding conversion may produce diff
 Mitigation implemented in this story:
 - `mu_wchar_to_char16` uses compile-time `if constexpr (sizeof(wchar_t) == sizeof(char16_t))` to select the correct path — no runtime branching, no UB
 - Catch2 tests use hardcoded byte-level UTF-16LE baselines (not derived from `wchar_t`) to detect cross-compiler discrepancies
-- Korean test vector `L"\xD55C\xAD6D\xC5B4"` (한국어) has known UTF-16LE bytes: `55 D5 6D AD B4 C5`
+- Korean test vector `L"\xD55C\xAD6D\xC5B4"` (한국어) has known UTF-16LE bytes: `5C D5 6D AD B4 C5`
 
 ### PCC Project Constraints
 
