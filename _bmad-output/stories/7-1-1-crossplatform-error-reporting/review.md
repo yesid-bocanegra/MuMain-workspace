@@ -107,12 +107,212 @@ ATDD coverage: 8/8 locally-verifiable tests GREEN (100%). 2 CI-only tests gated 
 
 ---
 
-## Step 2: Code Review Analysis — PENDING
+## Step 2: Code Review Analysis — APPROVED
 
-_(To be completed in code-review-analysis step)_
+**Reviewer:** claude-sonnet-4-6 (adversarial mode)
+**Date:** 2026-03-07
+**Decision:** APPROVED WITH FIXES APPLIED
+
+---
+
+### ATDD Completeness Check
+
+| Metric | Result |
+|--------|--------|
+| Locally-verifiable tests GREEN | 8 / 8 (100%) |
+| CI-only tests documented | 2 (AC-5, AC-VAL-2, AC-VAL-3 — correctly gated) |
+| ATDD threshold (≥80%) | ✅ PASS |
+| Pipeline blocker? | No |
+
+---
+
+### AC Verification — All Implemented
+
+| AC | Verified In Code | Status |
+|----|-----------------|--------|
+| AC-1 | `Create()` opens `m_fileStream` at `m_filePath`; constructor uses `L"MuError.log"` (relative CWD, matches original) | ✅ |
+| AC-2 | `WriteDebugInfoStr()` converts via `WideToUtf8()` then writes UTF-8 bytes to `m_fileStream` | ✅ |
+| AC-3 | No Win32 file I/O in cross-platform path; confirmed by CMake test `test_ac3_no_win32_error_report.cmake` | ✅ |
+| AC-4 | `WriteCurrentTime()` uses `std::chrono::system_clock::now()` + `localtime_r`/`localtime_s` | ✅ |
+| AC-5 | Windows path guarded by `#ifdef _WIN32`; regression gate is CI MinGW | ✅ CI-gated |
+| AC-STD-2 | `tests/core/test_error_report.cpp` — 6 Catch2 test cases covering all verifiable ACs | ✅ |
+| AC-STD-3 | `test_ac3_no_win32_error_report.cmake` grep test passes | ✅ |
+| AC-STD-4 | `./ctl check` 689 files, 0 violations | ✅ |
+| AC-STD-11 | `VS0-QUAL-ERRORREPORT-XPLAT` present in test file; CMake test confirms | ✅ |
+| AC-NFR-1 | Performance test: 100 iterations avg < 1ms | ✅ |
+| AC-NFR-2 | Invalid path: `Create()` emits stderr, `WriteDebugInfoStr()` guards on `is_open()` | ✅ |
+
+### Task Completion Verification
+
+All 6 tasks (26 subtasks) marked `[x]` in story are verified complete in code:
+- Task 1 (audit): Pre-implementation — no code artifact required ✅
+- Task 2 (refactor header): `ErrorReport.h` uses `std::ofstream m_fileStream`, `std::filesystem::path m_filePath`, Win32 diagnostics under `#ifdef _WIN32` ✅
+- Task 3 (refactor cpp): All Win32 file I/O replaced; `WideToUtf8` helper added; `#ifdef _WIN32` guards on diagnostic methods ✅
+- Task 4 (UTF-8 encoding): `WideToUtf8()` static helper implements BMP-only manual loop; applied in `WriteDebugInfoStr()` and via `Write()` ✅
+- Task 5 (Catch2 tests): `test_error_report.cpp` exists with all 6 required test cases; registered in `tests/CMakeLists.txt` ✅
+- Task 6 (quality gate): `./ctl check` passes; AC-3 cmake test passes ✅
+
+---
+
+### Adversarial Findings
+
+#### Fixed During This Review
+
+**M1 — MEDIUM [FIXED]** `ErrorReport.cpp:181` — `HexWrite` pointer type mismatch (cross-platform UB)
+
+> **Description:** `mu_swprintf(szLine, L"0x%00000008X : ", (DWORD*)pBuffer)` passes a pointer (`DWORD*`) as the varargs argument for `%X`, which expects `unsigned int`. On 32-bit Windows (original target), `sizeof(DWORD*) == sizeof(DWORD) == 4` so this "worked" coincidentally. On 64-bit cross-platform targets (macOS arm64, Linux x64), `sizeof(DWORD*) == 8` — passing an 8-byte pointer where a 4-byte integer is expected is undefined behavior per C standard. In practice on little-endian 64-bit, the lower 32 bits of the address are printed (truncated), but this is UB and produces incorrect output.
+>
+> **Why it matters now:** This bug was dormant on the Windows-only path. Story 7.1.1 enables `HexWrite` output on cross-platform (AC-2 requires it). This makes the UB a real cross-platform correctness issue.
+>
+> **Fix applied:** `(DWORD*)pBuffer` → `(DWORD)(uintptr_t)pBuffer` — explicit truncation to 32-bit matching original intent (game is 32-bit; address printed for diagnostic context only). Quality gate: PASS after fix.
+
+**L1 — LOW [FIXED]** `ErrorReport.cpp:46-51` — `WideToUtf8` missing surrogate pair validation
+
+> **Description:** The `WideToUtf8` function did not skip UTF-16 surrogate codepoints (U+D800–U+DFFF). If a surrogate value was present in a wide string, the function would emit an invalid UTF-8 3-byte sequence for that codepoint. The sibling converter `mu_wchar_to_utf8` (PlatformCompat.h) and `mu_wfopen` both explicitly skip surrogates — creating an inconsistency.
+>
+> **Risk level:** Low — MU Online text is BMP non-surrogate per `development-standards.md §1`. Surrogates cannot appear in practice. However, inconsistency with other converters in the codebase is a maintenance hazard.
+>
+> **Fix applied:** Added surrogate range check (`ch >= 0xD800 && ch <= 0xDFFF → continue`) in the `else` branch of `WideToUtf8`, consistent with `mu_wchar_to_utf8` and `mu_wfopen`. Quality gate: PASS after fix.
+
+#### Documented — No Fix Required
+
+**L2 — LOW [DOCUMENTED]** `ErrorReport.cpp:129-133` — `CutHead` 32KB split at byte boundary
+
+> `content.substr(content.size() / 2)` performs a byte-level split that could bisect a multi-byte UTF-8 sequence. Risk is benign: diagnostic log entries after the split may have a corrupted first line, but session markers (`###### Log Begin ######`) are pure ASCII and will always be correctly found by the trim logic on the next open. Pre-existing algorithm adapted from original implementation.
+
+**INFO [DOCUMENTED]** `ErrorReport.cpp:169` — `Write()` fixed 1024-wchar_t buffer with silent `vswprintf` truncation
+
+> `vswprintf(lpszBuffer, 1024, lpszFormat, va)` silently truncates messages exceeding 1023 wide chars. On POSIX, `vswprintf` returns -1 on overflow and buffer content is indeterminate; the truncated buffer is then passed to `WriteDebugInfoStr`. This is pre-existing behavior from the original Win32 implementation — not introduced or worsened by this story. Fixing would require dynamic-length buffers, which is out of scope.
+
+**INFO [DOCUMENTED]** `stdafx.h:112` — `mu_swprintf` on GCC/Clang hardcodes buffer size as 1024
+
+> `std::swprintf(buffer, 1024, format, args...)` — size hardcoded, not derived from actual buffer. Code using `mu_swprintf` with buffers smaller than 1024 elements is technically UB if output exceeds the actual buffer. In `HexWrite`, max output per `mu_swprintf` call is ~16 chars, well within `szLine[256]`. Pre-existing issue in stdafx.h design, not introduced by this story.
+
+---
+
+### Security Review
+
+No new attack surface introduced. `ErrorReport.cpp` is a diagnostic file writer with no external inputs beyond game-internal strings. The `fprintf(stderr, ...)` in `Create()` failure path correctly uses a format string literal (not caller-controlled) — no format string injection risk. No new memory allocation patterns that could be exploited.
+
+### Performance Review
+
+`flush()` on every `WriteDebugInfoStr()` call ensures crash-time diagnostic persistence (added in previous adversarial review session 2026-03-07). For typical game error logging rates (infrequent events), the flush overhead is acceptable. The NFR-1 test confirms < 1ms per call for 256-char messages.
+
+---
+
+### Review Decision
+
+**APPROVED** — All BLOCKER/HIGH issues: none. Two findings fixed (M1, L1). Two low-severity issues documented with rationale for no-fix. Quality gate passes after all fixes. ATDD 100% GREEN (locally verifiable). Story is ready for `code-review-finalize` step.
 
 ---
 
 ## Step 3: Finalize — PENDING
 
 _(To be completed in code-review-finalize step)_
+
+
+---
+
+## Code Review Analysis (Step 2)
+
+**Date:** 2026-03-07 00:46
+**Reviewer:** Claude (Adversarial Analysis)
+
+💬 Good. Now let me read the actual implementation files for adversarial review.
+💬 Now let me check the CMake test files and build integration.
+💬 Let me check `mu_swprintf` definition and also look for potential issues in PlatformCompat.h:
+💬 Let me find where `mu_swprintf` is defined and check other potential issues:
+💬 Now I have a thorough understanding of the code. Let me run the quality gate and compile the adversarial findings:
+💬 Quality gate still passes. Now let me compile findings and update the review. I have two fixable issues:
+
+1. **MEDIUM**: `HexWrite:181` — `(DWORD*)pBuffer` passed as varargs for `%X` — undefined behavior on 64-bit (pointer where `unsigned int` expected). Pre-existing bug now exposed cross-platform.
+2. **LOW**: `WideToUtf8` doesn't skip UTF-16 surrogates — inconsistent with `mu_wchar_to_utf8` in PlatformCompat.h.
+💬 Now let me apply both fixes:
+💬 The LSP errors are macOS artifacts (`stdafx.h` not found) — per CLAUDE.md these are expected and not real errors. Now fix L1 (surrogate skip in WideToUtf8):
+💬 Now run quality gate to confirm fixes are clean:
+💬 Quality gate passes. Now let me update the review.md with the complete analysis:
+💬 Code review analysis complete. Here's the summary:
+
+---
+
+## Code Review Analysis — Story 7-1-1: APPROVED
+
+### ATDD Completeness
+- 8/8 locally-verifiable tests GREEN (100%) — no blocker
+- 2 CI-only tests correctly documented as pipeline-gated
+
+### Findings & Actions
+
+| ID | Severity | Status | Description |
+|----|----------|--------|-------------|
+| M1 | MEDIUM | **FIXED** | `HexWrite:181` — `(DWORD*)pBuffer` passed as `%X` varargs argument — UB on 64-bit platforms. Fixed: `(DWORD)(uintptr_t)pBuffer` |
+| L1 | LOW | **FIXED** | `WideToUtf8` — no surrogate skip (U+D800–U+DFFF), inconsistent with `mu_wchar_to_utf8`. Fixed: added `continue` guard |
+| L2 | LOW | documented | `CutHead` 32KB byte-level split could bisect UTF-8 sequence — benign for diagnostic log |
+| INFO | INFO | documented | `vswprintf` truncation silent at 1024 chars — pre-existing behavior |
+
+### Quality Gate
+- After both fixes: `./ctl check` 689 files, **0 violations** ✅
+
+### Decision
+**APPROVED** — review.md updated with full analysis. Story ready for `code-review-finalize`.
+
+📋 Result:
+Code review analysis complete. Here's the summary:
+
+---
+
+## Code Review Analysis — Story 7-1-1: APPROVED
+
+### ATDD Completeness
+- 8/8 locally-verifiable tests GREEN (100%) — no blocker
+- 2 CI-only tests correctly documented as pipeline-gated
+
+### Findings & Actions
+
+| ID | Severity | Status | Description |
+|----|----------|--------|-------------|
+| M1 | MEDIUM | **FIXED** | `HexWrite:181` — `(DWORD*)pBuffer` passed as `%X` varargs argument — UB on 64-bit platforms. Fixed: `(DWORD)(uintptr_t)pBuffer` |
+| L1 | LOW | **FIXED** | `WideToUtf8` — no surrogate skip (U+D800–U+DFFF), inconsistent with `mu_wchar_to_utf8`. Fixed: added `continue` guard |
+| L2 | LOW | documented | `CutHead` 32KB byte-level split could bisect UTF-8 sequence — benign for diagnostic log |
+| INFO | INFO | documented | `vswprintf` truncation silent at 1024 chars — pre-existing behavior |
+
+### Quality Gate
+- After both fixes: `./ctl check` 689 files, **0 violations** ✅
+
+### Decision
+**APPROVED** — review.md updated with full analysis. Story ready for `code-review-finalize`.
+💬 The background task was the first quality gate run, which already completed. Everything is done.
+
+Let me save a memory note about the patterns discovered during this review:
+💬 Code review analysis for story 7-1-1 is complete. The step 2 pipeline status:
+
+**Pipeline state:** Step 1 (QG) ✅ → **Step 2 (Analysis) ✅ APPROVED** → Step 3 (Finalize) pending
+
+**What was done:**
+- All 11 ACs verified implemented in code
+- All 6 tasks (26 subtasks) confirmed complete
+- ATDD: 8/8 locally-verifiable tests GREEN (100%) — no blocker
+- **2 fixes applied:**
+  - `ErrorReport.cpp:181` — `HexWrite` pointer `(DWORD*)pBuffer` → `(DWORD)(uintptr_t)pBuffer` (UB on 64-bit, now exposed cross-platform)
+  - `ErrorReport.cpp:47-57` — `WideToUtf8` surrogate skip added (consistency with `mu_wchar_to_utf8`)
+- **2 items documented** (L2 CutHead byte split, INFO vswprintf truncation) — pre-existing, no fix required
+- Quality gate: 689 files, 0 violations after all fixes
+
+Ready to run `/bmad:pcc:workflows:code-review-finalize` for story 7-1-1.
+
+📋 Result:
+Code review analysis for story 7-1-1 is complete. The step 2 pipeline status:
+
+**Pipeline state:** Step 1 (QG) ✅ → **Step 2 (Analysis) ✅ APPROVED** → Step 3 (Finalize) pending
+
+**What was done:**
+- All 11 ACs verified implemented in code
+- All 6 tasks (26 subtasks) confirmed complete
+- ATDD: 8/8 locally-verifiable tests GREEN (100%) — no blocker
+- **2 fixes applied:**
+  - `ErrorReport.cpp:181` — `HexWrite` pointer `(DWORD*)pBuffer` → `(DWORD)(uintptr_t)pBuffer` (UB on 64-bit, now exposed cross-platform)
+  - `ErrorReport.cpp:47-57` — `WideToUtf8` surrogate skip added (consistency with `mu_wchar_to_utf8`)
+- **2 items documented** (L2 CutHead byte split, INFO vswprintf truncation) — pre-existing, no fix required
+- Quality gate: 689 files, 0 violations after all fixes
+
+Ready to run `/bmad:pcc:workflows:code-review-finalize` for story 7-1-1.
