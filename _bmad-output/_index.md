@@ -1,6 +1,6 @@
 # Output Directory Index
 
-*Auto-generated 2026-03-07 10:28 by `paw index`*
+*Auto-generated 2026-03-07 10:33 by `paw index`*
 
 ## Directories
 
@@ -25,3 +25,4 @@
 - [sprint-2-completion.md](sprint-2-completion.md)
 - [sprint-2-metrics-2026-03-07.html](sprint-2-metrics-2026-03-07.html)
 - [sprint-2-metrics-2026-03-07.md](sprint-2-metrics-2026-03-07.md)
+- [sprint-2-retrospective.md](sprint-2-retrospective.md)
