@@ -113,6 +113,8 @@
 - [x]`MuClipboardIsNumericOnly()` inline function added to `PlatformCompat.h` (inside `#ifdef MU_ENABLE_SDL3`)
 - [x]`UIControls.cpp` `ClipboardCheck` call site in `EditWndProc` wrapped with `#ifdef _WIN32` / `#elif defined(MU_ENABLE_SDL3)` guard
 
+**Code Review Note (2026-03-06):** `MuClipboardIsNumericOnly()` in `EditWndProc` is dead code on the SDL3 path because `EditWndProc` is never registered or called when `m_hEditWnd == nullptr` (CreateWindowW stub returns nullptr). Clipboard paste validation on SDL3 is handled implicitly: SDL3 delivers Ctrl+V paste via `SDL_EVENT_TEXT_INPUT`, and `DoActionSub`'s NUMBERONLY/SERIALNUMBER filters correctly reject non-conforming characters. The function is correctly implemented but unreachable. Behavior is correct via a different mechanism than intended.
+
 ### AC-STD-3: No Raw IME APIs Outside Platform/ and ThirdParty/
 
 - [x]`ImmGetContext`, `ImmSetConversionStatus`, `ImmReleaseContext` only in `Platform/` (as stubs) and `ThirdParty/` (behind `#ifdef _WIN32`)

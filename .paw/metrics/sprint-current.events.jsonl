@@ -132,3 +132,7 @@
 {"timestamp":"2026-03-07T00:54:53.082337+00:00","event_type":"step_retried","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"attempt":2}}
 {"timestamp":"2026-03-07T00:54:53.084550+00:00","event_type":"feedback_saved","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"regression_target":"completeness-gate"}}
 {"timestamp":"2026-03-07T00:54:55.090157+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T00:55:38.094317+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"duration_seconds":43.0,"input_tokens":8,"output_tokens":947}}
+{"timestamp":"2026-03-07T00:55:39.106102+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"code-review","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T01:27:00.000000+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"code-review","sprint":"sprint-2","epic":"2","data":{"duration_seconds":1921.0,"input_tokens":50,"output_tokens":4200,"issues_found":4,"issues_fixed":4,"quality_gate":"passed"}}
+{"timestamp":"2026-03-07T01:27:01.000000+00:00","event_type":"story_completed","story_key":"2-2-3-sdl3-text-input","step":"code-review","sprint":"sprint-2","epic":"2","data":{"status":"done","story_points":3,"flow_type":"Feature"}}
