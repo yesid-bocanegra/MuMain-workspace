@@ -29,3 +29,5 @@
 {"timestamp":"2026-03-06T23:58:19.445588+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"ui-validation","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T23:58:19.448128+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"ui-validation","sprint":null,"epic":"2","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
 {"timestamp":"2026-03-06T23:58:20.455692+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T00:04:41.562860+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{"duration_seconds":381.1,"input_tokens":26,"output_tokens":7051}}
+{"timestamp":"2026-03-07T00:04:41.564511+00:00","event_type":"story_completed","story_key":"2-2-2-sdl3-mouse-input","step":null,"sprint":null,"epic":"2","data":{"total_steps":12,"total_retries":2,"total_regressions":0,"duration_seconds":12339.9}}
