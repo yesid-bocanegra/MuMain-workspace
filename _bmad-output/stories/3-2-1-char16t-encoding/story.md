@@ -1,6 +1,6 @@
 # Story 3.2.1: char16_t Encoding at .NET Interop Boundary
 
-Status: dev-complete
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -439,6 +439,14 @@ _None._
 - Quality gate passed: `./ctl check` 0 violations, 691 files checked
 - `mu_wchar_to_char16` / `mu_char16_to_wchar` added after `#endif // _WIN32` in PlatformCompat.h — available on all platforms
 
+**Code Review Finalize fixes (2026-03-07):**
+- H-1 fixed: Added defensive empty-result guard to `mu_wchar_to_char16` emitting `g_ErrorReport.Write(L"NET: char16_t marshaling — encoding mismatch for %hs\r\n", "mu_wchar_to_char16")` when non-null src produces empty result (satisfies AC-STD-5 exact log pattern)
+- M-1 fixed: `DisconnectToChatServer` now calls `delete _connection` before `= nullptr` (pre-existing leak resolved)
+- M-2 fixed: `free(SocketClient)` replaced with `delete SocketClient` in WSclient.cpp (UB resolved)
+- M-3 fixed: `#include <string>` moved to explicit include in `#ifdef _WIN32` block; standalone post-`#endif` include removed
+- L-1 fixed: Added endianness documentation comment to byte-level UTF-16LE test in `test_char16t_encoding.cpp`
+- L-2 fixed: Added `test_ac2_marshal_ptr_3_2_1.cmake` CMake script verifying `PtrToStringUni` present and `PtrToStringAuto` absent in `ConnectionManager.cs`; registered as `3.2.1-AC-2:marshal-ptr-to-string-uni` in `tests/build/CMakeLists.txt`
+
 ### File List
 
 - `MuMain/src/source/Platform/PlatformCompat.h` — added mu_wchar_to_char16 and mu_char16_to_wchar utilities (all platforms)
@@ -448,5 +456,7 @@ _None._
 - `MuMain/src/source/UI/Legacy/UIWindows.cpp` — added Platform/PlatformCompat.h include; mu_wchar_to_char16 conversion in ConnectToChatServer (line 1459)
 - `MuMain/ClientLibrary/Common.xslt` — String nativetype: const wchar_t* → const char16_t*
 - `MuMain/ClientLibrary/ConnectionManager.cs` — Marshal.PtrToStringAuto → Marshal.PtrToStringUni
-- `MuMain/tests/platform/test_char16t_encoding.cpp` — Catch2 tests (created in ATDD phase)
+- `MuMain/tests/platform/test_char16t_encoding.cpp` — Catch2 tests (created in ATDD phase); endianness comment added in code review
 - `MuMain/tests/build/test_ac_std11_flow_code_3_2_1.cmake` — ATDD CMake script (created in ATDD phase)
+- `MuMain/tests/build/test_ac2_marshal_ptr_3_2_1.cmake` — AC-2 regression guard: PtrToStringUni/PtrToStringAuto check (added in code review)
+- `MuMain/tests/build/CMakeLists.txt` — registered `3.2.1-AC-2:marshal-ptr-to-string-uni` test (added in code review)
