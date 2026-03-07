@@ -211,3 +211,5 @@
 {"timestamp":"2026-03-07T06:02:41.465736+00:00","event_type":"story_completed","story_key":"7-1-1-crossplatform-error-reporting","step":null,"sprint":null,"epic":"7","data":{"total_steps":12,"total_retries":0,"total_regressions":0,"duration_seconds":6835.7}}
 {"timestamp":"2026-03-07T06:02:43.489817+00:00","event_type":"story_started","story_key":"7-2-1-frame-time-instrumentation","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-07T06:02:43.490277+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"create-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-07T06:10:01.120374+00:00","event_type":"step_passed","story_key":"7-2-1-frame-time-instrumentation","step":"create-story","sprint":null,"epic":"7","data":{"duration_seconds":437.6,"input_tokens":12,"output_tokens":1257}}
+{"timestamp":"2026-03-07T06:10:02.131979+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"validate-story","sprint":null,"epic":"7","data":{}}
