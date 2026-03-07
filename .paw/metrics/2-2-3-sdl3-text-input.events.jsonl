@@ -17,3 +17,5 @@
 {"timestamp":"2026-03-07T00:55:39.106102+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"code-review","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-07T01:27:00.000000+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"code-review","sprint":"sprint-2","epic":"2","data":{"duration_seconds":1921.0,"input_tokens":50,"output_tokens":4200,"issues_found":4,"issues_fixed":4,"quality_gate":"passed"}}
 {"timestamp":"2026-03-07T01:27:01.000000+00:00","event_type":"story_completed","story_key":"2-2-3-sdl3-text-input","step":"code-review","sprint":"sprint-2","epic":"2","data":{"status":"done","story_points":3,"flow_type":"Feature"}}
+{"timestamp":"2026-03-07T01:35:24.086800+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"code-review","sprint":null,"epic":"2","data":{"duration_seconds":2385.0,"input_tokens":108,"output_tokens":36723}}
+{"timestamp":"2026-03-07T01:35:25.089890+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"code-review-qg","sprint":null,"epic":"2","data":{}}
