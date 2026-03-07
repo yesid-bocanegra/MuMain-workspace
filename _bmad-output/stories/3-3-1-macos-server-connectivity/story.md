@@ -55,7 +55,7 @@ Status: done
 - [x] **AC-STD-1:** Code follows `project-context.md` standards — `#pragma once`, `nullptr`, no new `NULL`, no `wprintf`, `g_ErrorReport.Write()` for errors, Allman braces, 4-space indent, no `#ifdef _WIN32` in new logic — verified by `./ctl check`
 - [x] **AC-STD-2:** Catch2 smoke test added: load library path → resolve all four symbols → verify non-null (Risk R6 mitigation: macOS dylib loading path resolution differs from dlopen on Linux) — test file created; executes when dylib present; SKIP if absent
 - [x] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile build passes with `MU_ENABLE_DOTNET=OFF`
-- [ ] **AC-STD-6:** Conventional commit: `feat(network): validate macOS OpenMU connectivity` — pending commit
+- [x] **AC-STD-6:** Conventional commit: `feat(network): validate macOS OpenMU connectivity` — committed as df7d137c
 - [x] **AC-STD-11:** Flow Code traceability — `VS1-NET-VALIDATE-MACOS` appears in new test file header comment and commit message — CMake script test passes
 - [x] **AC-STD-13:** Quality gate passes — `./ctl check` clean (691 files, 0 violations)
 - [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main

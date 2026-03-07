@@ -116,7 +116,7 @@ All items start as `[ ]` (pending). Implementation fills them in during dev-stor
 ### AC-STD-11: Flow code traceability
 
 - [x] `VS1-NET-VALIDATE-MACOS` in `test_macos_connectivity.cpp` header comment — verified
-- [ ] `VS1-NET-VALIDATE-MACOS` in commit message — pending commit
+- [x] `VS1-NET-VALIDATE-MACOS` in commit message — present in commit df7d137c
 - [x] CMake script `3.3.1-AC-STD-11:flow-code-traceability` test passes — PASS verified
 
 ### AC-VAL-1: Screenshot (manual)

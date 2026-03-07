@@ -73,3 +73,8 @@
 {"timestamp":"2026-03-07T20:47:11.020203+00:00","event_type":"step_started","story_key":"3-3-1-macos-server-connectivity","step":"atdd","sprint":null,"epic":"3","data":{}}
 {"timestamp": "2026-03-07T20:55:07.050732+00:00", "event_type": "step_passed", "story_key": "3-3-1-macos-server-connectivity", "step": "atdd", "sprint": null, "epic": "3", "data": {"duration_seconds": 780.0}}
 {"timestamp": "2026-03-07T20:55:07.050732+00:00", "event_type": "step_started", "story_key": "3-3-1-macos-server-connectivity", "step": "dev-story", "sprint": null, "epic": "3", "data": {}}
+{"timestamp":"2026-03-07T20:56:36.316514+00:00","event_type":"step_passed","story_key":"3-3-1-macos-server-connectivity","step":"atdd","sprint":null,"epic":"3","data":{"duration_seconds":565.3,"input_tokens":45,"output_tokens":16128,"num_turns":62,"num_tool_calls":0}}
+{"timestamp":"2026-03-07T20:56:37.325229+00:00","event_type":"step_started","story_key":"3-3-1-macos-server-connectivity","step":"design-screen","sprint":null,"epic":"3","data":{}}
+{"timestamp":"2026-03-07T20:56:37.326518+00:00","event_type":"step_passed","story_key":"3-3-1-macos-server-connectivity","step":"design-screen","sprint":null,"epic":"3","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0,"num_turns":0,"num_tool_calls":0}}
+{"timestamp":"2026-03-07T20:56:38.335555+00:00","event_type":"step_started","story_key":"3-3-1-macos-server-connectivity","step":"dev-story","sprint":null,"epic":"3","data":{}}
+{"event": "dev-story-complete", "story": "3-3-1-macos-server-connectivity", "timestamp": "2026-03-07T21:17:21.689739+00:00", "step": "dev-story", "status": "done"}
