@@ -28,65 +28,65 @@
 
 ### Functional ACs
 
-- [ ] AC-1: `Connection.h` uses `mu::platform::Load()` — `munique_client_library_handle` initialized via `mu::platform::Load(g_dotnetLibPath.c_str())`
-- [ ] AC-2: Library path constructed as `(std::filesystem::path("MUnique.Client.Library") += MU_DOTNET_LIB_EXT).string()` — no hardcoded extension
-- [ ] AC-3: `LoadManagedSymbol<T>()` uses `mu::platform::GetSymbol(munique_client_library_handle, name)` — `symLoad` macro removed
-- [ ] AC-4: No `#ifdef _WIN32` in `Connection.h` — all platform blocks removed
-- [ ] AC-5: MinGW CI build passes (regression check — no new Win32 API calls)
+- [x] AC-1: `Connection.h` uses `mu::platform::Load()` — `munique_client_library_handle` initialized via `mu::platform::Load(g_dotnetLibPath.c_str())`
+- [x] AC-2: Library path constructed as `(std::filesystem::path("MUnique.Client.Library") += MU_DOTNET_LIB_EXT).string()` — no hardcoded extension
+- [x] AC-3: `LoadManagedSymbol<T>()` uses `mu::platform::GetSymbol(munique_client_library_handle, name)` — `symLoad` macro removed
+- [x] AC-4: No `#ifdef _WIN32` in `Connection.h` — all platform blocks removed
+- [x] AC-5: MinGW CI build passes (regression check — no new Win32 API calls)
 
 ### Standard ACs
 
-- [ ] AC-STD-1: Code follows project-context.md standards — `#pragma once`, `std::filesystem::path`, `g_ErrorReport.Write()` for errors, no `SAFE_DELETE`/`NULL`/raw `new`/`delete`
-- [ ] AC-STD-2: Catch2 test at `MuMain/tests/platform/test_connection_library_load.cpp` compiles and covers graceful failure paths
-- [ ] AC-STD-3: Zero platform ifdefs in `Connection.h` — confirmed by CMake script `test_ac_std11_flow_code_3_1_2.cmake` PASS
-- [ ] AC-STD-4: `./ctl check` passes — 0 clang-format violations, 0 cppcheck violations
-- [ ] AC-STD-5: Error logging uses `g_ErrorReport.Write(L"NET: Connection — library load failed: %hs\r\n", detail)` in `Connection.cpp`
-- [ ] AC-STD-6: Conventional commit message: `refactor(network): cross-platform Connection.h via PlatformLibrary`
-- [ ] AC-STD-11: `// Flow Code: VS1-NET-CONNECTION-XPLAT` present in `Connection.h` header
-- [ ] AC-STD-13: Quality gate clean — file count 691 (source) + 692 (after adding test file)
-- [ ] AC-STD-15: Git safety — no incomplete rebase, no force push to main
-- [ ] AC-STD-20: No new API/event/flow catalog entries (refactor only)
+- [x] AC-STD-1: Code follows project-context.md standards — `#pragma once`, `std::filesystem::path`, `g_ErrorReport.Write()` for errors, no `SAFE_DELETE`/`NULL`/raw `new`/`delete`
+- [x] AC-STD-2: Catch2 test at `MuMain/tests/platform/test_connection_library_load.cpp` compiles and covers graceful failure paths
+- [x] AC-STD-3: Zero platform ifdefs in `Connection.h` — confirmed by CMake script `test_ac_std11_flow_code_3_1_2.cmake` PASS
+- [x] AC-STD-4: `./ctl check` passes — 0 clang-format violations, 0 cppcheck violations
+- [x] AC-STD-5: Error logging uses `g_ErrorReport.Write(L"NET: Connection — library load failed: %hs\r\n", detail)` in `Connection.cpp`
+- [x] AC-STD-6: Conventional commit message: `refactor(network): cross-platform Connection.h via PlatformLibrary`
+- [x] AC-STD-11: `// Flow Code: VS1-NET-CONNECTION-XPLAT` present in `Connection.h` header
+- [x] AC-STD-13: Quality gate clean — file count 691 (source) + 692 (after adding test file)
+- [x] AC-STD-15: Git safety — no incomplete rebase, no force push to main
+- [x] AC-STD-20: No new API/event/flow catalog entries (refactor only)
 
 ### NFR ACs
 
-- [ ] AC-STD-NFR-1: `mu::platform::Load()` overhead equivalent to `LoadLibrary()`/`dlopen()` — no measurable startup regression
-- [ ] AC-STD-NFR-2: `munique_client_library_handle` initialization happens once at static-init time
+- [x] AC-STD-NFR-1: `mu::platform::Load()` overhead equivalent to `LoadLibrary()`/`dlopen()` — no measurable startup regression
+- [x] AC-STD-NFR-2: `munique_client_library_handle` initialization happens once at static-init time
 
 ### Validation ACs
 
-- [ ] AC-VAL-1: MinGW CI build passes (`MU_ENABLE_DOTNET=OFF`)
-- [ ] AC-VAL-2: Windows build confirmed working — MSVC compiles; `Connection.h` no longer includes `windows.h` directly
-- [ ] AC-VAL-3: CMake script `test_ac_std11_flow_code_3_1_2.cmake` runs and PASSES via CTest
-- [ ] AC-VAL-4: cppcheck passes on `Connection.h` and `Connection.cpp` — zero violations
+- [x] AC-VAL-1: MinGW CI build passes (`MU_ENABLE_DOTNET=OFF`)
+- [x] AC-VAL-2: Windows build confirmed working — MSVC compiles; `Connection.h` no longer includes `windows.h` directly
+- [x] AC-VAL-3: CMake script `test_ac_std11_flow_code_3_1_2.cmake` runs and PASSES via CTest
+- [x] AC-VAL-4: cppcheck passes on `Connection.h` and `Connection.cpp` — zero violations
 
 ### PCC Compliance
 
-- [ ] PCC-1: No prohibited libraries — no `LoadLibrary`/`GetProcAddress`/`dlopen`/`dlsym` in game logic headers
-- [ ] PCC-2: Required patterns — `std::filesystem::path`, `#pragma once`, `[[nodiscard]]` on `mu::platform` functions (already in PlatformLibrary.h)
-- [ ] PCC-3: No `wprintf` in new/modified code — `ReportDotNetError()` and `OnPacketReceived()` cleaned up
-- [ ] PCC-4: No `MessageBoxW` in updated `ReportDotNetError()` — replaced with `g_ErrorReport.Write()`
-- [ ] PCC-5: No hardcoded `.dll`/`.dylib`/`.so` literals in new C++ code — `MU_DOTNET_LIB_EXT` macro used
-- [ ] PCC-6: Generated files untouched — `PacketBindings_*.h`, `PacketFunctions_*.h/.cpp` not modified
+- [x] PCC-1: No prohibited libraries — no `LoadLibrary`/`GetProcAddress`/`dlopen`/`dlsym` in game logic headers
+- [x] PCC-2: Required patterns — `std::filesystem::path`, `#pragma once`, `[[nodiscard]]` on `mu::platform` functions (already in PlatformLibrary.h)
+- [x] PCC-3: No `wprintf` in new/modified code — `ReportDotNetError()` and `OnPacketReceived()` cleaned up
+- [x] PCC-4: No `MessageBoxW` in updated `ReportDotNetError()` — replaced with `g_ErrorReport.Write()`
+- [x] PCC-5: No hardcoded `.dll`/`.dylib`/`.so` literals in new C++ code — `MU_DOTNET_LIB_EXT` macro used
+- [x] PCC-6: Generated files untouched — `PacketBindings_*.h`, `PacketFunctions_*.h/.cpp` not modified
 
 ### Tasks
 
-- [ ] Task 1: Update `Connection.h` to use PlatformLibrary (AC-1, AC-2, AC-3, AC-4)
-  - [ ] 1.1 Remove `#ifdef _WIN32 / windows.h / GetProcAddress / symLoad / #else / dlfcn.h / dlsym / symLoad #endif` blocks
-  - [ ] 1.2 Add `#include "PlatformLibrary.h"`
-  - [ ] 1.3 Add `#include <filesystem>`
-  - [ ] 1.4 Replace `munique_client_library_handle` with anonymous-namespace `g_dotnetLibPath` + `mu::platform::Load()`
-  - [ ] 1.5 Update `LoadManagedSymbol<T>()` to use `mu::platform::GetSymbol()`
-  - [ ] 1.6 Remove `#include <cwchar>` if unused
-  - [ ] 1.7 Add `// Flow Code: VS1-NET-CONNECTION-XPLAT` header comment
-  - [ ] 1.8 Keep `#include <coreclr_delegates.h>`
-- [ ] Task 2: Update `Connection.cpp` (AC-5, AC-STD-5)
-  - [ ] 2.1 Update `IsManagedLibraryAvailable()` error string to use `MU_DOTNET_LIB_EXT`
-  - [ ] 2.2 Replace `ReportDotNetError()` body with `g_ErrorReport.Write()` only (remove `#ifdef _WIN32 / MessageBoxW / wprintf`)
-  - [ ] 2.3 Remove `wprintf` debug line from `OnPacketReceived()`
-- [ ] Task 3: Catch2 test file created at `MuMain/tests/platform/test_connection_library_load.cpp` (AC-STD-2)
-- [ ] Task 4: ATDD CMake script created at `MuMain/tests/build/test_ac_std11_flow_code_3_1_2.cmake` (AC-VAL-3)
-- [ ] Task 5: CMake test registered in `MuMain/tests/build/CMakeLists.txt`
-- [ ] Task 6: `./ctl check` passes — 0 violations (AC-STD-4, AC-STD-13)
+- [x] Task 1: Update `Connection.h` to use PlatformLibrary (AC-1, AC-2, AC-3, AC-4)
+  - [x] 1.1 Remove `#ifdef _WIN32 / windows.h / GetProcAddress / symLoad / #else / dlfcn.h / dlsym / symLoad #endif` blocks
+  - [x] 1.2 Add `#include "PlatformLibrary.h"`
+  - [x] 1.3 Add `#include <filesystem>`
+  - [x] 1.4 Replace `munique_client_library_handle` with anonymous-namespace `g_dotnetLibPath` + `mu::platform::Load()`
+  - [x] 1.5 Update `LoadManagedSymbol<T>()` to use `mu::platform::GetSymbol()`
+  - [x] 1.6 Remove `#include <cwchar>` if unused
+  - [x] 1.7 Add `// Flow Code: VS1-NET-CONNECTION-XPLAT` header comment
+  - [x] 1.8 Keep `#include <coreclr_delegates.h>`
+- [x] Task 2: Update `Connection.cpp` (AC-5, AC-STD-5)
+  - [x] 2.1 Update `IsManagedLibraryAvailable()` error string to use `MU_DOTNET_LIB_EXT`
+  - [x] 2.2 Replace `ReportDotNetError()` body with `g_ErrorReport.Write()` only (remove `#ifdef _WIN32 / MessageBoxW / wprintf`)
+  - [x] 2.3 Remove `wprintf` debug line from `OnPacketReceived()`
+- [x] Task 3: Catch2 test file created at `MuMain/tests/platform/test_connection_library_load.cpp` (AC-STD-2)
+- [x] Task 4: ATDD CMake script created at `MuMain/tests/build/test_ac_std11_flow_code_3_1_2.cmake` (AC-VAL-3)
+- [x] Task 5: CMake test registered in `MuMain/tests/build/CMakeLists.txt`
+- [x] Task 6: `./ctl check` passes — 0 violations (AC-STD-4, AC-STD-13)
 
 ---
 
