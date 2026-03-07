@@ -109,15 +109,15 @@
 - [x] Verified no `timeGetTime()` or `GetTickCount()` in `MuTimer.cpp` (cppcheck portability confirmed)
 - [x] `MuTimer.h` compiles on macOS arm64 (`./ctl check` format-validates successfully)
 - [ ] CI MinGW cross-compile to be validated on next CI run
-- [ ] Commit: `feat(core): add MuTimer frame time instrumentation [VS0-QUAL-FRAMETIMER]`
+- [x] Commit: `feat(core): add MuTimer frame time instrumentation [VS0-QUAL-FRAMETIMER]` — commit `1258f622` (code review phase)
 
 ### Standard Acceptance Criteria
 
 - [x] AC-STD-1: Code follows project standards — `namespace mu`, `#pragma once`, no `#ifdef _WIN32` in game logic, `std::chrono::steady_clock`, `nullptr`, PascalCase methods, `m_` member prefix
 - [x] AC-STD-2: Catch2 tests exist in `MuMain/tests/core/test_mu_timer.cpp` (GREEN phase after implementation, 6 test cases)
 - [x] AC-STD-4: CI quality gate passes — `./ctl check` exits 0 with zero violations
-- [ ] AC-STD-6: Conventional commit: `feat(core): add MuTimer frame time instrumentation`
-- [ ] AC-STD-11: Flow Code `VS0-QUAL-FRAMETIMER` present in commit message
+- [x] AC-STD-6: Conventional commit: `feat(core): add MuTimer frame time instrumentation` — commit `1258f622`
+- [x] AC-STD-11: Flow Code `VS0-QUAL-FRAMETIMER` present in commit message — commit `1258f622`
 - [x] AC-STD-13: Quality gate passes — `./ctl check` clean (clang-format + cppcheck zero violations)
 - [x] AC-STD-15: Git safety — no incomplete rebase, no force push to main
 - [x] AC-STD-20: No API/event/flow catalog entries (infrastructure only — confirmed)
