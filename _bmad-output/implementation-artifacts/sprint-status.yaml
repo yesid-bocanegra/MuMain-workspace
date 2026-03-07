@@ -294,7 +294,7 @@ development_status:
   2-1-2-sdl3-window-focus-display: done             # 3 pts | Flow:F | Deps: 2.1.1 | Sprint-2
   2-2-1-sdl3-keyboard-input: done                # 3 pts | Flow:F | Deps: 2.1.1 | Sprint-2
   2-2-2-sdl3-mouse-input: done                  # 3 pts | Flow:F | Deps: 2.1.1 | Sprint-2
-  2-2-3-sdl3-text-input: backlog                # 3 pts | Flow:F | Deps: 2.2.1 | Sprint-2
+  2-2-3-sdl3-text-input: review                 # 3 pts | Flow:F | Deps: 2.2.1 | Sprint-2
   epic-2-retrospective: optional
 
   # EPIC-3: .NET AOT Cross-Platform Networking [VS-1] [Feature] (24 pts)
