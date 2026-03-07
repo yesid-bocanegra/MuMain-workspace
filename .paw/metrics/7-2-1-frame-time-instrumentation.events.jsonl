@@ -8,3 +8,5 @@
 {"timestamp":"2026-03-07T06:13:01.000000+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"dev-story","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-07T06:22:23.125688+00:00","event_type":"step_passed","story_key":"7-2-1-frame-time-instrumentation","step":"atdd","sprint":null,"epic":"7","data":{"duration_seconds":581.7,"input_tokens":29,"output_tokens":5435}}
 {"timestamp":"2026-03-07T06:22:24.137508+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-07T06:35:11.701852+00:00","event_type":"step_passed","story_key":"7-2-1-frame-time-instrumentation","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":767.6,"input_tokens":50,"output_tokens":29278}}
+{"timestamp":"2026-03-07T06:35:12.704072+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
