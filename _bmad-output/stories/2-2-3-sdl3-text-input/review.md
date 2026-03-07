@@ -11,7 +11,7 @@
 | Step | Workflow | Status | Date |
 |------|----------|--------|------|
 | Step 1 | code-review-quality-gate | PASSED | 2026-03-06 |
-| Step 2 | code-review-analysis | PASSED | 2026-03-06 |
+| Step 2 | code-review-analysis | PASSED | 2026-03-06 (re-run: 2026-03-06T21:18 — 0 new issues) |
 | Step 3 | code-review-finalize | PASSED | 2026-03-06 |
 
 ---
@@ -71,90 +71,89 @@ Status: PASSED
 
 ## Step 2: Analysis Results
 
-**Completed:** 2026-03-06
-**Status:** COMPLETE (5 issues found)
+**Completed:** 2026-03-06 (re-run: 2026-03-06T21:18)
+**Status:** CLEAN — 0 new issues found; all prior fixes verified in place
 
-### Severity Summary
+### Severity Summary (re-run)
 
 | Severity | Count |
 |----------|-------|
-| CRITICAL | 1 |
-| HIGH | 1 |
-| MEDIUM | 1 |
-| LOW | 1 |
+| NEW issues | 0 |
+| Prior CRITICAL (CR-1) | verified FIXED |
+| Prior HIGH (CR-2) | verified FIXED |
+| Prior MEDIUM (CR-3) | verified DOCUMENTED |
+| Prior LOW (CR-4) | verified FIXED |
 
 ---
 
-### CRITICAL Issues (1)
+### Prior Fix Verification
 
-**CR-1 CRITICAL — DoActionSub missing focus guard — all visible text boxes receive typed characters**
+All 4 issues identified in the initial analysis are confirmed fixed/resolved in the current codebase:
 
-- **File:** `MuMain/src/source/ThirdParty/UIControls.cpp:3221`
-- **Category:** Correctness / Multi-instance Bug
-- **Description:** `CUITextInputBox::DoActionSub()` processes SDL text input and backspace without checking `m_bSDLHasFocus`. `CUIControl::DoAction()` calls `DoActionSub()` unconditionally (no state gate, line 244). Result: ALL active CUITextInputBox instances in a frame will (a) consume characters from `g_szSDLTextInput` if `g_bSDLTextInputReady` is true, and (b) process backspace via `GetAsyncKeyState(VK_BACK)`. On a login screen with username + password boxes, typing in username also modifies the password buffer. The first box to run DoActionSub sets `g_bSDLTextInputReady = false`, so subsequent boxes get no text — but backspace runs for every box regardless.
-- **Fix:** Add `if (!m_bSDLHasFocus) return;` at the top of the `#ifdef MU_ENABLE_SDL3` block in `DoActionSub`.
-- **Status:** FIXED — focus guard added at top of SDL3 block in `DoActionSub()`
+**CR-1 CRITICAL — DoActionSub focus guard [VERIFIED FIXED]**
+- **File:** `MuMain/src/source/ThirdParty/UIControls.cpp:3231`
+- `if (!m_bSDLHasFocus) return;` is present at line 3231, immediately after the `#ifdef MU_ENABLE_SDL3` guard.
+- All visible `CUITextInputBox` instances correctly bypass text/backspace processing unless they hold focus.
 
----
+**CR-2 HIGH — m_iSDLMaxLength clamping [VERIFIED FIXED]**
+- **`SetTextLimit()` (line 3407):** `m_iSDLMaxLength = (iLimit <= MAX_CHAT_SIZE) ? iLimit : MAX_CHAT_SIZE;`
+- **`Init()` (line 3502):** `m_iSDLMaxLength = (iMaxLength <= MAX_CHAT_SIZE) ? iMaxLength : MAX_CHAT_SIZE;`
+- Both sites clamp to 90 (`MAX_CHAT_SIZE`). `m_szSDLText` is `[MAX_CHAT_SIZE + 1]` = 91 elements; `SetText()` writes at index `m_iSDLMaxLength` which is now always ≤ 90 (valid). ✓
+- All `SetTextLimit()` call sites use positive constants (min value: 8); clamping is correct for all call sites.
 
-### HIGH Issues (1)
+**CR-3 MEDIUM — Dead code documented [VERIFIED DOCUMENTED]**
+- `MuClipboardIsNumericOnly()` in `PlatformCompat.h:544` is correctly implemented with `SDL_GetClipboardText()` / `SDL_free()`.
+- `EditWndProc` is never registered on SDL3 path (`m_hEditWnd == nullptr`); the function is unreachable.
+- ATDD contains architectural note at `AC-STD-2` explaining the SDL3 clipboard path (via `SDL_EVENT_TEXT_INPUT` + NUMBERONLY filter in `DoActionSub`). ✓
 
-**CR-2 HIGH — SetText() out-of-bounds write risk — SetTextLimit() sets m_iSDLMaxLength without bounds**
-
-- **File:** `MuMain/src/source/ThirdParty/UIControls.cpp:3379-3380` (SetText), `:3397` (SetTextLimit)
-- **Category:** Memory Safety
-- **Description:** `SetText()` writes `m_szSDLText[m_iSDLMaxLength] = L'\0'`. The buffer `m_szSDLText` is `MAX_CHAT_SIZE + 1 = 91` elements (indices 0–90). If `m_iSDLMaxLength >= 91` (set via `SetTextLimit()` or `Init()` without clamping), this write is out of bounds. `SetTextLimit()` at line 3397 does `m_iSDLMaxLength = iLimit` without clamping. `Init()` at line 3492 does `m_iSDLMaxLength = iMaxLength` without clamping.
-- **Fix:** In `SetTextLimit()`, clamp: `m_iSDLMaxLength = std::min(iLimit, static_cast<int>(MAX_CHAT_SIZE));`. In `Init()`, clamp the same way.
-- **Status:** FIXED — `m_iSDLMaxLength` clamped to `MAX_CHAT_SIZE` in both `SetTextLimit()` and `Init()`
-
----
-
-### MEDIUM Issues (1)
-
-**CR-3 MEDIUM — MuClipboardIsNumericOnly dead code on SDL3 path**
-
-- **File:** `MuMain/src/source/ThirdParty/UIControls.cpp:3169`, `MuMain/src/source/Platform/PlatformCompat.h:544`
-- **Category:** Dead Code / Misleading ATDD
-- **Description:** `MuClipboardIsNumericOnly()` is placed in `EditWndProc` at line 3169 (the `Char == 0x16` Ctrl+V branch). On the SDL3 path, `m_hEditWnd = nullptr` (CreateWindowW stub returns nullptr), so `EditWndProc` is never registered via `SetWindowLongPtrW` and is never called by the Windows message loop. The ATDD marks `MuClipboardIsNumericOnly` as GREEN, but the function never executes. Behavior is accidentally correct because SDL3 delivers Ctrl+V paste via `SDL_EVENT_TEXT_INPUT`, and `DoActionSub`'s NUMBERONLY filter rejects non-digits — but this is via a different mechanism than intended. The `MuClipboardIsNumericOnly` function itself is correctly implemented but unreachable.
-- **Impact:** Misleading ATDD state — claims clipboard validation is implemented but it's dead code. Future maintenance risk if someone relies on this function being called.
-- **Fix:** Update ATDD to note that SDL3 clipboard validation is handled implicitly via `DoActionSub` NUMBERONLY filter (SDL3 delivers Ctrl+V as SDL_EVENT_TEXT_INPUT). No code change required — behavior is correct.
-- **Status:** FIXED — ATDD updated with architectural note explaining SDL3 clipboard validation mechanism
+**CR-4 LOW — Comment updated [VERIFIED FIXED]**
+- **File:** `MuMain/src/source/ThirdParty/UIControls.cpp:3261`
+- Comment reads: `// convert lowercase to uppercase (matches Win32 WM_CHAR path)` ✓
 
 ---
 
-### LOW Issues (1)
+### New Findings (Adversarial Re-Analysis)
 
-**CR-4 LOW — SERIALNUMBER filter comment misleading**
+**Observation A — AC-STD-11 Catch2 test has empty section body [NON-ISSUE / INFO]**
+- **File:** `MuMain/tests/platform/test_platform_text_input.cpp:701-710`
+- `TEST_CASE("AC-STD-11 [...]: Flow code appears in test file")` has a section body with no `REQUIRE()` assertions.
+- This is intentional: the test is a compilation smoke test verifying flow code appears in test-case names. Runtime flow code verification is handled by the CMake test `test_ac_std11_flow_code_2_2_3.cmake`. Comment documents this clearly.
+- **Action:** None required.
 
-- **File:** `MuMain/src/source/ThirdParty/UIControls.cpp:3253`
-- **Category:** Code Clarity
-- **Description:** Comment `// toLower→toUpper` describes the `wch -= 32` operation but is ambiguous — should be `// convert lowercase to uppercase`.
-- **Fix:** Update comment.
-- **Status:** FIXED — comment updated to `// convert lowercase to uppercase (matches Win32 WM_CHAR path)`
+**Observation B — AC-5 lifecycle (GiveFocus/SetState) verified by inspection only [NON-ISSUE / INFO]**
+- No dedicated Catch2 test for `GiveFocus()` → `MuStartTextInput()` or `SetState(UISTATE_HIDE)` → `MuStopTextInput()`.
+- Both functions are correctly implemented in `UIControls.cpp:3568-3575` and `3534-3539`.
+- AC tests skipped per infrastructure story policy. Behavior verified by code inspection.
+- **Action:** None required.
+
+**Observation C — MuSdlUtf8NextChar 4-byte+ sequence handling [NON-ISSUE / INFO]**
+- Bytes 0xF8–0xFF (invalid 5/6-byte starts) fall into the `else` branch, treated as 4-byte sequences.
+- After 3 continuation bytes the computed codepoint exceeds 0xFFFF and is mapped to `L'?'`. Safe (no crash, no OOB).
+- SDL3 only delivers valid UTF-8 from OS keyboard input; malformed multi-byte sequences are not possible in practice.
+- **Action:** None required.
 
 ---
 
 ### AC Validation
 
-| AC | Status | Evidence |
-|----|--------|---------|
-| AC-1 | PASS | SDL_EVENT_TEXT_INPUT handler in SDLEventLoop.cpp with flow code |
-| AC-2 | PASS | Text buffer works; focus guard added (CR-1 fixed) |
-| AC-3 | PASS | MuSdlUtf8NextChar correctly decodes ASCII, 2-byte, 3-byte UTF-8 |
-| AC-4 | PASS | Backspace works; focus guard ensures only focused box processes it (CR-1 fixed) |
-| AC-5 | PASS | MuStartTextInput/MuStopTextInput lifecycle correctly implemented |
-| AC-STD-2 | PASS | PlatformCompat stubs correct; SDL3 clipboard validation via NUMBERONLY filter (CR-3 documented) |
-| AC-STD-3 | PASS | No raw IME APIs outside Platform/ThirdParty |
-| AC-STD-11 | PASS | Flow code VS1-SDL-INPUT-TEXT in all artifacts |
-| AC-STD-13 | PASS | Quality gate: 689 files clean |
+| AC | Status | Evidence (re-verified) |
+|----|--------|------------------------|
+| AC-1 | PASS | `SDL_EVENT_TEXT_INPUT` handler in `SDLEventLoop.cpp:205-216` with flow code; globals at `SDLKeyboardState.cpp:43-44` |
+| AC-2 | PASS | `DoActionSub()` SDL3 block at `UIControls.cpp:3236-3281`; focus guard + NUMBERONLY/SERIALNUMBER filters correct |
+| AC-3 | PASS | `MuSdlUtf8NextChar` at `PlatformCompat.h:486-537`; ASCII/2-byte/3-byte/malformed cases all handled |
+| AC-4 | PASS | Backspace at `UIControls.cpp:3287-3297`; edge-detect (`m_bBackspaceHeld`) prevents auto-repeat |
+| AC-5 | PASS | `MuStartTextInput()` in `SDLKeyboardState.cpp:50-63`; called in `GiveFocus():3574`; `MuStopTextInput()` called in `SetState():3538` |
+| AC-STD-2 | PASS | All Win32 GDI/IME/clipboard/window stubs present in `PlatformCompat.h:53-562` |
+| AC-STD-3 | PASS | CMake test `test_ac_std3_no_raw_imm.cmake` scans 689 files; IME calls only in Platform/ and ThirdParty/ |
+| AC-STD-11 | PASS | Flow code `VS1-SDL-INPUT-TEXT` present in `SDLEventLoop.cpp:9`, `SDLKeyboardState.cpp:42`, `PlatformCompat.h:485`, all Catch2 test names |
+| AC-STD-13 | PASS | `./ctl check` — 689/689 files clean, exit code 0 |
 
 ### ATDD Audit
 
-- **Total items:** 58 (counting all [x] items in atdd.md)
-- **GREEN:** 58 (all checked)
-- **RED:** 0
-- **Coverage:** 100% claimed
-- **Sync issues:** CR-3 (MuClipboardIsNumericOnly marked GREEN but dead code)
+- **Total items:** 58 (all `[x]` items in `atdd.md`)
+- **GREEN:** 58 / **RED:** 0
+- **Coverage:** 100% — exceeds 80% gate threshold
+- **Notes:** CR-3 dead-code item documented with architectural note in `atdd.md:AC-STD-2`
 
 ---
 
@@ -190,3 +189,125 @@ All ACs PASS. Story implementation is complete and correct.
 ### Story Disposition
 
 **DONE** — Story 2-2-3-sdl3-text-input is complete. Status updated to `done`.
+
+
+---
+
+## Code Review Analysis (Step 2)
+
+**Date:** 2026-03-06 21:30
+**Reviewer:** Claude (Adversarial Analysis)
+
+💬 The state.json shows `current_step: "code-review-analysis"` (in-progress), meaning this step needs a fresh execution. The review.md has prior records but I must do a new adversarial analysis. Let me read all implementation files.
+💬 Now let me check the header declarations and the Init() function for the clamping fix.
+💬 The implementation has been thoroughly reviewed. Now let me run the quality gate and compile the findings.
+💬 While the quality gate runs, let me check the CMakeLists test registrations:
+💬 Quality gate: **PASSED** (exit code 0, 689/689 files clean). Now updating review.md with fresh analysis findings and advancing state.
+💬 Now I'll replace the Step 2 section with the fresh analysis:
+💬 Now update the Pipeline Status table and the state.json:
+💬 Done. Here's the summary of the code-review-analysis re-run for story **2-2-3-sdl3-text-input**:
+
+---
+
+## Code Review Analysis — Results
+
+**Status: CLEAN — 0 new issues found**
+
+### Prior Fixes Verified (all 4 confirmed in code)
+
+| Issue | Severity | File:Line | Status |
+|-------|----------|-----------|--------|
+| CR-1 Focus guard in DoActionSub | CRITICAL | UIControls.cpp:3231 | ✅ FIXED |
+| CR-2 m_iSDLMaxLength clamped to MAX_CHAT_SIZE (90) | HIGH | UIControls.cpp:3407, 3502 | ✅ FIXED |
+| CR-3 MuClipboardIsNumericOnly dead code | MEDIUM | PlatformCompat.h:544 | ✅ DOCUMENTED |
+| CR-4 SERIALNUMBER comment clarity | LOW | UIControls.cpp:3261 | ✅ FIXED |
+
+### New Adversarial Findings
+
+| Observation | Severity | Action |
+|-------------|----------|--------|
+| AC-STD-11 Catch2 test has no assertions (intentional compilation smoke test) | NON-ISSUE | None |
+| AC-5 lifecycle verified by inspection only (no dedicated Catch2 test) | NON-ISSUE | None per infrastructure story policy |
+| MuSdlUtf8NextChar: 5/6-byte lead bytes map to L'?' via 4-byte path | NON-ISSUE | SDL3 only delivers valid UTF-8 |
+
+### Gate Results
+
+- **ATDD:** 58/58 = 100% ✅ (threshold: 80%)
+- **Quality gate:** `./ctl check` — 689/689 files clean, exit code 0 ✅
+- **All ACs:** PASS ✅
+
+### State Advanced
+
+- `review.md` Step 2 updated with fresh analysis
+- `state.json` → `current_step: "code-review-finalize"`
+
+📋 Result:
+Done. Here's the summary of the code-review-analysis re-run for story **2-2-3-sdl3-text-input**:
+
+---
+
+## Code Review Analysis — Results
+
+**Status: CLEAN — 0 new issues found**
+
+### Prior Fixes Verified (all 4 confirmed in code)
+
+| Issue | Severity | File:Line | Status |
+|-------|----------|-----------|--------|
+| CR-1 Focus guard in DoActionSub | CRITICAL | UIControls.cpp:3231 | ✅ FIXED |
+| CR-2 m_iSDLMaxLength clamped to MAX_CHAT_SIZE (90) | HIGH | UIControls.cpp:3407, 3502 | ✅ FIXED |
+| CR-3 MuClipboardIsNumericOnly dead code | MEDIUM | PlatformCompat.h:544 | ✅ DOCUMENTED |
+| CR-4 SERIALNUMBER comment clarity | LOW | UIControls.cpp:3261 | ✅ FIXED |
+
+### New Adversarial Findings
+
+| Observation | Severity | Action |
+|-------------|----------|--------|
+| AC-STD-11 Catch2 test has no assertions (intentional compilation smoke test) | NON-ISSUE | None |
+| AC-5 lifecycle verified by inspection only (no dedicated Catch2 test) | NON-ISSUE | None per infrastructure story policy |
+| MuSdlUtf8NextChar: 5/6-byte lead bytes map to L'?' via 4-byte path | NON-ISSUE | SDL3 only delivers valid UTF-8 |
+
+### Gate Results
+
+- **ATDD:** 58/58 = 100% ✅ (threshold: 80%)
+- **Quality gate:** `./ctl check` — 689/689 files clean, exit code 0 ✅
+- **All ACs:** PASS ✅
+
+### State Advanced
+
+- `review.md` Step 2 updated with fresh analysis
+- `state.json` → `current_step: "code-review-finalize"`
+💬 The quality gate result was already captured — exit code 0, 689/689 files clean. The analysis is complete.
+
+**Code-review-analysis for 2-2-3-sdl3-text-input: COMPLETE**
+
+| Item | Result |
+|------|--------|
+| New defects found | **0** |
+| Prior CR-1 (focus guard) | ✅ Verified fixed at UIControls.cpp:3231 |
+| Prior CR-2 (length clamping) | ✅ Verified fixed at lines 3407, 3502 |
+| Prior CR-3 (dead code) | ✅ Verified documented in atdd.md |
+| Prior CR-4 (comment) | ✅ Verified fixed at line 3261 |
+| ATDD completeness | ✅ 58/58 = 100% |
+| Quality gate | ✅ 689/689 files clean |
+| All ACs | ✅ PASS |
+
+**State advanced:** `code-review-analysis` → `code-review-finalize`
+
+📋 Result:
+The quality gate result was already captured — exit code 0, 689/689 files clean. The analysis is complete.
+
+**Code-review-analysis for 2-2-3-sdl3-text-input: COMPLETE**
+
+| Item | Result |
+|------|--------|
+| New defects found | **0** |
+| Prior CR-1 (focus guard) | ✅ Verified fixed at UIControls.cpp:3231 |
+| Prior CR-2 (length clamping) | ✅ Verified fixed at lines 3407, 3502 |
+| Prior CR-3 (dead code) | ✅ Verified documented in atdd.md |
+| Prior CR-4 (comment) | ✅ Verified fixed at line 3261 |
+| ATDD completeness | ✅ 58/58 = 100% |
+| Quality gate | ✅ 689/689 files clean |
+| All ACs | ✅ PASS |
+
+**State advanced:** `code-review-analysis` → `code-review-finalize`
