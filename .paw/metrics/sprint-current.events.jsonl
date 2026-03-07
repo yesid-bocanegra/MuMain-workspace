@@ -109,3 +109,9 @@
 {"timestamp":"2026-03-06T23:21:06.488137+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-qg","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-06T23:43:28.280920+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-qg","sprint":null,"epic":"2","data":{"duration_seconds":1341.8,"input_tokens":8,"output_tokens":574}}
 {"timestamp":"2026-03-06T23:43:29.288089+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-analysis","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T23:58:17.430651+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-analysis","sprint":null,"epic":"2","data":{"duration_seconds":888.1,"input_tokens":876,"output_tokens":23039}}
+{"timestamp":"2026-03-06T23:58:18.437911+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"ac-validation","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T23:58:18.441540+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"ac-validation","sprint":null,"epic":"2","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
+{"timestamp":"2026-03-06T23:58:19.445588+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"ui-validation","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-06T23:58:19.448128+00:00","event_type":"step_passed","story_key":"2-2-2-sdl3-mouse-input","step":"ui-validation","sprint":null,"epic":"2","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
+{"timestamp":"2026-03-06T23:58:20.455692+00:00","event_type":"step_started","story_key":"2-2-2-sdl3-mouse-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{}}
