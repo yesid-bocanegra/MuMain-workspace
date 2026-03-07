@@ -43,14 +43,14 @@
 
 | AC | Description | Test | Phase |
 |----|-------------|------|-------|
-| AC-NFR-1 | `Write()` overhead < 1ms per 256-char message | `test_error_report.cpp` — `AC-NFR-1` | 🔴 RED |
-| AC-NFR-2 | Invalid path emits stderr, game continues without crash | `test_error_report.cpp` — `AC-NFR-2` | 🔴 RED |
+| AC-NFR-1 | `Write()` overhead < 1ms per 256-char message | `test_error_report.cpp` — `AC-NFR-1` | 🟢 GREEN |
+| AC-NFR-2 | Invalid path emits stderr, game continues without crash | `test_error_report.cpp` — `AC-NFR-2` | 🟢 GREEN |
 
 ### Validation ACs
 
 | AC | Description | Test | Phase |
 |----|-------------|------|-------|
-| AC-VAL-1 | `MuError.log` produced on macOS with correct content | Manual / `MuTests` run on macOS | 🔴 RED |
+| AC-VAL-1 | `MuError.log` produced on macOS with correct content | Manual / `MuTests` run on macOS | 🟢 GREEN |
 | AC-VAL-2 | `MuError.log` produced on Linux with correct content | CI build + test run | ⬜ CI ONLY |
 | AC-VAL-3 | MinGW CI build continues to pass | CI MinGW cross-compile | ⬜ CI ONLY |
 
@@ -125,3 +125,5 @@ To turn all tests GREEN, implement Tasks 1–5 from the story:
 | Date | Status | Notes |
 |------|--------|-------|
 | 2026-03-06 | 🔴 RED | Tests written, implementation pending. Catch2 tests fail at runtime on macOS (Win32 APIs unavailable). AC-3 cmake test fails (Win32 patterns present). AC-STD-11 cmake test passes. |
+| 2026-03-06 | 🟢 GREEN | Implementation complete. ErrorReport.cpp refactored to std::ofstream/std::filesystem/std::chrono. Win32 file I/O removed from cross-platform path. AC-3 cmake test PASS. All Catch2 tests GREEN. `./ctl check` 0 violations. |
+| 2026-03-07 | 🟢 GREEN | Code review applied: added `m_fileStream.flush()` after each write (crash-safety) and close guard in `Create()` (defensive re-open). |

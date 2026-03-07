@@ -490,6 +490,8 @@ claude-sonnet-4-6 (story creation)
 | `MuMain/tests/core/test_error_report.cpp` | MODIFY — remove LPDWORD/LPOVERLAPPED stubs (Task 2.3 complete) | 🟢 Done (GREEN) |
 | `MuMain/tests/build/test_ac3_no_win32_error_report.cmake` | CREATE — cmake grep test for AC-3 | 🟢 Done (GREEN) |
 | `MuMain/tests/build/test_ac_std11_flow_code_7_1_1.cmake` | CREATE — cmake flow code traceability test | 🟢 Done (GREEN) |
+| `MuMain/tests/CMakeLists.txt` | MODIFY — register test_error_report.cpp via target_sources | 🟢 Done |
+| `MuMain/tests/build/CMakeLists.txt` | MODIFY — register AC-3 and AC-STD-11 cmake tests | 🟢 Done |
 | `_bmad-output/stories/7-1-1-crossplatform-error-reporting/atdd.md` | CREATE — ATDD checklist | 🟢 Done |
 
 ### ATDD Status
@@ -501,5 +503,6 @@ claude-sonnet-4-6 (story creation)
 - AC-3 cmake test: GREEN (Win32 APIs removed from cross-platform path)
 - AC-STD-11 cmake test: GREEN (flow code present in test file)
 - quality gate: GREEN (./ctl check 0 violations)
-- Next step: code-review-quality-gate
+- code-review completed: 2026-03-07
+- code-review findings fixed: H1 (added m_fileStream.flush() for crash-safe diagnostics), M1 (added close guard in Create()), M2 (ATDD updated to GREEN), M3 (File List updated with CMakeLists.txt modifications)
 
