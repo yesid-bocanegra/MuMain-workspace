@@ -2,3 +2,7 @@
 {"timestamp":"2026-03-07T06:02:43.490277+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"create-story","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-07T06:10:01.120374+00:00","event_type":"step_passed","story_key":"7-2-1-frame-time-instrumentation","step":"create-story","sprint":null,"epic":"7","data":{"duration_seconds":437.6,"input_tokens":12,"output_tokens":1257}}
 {"timestamp":"2026-03-07T06:10:02.131979+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"validate-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-07T06:12:40.414992+00:00","event_type":"step_passed","story_key":"7-2-1-frame-time-instrumentation","step":"validate-story","sprint":null,"epic":"7","data":{"duration_seconds":158.3,"input_tokens":7,"output_tokens":587}}
+{"timestamp":"2026-03-07T06:12:41.427125+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"atdd","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-07T06:13:00.000000+00:00","event_type":"step_passed","story_key":"7-2-1-frame-time-instrumentation","step":"atdd","sprint":null,"epic":"7","data":{"duration_seconds":19.0,"input_tokens":0,"output_tokens":0}}
+{"timestamp":"2026-03-07T06:13:01.000000+00:00","event_type":"step_started","story_key":"7-2-1-frame-time-instrumentation","step":"dev-story","sprint":null,"epic":"7","data":{}}
