@@ -441,7 +441,7 @@ stories:
     name: "Connection.h Cross-Platform"
     epic: EPIC-3
     feature: "3.1"
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-1"
 
