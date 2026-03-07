@@ -367,3 +367,96 @@ No undeclared files found. No declared files missing from git changes.
 - `MuMain/tests/build/test_ac2_marshal_ptr_3_2_1.cmake` — L-2: new AC-2 regression guard script
 - `MuMain/tests/build/CMakeLists.txt` — L-2: registered 3.2.1-AC-2:marshal-ptr-to-string-uni test
 - `_bmad-output/stories/3-2-1-char16t-encoding/story.md` — status: done; completion notes updated; file list updated
+
+
+---
+
+## Code Review Analysis (Step 2)
+
+**Date:** 2026-03-07 15:19
+**Reviewer:** Claude (Adversarial Analysis)
+
+💬 The review.md shows all three code review steps are already **COMPLETED** for story 3-2-1-char16t-encoding. The state file is stale at `code-review-analysis / in-progress`. Let me update it to reflect completion.
+💬 The code review analysis is already fully documented in `review.md` — all three steps completed. The state file is stale. I need to emit the `step_passed` event for `code-review-analysis` and advance the state.
+💬 **Code Review Analysis — Story 3-2-1-char16t-encoding**
+
+**Status: COMPLETED** (analysis was already fully documented; state file was stale)
+
+---
+
+### Summary
+
+The adversarial code review analysis for story 3-2-1-char16t-encoding was already complete in `review.md`. The PAW state file had been reset to `code-review-analysis / in-progress` without the corresponding `step_passed` event. I've now:
+
+1. **Emitted `step_passed`** for `code-review-analysis` in the metrics JSONL
+2. **Advanced state** to `code-review-finalize / pending`
+
+### Review Findings (from completed analysis)
+
+| Severity | Count | Status |
+|----------|-------|--------|
+| BLOCKER  | 0     | —      |
+| CRITICAL | 0     | —      |
+| HIGH     | 1     | fixed  |
+| MEDIUM   | 3     | fixed  |
+| LOW      | 2     | fixed  |
+
+### Key Results
+
+- **AC Pass Rate:** 95% pre-fix → 100% post-fix (H-1: AC-STD-5 encoding error log added to `mu_wchar_to_char16`)
+- **ATDD Coverage:** 100% (49/49 items [x])
+- **Quality Gate:** PASSED (691 files, 0 violations)
+- **All 6 issues fixed** in code-review-finalize step
+
+### Issues Fixed
+
+- **H-1:** `g_ErrorReport.Write` guard added to `mu_wchar_to_char16` (AC-STD-5)
+- **M-1:** `delete _connection` before nullptr in `DisconnectToChatServer` (UIWindows.cpp)
+- **M-2:** `delete SocketClient` replacing `free(SocketClient)` in WSclient.cpp (UB fix)
+- **M-3:** Explicit `#include <string>` in `#ifdef _WIN32` block of PlatformCompat.h
+- **L-1:** Endianness documentation comment in byte-level UTF-16LE test
+- **L-2:** New CMake script `test_ac2_marshal_ptr_3_2_1.cmake` guarding `PtrToStringUni`
+
+**Next step:** `code-review-finalize` (already completed in prior session — run `./paw 3-2-1-char16t-encoding` to finalize state if needed)
+
+📋 Result:
+**Code Review Analysis — Story 3-2-1-char16t-encoding**
+
+**Status: COMPLETED** (analysis was already fully documented; state file was stale)
+
+---
+
+### Summary
+
+The adversarial code review analysis for story 3-2-1-char16t-encoding was already complete in `review.md`. The PAW state file had been reset to `code-review-analysis / in-progress` without the corresponding `step_passed` event. I've now:
+
+1. **Emitted `step_passed`** for `code-review-analysis` in the metrics JSONL
+2. **Advanced state** to `code-review-finalize / pending`
+
+### Review Findings (from completed analysis)
+
+| Severity | Count | Status |
+|----------|-------|--------|
+| BLOCKER  | 0     | —      |
+| CRITICAL | 0     | —      |
+| HIGH     | 1     | fixed  |
+| MEDIUM   | 3     | fixed  |
+| LOW      | 2     | fixed  |
+
+### Key Results
+
+- **AC Pass Rate:** 95% pre-fix → 100% post-fix (H-1: AC-STD-5 encoding error log added to `mu_wchar_to_char16`)
+- **ATDD Coverage:** 100% (49/49 items [x])
+- **Quality Gate:** PASSED (691 files, 0 violations)
+- **All 6 issues fixed** in code-review-finalize step
+
+### Issues Fixed
+
+- **H-1:** `g_ErrorReport.Write` guard added to `mu_wchar_to_char16` (AC-STD-5)
+- **M-1:** `delete _connection` before nullptr in `DisconnectToChatServer` (UIWindows.cpp)
+- **M-2:** `delete SocketClient` replacing `free(SocketClient)` in WSclient.cpp (UB fix)
+- **M-3:** Explicit `#include <string>` in `#ifdef _WIN32` block of PlatformCompat.h
+- **L-1:** Endianness documentation comment in byte-level UTF-16LE test
+- **L-2:** New CMake script `test_ac2_marshal_ptr_3_2_1.cmake` guarding `PtrToStringUni`
+
+**Next step:** `code-review-finalize` (already completed in prior session — run `./paw 3-2-1-char16t-encoding` to finalize state if needed)
