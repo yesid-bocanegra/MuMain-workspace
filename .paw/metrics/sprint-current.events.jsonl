@@ -120,3 +120,5 @@
 {"timestamp":"2026-03-07T00:04:43.599514+00:00","event_type":"story_started","story_key":"2-2-3-sdl3-text-input","step":null,"sprint":null,"epic":"2","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-07T00:04:43.600140+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"create-story","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-07T00:10:00.000000+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"create-story","sprint":null,"epic":"2","data":{"status":"ready-for-dev"}}
+{"timestamp":"2026-03-07T00:14:38.252795+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"create-story","sprint":null,"epic":"2","data":{"duration_seconds":594.6,"input_tokens":30,"output_tokens":4570}}
+{"timestamp":"2026-03-07T00:14:39.260314+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"validate-story","sprint":null,"epic":"2","data":{}}
