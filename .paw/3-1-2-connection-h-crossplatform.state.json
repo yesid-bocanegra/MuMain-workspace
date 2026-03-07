@@ -1,6 +1,6 @@
 {
   "story_key": "3-1-2-connection-h-crossplatform",
-  "current_step": "dev-story",
-  "status": "in-progress",
+  "current_step": "atdd",
+  "status": "completed",
   "last_run": "2026-03-07T12:17:43.912725"
 }
