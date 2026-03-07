@@ -92,10 +92,10 @@
 - [x] AC-STD-2: No Catch2 tests (build system story — CMake script tests only)
 - [x] AC-STD-4: CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations
 - [x] AC-STD-5: Warning message uses exact prefix `PLAT: FindDotnetAOT — dotnet not found at <path>`
-- [ ] AC-STD-6: Conventional commit: `build(network): add CMake RID detection and .NET AOT build integration` (pending commit)
+- [x] AC-STD-6: Conventional commit: `build(network): add CMake RID detection and .NET AOT build integration`
 - [x] AC-STD-11: Flow code `VS1-NET-CMAKE-RID` present in `FindDotnetAOT.cmake` header comment
 - [x] AC-STD-13: Quality gate passes — `./ctl check` clean
-- [ ] AC-STD-15: Git safety — no incomplete rebase, no force push to main (pending commit)
+- [x] AC-STD-15: Git safety — no incomplete rebase, no force push to main
 - [x] AC-STD-20: No API/event/flow catalog entries (build system only — confirmed)
 
 ### NFR Acceptance Criteria
