@@ -1,6 +1,6 @@
 {
   "story_key": "3-2-1-char16t-encoding",
-  "current_step": "atdd",
-  "status": "completed",
-  "last_run": "2026-03-07T14:00:06.360139"
+  "current_step": "completeness-gate",
+  "status": "ready",
+  "last_run": "2026-03-07T17:00:00.000000"
 }

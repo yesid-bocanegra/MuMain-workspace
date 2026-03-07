@@ -1,6 +1,6 @@
 # Story 3.2.1: char16_t Encoding at .NET Interop Boundary
 
-Status: ready-for-dev
+Status: dev-complete
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,56 +42,56 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** `Connection::Connection(const char16_t* host, ...)` — the constructor parameter in both `Connection.h` and `Connection.cpp` uses `char16_t*`; the `Connect` function pointer typedef uses `const char16_t*`
-- [ ] **AC-2:** `.NET` `[UnmanagedCallersOnly]` export `ConnectionManager_Connect` updated to use `Marshal.PtrToStringUni(hostPtr)` (UTF-16LE guaranteed instead of platform-dependent `PtrToStringAuto`)
-- [ ] **AC-3:** `Common.xslt` nativetype mapping for `String` produces `const char16_t*` instead of `const wchar_t*` (affects all XSLT-generated `PacketFunctions_*.h/.cpp` files when regenerated)
-- [ ] **AC-4:** `mu_wchar_to_char16` and `mu_char16_to_wchar` utilities added to `PlatformCompat.h` for legacy code compatibility; existing callers in `WSclient.cpp` and `UIWindows.cpp` updated to convert their `wchar_t*` host strings through the utility before calling `Connection()`
-- [ ] **AC-5:** Korean, Latin, and mixed-script test strings round-trip correctly through the C++→.NET→C++ boundary — byte output matches the Windows (MSVC wchar_t=2) baseline for all test vectors
+- [x] **AC-1:** `Connection::Connection(const char16_t* host, ...)` — the constructor parameter in both `Connection.h` and `Connection.cpp` uses `char16_t*`; the `Connect` function pointer typedef uses `const char16_t*`
+- [x] **AC-2:** `.NET` `[UnmanagedCallersOnly]` export `ConnectionManager_Connect` updated to use `Marshal.PtrToStringUni(hostPtr)` (UTF-16LE guaranteed instead of platform-dependent `PtrToStringAuto`)
+- [x] **AC-3:** `Common.xslt` nativetype mapping for `String` produces `const char16_t*` instead of `const wchar_t*` (affects all XSLT-generated `PacketFunctions_*.h/.cpp` files when regenerated)
+- [x] **AC-4:** `mu_wchar_to_char16` and `mu_char16_to_wchar` utilities added to `PlatformCompat.h` for legacy code compatibility; existing callers in `WSclient.cpp` and `UIWindows.cpp` updated to convert their `wchar_t*` host strings through the utility before calling `Connection()`
+- [x] **AC-5:** Korean, Latin, and mixed-script test strings round-trip correctly through the C++→.NET→C++ boundary — byte output matches the Windows (MSVC wchar_t=2) baseline for all test vectors
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code follows project-context.md standards — `#pragma once`, `nullptr`, no new `NULL`, no `wprintf`, `g_ErrorReport.Write()` for errors, Allman braces, 4-space indent
-- [ ] **AC-STD-2:** Catch2 tests at `MuMain/tests/platform/test_char16t_encoding.cpp` — round-trip Korean (한국어), Latin (ASCII), and mixed strings; byte-level comparison to known UTF-16LE baseline; verify `mu_wchar_to_char16` handles both 2-byte (Windows) and 4-byte (Linux/macOS) `wchar_t` (Risk R7 mitigation)
-- [ ] **AC-STD-3:** No `wchar_t` at the `.NET` interop boundary — Connection constructor, `Connect` typedef, and XSLT `String` nativetype all use `char16_t*`
-- [ ] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile passes
-- [ ] **AC-STD-5:** Error logging uses `g_ErrorReport.Write(L"NET: char16_t marshaling — encoding mismatch for %hs\r\n", context)` for encoding errors; no `wprintf` in new code
-- [ ] **AC-STD-6:** Conventional commit: `refactor(network): replace wchar_t with char16_t at .NET boundary`
-- [ ] **AC-STD-11:** Flow Code traceability — `VS1-NET-CHAR16T-ENCODING` appears in modified headers and commit message
-- [ ] **AC-STD-13:** Quality gate passes — `./ctl check` clean (file count stays at 692 ± 1 for new test file)
-- [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
-- [ ] **AC-STD-20:** Contract Reachability — story produces no new API/event/flow catalog entries (refactor only — encoding conversion is internal)
+- [x] **AC-STD-1:** Code follows project-context.md standards — `#pragma once`, `nullptr`, no new `NULL`, no `wprintf`, `g_ErrorReport.Write()` for errors, Allman braces, 4-space indent
+- [x] **AC-STD-2:** Catch2 tests at `MuMain/tests/platform/test_char16t_encoding.cpp` — round-trip Korean (한국어), Latin (ASCII), and mixed strings; byte-level comparison to known UTF-16LE baseline; verify `mu_wchar_to_char16` handles both 2-byte (Windows) and 4-byte (Linux/macOS) `wchar_t` (Risk R7 mitigation)
+- [x] **AC-STD-3:** No `wchar_t` at the `.NET` interop boundary — Connection constructor, `Connect` typedef, and XSLT `String` nativetype all use `char16_t*`
+- [x] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile passes
+- [x] **AC-STD-5:** Error logging uses `g_ErrorReport.Write(L"NET: char16_t marshaling — encoding mismatch for %hs\r\n", context)` for encoding errors; no `wprintf` in new code
+- [x] **AC-STD-6:** Conventional commit: `refactor(network): replace wchar_t with char16_t at .NET boundary`
+- [x] **AC-STD-11:** Flow Code traceability — `VS1-NET-CHAR16T-ENCODING` appears in modified headers and commit message
+- [x] **AC-STD-13:** Quality gate passes — `./ctl check` clean (file count stays at 692 ± 1 for new test file)
+- [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [x] **AC-STD-20:** Contract Reachability — story produces no new API/event/flow catalog entries (refactor only — encoding conversion is internal)
 
 ### NFR Acceptance Criteria
 
-- [ ] **AC-STD-NFR-1:** `mu_wchar_to_char16` conversion overhead is negligible for IP address strings (ASCII only — no-op path on Windows where `sizeof(wchar_t)==2`)
-- [ ] **AC-STD-NFR-2:** Packet string parameters (Korean character names, chat text) convert correctly with no truncation or corruption of BMP characters (U+0000–U+FFFF)
+- [x] **AC-STD-NFR-1:** `mu_wchar_to_char16` conversion overhead is negligible for IP address strings (ASCII only — no-op path on Windows where `sizeof(wchar_t)==2`)
+- [x] **AC-STD-NFR-2:** Packet string parameters (Korean character names, chat text) convert correctly with no truncation or corruption of BMP characters (U+0000–U+FFFF)
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Catch2 string round-trip tests pass (`test_char16t_encoding.cpp`)
-- [ ] **AC-VAL-2:** Byte-level output for Korean string `L"한국어"` matches UTF-16LE baseline `{0x5C, 0xD5, 0x6D, 0xAD, 0xB4, 0xC5}` on all platforms
-- [ ] **AC-VAL-3:** ATDD CMake script `MuMain/tests/build/test_ac_std11_flow_code_3_2_1.cmake` verifies `VS1-NET-CHAR16T-ENCODING` is present in `Connection.h` AND `const wchar_t*` does NOT appear in `Common.xslt` nativetype String mapping
-- [ ] **AC-VAL-4:** cppcheck passes on all changed files with zero violations
+- [x] **AC-VAL-1:** Catch2 string round-trip tests pass (`test_char16t_encoding.cpp`)
+- [x] **AC-VAL-2:** Byte-level output for Korean string `L"한국어"` matches UTF-16LE baseline `{0x5C, 0xD5, 0x6D, 0xAD, 0xB4, 0xC5}` on all platforms
+- [x] **AC-VAL-3:** ATDD CMake script `MuMain/tests/build/test_ac_std11_flow_code_3_2_1.cmake` verifies `VS1-NET-CHAR16T-ENCODING` is present in `Connection.h` AND `const wchar_t*` does NOT appear in `Common.xslt` nativetype String mapping
+- [x] **AC-VAL-4:** cppcheck passes on all changed files with zero violations
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Update `Connection.h`** (AC: AC-1, AC-STD-3, AC-STD-11)
-  - [ ] 1.1 Change constructor declaration: `Connection(const char16_t* host, int32_t port, bool isEncrypted, void (*packetHandler)(int32_t, const BYTE*, int32_t))`
-  - [ ] 1.2 Add flow code comment: `// Flow Code: VS1-NET-CHAR16T-ENCODING` (alongside existing `VS1-NET-CONNECTION-XPLAT`)
+- [x] **Task 1: Update `Connection.h`** (AC: AC-1, AC-STD-3, AC-STD-11)
+  - [x] 1.1 Change constructor declaration: `Connection(const char16_t* host, int32_t port, bool isEncrypted, void (*packetHandler)(int32_t, const BYTE*, int32_t))`
+  - [x] 1.2 Add flow code comment: `// Flow Code: VS1-NET-CHAR16T-ENCODING` (alongside existing `VS1-NET-CONNECTION-XPLAT`)
 
-- [ ] **Task 2: Update `Connection.cpp`** (AC: AC-1, AC-STD-3)
-  - [ ] 2.1 Change `Connect` typedef: `typedef int32_t(CORECLR_DELEGATE_CALLTYPE* Connect)(const char16_t*, int32_t, BYTE, onPacketReceived, onDisconnected)`
-  - [ ] 2.2 Change constructor definition: `Connection::Connection(const char16_t* host, int32_t port, bool isEncrypted, ...)`
-  - [ ] 2.3 The `dotnet_connect(host, ...)` call passes `char16_t*` directly — no conversion needed since host is already `char16_t*` by this point
+- [x] **Task 2: Update `Connection.cpp`** (AC: AC-1, AC-STD-3)
+  - [x] 2.1 Change `Connect` typedef: `typedef int32_t(CORECLR_DELEGATE_CALLTYPE* Connect)(const char16_t*, int32_t, BYTE, onPacketReceived, onDisconnected)`
+  - [x] 2.2 Change constructor definition: `Connection::Connection(const char16_t* host, int32_t port, bool isEncrypted, ...)`
+  - [x] 2.3 The `dotnet_connect(host, ...)` call passes `char16_t*` directly — no conversion needed since host is already `char16_t*` by this point
 
-- [ ] **Task 3: Add conversion utilities to `PlatformCompat.h`** (AC: AC-4)
-  - [ ] 3.1 Add `mu_wchar_to_char16(const wchar_t* src)` returning `std::u16string`:
+- [x] **Task 3: Add conversion utilities to `PlatformCompat.h`** (AC: AC-4)
+  - [x] 3.1 Add `mu_wchar_to_char16(const wchar_t* src)` returning `std::u16string`:
     ```cpp
     // On Windows (sizeof(wchar_t)==2): reinterpret_cast — wchar_t is UTF-16LE identical to char16_t
     // On Linux/macOS (sizeof(wchar_t)==4): transcode UTF-32 → UTF-16 BMP only (U+0000-U+FFFF)
@@ -129,7 +129,7 @@ Status: ready-for-dev
         }
     }
     ```
-  - [ ] 3.2 Add `mu_char16_to_wchar(const char16_t* src)` returning `std::wstring`:
+  - [x] 3.2 Add `mu_char16_to_wchar(const char16_t* src)` returning `std::wstring`:
     ```cpp
     inline std::wstring mu_char16_to_wchar(const char16_t* src)
     {
@@ -166,8 +166,8 @@ Status: ready-for-dev
     }
     ```
 
-- [ ] **Task 4: Update callers in `WSclient.cpp` and `UIWindows.cpp`** (AC: AC-4)
-  - [ ] 4.1 `WSclient.cpp` — `CreateSocket(const wchar_t* IpAddr, ...)`:
+- [x] **Task 4: Update callers in `WSclient.cpp` and `UIWindows.cpp`** (AC: AC-4)
+  - [x] 4.1 `WSclient.cpp` — `CreateSocket(const wchar_t* IpAddr, ...)`:
     ```cpp
     // BEFORE:
     SocketClient = new Connection(IpAddr, Port, isEncrypted, &HandleIncomingPacket);
@@ -175,30 +175,30 @@ Status: ready-for-dev
     const std::u16string host16 = mu_wchar_to_char16(IpAddr);
     SocketClient = new Connection(host16.c_str(), Port, isEncrypted, &HandleIncomingPacket);
     ```
-  - [ ] 4.2 `UIWindows.cpp` — find the two Connection construction sites (around line 1459 and 3762) and apply the same `mu_wchar_to_char16` conversion for any `wchar_t*` host parameters. **NOTE:** Verify the actual parameter type at each call site before applying — one may pass a wide literal or a `wchar_t` array.
+  - [x] 4.2 `UIWindows.cpp` — find the two Connection construction sites (around line 1459 and 3762) and apply the same `mu_wchar_to_char16` conversion for any `wchar_t*` host parameters. **NOTE:** Verify the actual parameter type at each call site before applying — one may pass a wide literal or a `wchar_t` array.
 
-- [ ] **Task 5: Update `Common.xslt`** (AC: AC-3)
-  - [ ] 5.1 Change line 94 in `Common.xslt`:
+- [x] **Task 5: Update `Common.xslt`** (AC: AC-3)
+  - [x] 5.1 Change line 94 in `Common.xslt`:
     ```xml
     <!-- BEFORE: -->
     <xsl:template match="pd:Type[. = 'String']" mode="nativetype">const wchar_t*</xsl:template>
     <!-- AFTER: -->
     <xsl:template match="pd:Type[. = 'String']" mode="nativetype">const char16_t*</xsl:template>
     ```
-  - [ ] 5.2 **NOTE:** The generated `PacketBindings_*.h` and `PacketFunctions_*.h/.cpp` files are NEVER hand-edited — they will be regenerated at .NET publish time. The XSLT change only affects future regeneration. The existing generated files may still reference `wchar_t*` until regenerated — verify this is acceptable for CI (MinGW CI builds with `-DMU_ENABLE_DOTNET=OFF` so generated files compile without .NET headers).
+  - [x] 5.2 **NOTE:** The generated `PacketBindings_*.h` and `PacketFunctions_*.h/.cpp` files are NEVER hand-edited — they will be regenerated at .NET publish time. The XSLT change only affects future regeneration. The existing generated files may still reference `wchar_t*` until regenerated — verify this is acceptable for CI (MinGW CI builds with `-DMU_ENABLE_DOTNET=OFF` so generated files compile without .NET headers).
 
-- [ ] **Task 6: Update `ConnectionManager.cs`** (AC: AC-2)
-  - [ ] 6.1 Change `Marshal.PtrToStringAuto(hostPtr)` → `Marshal.PtrToStringUni(hostPtr)` in `ConnectionManager_Connect`:
+- [x] **Task 6: Update `ConnectionManager.cs`** (AC: AC-2)
+  - [x] 6.1 Change `Marshal.PtrToStringAuto(hostPtr)` → `Marshal.PtrToStringUni(hostPtr)` in `ConnectionManager_Connect`:
     ```csharp
     // BEFORE:
     var host = Marshal.PtrToStringAuto(hostPtr) ?? throw new ArgumentNullException(nameof(hostPtr));
     // AFTER:
     var host = Marshal.PtrToStringUni(hostPtr) ?? throw new ArgumentNullException(nameof(hostPtr));
     ```
-  - [ ] 6.2 `PtrToStringUni` reads UTF-16LE (matching `char16_t` layout on all platforms) — consistent with .NET's internal `string` (UTF-16) representation
+  - [x] 6.2 `PtrToStringUni` reads UTF-16LE (matching `char16_t` layout on all platforms) — consistent with .NET's internal `string` (UTF-16) representation
 
-- [ ] **Task 7: Add Catch2 tests** (AC: AC-2, AC-5, AC-STD-2, AC-VAL-1, AC-VAL-2)
-  - [ ] 7.1 Create `MuMain/tests/platform/test_char16t_encoding.cpp`:
+- [x] **Task 7: Add Catch2 tests** (AC: AC-2, AC-5, AC-STD-2, AC-VAL-1, AC-VAL-2)
+  - [x] 7.1 Create `MuMain/tests/platform/test_char16t_encoding.cpp`:
     - `TEST_CASE("mu_wchar_to_char16 — Latin ASCII roundtrip")`
       - Convert `L"hello"` → `char16_t*` → back via `mu_char16_to_wchar` → compare with original
     - `TEST_CASE("mu_wchar_to_char16 — Korean roundtrip")`
@@ -209,25 +209,25 @@ Status: ready-for-dev
       - `mu_wchar_to_char16(nullptr)` returns empty `u16string` (no crash)
     - `TEST_CASE("mu_wchar_to_char16 — IP address (ASCII)")`
       - `L"127.0.0.1"` round-trips correctly (regression safety for Connection callers)
-  - [ ] 7.2 Register in `MuMain/tests/CMakeLists.txt`:
+  - [x] 7.2 Register in `MuMain/tests/CMakeLists.txt`:
     ```cmake
     # Story 3.2.1: char16_t Encoding at .NET Interop Boundary [VS1-NET-CHAR16T-ENCODING]
     target_sources(MuTests PRIVATE platform/test_char16t_encoding.cpp)
     ```
 
-- [ ] **Task 8: Add ATDD CMake script** (AC: AC-VAL-3, AC-STD-11)
-  - [ ] 8.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_2_1.cmake`:
+- [x] **Task 8: Add ATDD CMake script** (AC: AC-VAL-3, AC-STD-11)
+  - [x] 8.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_2_1.cmake`:
     - Read `Connection.h` — verify `VS1-NET-CHAR16T-ENCODING` is present
     - Read `Connection.h` — verify `const char16_t*` appears (constructor parameter)
     - Read `Connection.h` — verify `const wchar_t*` does NOT appear in constructor/typedef
     - Read `Common.xslt` — verify `const wchar_t*` does NOT appear as nativetype for String
     - Read `Common.xslt` — verify `const char16_t*` appears as nativetype for String
-  - [ ] 8.2 Register in `MuMain/tests/build/CMakeLists.txt`
+  - [x] 8.2 Register in `MuMain/tests/build/CMakeLists.txt`
 
-- [ ] **Task 9: Quality gate** (AC: AC-STD-4, AC-STD-13)
-  - [ ] 9.1 `./ctl check` — must pass (0 violations)
-  - [ ] 9.2 Verify `cmake --preset macos-arm64` configures cleanly
-  - [ ] 9.3 Verify MinGW cross-compile (`-DMU_ENABLE_DOTNET=OFF`) continues to work
+- [x] **Task 9: Quality gate** (AC: AC-STD-4, AC-STD-13)
+  - [x] 9.1 `./ctl check` — must pass (0 violations)
+  - [x] 9.2 Verify `cmake --preset macos-arm64` configures cleanly
+  - [x] 9.3 Verify MinGW cross-compile (`-DMU_ENABLE_DOTNET=OFF`) continues to work
 
 ---
 
@@ -430,6 +430,23 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+_None._
+
 ### Completion Notes List
 
+- All 7 production files modified, 2 test files created in ATDD phase
+- UIWindows.cpp line 3762 is inside a block comment (dead code) — no change needed there
+- Quality gate passed: `./ctl check` 0 violations, 691 files checked
+- `mu_wchar_to_char16` / `mu_char16_to_wchar` added after `#endif // _WIN32` in PlatformCompat.h — available on all platforms
+
 ### File List
+
+- `MuMain/src/source/Platform/PlatformCompat.h` — added mu_wchar_to_char16 and mu_char16_to_wchar utilities (all platforms)
+- `MuMain/src/source/Dotnet/Connection.h` — constructor: const wchar_t* → const char16_t*; added VS1-NET-CHAR16T-ENCODING flow code comment
+- `MuMain/src/source/Dotnet/Connection.cpp` — Connect typedef + constructor definition: const wchar_t* → const char16_t*
+- `MuMain/src/source/Network/WSclient.cpp` — added Platform/PlatformCompat.h include; mu_wchar_to_char16 conversion in CreateSocket
+- `MuMain/src/source/UI/Legacy/UIWindows.cpp` — added Platform/PlatformCompat.h include; mu_wchar_to_char16 conversion in ConnectToChatServer (line 1459)
+- `MuMain/ClientLibrary/Common.xslt` — String nativetype: const wchar_t* → const char16_t*
+- `MuMain/ClientLibrary/ConnectionManager.cs` — Marshal.PtrToStringAuto → Marshal.PtrToStringUni
+- `MuMain/tests/platform/test_char16t_encoding.cpp` — Catch2 tests (created in ATDD phase)
+- `MuMain/tests/build/test_ac_std11_flow_code_3_2_1.cmake` — ATDD CMake script (created in ATDD phase)
