@@ -133,11 +133,53 @@ td { padding: 8px; border-bottom: 1px solid var(--border); }
 .empty-state { text-align: center; padding: 40px 20px; color: var(--gray); }
 .empty-state p { font-size: 14px; margin-bottom: 8px; }
 
+/* Heatmap (metrics) */
+.heatmap-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.heatmap-label { width: 140px; font-size: 12px; font-weight: 600; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.heatmap-track { flex: 1; background: rgba(255,255,255,0.03); border-radius: 4px; height: 24px; }
+.heatmap-bar { height: 24px; border-radius: 4px; font-size: 11px; line-height: 24px; padding: 0 8px; color: #000; font-weight: 600; white-space: nowrap; min-width: 30px; }
+.heatmap-count { width: 120px; font-size: 11px; color: var(--gray); white-space: nowrap; }
+
+/* Throughput chart */
+.throughput-chart { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding: 10px 0; }
+.throughput-bar-container { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+.throughput-bar { width: 100%; background: var(--blue); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s; }
+.throughput-count { font-size: 11px; color: var(--text); font-weight: 600; margin-bottom: 2px; }
+.throughput-day { font-size: 10px; color: var(--gray); margin-top: 4px; }
+
+/* Timeline (pipeline) */
+.timeline-story { margin-bottom: 16px; }
+.timeline-key { font-weight: 600; font-size: 13px; color: var(--blue); margin-bottom: 4px; }
+.timeline-bars { display: flex; flex-direction: column; gap: 2px; }
+.timeline-row { display: flex; align-items: center; gap: 6px; }
+.timeline-step-label { width: 36px; font-size: 10px; color: var(--gray); text-align: right; font-weight: 600; }
+.timeline-track { flex: 1; background: rgba(255,255,255,0.03); border-radius: 3px; height: 18px; }
+.timeline-bar { height: 18px; border-radius: 3px; font-size: 10px; line-height: 18px; padding: 0 6px; color: #fff; white-space: nowrap; min-width: 2px; }
+.timeline-bar-passed { background: rgba(34,197,94,0.4); }
+.timeline-bar-failed { background: rgba(239,68,68,0.4); }
+.timeline-bar-pending { background: rgba(107,114,128,0.15); }
+
+/* Kanban expanded detail */
+.kanban-detail { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); font-size: 11px; color: var(--gray); }
+.kanban-card.expanded .kanban-detail { display: block; }
+.kanban-card { cursor: pointer; transition: border-color 0.15s; }
+.kanban-priority { font-size: 10px; font-weight: 700; color: var(--yellow); }
+.kanban-readiness { font-size: 10px; color: var(--gray); font-style: italic; }
+
+/* Memory items */
+.memory-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.memory-item:last-child { border-bottom: none; }
+.memory-title { font-size: 13px; font-weight: 600; }
+.memory-time { font-size: 11px; color: var(--gray); }
+.memory-text { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
 footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
 
 @media (max-width: 900px) {
   .kanban { grid-template-columns: 1fr; }
   .pipeline-steps { flex-wrap: wrap; }
+  .heatmap-label { width: 80px; }
+  .heatmap-count { width: 80px; }
 }
 
 </style>
@@ -149,31 +191,37 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
       <h1>PCC Dashboard</h1>
       <span class="health health-GREEN">On track</span>
     </div>
-    <div class="subtitle">MuMain-workspace &middot; Generated 2026-03-05 05:37 &middot; <span style="color:var(--green);">claude-mem active</span></div>
+    <div class="subtitle">MuMain-workspace &middot; Generated 2026-03-06 22:24 &middot; <span style="color:var(--green);">claude-mem active</span></div>
   </div>
 
-  <div class="tab-bar"><button class="tab-btn active" data-tab="overview">Overview</button><button class="tab-btn" data-tab="kanban">Kanban</button><button class="tab-btn" data-tab="pipeline">Pipeline</button><button class="tab-btn" data-tab="epics">Epics & Milestones</button><button class="tab-btn" data-tab="health">Health</button><button class="tab-btn" data-tab="guidance">Guidance</button><button class="tab-btn" data-tab="runbook">Runbook</button></div>
-  <div id="overview" class="tab-content active"><div class="grid"><div class="card"><div class="card-label">Total Stories</div><div class="card-value">6</div><div class="card-sub">18 points planned</div></div><div class="card"><div class="card-label">Done</div><div class="card-value">4</div><div class="card-sub">67% complete</div></div><div class="card"><div class="card-label">In Progress</div><div class="card-value">0</div><div class="card-sub">2 in backlog</div></div><div class="card"><div class="card-label">Health</div><div class="card-value">GREEN</div><div class="card-sub">On track</div></div></div>
-<div class="sprint-progress"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><h3>Sprint 1 <span class="status-badge status-active">active</span></h3><span class="subtitle">2026-03-03 &rarr; 2026-03-16 &middot; Milestones: M1</span></div><div class="sprint-progress-bar"><div class="sprint-progress-done" style="width:66.7%"></div><div class="sprint-progress-wip" style="width:0.0%"></div></div><div class="sprint-progress-labels"><span>4 done</span><span>0 in progress</span><span>2 backlog</span></div></div>
+  <div class="tab-bar"><button class="tab-btn active" data-tab="overview">Overview</button><button class="tab-btn" data-tab="kanban">Kanban</button><button class="tab-btn" data-tab="pipeline">Pipeline</button><button class="tab-btn" data-tab="metrics">Metrics</button><button class="tab-btn" data-tab="epics">Epics & Milestones</button><button class="tab-btn" data-tab="health">Health</button><button class="tab-btn" data-tab="guidance">Guidance</button><button class="tab-btn" data-tab="runbook">Runbook</button></div>
+  <div id="overview" class="tab-content active"><div class="grid"><div class="card"><div class="card-label">Total Stories</div><div class="card-value">8</div><div class="card-sub">28 points planned</div></div><div class="card"><div class="card-label">Done</div><div class="card-value">6</div><div class="card-sub">75% complete</div></div><div class="card"><div class="card-label">In Progress</div><div class="card-value">0</div><div class="card-sub">2 in backlog</div></div><div class="card"><div class="card-label">Health</div><div class="card-value">GREEN</div><div class="card-sub">On track</div></div><div class="card"><div class="card-label">Scope Changes</div><div class="card-value">2</div><div class="card-sub">+2 / -0</div></div></div>
+<div class="sprint-progress"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><h3>Sprint 2 <span class="status-badge status-active">active</span></h3><span class="subtitle">2026-03-06 &rarr; 2026-03-20 &middot; Milestones: M1, M2</span></div><div class="sprint-progress-bar"><div class="sprint-progress-done" style="width:75.0%"></div><div class="sprint-progress-wip" style="width:0.0%"></div></div><div class="sprint-progress-labels"><span>6 done</span><span>0 in progress</span><span>2 backlog</span></div></div>
 <div class="section"><h2>Epic Progress</h2>
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-1</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:67%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">4/6</span><span class="status-badge status-in-progress">in-progress</span></div>
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-2</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/5</span><span class="status-badge status-backlog">backlog</span></div>
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-3</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/7</span><span class="status-badge status-backlog">backlog</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-1</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-green" style="width:100%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">6/6</span><span class="status-badge status-completing">completing</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-2</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-green" style="width:100%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">5/5</span><span class="status-badge status-completing">completing</span></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-3</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:14%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">1/7</span><span class="status-badge status-in-progress">in-progress</span></div>
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-4</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/9</span><span class="status-badge status-backlog">backlog</span></div>
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-5</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/5</span><span class="status-badge status-backlog">backlog</span></div>
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-6</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/7</span><span class="status-badge status-backlog">backlog</span></div>
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;"><span style="width:80px;font-size:13px;font-weight:600;">epic-7</span><div class="bar-container" style="flex:1;"><div class="bar-fill bar-blue" style="width:0%"></div></div><span style="font-size:12px;color:var(--gray);width:50px;text-align:right;">0/6</span><span class="status-badge status-backlog">backlog</span></div>
 </div>
+<div class="section"><h2>Sprint Metrics Snapshot</h2><div class="grid">
+<div class="card"><div class="card-label">Completed</div><div class="card-value">9</div><div class="card-sub">0 failed</div></div>
+<div class="card"><div class="card-label">Avg Duration</div><div class="card-value">85m</div><div class="card-sub">per story</div></div>
+<div class="card"><div class="card-label">Token Usage</div><div class="card-value">39k</div><div class="card-sub">491k output</div></div>
+<div class="card"><div class="card-label">Peak Throughput</div><div class="card-value">5</div><div class="card-sub">stories/day</div></div>
+</div></div>
 <div class="section"><h2>Top Recommendations</h2>
-<div class="rec-card"><div class="rec-body"><div class="rec-title">Start 1-4-1-build-documentation</div><div class="rec-desc">No stories in progress — pick up next backlog item.</div><div class="rec-cmd"><code>./paw 1-4-1-build-documentation</code><button class="copy-btn" onclick="copyCmd('./paw 1-4-1-build-documentation')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-body"><div class="rec-title">Check milestone M1</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-body"><div class="rec-title">Check milestone M2</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-body"><div class="rec-title">Start 7-1-1-crossplatform-error-reporting</div><div class="rec-desc">No stories in progress — pick up next backlog item.</div><div class="rec-cmd"><code>./paw 7-1-1-crossplatform-error-reporting</code><button class="copy-btn" onclick="copyCmd('./paw 7-1-1-crossplatform-error-reporting')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-body"><div class="rec-title">Validate epic-1</div><div class="rec-desc">All stories done (6/6).</div><div class="rec-cmd"><code>/bmad:pcc:workflows:epic-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:epic-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-body"><div class="rec-title">Validate epic-2</div><div class="rec-desc">All stories done (5/5).</div><div class="rec-cmd"><code>/bmad:pcc:workflows:epic-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:epic-validation')">Copy</button></div></div></div>
 </div></div>
 <div id="kanban" class="tab-content"><div class="kanban">
 <div class="kanban-col">
 <div class="kanban-col-header">Backlog <span class="kanban-col-count">2</span></div>
-<div class="kanban-card"><span class="key">1-3-1-sdl3-dependency-integration</span><div class="meta">ready-for-dev</div><div class="meta">@ ui-validation</div></div>
-<div class="kanban-card"><span class="key">1-4-1-build-documentation</span><div class="meta">backlog</div><div class="meta">@ create-story</div></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">7-1-1-crossplatform-error-reporting</span><div class="meta">backlog</div><div class="meta">@ create-story</div></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">7-2-1-frame-time-instrumentation</span><div class="meta">backlog</div><div class="meta">@ create-story</div></div>
 </div>
 <div class="kanban-col">
 <div class="kanban-col-header">Ready <span class="kanban-col-count">0</span></div>
@@ -185,14 +233,79 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 <div class="kanban-col-header">Review <span class="kanban-col-count">0</span></div>
 </div>
 <div class="kanban-col">
-<div class="kanban-col-header">Done <span class="kanban-col-count">4</span></div>
-<div class="kanban-card"><span class="key">1-1-1-macos-cmake-toolchain</span><div class="meta">done</div></div>
-<div class="kanban-card"><span class="key">1-1-2-linux-cmake-toolchain</span><div class="meta">done</div></div>
-<div class="kanban-card"><span class="key">1-2-1-platform-abstraction-headers</span><div class="meta">done</div></div>
-<div class="kanban-card"><span class="key">1-2-2-platform-library-backends</span><div class="meta">done</div></div>
+<div class="kanban-col-header">Done <span class="kanban-col-count">6</span></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">2-1-1-sdl3-window-event-loop</span><div class="meta">done</div><div class="kanban-detail"><div>Duration: 140m</div><div>Tokens: 11k in / 89k out</div><div>Steps: 12 passed, 0 failed</div></div></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">2-1-2-sdl3-window-focus-display</span><div class="meta">done</div><div class="kanban-detail"><div>Duration: 127m</div><div>Tokens: 2k in / 94k out</div><div>Steps: 12 passed, 0 failed</div></div></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">2-2-1-sdl3-keyboard-input</span><div class="meta">done</div><div class="kanban-detail"><div>Tokens: 21k in / 78k out</div><div>Steps: 13 passed, 0 failed</div></div></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">2-2-2-sdl3-mouse-input</span><div class="meta">done</div><div class="kanban-detail"><div>Duration: 206m</div><div>Tokens: 3k in / 86k out</div><div>Steps: 11 passed, 2 failed</div></div></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">2-2-3-sdl3-text-input</span><div class="meta">done</div><div class="kanban-detail"><div>Tokens: 0k in / 78k out</div><div>Steps: 12 passed, 1 failed</div></div></div>
+<div class="kanban-card" onclick="this.classList.toggle('expanded')"><span class="key">3-1-1-cmake-rid-detection</span><div class="meta">done</div><div class="kanban-detail"><div>Tokens: 0k in / 63k out</div><div>Steps: 9 passed, 0 failed</div></div></div>
 </div>
 </div></div>
 <div id="pipeline" class="tab-content"><div class="empty-state"><p>No stories currently in the pipeline</p></div></div>
+<div id="metrics" class="tab-content"><div class="grid">
+<div class="card"><div class="card-label">Stories Completed</div><div class="card-value" style="color:var(--green);">9</div><div class="card-sub">0 failed</div></div>
+<div class="card"><div class="card-label">Avg Story Time</div><div class="card-value">85.3m</div><div class="card-sub">end-to-end</div></div>
+<div class="card"><div class="card-label">Total Tokens In</div><div class="card-value">39k</div><div class="card-sub">491k output</div></div>
+<div class="card"><div class="card-label">Retries / Regressions</div><div class="card-value">3 / 0</div><div class="card-sub">self-healing events</div></div>
+</div>
+<div class="section"><h2>Step Duration Heatmap</h2>
+<div class="heatmap-row"><span class="heatmap-label">dev-story</span><div class="heatmap-track"><div class="heatmap-bar" style="width:100.0%;background:var(--red);">36.4m</div></div><span class="heatmap-count">7x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review-qg</span><div class="heatmap-track"><div class="heatmap-bar" style="width:67.3%;background:var(--red);">24.5m</div></div><span class="heatmap-count">5x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review</span><div class="heatmap-track"><div class="heatmap-bar" style="width:62.2%;background:var(--red);">22.7m</div></div><span class="heatmap-count">8x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review-finalize</span><div class="heatmap-track"><div class="heatmap-bar" style="width:44.0%;background:var(--red);">16.0m</div></div><span class="heatmap-count">7x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review-analysis</span><div class="heatmap-track"><div class="heatmap-bar" style="width:37.1%;background:var(--red);">13.5m</div></div><span class="heatmap-count">5x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">create-story</span><div class="heatmap-track"><div class="heatmap-bar" style="width:22.6%;background:var(--yellow);">8.2m</div></div><span class="heatmap-count">6x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">atdd</span><div class="heatmap-track"><div class="heatmap-bar" style="width:16.4%;background:var(--yellow);">6.0m</div></div><span class="heatmap-count">6x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">completeness-gate</span><div class="heatmap-track"><div class="heatmap-bar" style="width:9.5%;background:var(--yellow);">3.5m</div></div><span class="heatmap-count">7x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">validate-story</span><div class="heatmap-track"><div class="heatmap-bar" style="width:8.6%;background:var(--yellow);">3.1m</div></div><span class="heatmap-count">6x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">design-screen</span><div class="heatmap-track"><div class="heatmap-bar" style="width:1.0%;background:var(--green);">0s</div></div><span class="heatmap-count">2x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">ac-validation</span><div class="heatmap-track"><div class="heatmap-bar" style="width:1.0%;background:var(--green);">0s</div></div><span class="heatmap-count">5x</span></div>
+<div class="heatmap-row"><span class="heatmap-label">ui-validation</span><div class="heatmap-track"><div class="heatmap-bar" style="width:1.0%;background:var(--green);">0s</div></div><span class="heatmap-count">5x</span></div>
+</div>
+<div class="section"><h2>Token Usage by Step</h2>
+<div class="heatmap-row"><span class="heatmap-label">dev-story</span><div class="heatmap-track"><div class="heatmap-bar" style="width:100.0%;background:var(--purple);">171k</div></div><span class="heatmap-count">20k in / 150k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review</span><div class="heatmap-track"><div class="heatmap-bar" style="width:79.4%;background:var(--purple);">135k</div></div><span class="heatmap-count">0k in / 134k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review-analysis</span><div class="heatmap-track"><div class="heatmap-bar" style="width:61.1%;background:var(--purple);">104k</div></div><span class="heatmap-count">12k in / 92k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">completeness-gate</span><div class="heatmap-track"><div class="heatmap-bar" style="width:24.0%;background:var(--purple);">41k</div></div><span class="heatmap-count">5k in / 35k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">create-story</span><div class="heatmap-track"><div class="heatmap-bar" style="width:18.2%;background:var(--purple);">31k</div></div><span class="heatmap-count">0k in / 30k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review-qg</span><div class="heatmap-track"><div class="heatmap-bar" style="width:14.3%;background:var(--purple);">24k</div></div><span class="heatmap-count">0k in / 24k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">code-review-finalize</span><div class="heatmap-track"><div class="heatmap-bar" style="width:7.9%;background:var(--purple);">14k</div></div><span class="heatmap-count">0k in / 13k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">atdd</span><div class="heatmap-track"><div class="heatmap-bar" style="width:3.9%;background:var(--purple);">7k</div></div><span class="heatmap-count">0k in / 6k out</span></div>
+<div class="heatmap-row"><span class="heatmap-label">validate-story</span><div class="heatmap-track"><div class="heatmap-bar" style="width:1.9%;background:var(--purple);">3k</div></div><span class="heatmap-count">0k in / 3k out</span></div>
+</div>
+<div class="section"><h2>Step Pass Rate</h2>
+<table><tr><th>Step</th><th>Passed</th><th>Failed</th><th>Retries</th><th>Pass Rate</th></tr>
+<tr><td>completeness-gate</td><td>7</td><td>2</td><td>2</td><td><span style="color:var(--yellow);font-weight:600;">78%</span></td></tr>
+<tr><td>dev-story</td><td>7</td><td>1</td><td>1</td><td><span style="color:var(--yellow);font-weight:600;">88%</span></td></tr>
+<tr><td>create-story</td><td>6</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>validate-story</td><td>6</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>atdd</td><td>6</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>design-screen</td><td>2</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>code-review</td><td>8</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>code-review-qg</td><td>5</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>code-review-analysis</td><td>5</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>ac-validation</td><td>5</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>ui-validation</td><td>5</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+<tr><td>code-review-finalize</td><td>7</td><td>0</td><td>0</td><td><span style="color:var(--green);font-weight:600;">100%</span></td></tr>
+</table></div>
+<div class="section"><h2>Story Throughput</h2>
+<div class="throughput-chart">
+<div class="throughput-bar-container"><div class="throughput-count">5</div><div class="throughput-bar" style="height:100%;"></div><div class="throughput-day">03-06</div></div>
+<div class="throughput-bar-container"><div class="throughput-count">4</div><div class="throughput-bar" style="height:80%;"></div><div class="throughput-day">03-07</div></div>
+</div></div>
+<div class="section"><h2>Story Durations</h2>
+<table><tr><th>Story</th><th>Duration</th></tr>
+<tr><td>2-2-2-sdl3-mouse-input</td><td>205.7m</td></tr>
+<tr><td>2-2-3-sdl3-text-input</td><td>156.3m</td></tr>
+<tr><td>2-1-1-sdl3-window-event-loop</td><td>140.4m</td></tr>
+<tr><td>2-2-1-sdl3-keyboard-input</td><td>138.8m</td></tr>
+<tr><td>2-1-2-sdl3-window-focus-display</td><td>126.9m</td></tr>
+<tr><td>2-2-1-sdl3-keyboard-input</td><td>0.0m</td></tr>
+<tr><td>2-2-1-sdl3-keyboard-input</td><td>0.0m</td></tr>
+<tr><td>2-2-3-sdl3-text-input</td><td>0.0m</td></tr>
+<tr><td>3-1-1-cmake-rid-detection</td><td>0.0m</td></tr>
+</table></div></div>
 <div id="epics" class="tab-content"><div class="section"><h2>Milestones</h2>
 <table><tr><th>Milestone</th><th>Status</th><th>Contributing Epics</th></tr>
 <tr><td><strong>M1</strong></td><td><span class="status-badge status-active">active</span></td><td>EPIC-1, EPIC-7</td></tr>
@@ -203,22 +316,23 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 </table></div>
 <div class="section"><h2>Epics</h2>
 <table><tr><th>Epic</th><th>Stories</th><th>Progress</th><th>Status</th></tr>
-<tr><td><strong>epic-1</strong></td><td>4/6</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:67%"></div></div></td><td><span class="status-badge status-in-progress">in-progress</span></td></tr>
-<tr><td><strong>epic-2</strong></td><td>0/5</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
-<tr><td><strong>epic-3</strong></td><td>0/7</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
+<tr><td><strong>epic-1</strong></td><td>6/6</td><td><div class="bar-container"><div class="bar-fill bar-green" style="width:100%"></div></div></td><td><span class="status-badge status-completing">completing</span></td></tr>
+<tr><td><strong>epic-2</strong></td><td>5/5</td><td><div class="bar-container"><div class="bar-fill bar-green" style="width:100%"></div></div></td><td><span class="status-badge status-completing">completing</span></td></tr>
+<tr><td><strong>epic-3</strong></td><td>1/7</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:14%"></div></div></td><td><span class="status-badge status-in-progress">in-progress</span></td></tr>
 <tr><td><strong>epic-4</strong></td><td>0/9</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
 <tr><td><strong>epic-5</strong></td><td>0/5</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
 <tr><td><strong>epic-6</strong></td><td>0/7</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
 <tr><td><strong>epic-7</strong></td><td>0/6</td><td><div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div></td><td><span class="status-badge status-backlog">backlog</span></td></tr>
 </table></div></div>
 <div id="health" class="tab-content"><div class="section"><h2>Health Status</h2><p style="color:var(--green);font-weight:600;">No gaps detected — all clear</p></div></div>
-<div id="guidance" class="tab-content"><p style="margin-bottom:16px;color:var(--gray);font-size:13px;">Current state: Sprint: Sprint 1 (active)</p>
-<div class="rec-card"><div class="rec-priority">1</div><div class="rec-body"><div class="rec-title">Start 1-4-1-build-documentation</div><div class="rec-desc">No stories in progress — pick up next backlog item.</div><div class="rec-cmd"><code>./paw 1-4-1-build-documentation</code><button class="copy-btn" onclick="copyCmd('./paw 1-4-1-build-documentation')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-priority">2</div><div class="rec-body"><div class="rec-title">Check milestone M1</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-priority">3</div><div class="rec-body"><div class="rec-title">Check milestone M2</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-priority">4</div><div class="rec-body"><div class="rec-title">Check milestone M3</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-priority">5</div><div class="rec-body"><div class="rec-title">Check milestone M4</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
-<div class="rec-card"><div class="rec-priority">6</div><div class="rec-body"><div class="rec-title">Check milestone M5</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div></div>
+<div id="guidance" class="tab-content"><p style="margin-bottom:16px;color:var(--gray);font-size:13px;">Current state: Sprint: Sprint 2 (active)</p>
+<div class="rec-card"><div class="rec-priority">1</div><div class="rec-body"><div class="rec-title">Start 7-1-1-crossplatform-error-reporting</div><div class="rec-desc">No stories in progress — pick up next backlog item.</div><div class="rec-cmd"><code>./paw 7-1-1-crossplatform-error-reporting</code><button class="copy-btn" onclick="copyCmd('./paw 7-1-1-crossplatform-error-reporting')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">2</div><div class="rec-body"><div class="rec-title">Validate epic-1</div><div class="rec-desc">All stories done (6/6).</div><div class="rec-cmd"><code>/bmad:pcc:workflows:epic-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:epic-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">3</div><div class="rec-body"><div class="rec-title">Validate epic-2</div><div class="rec-desc">All stories done (5/5).</div><div class="rec-cmd"><code>/bmad:pcc:workflows:epic-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:epic-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">4</div><div class="rec-body"><div class="rec-title">Check milestone M1</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">5</div><div class="rec-body"><div class="rec-title">Check milestone M2</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">6</div><div class="rec-body"><div class="rec-title">Check milestone M3</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div>
+<div class="rec-card"><div class="rec-priority">7</div><div class="rec-body"><div class="rec-title">Check milestone M4</div><div class="rec-desc">Milestone is active — check if ready for validation.</div><div class="rec-cmd"><code>/bmad:pcc:workflows:milestone-validation</code><button class="copy-btn" onclick="copyCmd('/bmad:pcc:workflows:milestone-validation')">Copy</button></div></div></div></div>
 <div id="runbook" class="tab-content"><div class="runbook">
 <h2 style="margin-bottom:12px;">PCC Executor Runbook</h2>
 <div class="section-content" style="margin-bottom:16px;">
@@ -286,8 +400,8 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 ./paw 2                  # all stories in epic 2
 ./paw 2-1-2,2-2-4       # comma-separated stories
 
-# Run incomplete stories in the active sprint
-./paw sprint
+# Run the sprint lifecycle (auto-activates planned sprints)
+./paw sprint              # full pipeline: activate → stories → audit → complete → retro
 ./paw sprint s3           # or target a specific sprint by name
 
 # Preset flags for common scenarios
@@ -299,7 +413,7 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 
 # Check current state
 ./paw status
-</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# Run a single story (auto-detects where it left off)\n./paw run {story-key}\n\n# Shorthand — auto-routes by key format\n./paw 2-3-4              # single story\n./paw 2-3                # all stories in feature 2-3\n./paw 2                  # all stories in epic 2\n./paw 2-1-2,2-2-4       # comma-separated stories\n\n# Run incomplete stories in the active sprint\n./paw sprint\n./paw sprint s3           # or target a specific sprint by name\n\n# Preset flags for common scenarios\n./paw 2-3-4 --dev        # skip create/validate/atdd, start at dev-story\n./paw 2-3-4 --reimpl     # dev-story with fresh progress file\n./paw 2-3-4 --validate   # QG, analysis, AC, UI, finalize only\n./paw 2-3-4 --quick      # dev + quality gate only (no adversarial review)\n./paw 2-3-4 --fresh      # full restart (all steps)\n\n# Check current state\n./paw status')">Copy</button></div>
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# Run a single story (auto-detects where it left off)\n./paw run {story-key}\n\n# Shorthand — auto-routes by key format\n./paw 2-3-4              # single story\n./paw 2-3                # all stories in feature 2-3\n./paw 2                  # all stories in epic 2\n./paw 2-1-2,2-2-4       # comma-separated stories\n\n# Run the sprint lifecycle (auto-activates planned sprints)\n./paw sprint              # full pipeline: activate → stories → audit → complete → retro\n./paw sprint s3           # or target a specific sprint by name\n\n# Preset flags for common scenarios\n./paw 2-3-4 --dev        # skip create/validate/atdd, start at dev-story\n./paw 2-3-4 --reimpl     # dev-story with fresh progress file\n./paw 2-3-4 --validate   # QG, analysis, AC, UI, finalize only\n./paw 2-3-4 --quick      # dev + quality gate only (no adversarial review)\n./paw 2-3-4 --fresh      # full restart (all steps)\n\n# Check current state\n./paw status')">Copy</button></div>
 
 <p>The pipeline runs fully automated: create → ATDD → design → dev → review → done.</p>
 <p>Self-healing is built in: 1 retry per step, up to 2 regressions before stopping.</p>
@@ -472,6 +586,20 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 
 <p>Re-sequence epics within a milestone, remap epic-milestone assignments, and move stories between epics. Requires confirmation gate. Produces before/after traceability.</p>
 </div></details>
+<details><summary>Ideation (Parking Lot)</summary><div class="section-content">
+<p>Capture ideas for future work that aren&#x27;t ready to become stories yet.</p>
+
+<div style="position:relative;"><pre><code>
+# Start the ideation agent (conversational)
+/bmad:pcc:agents:pcc-ideation
+
+# Or invoke workflows directly
+/bmad:pcc:workflows:idea-capture      # describe an idea, get it scored
+/bmad:pcc:workflows:idea-evaluate     # review/promote/decline captured ideas
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('# Start the ideation agent (conversational)\n/bmad:pcc:agents:pcc-ideation\n\n# Or invoke workflows directly\n/bmad:pcc:workflows:idea-capture      # describe an idea, get it scored\n/bmad:pcc:workflows:idea-evaluate     # review/promote/decline captured ideas')">Copy</button></div>
+
+<p>Ideas go to <code>{output_folder}/ideas/registry.md</code>. The agent asks clarifying questions, maps ideas against the specification-index, and scores them A/B/C/D. Run <code>idea-evaluate</code> before sprint planning to surface promotable ideas.</p>
+</div></details>
 <details><summary>Retroactive Closure (Backfill)</summary><div class="section-content">
 <p>If a sprint or epic ended without running the proper closing workflows, use backfill instead of manual YAML edits. Backfill <strong>validates first</strong> before writing any status changes.</p>
 
@@ -552,10 +680,12 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 
 ./paw sync-atdd 2-3-4    # mark ATDD checklist items complete
 
+./paw spec-index         # generate/regenerate specification-index.yaml
+./paw spec-index --check # regenerate only if stale or missing
 ./paw corpus stats       # specification index statistics
 ./paw corpus context X   # get story context from corpus
 ./paw corpus validate X  # validate dependencies in corpus
-</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw cleanup            # show duplicate/dangling artifacts\n./paw cleanup all        # clean up all\n\n./paw consolidate --all  # consolidate all logs (Haiku summary)\n./paw consolidate 2-3-4  # consolidate logs for one story\n\n./paw sync-atdd 2-3-4    # mark ATDD checklist items complete\n\n./paw corpus stats       # specification index statistics\n./paw corpus context X   # get story context from corpus\n./paw corpus validate X  # validate dependencies in corpus')">Copy</button></div>
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw cleanup            # show duplicate/dangling artifacts\n./paw cleanup all        # clean up all\n\n./paw consolidate --all  # consolidate all logs (Haiku summary)\n./paw consolidate 2-3-4  # consolidate logs for one story\n\n./paw sync-atdd 2-3-4    # mark ATDD checklist items complete\n\n./paw spec-index         # generate/regenerate specification-index.yaml\n./paw spec-index --check # regenerate only if stale or missing\n./paw corpus stats       # specification index statistics\n./paw corpus context X   # get story context from corpus\n./paw corpus validate X  # validate dependencies in corpus')">Copy</button></div>
 </div></details>
 <details><summary>Troubleshooting</summary><div class="section-content">
 <table>
@@ -582,10 +712,11 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 ./paw run {key} --fresh                  # full restart (clear state)
 ./paw run {key} --dry-run               # preview what would run
 
-./paw sprint                            # run incomplete stories in active sprint
-./paw sprint s3 --continue              # named sprint, finish in-progress first
+./paw sprint                            # full sprint lifecycle (auto-activates planned)
+./paw sprint s3                         # named sprint lifecycle
+./paw cascade                           # check all levels and trigger ready transitions
 ./paw remediate --quick --dry-run       # preview remediation plan
-</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw run {key} --from=DEV_STORY        # restart from dev step\n./paw run {key} --from=CODE_REVIEW_QG   # restart from review\n./paw run {key} --fresh                  # full restart (clear state)\n./paw run {key} --dry-run               # preview what would run\n\n./paw sprint                            # run incomplete stories in active sprint\n./paw sprint s3 --continue              # named sprint, finish in-progress first\n./paw remediate --quick --dry-run       # preview remediation plan')">Copy</button></div>
+</code></pre><button class="copy-btn" style="position:absolute;top:6px;right:6px;" onclick="copyCmd('./paw run {key} --from=DEV_STORY        # restart from dev step\n./paw run {key} --from=CODE_REVIEW_QG   # restart from review\n./paw run {key} --fresh                  # full restart (clear state)\n./paw run {key} --dry-run               # preview what would run\n\n./paw sprint                            # full sprint lifecycle (auto-activates planned)\n./paw sprint s3                         # named sprint lifecycle\n./paw cascade                           # check all levels and trigger ready transitions\n./paw remediate --quick --dry-run       # preview remediation plan')">Copy</button></div>
 </div></details>
 <details><summary>Get Help</summary><div class="section-content">
 <p>Start a Claude Code conversation and type:</p>
@@ -606,11 +737,11 @@ footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32
 <p>For per-workflow usage details:</p>
 <p>→ <code>_bmad/pcc/docs/lifecycle-hierarchy.md</code> — full state machines</p>
 <p>→ <code>_bmad/pcc/docs/sprint-scoping-model.md</code> — sprint YAML schema</p>
-<p>→ <code>docs/specification/pcc-workflow-catalog.md</code> — all 71 workflows</p></div></details>
+<p>→ <code>docs/specification/pcc-workflow-catalog.md</code> — all 74 workflows</p></div></details>
 </div></div>
 
 
-  <footer>Generated by PCC Dashboard &middot; 2026-03-05 05:37</footer>
+  <footer>Generated by PCC Dashboard &middot; 2026-03-06 22:24</footer>
 </div>
 <script>
 function switchTab(tabId) {

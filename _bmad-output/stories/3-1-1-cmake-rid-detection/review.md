@@ -6,16 +6,49 @@
 
 ---
 
-## Quality Gate Results
+## Pipeline Status
+
+| Step | Status |
+|------|--------|
+| 1. Quality Gate | PASSED |
+| 2. Code Review Analysis | pending |
+| 3. Finalize | pending |
+
+## Quality Gate Progress
+
+| Phase | Status | Iterations | Issues Fixed |
+|-------|--------|------------|--------------|
+| Backend Local (cpp-cmake: format-check + lint) | PASSED | 1 | 0 |
+| Backend SonarCloud | SKIPPED (not configured) | - | - |
+| Frontend Local | SKIPPED (no frontend components) | - | - |
+| Frontend SonarCloud | SKIPPED (no frontend components) | - | - |
+
+## Fix Iterations
+
+_(none — codebase clean on first run)_
+
+## Step 1: Quality Gate — PASSED
+
+**Story:** 3-1-1-cmake-rid-detection
+**Story file:** `_bmad-output/stories/3-1-1-cmake-rid-detection/story.md`
+**Story type:** infrastructure
+**Components:** mumain (backend, cpp-cmake @ ./MuMain)
+**Run date:** 2026-03-06 (fresh re-validation)
+
+---
+
+## Quality Gate Results (Fresh Run — 2026-03-06)
 
 | Check | Result | Details |
 |-------|--------|---------|
 | `./ctl check` (clang-format) | PASS | 689 files, 0 violations |
-| `./ctl check` (cppcheck) | PASS | 0 violations |
-| ATDD AC-1/AC-5 (RID + WSL detection) | PASS | All 5 RIDs verified |
-| ATDD AC-2 (lib extension) | PASS | .dll/.dylib/.so verified |
-| ATDD AC-6 (graceful failure) | PASS | WARNING path confirmed |
-| ATDD AC-STD-11 (flow code traceability) | PASS | VS1-NET-CMAKE-RID verified |
+| `./ctl check` (cppcheck) | PASS | 689 files, 0 violations — "Quality gate passed" |
+| ATDD AC-1/AC-5 (RID + WSL detection) | PASS | All 5 RIDs (win-x86/x64, osx-arm64/x64, linux-x64) verified |
+| ATDD AC-2 (lib extension) | PASS | .dll/.dylib/.so verified; add_compile_definitions confirmed |
+| ATDD AC-6 (graceful failure) | PASS | WARNING (not FATAL_ERROR), DOTNETAOT_FOUND=FALSE, prefix correct |
+| ATDD AC-STD-11 (flow code traceability) | PASS | VS1-NET-CMAKE-RID present in FindDotnetAOT.cmake header |
+| Backend SonarCloud | SKIPPED | Not configured in .pcc-config.yaml (cpp-cmake profile) |
+| Frontend checks | SKIPPED | No frontend components in this story |
 
 ---
 
