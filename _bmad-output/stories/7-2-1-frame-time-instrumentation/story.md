@@ -1,6 +1,6 @@
 # Story 7.2.1: Frame Time Instrumentation
 
-Status: implemented
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -56,8 +56,8 @@ Status: implemented
 - [x] **AC-STD-1:** Code follows `project-context.md` standards: `namespace mu`, `#pragma once`, no new `#ifdef _WIN32` in game logic, `std::chrono::steady_clock`, `nullptr`, PascalCase methods, `m_` member prefix with Hungarian hints
 - [x] **AC-STD-2:** Catch2 tests in `MuMain/tests/core/test_mu_timer.cpp`: timer accuracy test (measure ~50ms sleep), hitch detection test (simulate a >50ms frame), FPS average test (verify rolling average is reasonable), and a no-log test (verify `FrameEnd()` does not log on every call — only periodically)
 - [x] **AC-STD-4:** CI quality gate passes — `make -C MuMain format-check && make -C MuMain lint` (i.e., `./ctl check`) exits 0 with zero violations
-- [ ] **AC-STD-6:** Conventional commit: `feat(core): add MuTimer frame time instrumentation`
-- [ ] **AC-STD-11:** Flow Code traceability — commit message references `VS0-QUAL-FRAMETIMER`
+- [x] **AC-STD-6:** Conventional commit: `feat(core): add MuTimer frame time instrumentation` — commit `1258f622` (code review phase)
+- [x] **AC-STD-11:** Flow Code traceability — commit message references `VS0-QUAL-FRAMETIMER` — commit `1258f622`
 - [x] **AC-STD-13:** Quality gate passes — `./ctl check` clean (clang-format + cppcheck zero violations)
 - [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
 - [x] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (infrastructure only)
@@ -117,7 +117,7 @@ Status: implemented
   - [x] 6.1 `./ctl check` passes — clang-format + cppcheck zero violations
   - [x] 6.2 No `timeGetTime()` or `GetTickCount()` in `MuTimer.cpp` (cppcheck confirmed)
   - [x] 6.3 `./ctl check` format-validates on macOS arm64
-  - [ ] 6.4 Commit pending
+  - [x] 6.4 Conventional commit `feat(core): add MuTimer frame time instrumentation [VS0-QUAL-FRAMETIMER]` — commit `1258f622`
 
 ---
 
@@ -413,6 +413,12 @@ claude-sonnet-4-6 (story creation)
 
 ### Completion Notes List
 
+- Code review completed 2026-03-07 (agent: claude-sonnet-4-6): 0 HIGH, 2 MEDIUM, 3 LOW issues found
+  - M-1 fixed: Issued proper `feat(core):` conventional commit `1258f622` with `VS0-QUAL-FRAMETIMER` flow code (satisfies AC-STD-6, AC-STD-11)
+  - M-2 fixed: Added clarifying comment in `LogStats()` documenting session-scope vs interval-scope metrics (avg/frames are session-wide; min/max are per-interval)
+  - L-1 fixed: Updated stale RED PHASE comment in `test_mu_timer.cpp` to GREEN PHASE
+  - L-2 (NFR-2 test indirect): Accepted — 60s interval makes per-frame logging structurally impossible; test is adequate
+  - L-3 (no extern header for g_muFrameTimer): Accepted — no current consumer outside Winmain.cpp
 - Story created 2026-03-07 via create-story workflow (agent: claude-sonnet-4-6)
 - No specification corpus available (specification-index.yaml not found — no corpus recommendations)
 - No story partials found in docs/story-partials/
