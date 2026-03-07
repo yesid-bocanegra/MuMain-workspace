@@ -57,10 +57,10 @@ Status: review
 - [x] **AC-STD-2:** No Catch2 unit tests required — this is a build system story; validation via CMake `-P` script tests (see Test Design below)
 - [x] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) passes with zero violations; CMake files not checked by cppcheck, so gate validates existing C++ files remain clean
 - [x] **AC-STD-5:** Error logging: `PLAT: FindDotnetAOT — dotnet not found at {path}` emitted via `message(WARNING ...)` at configure time when dotnet not available
-- [ ] **AC-STD-6:** Conventional commit: `build(network): add CMake RID detection and .NET AOT build integration`
+- [x] **AC-STD-6:** Conventional commit: `build(network): add CMake RID detection and .NET AOT build integration`
 - [x] **AC-STD-11:** Flow Code traceability — commit message includes `VS1-NET-CMAKE-RID` reference
 - [x] **AC-STD-13:** Quality gate passes — `./ctl check` clean
-- [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
 - [x] **AC-STD-20:** Contract Reachability — story produces no API/event/flow catalog entries (build system only)
 
 ### NFR Acceptance Criteria
