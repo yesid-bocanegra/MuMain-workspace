@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint 2 Metrics Dashboard — 2026-03-07</title>
+<style>
+  :root { --green: #22c55e; --yellow: #eab308; --red: #ef4444; --blue: #3b82f6; --gray: #6b7280; --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --border: #334155; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 24px; }
+  .dashboard { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 8px; }
+  .subtitle { color: var(--gray); margin-bottom: 24px; }
+  .health { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 14px; }
+  .health-healthy { background: var(--green); color: #000; }
+  .health-at-risk { background: var(--yellow); color: #000; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card-label { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; }
+  .card-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
+  .card-sub { font-size: 13px; color: var(--gray); }
+  .card-trend { font-size: 13px; }
+  .trend-up { color: var(--green); }
+  .trend-flat { color: var(--gray); }
+  .trend-warn { color: var(--yellow); }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .section h2 { font-size: 16px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px; border-bottom: 2px solid var(--border); color: var(--gray); font-weight: 600; }
+  td { padding: 8px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  .bar-container { background: var(--border); border-radius: 4px; height: 8px; width: 100%; margin-top: 4px; }
+  .bar-fill { height: 8px; border-radius: 4px; }
+  .bar-green { background: var(--green); }
+  .bar-yellow { background: var(--yellow); }
+  .bar-blue { background: var(--blue); }
+  .chart { font-family: monospace; font-size: 12px; white-space: pre; background: var(--bg); padding: 12px; border-radius: 4px; overflow-x: auto; line-height: 1.5; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+  .badge-pass { background: #166534; color: var(--green); }
+  .badge-fail { background: #7f1d1d; color: var(--red); }
+  .badge-retry { background: #713f12; color: var(--yellow); }
+  .badge-skip { background: #1e293b; color: var(--gray); border: 1px solid var(--border); }
+  .kpi-healthy { color: var(--green); }
+  .kpi-warn { color: var(--yellow); }
+  .kpi-ahead { color: #a78bfa; }
+  footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .note { font-size: 12px; color: var(--gray); margin-top: 8px; font-style: italic; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="dashboard">
+  <h1>Sprint 2 Metrics Dashboard</h1>
+  <p class="subtitle">2026-03-07 &middot; Sprint 2 (2026-03-06 &rarr; 2026-03-20) &middot; 8 stories &middot; <span class="health health-healthy">HEALTHY</span></p>
+
+  <!-- KPI Cards -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Velocity</div>
+      <div class="card-value kpi-healthy">28</div>
+      <div class="card-sub">story points</div>
+      <div class="card-trend trend-up">+10 pts vs Sprint 1 (+55.6%)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Flow Time (avg)</div>
+      <div class="card-value kpi-healthy">2.29h</div>
+      <div class="card-sub">0.095 days avg</div>
+      <div class="card-trend trend-up">-82% vs Sprint 1 (12.71h)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Flow Efficiency</div>
+      <div class="card-value kpi-healthy">95.1%</div>
+      <div class="card-sub">active / total time</div>
+      <div class="card-trend trend-up">+68.7pp vs Sprint 1 (26.4%)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Predictability</div>
+      <div class="card-value kpi-healthy">100%</div>
+      <div class="card-sub">28/28 pts delivered</div>
+      <div class="card-trend trend-up">HIGH reliability</div>
+    </div>
+    <div class="card">
+      <div class="card-label">SPI</div>
+      <div class="card-value kpi-ahead">14.0</div>
+      <div class="card-sub">all done day 1-2</div>
+      <div class="card-trend trend-up" style="color:#a78bfa">AHEAD of schedule</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Throughput</div>
+      <div class="card-value kpi-healthy">8</div>
+      <div class="card-sub">stories completed</div>
+      <div class="card-trend trend-up">+2 vs Sprint 1 (6)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Gate Failure Rate</div>
+      <div class="card-value kpi-warn">25%</div>
+      <div class="card-sub">completeness-gate</div>
+      <div class="card-trend trend-warn">2/8 stories retried</div>
+    </div>
+    <div class="card">
+      <div class="card-label">WIP Violations</div>
+      <div class="card-value kpi-healthy">0</div>
+      <div class="card-sub">limit: 2 in-progress</div>
+      <div class="card-trend trend-up">OK — sequential batch</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Est. Cost</div>
+      <div class="card-value" style="font-size:22px">~$8.95</div>
+      <div class="card-sub">625k tokens (est.)</div>
+      <div class="card-trend trend-flat">~$0.32/story point</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Issues Fixed</div>
+      <div class="card-value kpi-healthy">37</div>
+      <div class="card-sub">code review findings</div>
+      <div class="card-trend trend-up">100% self-healing rate</div>
+    </div>
+  </div>
+
+  <!-- Burndown Chart -->
+  <div class="section">
+    <h2>Sprint Burndown</h2>
+    <div class="chart">Points
+│
+28├─●
+   │  \
+26 │   ● (planned D1)
+   │   |
+   │   ●─────────────────────── (actual: 0 remaining after D1)
+ 0 └──────────────────────────────────────────
+    D1  D2  D3  D4  D5  D6  D7  D8  D9  D10  D11  D12  D13  D14
+
+    ─── Planned    ●── Actual
+
+    All 28 points delivered by 2026-03-07T07:56 UTC (Day 1-2 of 14-day sprint).
+    13 sprint days remain with no stories outstanding.</div>
+  </div>
+
+  <div class="two-col">
+    <!-- Flow Distribution -->
+    <div class="section">
+      <h2>Flow Distribution</h2>
+      <table>
+        <tr><th>Type</th><th>Count</th><th>Points</th><th>Distribution</th></tr>
+        <tr>
+          <td>Feature</td><td>5</td><td>17</td>
+          <td>
+            <div class="bar-container"><div class="bar-fill bar-blue" style="width:60.7%"></div></div>
+            <span style="font-size:11px;color:var(--gray)">60.7%</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Enabler</td><td>3</td><td>11</td>
+          <td>
+            <div class="bar-container"><div class="bar-fill bar-green" style="width:39.3%"></div></div>
+            <span style="font-size:11px;color:var(--gray)">39.3%</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Defect</td><td>0</td><td>0</td>
+          <td><div class="bar-container"><div class="bar-fill bar-yellow" style="width:0%"></div></div></td>
+        </tr>
+        <tr>
+          <td>Debt</td><td>0</td><td>0</td>
+          <td><div class="bar-container"><div class="bar-fill" style="background:var(--gray);width:0%"></div></div></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- EVM -->
+    <div class="section">
+      <h2>Schedule Performance (EVM)</h2>
+      <table>
+        <tr><th>Metric</th><th>Value</th></tr>
+        <tr><td>BAC (Budget at Completion)</td><td>28 pts</td></tr>
+        <tr><td>PV (Planned Value, Day 1)</td><td>2.0 pts</td></tr>
+        <tr><td>EV (Earned Value)</td><td>28 pts</td></tr>
+        <tr><td>SPI (Schedule Performance Index)</td><td style="color:#a78bfa;font-weight:700">14.0</td></tr>
+        <tr><td>SV (Schedule Variance)</td><td style="color:var(--green)">+26.0 pts</td></tr>
+        <tr><td>Classification</td><td style="color:#a78bfa">AHEAD OF SCHEDULE</td></tr>
+      </table>
+      <p class="note">SPI of 14.0 reflects batch completion of all stories in the first 1-2 sprint days. EVM most meaningful for work distributed across the sprint window.</p>
+    </div>
+  </div>
+
+  <!-- Pipeline Gate Results -->
+  <div class="section">
+    <h2>Pipeline Gate Results</h2>
+    <table>
+      <tr><th>Story</th><th>Pts</th><th>create</th><th>validate</th><th>atdd</th><th>dev-story</th><th>completeness</th><th>code-review</th><th>QG</th><th>analysis</th><th>finalize</th></tr>
+      <tr>
+        <td>2-1-1</td><td>5</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+      <tr>
+        <td>2-1-2</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+      <tr>
+        <td>2-2-1</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+      <tr>
+        <td>2-2-2</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-retry">RETRY</span></td>
+        <td><span class="badge badge-retry">RETRY</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+      <tr>
+        <td>2-2-3</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-retry">RETRY</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+      <tr>
+        <td>3-1-1</td><td>5</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+      <tr>
+        <td>7-1-1</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+      <tr>
+        <td>7-2-1</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+      </tr>
+    </table>
+    <p class="note">Bottleneck: completeness-gate (25% failure rate). All retries resolved on first retry attempt. Zero regressions. 100% self-healing rate.</p>
+  </div>
+
+  <!-- Cycle Time Per Story -->
+  <div class="section">
+    <h2>Story Cycle Times (sorted by duration)</h2>
+    <table>
+      <tr><th>Story</th><th>Type</th><th>Points</th><th>Flow Time</th><th>Efficiency</th><th>Retries</th><th>Issues Fixed</th></tr>
+      <tr><td>2-2-2-sdl3-mouse-input</td><td>Feature</td><td>3</td><td>3.43h</td><td>93.8%</td><td>2</td><td>5</td></tr>
+      <tr><td>2-2-3-sdl3-text-input</td><td>Feature</td><td>3</td><td>2.61h</td><td>99.9%</td><td>1</td><td>4</td></tr>
+      <tr><td>2-1-1-sdl3-window-event-loop</td><td>Feature</td><td>5</td><td>2.34h</td><td>67.9%</td><td>0</td><td>7</td></tr>
+      <tr><td>2-2-1-sdl3-keyboard-input</td><td>Feature</td><td>3</td><td>2.31h</td><td>99.9%</td><td>1</td><td>6</td></tr>
+      <tr><td>2-1-2-sdl3-window-focus-display</td><td>Feature</td><td>3</td><td>2.12h</td><td>99.9%</td><td>0</td><td>8</td></tr>
+      <tr><td>7-1-1-crossplatform-error-reporting</td><td>Enabler</td><td>3</td><td>1.90h</td><td>99.9%</td><td>0</td><td>2</td></tr>
+      <tr><td>7-2-1-frame-time-instrumentation</td><td>Enabler</td><td>3</td><td>1.88h</td><td>99.9%</td><td>0</td><td>2</td></tr>
+      <tr><td>3-1-1-cmake-rid-detection</td><td>Enabler</td><td>5</td><td>1.46h</td><td>99.8%</td><td>0</td><td>3</td></tr>
+    </table>
+    <p class="note">Cycle Time Distribution: Min=1.46h | P25=1.89h | Median=2.23h | P85=2.97h | P95=3.24h | Max=3.43h</p>
+  </div>
+
+  <!-- Epic Progress -->
+  <div class="section">
+    <h2>Epic Progress</h2>
+    <table>
+      <tr><th>Epic</th><th>Status</th><th>Stories Done</th><th>Total</th><th>Points Done</th><th>Total Pts</th><th>Progress</th></tr>
+      <tr>
+        <td>EPIC-1: Platform Foundation</td>
+        <td style="color:var(--green)">done</td>
+        <td>6</td><td>6</td><td>18</td><td>18</td>
+        <td>
+          <div class="bar-container"><div class="bar-fill bar-green" style="width:100%"></div></div>
+          <span style="font-size:11px;color:var(--gray)">100%</span>
+        </td>
+      </tr>
+      <tr>
+        <td>EPIC-2: SDL3 Windowing &amp; Input</td>
+        <td style="color:var(--yellow)">gate pending</td>
+        <td>5</td><td>5</td><td>17</td><td>17</td>
+        <td>
+          <div class="bar-container"><div class="bar-fill bar-yellow" style="width:100%"></div></div>
+          <span style="font-size:11px;color:var(--gray)">100% (run epic-validation)</span>
+        </td>
+      </tr>
+      <tr>
+        <td>EPIC-3: .NET AOT Networking</td>
+        <td>in-progress</td>
+        <td>1</td><td>7</td><td>5</td><td>24</td>
+        <td>
+          <div class="bar-container"><div class="bar-fill bar-blue" style="width:20.8%"></div></div>
+          <span style="font-size:11px;color:var(--gray)">20.8%</span>
+        </td>
+      </tr>
+      <tr>
+        <td>EPIC-4: Rendering Pipeline</td>
+        <td>backlog</td>
+        <td>0</td><td>9</td><td>0</td><td>48</td>
+        <td>
+          <div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div>
+          <span style="font-size:11px;color:var(--gray)">0%</span>
+        </td>
+      </tr>
+      <tr>
+        <td>EPIC-5: Audio Migration</td>
+        <td>backlog</td>
+        <td>0</td><td>5</td><td>0</td><td>18</td>
+        <td>
+          <div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div>
+          <span style="font-size:11px;color:var(--gray)">0%</span>
+        </td>
+      </tr>
+      <tr>
+        <td>EPIC-6: Gameplay Validation</td>
+        <td>backlog</td>
+        <td>0</td><td>7</td><td>0</td><td>23</td>
+        <td>
+          <div class="bar-container"><div class="bar-fill bar-blue" style="width:0%"></div></div>
+          <span style="font-size:11px;color:var(--gray)">0%</span>
+        </td>
+      </tr>
+      <tr>
+        <td>EPIC-7: Stability &amp; Diagnostics</td>
+        <td>in-progress</td>
+        <td>2</td><td>6</td><td>6</td><td>24</td>
+        <td>
+          <div class="bar-container"><div class="bar-fill bar-blue" style="width:25%"></div></div>
+          <span style="font-size:11px;color:var(--gray)">25%</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Cross-Sprint Velocity -->
+  <div class="section">
+    <h2>Cross-Sprint Velocity Trend</h2>
+    <table>
+      <tr><th>Sprint</th><th>Stories</th><th>Points</th><th>Velocity</th><th>Flow Efficiency</th><th>Reliability</th></tr>
+      <tr><td>Sprint 1</td><td>6</td><td>18</td><td>18 pts</td><td>26.4%</td><td>100%</td></tr>
+      <tr><td>Sprint 2</td><td>8</td><td>28</td><td>28 pts</td><td>95.1%</td><td>100%</td></tr>
+    </table>
+    <div class="chart" style="margin-top:12px">
+Velocity
+  28 |                    ██
+  18 |          ██        ██
+   0 +──────────────────────────
+         Sprint 1    Sprint 2
+
+  2-sprint avg: 23 pts | Trend: INCREASING (+55.6%)
+  Note: Need 3+ sprints for statistical trend analysis.</div>
+  </div>
+
+  <!-- Monte Carlo -->
+  <div class="section">
+    <h2>Monte Carlo Forecast</h2>
+    <p style="color:var(--yellow)">SKIPPED — Insufficient historical data (2 sprints, need 3+). Complete Sprint 3 to enable probabilistic forecasting.</p>
+    <p class="note" style="margin-top:8px">Rough manual estimates: EPIC-3 remaining (6 stories) ~0.75 sprints | EPIC-7 remaining (4 stories) ~0.5 sprints | EPIC-4 remaining (9 stories) ~1.1 sprints. These are order-of-magnitude only.</p>
+  </div>
+
+  <!-- Token Usage -->
+  <div class="section">
+    <h2>Token Usage &amp; Cost Analytics (Estimated)</h2>
+    <table>
+      <tr><th>Story</th><th>Points</th><th>Total Tokens</th><th>Tokens/Point</th><th>Est. Cost</th></tr>
+      <tr><td>2-1-1-sdl3-window-event-loop</td><td>5</td><td>116,743</td><td>23,349</td><td>~$1.61</td></tr>
+      <tr><td>2-1-2-sdl3-window-focus-display</td><td>3</td><td>97,199</td><td>32,400</td><td>~$1.43</td></tr>
+      <tr><td>2-2-1-sdl3-keyboard-input</td><td>3</td><td>72,403</td><td>24,134</td><td>~$0.89</td></tr>
+      <tr><td>2-2-2-sdl3-mouse-input</td><td>3</td><td>60,617</td><td>20,206</td><td>~$0.86</td></tr>
+      <tr><td>2-2-3-sdl3-text-input</td><td>3</td><td>73,685</td><td>24,562</td><td>~$1.10</td></tr>
+      <tr><td>3-1-1-cmake-rid-detection</td><td>5</td><td>71,394</td><td>14,279</td><td>~$1.06</td></tr>
+      <tr><td>7-1-1-crossplatform-error-reporting</td><td>3</td><td>74,083</td><td>24,694</td><td>~$1.10</td></tr>
+      <tr><td>7-2-1-frame-time-instrumentation</td><td>3</td><td>59,070</td><td>19,690</td><td>~$0.88</td></tr>
+    </table>
+    <p class="note">Sprint total: ~625k tokens | Est. ~$8.95 | ~$1.12/story | ~$0.32/point. Actual usage 15-30% higher (batch-mode steps not fully captured). Most expensive step: dev-story (33.6% of tokens).</p>
+  </div>
+
+  <!-- Pipeline Bottleneck -->
+  <div class="section">
+    <h2>Pipeline Analytics</h2>
+    <table>
+      <tr><th>Step</th><th>Avg Duration</th><th>Failure Rate</th><th>% of Active Time</th></tr>
+      <tr><td>create-story</td><td>472s (7.9m)</td><td>0%</td><td>6.4%</td></tr>
+      <tr><td>validate-story</td><td>189s (3.1m)</td><td>0%</td><td>2.6%</td></tr>
+      <tr><td>atdd</td><td>454s (7.6m)</td><td>0%</td><td>6.1%</td></tr>
+      <tr><td style="font-weight:700;color:var(--yellow)">dev-story (BOTTLENECK)</td><td>1,965s (32.7m)</td><td>12.5%</td><td>26.6%</td></tr>
+      <tr><td>completeness-gate</td><td>174s (2.9m)</td><td style="color:var(--yellow)">25%</td><td>2.4%</td></tr>
+      <tr><td>code-review</td><td>1,083s (18.0m)</td><td>0%</td><td>14.7%</td></tr>
+      <tr><td>code-review-qg</td><td>1,464s (24.4m)</td><td>0%</td><td>19.8%</td></tr>
+      <tr><td>code-review-analysis</td><td>822s (13.7m)</td><td>0%</td><td>11.1%</td></tr>
+      <tr><td>code-review-finalize</td><td>767s (12.8m)</td><td>0%</td><td>10.4%</td></tr>
+    </table>
+    <p class="note">Bottleneck: dev-story (longest step, 32.7m avg, 12.5% API error rate). Secondary: code-review-qg (24.4m avg). completeness-gate highest failure rate (25%) but resolves on retry.</p>
+  </div>
+
+  <footer>Generated by PCC Sprint Metrics Workflow &middot; 2026-03-07 &middot; Sprint 2 Complete</footer>
+</div>
+</body>
+</html>

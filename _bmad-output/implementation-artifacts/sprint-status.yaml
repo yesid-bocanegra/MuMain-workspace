@@ -57,27 +57,28 @@ sprints:
 
   sprint-2:
     name: "Sprint 2"
-    status: active
+    status: complete
     milestones: [M1, M2]
     start_date: "2026-03-06"
     end_date: "2026-03-20"
+    completed_date: "2026-03-07"
     planned_points: 28
     stories:
       # Already delivered (completed between sprints, assigned here for tracking)
       - 2-1-1-sdl3-window-event-loop         # 5 pts | done
       - 2-1-2-sdl3-window-focus-display       # 3 pts | done
       # New work — EPIC-2 completion
-      - 2-2-1-sdl3-keyboard-input             # 3 pts | backlog
-      - 2-2-2-sdl3-mouse-input                # 3 pts | backlog
-      - 2-2-3-sdl3-text-input                 # 3 pts | deps: 2-2-1
+      - 2-2-1-sdl3-keyboard-input             # 3 pts | done
+      - 2-2-2-sdl3-mouse-input                # 3 pts | done
+      - 2-2-3-sdl3-text-input                 # 3 pts | done
       # New work — EPIC-3 start
-      - 3-1-1-cmake-rid-detection             # 5 pts | backlog
+      - 3-1-1-cmake-rid-detection             # 5 pts | done
       # New work — EPIC-7 Phase 0 (M1 contribution)
-      - 7-1-1-crossplatform-error-reporting   # 3 pts | backlog
-      - 7-2-1-frame-time-instrumentation      # 3 pts | backlog
-    velocity: null
-    delivered_points: null
-    commitment_reliability: null
+      - 7-1-1-crossplatform-error-reporting   # 3 pts | done
+      - 7-2-1-frame-time-instrumentation      # 3 pts | done
+    velocity: 28
+    delivered_points: 28
+    commitment_reliability: 1.0
     scope_changes:
       added:
         - { story: 2-1-1-sdl3-window-event-loop, reason: "Completed between sprints, assigned retroactively", date: "2026-03-06" }
@@ -89,20 +90,20 @@ sprints:
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: null       # Sprint 2 not yet started
+    current_sprint: 28         # Sprint 2: 28 pts delivered
     previous_sprint: 18        # Sprint 1: 18 pts delivered
-    rolling_average: 18        # Single sprint data point
-    trend: null                # Need 3+ sprints for trend
-  flow_time_avg_hours: 12.71   # Sprint 1 avg lead time
-  flow_efficiency_pct: 26.4    # Sprint 1 avg active/total
+    rolling_average: 23        # 2-sprint average: (18+28)/2
+    trend: increasing          # +55.6% vs Sprint 1 (need 3+ sprints for statistical trend)
+  flow_time_avg_hours: 2.29    # Sprint 2 avg flow time (vs 12.71h Sprint 1 — batch execution)
+  flow_efficiency_pct: 95.1    # Sprint 2 avg active/total (vs 26.4% Sprint 1 — batch mode)
   commitment_reliability_pct: 100.0
   wip_limits:
     in_progress: 2
     review: 3
   wip_violations: 0
   flow_distribution:
-    Feature: 5      # EPIC-2 stories (2-2-1, 2-2-2, 2-2-3) + already-done (2-1-1, 2-1-2)
-    Enabler: 3      # EPIC-3 (3-1-1) + EPIC-7 (7-1-1, 7-2-1)
+    Feature: 5      # EPIC-2 stories: 2-1-1, 2-1-2, 2-2-1, 2-2-2, 2-2-3 (17 pts)
+    Enabler: 3      # EPIC-3 (3-1-1) + EPIC-7 (7-1-1, 7-2-1) (11 pts)
     Defect: 0
     Debt: 0
   flow_load:
