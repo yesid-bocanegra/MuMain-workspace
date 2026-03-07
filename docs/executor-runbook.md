@@ -389,6 +389,54 @@ Auto-generation reads `development-standards.md` for your commit format (convent
 
 ---
 
+## Performance Tuning
+
+Each pipeline step has built-in defaults for model, max turns, and reasoning effort level. You can override these per-step in `_bmad/pcc/config.yaml` to control cost, speed, and quality.
+
+### Built-in Step Defaults
+
+| Step | Model | Max Turns | Effort |
+|------|-------|-----------|--------|
+| CREATE_STORY | sonnet | 50 | medium |
+| VALIDATE_STORY | haiku | 20 | low |
+| ATDD | sonnet | 50 | medium |
+| DESIGN_SCREEN | sonnet | 80 | high |
+| DEV_STORY | opus | 150 | high |
+| COMPLETENESS_GATE | haiku | 30 | low |
+| CODE_REVIEW | opus | 80 | high |
+| CODE_REVIEW_QG | sonnet | 60 | medium |
+| CODE_REVIEW_ANALYSIS | haiku | 30 | low |
+| AC_VALIDATION | sonnet | 80 | medium |
+| UI_VALIDATION | sonnet | 60 | medium |
+| CODE_REVIEW_FINALIZE | sonnet | 80 | medium |
+
+### Overriding Step Defaults
+
+Add a `step_overrides:` block to `_bmad/pcc/config.yaml`. Only the fields you specify are overridden; the rest keep their defaults.
+
+```yaml
+# _bmad/pcc/config.yaml
+step_overrides:
+  # Use opus for code review analysis instead of haiku
+  code-review-analysis:
+    model: opus
+    effort: high
+
+  # Reduce dev-story turns to save cost
+  dev-story:
+    max_turns: 100
+    effort: medium
+```
+
+**Available values:**
+- `model`: `opus`, `sonnet`, `haiku`
+- `effort`: `low`, `medium`, `high` (maps to Claude reasoning effort — lower = fewer thinking tokens = faster and cheaper)
+- `max_turns`: any positive integer
+
+Step names use the kebab-case form (e.g., `dev-story`, `code-review-qg`, `ac-validation`).
+
+---
+
 ## Troubleshooting
 
 | Symptom | Try First | If Still Failing |
