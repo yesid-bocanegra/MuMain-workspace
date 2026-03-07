@@ -31,3 +31,4 @@
 {"timestamp":"2026-03-06T21:10:01.000000+00:00","event_type":"story_completed","story_key":"2-2-1-sdl3-keyboard-input","step":null,"sprint":null,"epic":"2","data":{"total_steps":12,"total_retries":1,"total_regressions":0,"final_status":"done"}}
 {"timestamp":"2026-03-06T20:38:59.601980+00:00","event_type":"step_passed","story_key":"2-2-1-sdl3-keyboard-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{"duration_seconds":895.9,"input_tokens":11,"output_tokens":387}}
 {"timestamp":"2026-03-06T20:38:59.603319+00:00","event_type":"story_completed","story_key":"2-2-1-sdl3-keyboard-input","step":null,"sprint":null,"epic":"2","data":{"total_steps":12,"total_retries":0,"total_regressions":0,"duration_seconds":8326.9}}
+{"timestamp":"2026-03-07T07:55:39.396834+00:00","event_type":"batch_completed","story_key":"2-2-1-sdl3-keyboard-input","step":null,"sprint":null,"epic":"2","data":{"total":6,"completed":6,"failed":0}}
