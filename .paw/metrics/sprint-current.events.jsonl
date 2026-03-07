@@ -181,3 +181,5 @@
 {"timestamp":"2026-03-07T04:08:43.722639+00:00","event_type":"story_completed","story_key":"3-1-1-cmake-rid-detection","step":null,"sprint":null,"epic":"3","data":{"total_steps":12,"total_retries":0,"total_regressions":0,"duration_seconds":5258.7}}
 {"timestamp":"2026-03-07T04:08:45.759902+00:00","event_type":"story_started","story_key":"7-1-1-crossplatform-error-reporting","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-07T04:08:45.760446+00:00","event_type":"step_started","story_key":"7-1-1-crossplatform-error-reporting","step":"create-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-07T04:15:19.618018+00:00","event_type":"step_passed","story_key":"7-1-1-crossplatform-error-reporting","step":"create-story","sprint":null,"epic":"7","data":{"duration_seconds":393.9,"input_tokens":80,"output_tokens":1214}}
+{"timestamp":"2026-03-07T04:15:20.624534+00:00","event_type":"step_started","story_key":"7-1-1-crossplatform-error-reporting","step":"validate-story","sprint":null,"epic":"7","data":{}}
