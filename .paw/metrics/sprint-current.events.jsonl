@@ -44,3 +44,5 @@
 {"timestamp":"2026-03-07T19:07:49.219454+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"design-screen","sprint":null,"epic":"3","data":{}}
 {"timestamp":"2026-03-07T19:07:49.220696+00:00","event_type":"step_passed","story_key":"3-2-1-char16t-encoding","step":"design-screen","sprint":null,"epic":"3","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0,"num_turns":0,"num_tool_calls":0}}
 {"timestamp":"2026-03-07T19:07:50.227825+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"dev-story","sprint":null,"epic":"3","data":{}}
+{"timestamp":"2026-03-07T19:20:48.736062+00:00","event_type":"step_passed","story_key":"3-2-1-char16t-encoding","step":"dev-story","sprint":null,"epic":"3","data":{"duration_seconds":778.5,"input_tokens":73,"output_tokens":25843,"num_turns":127,"num_tool_calls":0}}
+{"timestamp":"2026-03-07T19:20:49.743334+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"completeness-gate","sprint":null,"epic":"3","data":{}}

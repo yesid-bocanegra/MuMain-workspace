@@ -11,3 +11,5 @@
 {"timestamp":"2026-03-07T19:07:50.227825+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"dev-story","sprint":null,"epic":"3","data":{}}
 {"timestamp":"2026-03-07T22:00:00.000000+00:00","event_type":"step_passed","story_key":"3-2-1-char16t-encoding","step":"dev-story","sprint":null,"epic":"3","data":{"duration_seconds":3600.0,"files_modified":7,"quality_gate":"pass","violations":0}}
 {"timestamp":"2026-03-07T22:00:01.000000+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"completeness-gate","sprint":null,"epic":"3","data":{}}
+{"timestamp":"2026-03-07T19:20:48.736062+00:00","event_type":"step_passed","story_key":"3-2-1-char16t-encoding","step":"dev-story","sprint":null,"epic":"3","data":{"duration_seconds":778.5,"input_tokens":73,"output_tokens":25843,"num_turns":127,"num_tool_calls":0}}
+{"timestamp":"2026-03-07T19:20:49.743334+00:00","event_type":"step_started","story_key":"3-2-1-char16t-encoding","step":"completeness-gate","sprint":null,"epic":"3","data":{}}
