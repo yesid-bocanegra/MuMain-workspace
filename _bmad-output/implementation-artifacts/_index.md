@@ -1,15 +1,16 @@
 # Implementation Artifacts Index
 
-*Auto-generated 2026-03-07 02:55 by `paw index`*
+*Auto-generated 2026-03-07 10:20 by `paw index`*
 
 ## Operational (living files) (2)
 
 - [milestone-status.yaml](milestone-status.yaml)
 - [sprint-status.yaml](sprint-status.yaml)
 
-## Sprint Ceremony Outputs (1)
+## Sprint Ceremony Outputs (2)
 
 - [sprint-health-audit-2026-03-05.md](sprint-health-audit-2026-03-05.md)
+- [sprint-health-audit-2026-03-07.md](sprint-health-audit-2026-03-07.md)
 
 ## Story Artifacts (should be in stories/) (4)
 
