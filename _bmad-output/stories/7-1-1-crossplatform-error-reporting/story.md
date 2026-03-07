@@ -483,3 +483,21 @@ claude-sonnet-4-6 (story creation)
 
 ### File List
 
+| File | Action | Status |
+|------|--------|--------|
+| `MuMain/src/source/Core/ErrorReport.h` | MODIFY — replace HANDLE with ofstream, guard Win32-only methods | ⬜ Pending |
+| `MuMain/src/source/Core/ErrorReport.cpp` | MODIFY — replace all Win32 file I/O, add WideToUtf8, guard Win32-only sections | ⬜ Pending |
+| `MuMain/tests/core/test_error_report.cpp` | CREATE — Catch2 ATDD tests (6 test cases) | 🟢 Done (RED phase) |
+| `MuMain/tests/build/test_ac3_no_win32_error_report.cmake` | CREATE — cmake grep test for AC-3 | 🟢 Done (RED phase) |
+| `MuMain/tests/build/test_ac_std11_flow_code_7_1_1.cmake` | CREATE — cmake flow code traceability test | 🟢 Done (GREEN) |
+| `_bmad-output/stories/7-1-1-crossplatform-error-reporting/atdd.md` | CREATE — ATDD checklist | 🟢 Done |
+
+### ATDD Status
+
+- ATDD phase completed: 2026-03-06
+- 6 test cases written across 3 test files
+- Catch2 tests: RED (fail on macOS until implementation complete)
+- AC-3 cmake test: RED (Win32 patterns present until refactoring)
+- AC-STD-11 cmake test: GREEN (flow code present in test file)
+- Next step: dev-story (implement Tasks 1–6)
+
