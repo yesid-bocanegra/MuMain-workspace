@@ -21,3 +21,10 @@
 {"timestamp":"2026-03-07T01:35:25.089890+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"code-review-qg","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-07T02:18:34.723027+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"code-review-qg","sprint":null,"epic":"2","data":{"duration_seconds":2589.6,"input_tokens":30,"output_tokens":5012}}
 {"timestamp":"2026-03-07T02:18:35.730815+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"code-review-analysis","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T02:30:21.653925+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"code-review-analysis","sprint":null,"epic":"2","data":{"duration_seconds":705.9,"input_tokens":39,"output_tokens":24021}}
+{"timestamp":"2026-03-07T02:30:22.665725+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"ac-validation","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T02:30:22.669075+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"ac-validation","sprint":null,"epic":"2","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
+{"timestamp":"2026-03-07T02:30:23.679847+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"ui-validation","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T02:30:23.682269+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"ui-validation","sprint":null,"epic":"2","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0}}
+{"timestamp":"2026-03-07T02:30:24.685542+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T02:35:00.000000+00:00","event_type":"workflow_metric:code_review_completed","story_key":"2-2-3-sdl3-text-input","step":"code-review-finalize","sprint":null,"epic":"2","data":{"final_status":"done","issues_fixed":4,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
