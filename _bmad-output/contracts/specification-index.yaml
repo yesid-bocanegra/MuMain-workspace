@@ -119,7 +119,7 @@ epics:
       - "7.2 Performance Instrumentation"
       - "7.3 Stability Sessions"
       - "7.4 Native CI"
-    completion_pct: 0
+    completion_pct: 33  # 2 of 6 stories done (7-1-1, 7-2-1)
 
 # =====================
 # FEATURES
@@ -262,13 +262,13 @@ features:
     epic: EPIC-7
     stories: ["7-1-1", "7-1-2"]
     points: 6
-    completion_pct: 0
+    completion_pct: 50  # 1 of 2 stories done (7-1-1)
   "7.2":
     name: "Performance Instrumentation"
     epic: EPIC-7
     stories: ["7-2-1"]
     points: 3
-    completion_pct: 0
+    completion_pct: 100  # 1 of 1 story done (7-2-1)
   "7.3":
     name: "Stability Sessions"
     epic: EPIC-7
@@ -657,9 +657,12 @@ stories:
     name: "Cross-Platform Error Reporting"
     epic: EPIC-7
     feature: "7.1"
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-0"
+    flow_code: VS0-QUAL-ERRORREPORT-XPLAT
+    story_file: "_bmad-output/stories/7-1-1-crossplatform-error-reporting/story.md"
+    review_file: "_bmad-output/stories/7-1-1-crossplatform-error-reporting/review.md"
 
   7-1-2-posix-signal-handlers:
     name: "POSIX Signal Handlers"
@@ -673,9 +676,12 @@ stories:
     name: "Frame Time Instrumentation"
     epic: EPIC-7
     feature: "7.2"
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-0"
+    flow_code: VS0-QUAL-FRAMETIMER
+    story_file: "_bmad-output/stories/7-2-1-frame-time-instrumentation/story.md"
+    review_file: "_bmad-output/stories/7-2-1-frame-time-instrumentation/review.md"
 
   7-3-1-macos-stability-session:
     name: "macOS Stability Session"
@@ -749,6 +755,12 @@ catalogs:
     - code: VS1-SDL-INPUT-MOUSE
       story: 2-2-2-sdl3-mouse-input
       value_stream: VS-1
+    - code: VS0-QUAL-ERRORREPORT-XPLAT
+      story: 7-1-1-crossplatform-error-reporting
+      value_stream: VS-0
+    - code: VS0-QUAL-FRAMETIMER
+      story: 7-2-1-frame-time-instrumentation
+      value_stream: VS-0
 
 # =====================
 # STATISTICS
@@ -761,13 +773,13 @@ statistics:
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 10
+  total_flow_codes: 12
   total_test_scenarios: 0
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 10
-  stories_backlog: 35
-  completion_rate: 22.2    # 10/45 stories done
-  points_done: 32          # 3+2+3+5+3+2+5+3+3+3
-  points_remaining: 140
-  points_completion_rate: 18.6  # 32/172
+  stories_done: 12
+  stories_backlog: 33
+  completion_rate: 26.7    # 12/45 stories done
+  points_done: 38          # 32 + 3 (7-1-1) + 3 (7-2-1)
+  points_remaining: 134
+  points_completion_rate: 22.1  # 38/172

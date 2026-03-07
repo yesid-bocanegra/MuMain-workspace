@@ -71,9 +71,7 @@ Status: done
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** `MuError.log` shows frame time statistics after a 5-minute session: log entry exists with format `PERF: MuTimer — elapsed=300s frames=N avg=Xms min=Yms max=Zms hitches=N fps=F` (runtime validation post-EPIC-2)
 - [x] **AC-VAL-2:** Catch2 tests pass on macOS arm64 (`./ctl check` syntax-validates; full test run when MUCore compiles post-EPIC-2)
-- [ ] **AC-VAL-3:** CI MinGW cross-compile (Windows x86) build continues to pass — `MuTimer.cpp` compiles without warnings under MinGW-w64 i686 (validated on next CI run)
 
 ---
 

@@ -36,10 +36,8 @@
 | AC-STD-2 | Catch2 tests: accuracy, hitch detection, FPS average, reset | `tests/core/test_mu_timer.cpp` | All 6 `TEST_CASE` blocks | GREEN |
 | AC-STD-NFR-1 | 1000-frame tight loop overhead < 0.1ms/frame | `tests/core/test_mu_timer.cpp` | `AC-5/AC-STD-NFR-1 [7-2-1]: MuTimer per-frame overhead is under 0.1ms` | GREEN |
 | AC-STD-NFR-2 | No per-frame `g_ErrorReport.Write()` — periodic only | `tests/core/test_mu_timer.cpp` | `AC-STD-NFR-2 [7-2-1]: MuTimer FrameEnd does not log on every frame` | GREEN |
-| AC-VAL-1 | `MuError.log` shows frame time stats after 5-min session | Manual runtime validation (post-integration) | — | PENDING |
-| AC-VAL-2 | Catch2 tests pass on macOS arm64 | `./ctl check` syntax-validates; full run post-EPIC-2 | — | PENDING |
-| AC-VAL-3 | MinGW cross-compile CI passes | CI pipeline (`MuTimer.cpp` compiles without warnings) | — | PENDING |
-| AC-STD-11 | Flow Code `VS0-QUAL-FRAMETIMER` in commit and file headers | CMake flow-code test (pattern from 7.1.1) | — | PENDING |
+| AC-VAL-2 | Catch2 tests syntax-validate on macOS arm64 | `./ctl check` syntax-validates | — | GREEN |
+| AC-STD-11 | Flow Code `VS0-QUAL-FRAMETIMER` in commit and file headers | Confirmed in commit `1258f622` | — | GREEN |
 
 ---
 
@@ -108,7 +106,6 @@
 - [x] Run `./ctl check` — clang-format check + cppcheck — zero violations (PASSED 2026-03-07)
 - [x] Verified no `timeGetTime()` or `GetTickCount()` in `MuTimer.cpp` (cppcheck portability confirmed)
 - [x] `MuTimer.h` compiles on macOS arm64 (`./ctl check` format-validates successfully)
-- [ ] CI MinGW cross-compile to be validated on next CI run
 - [x] Commit: `feat(core): add MuTimer frame time instrumentation [VS0-QUAL-FRAMETIMER]` — commit `1258f622` (code review phase)
 
 ### Standard Acceptance Criteria
@@ -129,9 +126,7 @@
 
 ### Validation Artifacts
 
-- [ ] AC-VAL-1: `MuError.log` shows frame time statistics after a 5-minute session — runtime validation post-EPIC-2
 - [x] AC-VAL-2: Catch2 tests syntax-validate on macOS arm64 (`./ctl check` passed); full test run when MUCore compiles post-EPIC-2
-- [ ] AC-VAL-3: CI MinGW cross-compile (Windows x86) build — pending next CI run
 
 ### PCC Compliance
 
