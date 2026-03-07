@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-07T20:38:28.837608+00:00","event_type":"story_started","story_key":"3-3-1-macos-server-connectivity","step":null,"sprint":null,"epic":"3","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-07T20:38:28.837968+00:00","event_type":"step_started","story_key":"3-3-1-macos-server-connectivity","step":"create-story","sprint":null,"epic":"3","data":{}}
