@@ -7,3 +7,9 @@
 {"timestamp":"2026-03-07T00:17:52.640887+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"atdd","sprint":null,"epic":"2","data":{}}
 {"timestamp":"2026-03-07T00:24:07.180674+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"atdd","sprint":null,"epic":"2","data":{"duration_seconds":374.5,"input_tokens":7,"output_tokens":731}}
 {"timestamp":"2026-03-07T00:24:08.187799+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"dev-story","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T00:48:59.431679+00:00","event_type":"step_passed","story_key":"2-2-3-sdl3-text-input","step":"dev-story","sprint":null,"epic":"2","data":{"duration_seconds":1491.2,"input_tokens":7,"output_tokens":1332}}
+{"timestamp":"2026-03-07T00:49:00.443874+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
+{"timestamp":"2026-03-07T00:54:53.078233+00:00","event_type":"step_failed","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"duration_seconds":352.6,"retry_count":0,"error":"Exit code 1","input_tokens":27,"output_tokens":18810}}
+{"timestamp":"2026-03-07T00:54:53.082337+00:00","event_type":"step_retried","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"attempt":2}}
+{"timestamp":"2026-03-07T00:54:53.084550+00:00","event_type":"feedback_saved","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{"regression_target":"completeness-gate"}}
+{"timestamp":"2026-03-07T00:54:55.090157+00:00","event_type":"step_started","story_key":"2-2-3-sdl3-text-input","step":"completeness-gate","sprint":null,"epic":"2","data":{}}
