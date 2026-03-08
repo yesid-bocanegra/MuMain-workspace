@@ -218,6 +218,13 @@ critical_path:
       description: ".NET AOT native library loading differs per platform (dlopen vs LoadLibrary path resolution)"
       affected_stories: [3-1-2-connection-h-crossplatform, 3-3-1-macos-server-connectivity, 3-3-2-linux-server-connectivity]
       mitigation: "Abstract library loading behind PlatformLibrary; test with stub .so/.dylib first"
+      deferred_verification: |
+        Story 3.3.2 ATDD items deferred to EPIC-2 (linux runtime not yet available on macOS dev machine):
+        - Runtime AC-1/AC-2: mu::platform::Load() + symbol resolution on real Linux x64
+        - nm -gD symbol verification on actual .so output
+        - cmake --preset linux-x64 configure check with MU_DOTNET_LIB_EXT=.so log output
+        These will be re-verified when MuTests can execute on Linux (EPIC-2 removes windows.h PCH dependency).
+        Risk R6 mitigation (MU_DOTNET_LIB_DIR absolute path) is in place in code; runtime proof is deferred.
     - id: R7
       description: "char16_t encoding conversion may produce different results on GCC vs MSVC for edge cases"
       affected_stories: [3-2-1-char16t-encoding]

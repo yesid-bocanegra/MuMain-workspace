@@ -13,7 +13,7 @@
 |------|--------|-------|
 | 1. Quality Gate (this step) | PASSED | format-check + lint: 691 files, 0 violations |
 | 2. Code Review Analysis | COMPLETE | 2026-03-07 — 0 BLOCKER, 0 CRITICAL, 2 HIGH, 3 MEDIUM, 2 LOW |
-| 3. Code Review Finalize | pending | - |
+| 3. Code Review Finalize | COMPLETE | 2026-03-07 — 7 issues fixed (H-1, H-2, M-1, M-2, M-3, L-1, L-2) |
 
 ---
 
@@ -138,7 +138,7 @@ All implemented ACs verified with code evidence:
 | **Severity** | HIGH |
 | **Category** | MR-DEAD-CODE / Build Correctness |
 | **Location** | `MuMain/CMakeLists.txt:12` (add_subdirectory src) vs `:28-30` (add_compile_definitions MU_DOTNET_LIB_DIR) |
-| **Status** | pending |
+| **Status** | fixed |
 
 **Description:** `add_subdirectory("src")` is called at line 12, before `add_compile_definitions(MU_DOTNET_LIB_DIR="$<TARGET_FILE_DIR:Main>")` at line 29. In CMake, subdirectory scopes inherit parent directory properties as they exist at `add_subdirectory` call time — definitions added after that call do NOT propagate to targets created in the subdirectory. As a result, the `Main` and `MUCore` targets (defined in `src/CMakeLists.txt`) do NOT receive `MU_DOTNET_LIB_DIR`. When `Connection.h` is compiled as part of `Main`/`MUCore` on Linux, it falls into the `#else` branch at line 29-30 (bare filename), negating the Risk R6 mitigation the story was specifically designed to implement. The quality gate (clang-format + cppcheck) cannot detect this because compilation is skipped on macOS.
 
@@ -153,7 +153,7 @@ All implemented ACs verified with code evidence:
 | **Severity** | HIGH |
 | **Category** | Build Correctness |
 | **Location** | `MuMain/CMakeLists.txt:12` vs `:21` |
-| **Status** | pending |
+| **Status** | fixed |
 
 **Description:** Same ordering issue as H-1. `add_compile_definitions(MU_DOTNET_LIB_EXT=...)` at line 21 also occurs AFTER `add_subdirectory("src")` at line 12. Targets in `src/` (Main, MUCore) do not receive `MU_DOTNET_LIB_EXT`. `Connection.h:30` uses `MU_DOTNET_LIB_EXT` as a preprocessor token — if undefined, this is a compile error on Linux (or undefined behavior depending on compiler). The ATDD note mentions `cmake --preset linux-x64` configures cleanly but does not verify a successful compilation. Since compilation is blocked by EPIC-2 (windows.h PCH), this defect has been invisible, but it would surface in a non-windows.h build.
 
@@ -168,7 +168,7 @@ All implemented ACs verified with code evidence:
 | **Severity** | MEDIUM |
 | **Category** | Build Correctness |
 | **Location** | `MuMain/cmake/FindDotnetAOT.cmake:68-89` |
-| **Status** | pending |
+| **Status** | fixed |
 
 **Description:** The story Dev Notes state "Linux native dotnet preferred; WSL interop only if Linux dotnet absent." However, the `FindDotnetAOT.cmake` implementation does the opposite: when `MU_IS_WSL == TRUE`, it only checks Windows dotnet.exe candidates (`/mnt/c/Program Files/dotnet/dotnet.exe`) and skips `find_program(dotnet ...)` entirely. A WSL user who has installed native Linux dotnet (e.g., `dotnet-sdk-10.0` from Microsoft's APT feed) will have their native dotnet silently ignored, and the build will fail if Windows dotnet.exe is absent at the expected path.
 
@@ -183,7 +183,7 @@ All implemented ACs verified with code evidence:
 | **Severity** | MEDIUM |
 | **Category** | MR-BOILERPLATE / Cross-Platform |
 | **Location** | `MuMain/cmake/FindDotnetAOT.cmake:39-40` |
-| **Status** | pending |
+| **Status** | fixed |
 
 **Description:** The macOS branch checks `CMAKE_SYSTEM_PROCESSOR` for `arm64|aarch64` and selects between `osx-arm64` and `osx-x64`. The Linux branch unconditionally sets `MU_DOTNET_RID = "linux-x64"` without checking the processor. On Linux ARM64 (e.g., Raspberry Pi 4, AWS Graviton, Apple Silicon running Linux), the build would attempt to publish `linux-x64` AOT binaries which would fail or produce wrong-architecture libraries. The story scope targets x64 specifically, but inconsistency with the macOS precedent creates a gap for future Linux ARM64 support.
 
@@ -198,7 +198,7 @@ All implemented ACs verified with code evidence:
 | **Severity** | MEDIUM |
 | **Category** | ATDD-INCOMPLETE |
 | **Location** | `_bmad-output/stories/3-3-2-linux-server-connectivity/atdd.md:55-56, 81, 89` |
-| **Status** | pending |
+| **Status** | fixed |
 
 **Description:** ATDD checklist uses `[~]` for deferred items (4 items: Linux runtime AC-1/AC-2 verification, `nm` symbol verification, `cmake --preset linux-x64` configure check). These are EPIC-2-blocked and documented. However, the ATDD checklist's `Output Summary` states `implementation_checklist_complete: FALSE` — this is correct but the story is marked `done`. The deferred items represent real unverified claims about AC-1 and AC-2 runtime behavior. The story's risk register (`sprint-status.yaml` Risk R6) should be updated to track that runtime verification is deferred, not just the test execution. This is a documentation gap, not a code defect.
 
@@ -211,7 +211,7 @@ All implemented ACs verified with code evidence:
 | **Severity** | LOW |
 | **Category** | Code Style |
 | **Location** | `MuMain/tests/CMakeLists.txt:61-64` and `:73-76` |
-| **Status** | pending |
+| **Status** | fixed |
 
 **Description:** Both story 3.3.1 and 3.3.2 add `MU_TEST_LIBRARY_PATH` via `target_compile_definitions(MuTests PRIVATE ...)`. Since the conditions are mutually exclusive (`APPLE` vs `CMAKE_SYSTEM_NAME STREQUAL "Linux"`), this is safe in practice. However, on a hypothetical platform where both `APPLE` and `CMAKE_SYSTEM_NAME STREQUAL "Linux"` could both be true (impossible, but defensive), CMake would define the macro twice with different values, causing a compiler warning. A more robust approach would use a single conditional block with platform-specific values.
 
@@ -224,7 +224,7 @@ All implemented ACs verified with code evidence:
 | **Severity** | LOW |
 | **Category** | Code Quality |
 | **Location** | `MuMain/src/source/Dotnet/Connection.h:17-32` |
-| **Status** | pending |
+| **Status** | fixed |
 
 **Description:** `g_dotnetLibPath` is declared in an anonymous namespace AND as `inline`. This is pre-existing code (not introduced by 3.3.2), but the 3.3.2 modification adds a `#ifdef` branch that both use `inline`. Using both `namespace {}` (internal linkage) and `inline` (typically external linkage) is technically contradictory — `inline` in an anonymous namespace defaults to internal linkage, which is the correct behavior here, but the `inline` keyword is misleading/redundant. `munique_client_library_handle` at line 34 is `inline` but NOT in the anonymous namespace, which is also pre-existing. These are pre-existing style issues that 3.3.2 did not introduce but also did not clean up.
 
@@ -248,6 +248,71 @@ No ATDD phantom claims or false GREEN findings. All `[x]` items have verifiable 
 
 **Next step:** `/bmad:pcc:workflows:code-review-finalize 3-3-2-linux-server-connectivity`
 
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-07
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 7 |
+| Action Items Created | 0 |
+
+### Fix Progress
+
+| Iteration | Issues Fixed | Quality Gate | Timestamp |
+|-----------|--------------|--------------|-----------|
+| 1 | 7 (H-1, H-2, M-1, M-2, M-3, L-1, L-2) | PASSED (691 files, 0 violations) | 2026-03-07 |
+
+### Resolution Details
+
+- **H-1:** FIXED — moved `add_compile_definitions(MU_DOTNET_LIB_EXT=...)` and `if(UNIX)` block to BEFORE `add_subdirectory("src")` in `MuMain/CMakeLists.txt`. `Main`/`MUCore`/`MUGame` targets now receive both definitions.
+- **H-2:** FIXED — same reorder as H-1. `MU_DOTNET_LIB_EXT` now propagates correctly to all subdirectory targets.
+- **M-1:** FIXED — WSL branch of `FindDotnetAOT.cmake` now tries `find_program(DOTNETAOT_EXECUTABLE dotnet ...)` first; falls back to Windows dotnet.exe candidates only if native Linux dotnet is absent.
+- **M-2:** FIXED — Linux branch of `FindDotnetAOT.cmake` now checks `CMAKE_SYSTEM_PROCESSOR` for `arm64|aarch64` and sets `MU_DOTNET_RID = "linux-arm64"` or `"linux-x64"` accordingly, mirroring macOS logic.
+- **M-3:** FIXED (documentation) — Added `deferred_verification` field to Risk R6 in `sprint-status.yaml` documenting the 4 deferred ATDD items (Linux runtime AC-1/AC-2, nm symbol check, cmake configure check) and the conditions under which they will be re-verified (EPIC-2 removes windows.h PCH).
+- **L-1:** FIXED — Consolidated the two `MU_TEST_LIBRARY_PATH` `target_compile_definitions` blocks (3.3.1 APPLE and 3.3.2 Linux) into a single `if/elseif` block in `tests/CMakeLists.txt`, eliminating the potential for duplicate-definition warnings.
+- **L-2:** FIXED — Removed redundant/misleading `inline` keywords from `g_dotnetLibPath` inside the anonymous namespace in `Connection.h`. Anonymous namespace already provides internal linkage; `inline` is contradictory there. Added comment explaining the design choice.
+
+### Story Status Update
+
+- **Previous Status:** done (correct — maintained)
+- **New Status:** done
+- **Story File Updated:** No status change needed (was already done)
+- **ATDD Checklist:** 4 deferred items ([~]) remain correctly deferred per EPIC-2 block; no changes to checklist
+
+### Validation Gate Results
+
+| Gate | Result | Notes |
+|------|--------|-------|
+| Blocker re-check | PASS | 0 remaining blockers |
+| Design compliance | SKIP | story_type: infrastructure |
+| Checkbox gate | PASS* | Task 4 subtasks deferred to EPIC-2 (same pattern as sibling 3.3.1) |
+| Catalog verification | PASS | No new API/event/flow catalog entries (infrastructure story) |
+| Reachability | PASS | No catalog entries to verify |
+| AC verification | PASS | 14/14 implementable ACs verified; 7 BLOCKED/MANUAL/DEFERRED documented |
+| Test artifacts | PASS | `_bmad-output/test-scenarios/epic-3/3-3-2-linux-server-connectivity.md` exists |
+| AC-VAL gate | PASS* | AC-VAL-1/2/3 BLOCKED/MANUAL (same pre-established pattern as 3.3.1) |
+| E2E test quality | SKIP | story_type: infrastructure |
+| E2E regression | SKIP | story_type: infrastructure |
+| AC compliance | SKIP | story_type: infrastructure |
+| Boot verification | SKIP | not configured for cpp-cmake |
+| Final quality gate | PASS | `./ctl check` 691 files, 0 violations |
+| Contract preservation | PASS | No API contracts introduced (validation-only story) |
+
+*Deferred items follow pre-established project pattern for EPIC-2-blocked infrastructure stories (identical to sibling story 3-3-1-macos-server-connectivity).
+
+### Files Modified
+
+- `MuMain/CMakeLists.txt` — reordered: `add_compile_definitions` for MU_DOTNET_LIB_EXT/MU_DOTNET_LIB_DIR moved before `add_subdirectory("src")` (H-1/H-2 fix)
+- `MuMain/cmake/FindDotnetAOT.cmake` — WSL branch now tries native Linux dotnet first (M-1 fix); Linux ARM64 RID support added (M-2 fix)
+- `MuMain/tests/CMakeLists.txt` — consolidated MU_TEST_LIBRARY_PATH into single if/elseif block (L-1 fix)
+- `MuMain/src/source/Dotnet/Connection.h` — removed redundant `inline` from anonymous namespace variables (L-2 fix)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` — Risk R6 updated with deferred_verification field (M-3 fix)
 
 ---
 
