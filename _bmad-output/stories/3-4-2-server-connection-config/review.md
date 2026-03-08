@@ -42,7 +42,9 @@
 
 ## Fix Iterations
 
-_(no fixes required — quality gate passed on first iteration)_
+| Iteration | Component | Issue | Fix Applied | Gate After Fix |
+|-----------|-----------|-------|-------------|----------------|
+| 1 | mumain | clang-format violations in `PlatformCompat.h` (new `mu_get_app_dir()` shim added by story) + `stdafx.h` macro alignment | `make -C MuMain format` auto-applied | format-check PASSED |
 
 ---
 
@@ -58,15 +60,16 @@ _(no fixes required — quality gate passed on first iteration)_
 
 | Gate | Status | Iterations | Issues Fixed |
 |------|--------|------------|--------------|
-| format-check | PASSED | 1 | 0 |
+| format-check | PASSED | 2 | 1 (auto-formatted PlatformCompat.h + stdafx.h alignment) |
 | lint (cppcheck) | PASSED | 1 | 0 |
 | Boot Verification | SKIPPED (not configured) | — | — |
 | SonarCloud | SKIPPED (no sonar_key in cpp-cmake profile) | — | — |
-| **Overall** | **PASSED** | 1 | 0 |
+| **Overall** | **PASSED** | 2 | 1 |
 
-**Files checked:** 697 (up from 693 — 4 new files added by this story: IniFile.h, GameConfigValidation.h, GameConfigValidation.cpp, test_server_config_validation.cpp)
+**Files checked:** 697
+**Auto-fix applied:** `make format` run to correct clang-format alignment violations in `PlatformCompat.h` (new `mu_get_app_dir()` shim added by this story) and `stdafx.h` macro alignment
 
-**./ctl check output:** `Quality gate passed` (exit code 0)
+**./ctl check output:** format-check exit 0, lint exit 0
 
 ### Infrastructure Story — AC Test Check
 
@@ -78,9 +81,9 @@ _(no fixes required — quality gate passed on first iteration)_
 
 | Gate | Status | Iterations | Issues Fixed |
 |------|--------|------------|--------------|
-| Backend (mumain) | PASSED | 1 | 0 |
+| Backend (mumain) | PASSED | 2 | 1 |
 | Frontend | N/A | — | — |
-| **Overall** | **PASSED** | 1 | 0 |
+| **Overall** | **PASSED** | 2 | 1 |
 
 **Quality gate_status:** PASSED
 
