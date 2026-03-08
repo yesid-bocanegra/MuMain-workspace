@@ -58,6 +58,8 @@ Status: ready-for-dev
 - [ ] **AC-STD-6:** Conventional commit: `feat(network): configurable server connection target`
 - [ ] **AC-STD-11:** Flow Code traceability — `VS1-NET-CONFIG-SERVER` appears in `GameConfig.cpp` header comment and in the new test file header — ATDD CMake script verifies
 - [ ] **AC-STD-13:** Quality gate passes — `./ctl check` clean (currently 693 files; count stays at 693 or increases by new file count)
+- [ ] **AC-STD-12:** N/A — config loading is a one-time startup operation (`GameConfig::Load()` called once in `WinMain()`); no runtime latency target applicable
+- [ ] **AC-STD-14:** Observability — diagnostic warnings logged to `MuError.log` via `g_ErrorReport.Write()` for invalid `ServerPort` and `ServerIP` values (patterns: `"NET: Invalid ServerPort ..."`, `"NET: Empty ServerIP ..."`)
 - [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
 - [ ] **AC-STD-20:** Contract Reachability — story introduces no new API/event/flow catalog entries (config is an internal concern)
 
