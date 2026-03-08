@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-08T22:33:50.422933+00:00","event_type":"story_started","story_key":"7-1-2-posix-signal-handlers","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-08T22:33:50.423247+00:00","event_type":"step_started","story_key":"7-1-2-posix-signal-handlers","step":"create-story","sprint":null,"epic":"7","data":{}}
