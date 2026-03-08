@@ -1,6 +1,6 @@
 {
   "story_key": "3-3-2-linux-server-connectivity",
-  "current_step": "validate-story",
-  "status": "completed",
-  "last_run": "2026-03-07T22:37:09.303607"
+  "current_step": "atdd",
+  "status": "in-progress",
+  "last_run": "2026-03-07T22:39:09.020745"
 }
