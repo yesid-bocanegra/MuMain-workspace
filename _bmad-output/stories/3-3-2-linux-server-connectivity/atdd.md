@@ -99,7 +99,7 @@
 
 ### Commit & Traceability
 
-- [ ] Commit message: `feat(network): validate Linux OpenMU connectivity`
+- [x] Commit message: `feat(network): validate Linux OpenMU connectivity` — committed 2026-03-07 (532a1184)
 - [x] Commit message or test file header contains `VS1-NET-VALIDATE-LINUX`
 - [x] No force push to main, no incomplete rebase (AC-STD-15)
 
