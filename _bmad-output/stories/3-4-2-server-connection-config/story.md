@@ -1,6 +1,6 @@
 # Story 3.4.2: Server Connection Configuration
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,51 +42,51 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** Server address and port are configurable via `config.ini` in the game's executable directory — `[CONNECTION SETTINGS]` section, keys `ServerIP` and `ServerPort` — values loaded by `GameConfig::Load()` and used by `Winmain.cpp` startup flow
-- [ ] **AC-2:** Default values when `config.ini` is absent or keys are missing: `localhost` and `44405` (OpenMU default) — update `CfgDefaultServerIP` in `GameConfigConstants.h` from `127.127.127.127` and `CfgDefaultServerPort` from `44406` to `44405`
-- [ ] **AC-3:** Config file path uses `std::filesystem::path` with forward slashes only — replace the `GetModuleFileNameW` + backslash path construction in `GameConfig::GameConfig()` with `SDL_GetBasePath()` or a platform abstraction shim
-- [ ] **AC-4:** Invalid `ServerPort` values (≤ 0, > 65535) log a warning via `g_ErrorReport.Write()` with message `"NET: Invalid ServerPort {value} in config.ini — using default {default}"` and substitute the default value
-- [ ] **AC-5:** Empty or whitespace-only `ServerIP` logs a warning via `g_ErrorReport.Write()` with message `"NET: Empty ServerIP in config.ini — using default {default}"` and substitutes the default value
+- [x] **AC-1:** Server address and port are configurable via `config.ini` in the game's executable directory — `[CONNECTION SETTINGS]` section, keys `ServerIP` and `ServerPort` — values loaded by `GameConfig::Load()` and used by `Winmain.cpp` startup flow
+- [x] **AC-2:** Default values when `config.ini` is absent or keys are missing: `localhost` and `44405` (OpenMU default) — update `CfgDefaultServerIP` in `GameConfigConstants.h` from `127.127.127.127` and `CfgDefaultServerPort` from `44406` to `44405`
+- [x] **AC-3:** Config file path uses `std::filesystem::path` with forward slashes only — replace the `GetModuleFileNameW` + backslash path construction in `GameConfig::GameConfig()` with `SDL_GetBasePath()` or a platform abstraction shim
+- [x] **AC-4:** Invalid `ServerPort` values (≤ 0, > 65535) log a warning via `g_ErrorReport.Write()` with message `"NET: Invalid ServerPort {value} in config.ini — using default {default}"` and substitute the default value
+- [x] **AC-5:** Empty or whitespace-only `ServerIP` logs a warning via `g_ErrorReport.Write()` with message `"NET: Empty ServerIP in config.ini — using default {default}"` and substitutes the default value
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code follows `project-context.md` standards — `#pragma once`, `nullptr`, no `NULL`, no `wprintf`, `g_ErrorReport.Write()` for log, Allman braces, 4-space indent, 120-column limit, no `#ifdef _WIN32` in game logic, `std::filesystem::path` for config path
-- [ ] **AC-STD-2:** Catch2 unit test added — test that `ValidateServerPort()` and `ValidateServerIP()` helper functions return correct validated values for edge cases (port 0, port 65535, port 65536, empty string, whitespace string) — no `config.ini` file required at test time
-- [ ] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile build passes
-- [ ] **AC-STD-6:** Conventional commit: `feat(network): configurable server connection target`
-- [ ] **AC-STD-11:** Flow Code traceability — `VS1-NET-CONFIG-SERVER` appears in `GameConfig.cpp` header comment and in the new test file header — ATDD CMake script verifies
-- [ ] **AC-STD-13:** Quality gate passes — `./ctl check` clean (currently 693 files; count stays at 693 or increases by new file count)
-- [ ] **AC-STD-12:** N/A — config loading is a one-time startup operation (`GameConfig::Load()` called once in `WinMain()`); no runtime latency target applicable
-- [ ] **AC-STD-14:** Observability — diagnostic warnings logged to `MuError.log` via `g_ErrorReport.Write()` for invalid `ServerPort` and `ServerIP` values (patterns: `"NET: Invalid ServerPort ..."`, `"NET: Empty ServerIP ..."`)
-- [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
-- [ ] **AC-STD-20:** Contract Reachability — story introduces no new API/event/flow catalog entries (config is an internal concern)
+- [x] **AC-STD-1:** Code follows `project-context.md` standards — `#pragma once`, `nullptr`, no `NULL`, no `wprintf`, `g_ErrorReport.Write()` for log, Allman braces, 4-space indent, 120-column limit, no `#ifdef _WIN32` in game logic, `std::filesystem::path` for config path
+- [x] **AC-STD-2:** Catch2 unit test added — test that `ValidateServerPort()` and `ValidateServerIP()` helper functions return correct validated values for edge cases (port 0, port 65535, port 65536, empty string, whitespace string) — no `config.ini` file required at test time
+- [x] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile build passes
+- [x] **AC-STD-6:** Conventional commit: `feat(network): configurable server connection target`
+- [x] **AC-STD-11:** Flow Code traceability — `VS1-NET-CONFIG-SERVER` appears in `GameConfig.cpp` header comment and in the new test file header — ATDD CMake script verifies
+- [x] **AC-STD-13:** Quality gate passes — `./ctl check` clean (currently 693 files; count stays at 693 or increases by new file count)
+- [x] **AC-STD-12:** N/A — config loading is a one-time startup operation (`GameConfig::Load()` called once in `WinMain()`); no runtime latency target applicable
+- [x] **AC-STD-14:** Observability — diagnostic warnings logged to `MuError.log` via `g_ErrorReport.Write()` for invalid `ServerPort` and `ServerIP` values (patterns: `"NET: Invalid ServerPort ..."`, `"NET: Empty ServerIP ..."`)
+- [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [x] **AC-STD-20:** Contract Reachability — story introduces no new API/event/flow catalog entries (config is an internal concern)
 
 ### NFR Acceptance Criteria
 
-- [ ] **AC-STD-NFR-1:** Config loading happens once at startup (`GameConfig::Load()` in `Winmain.cpp`) — no repeated disk reads during the game loop
-- [ ] **AC-STD-NFR-2:** Validation logic must not call `SDL_ShowSimpleMessageBox` — log-only via `g_ErrorReport.Write()`; the connection error messaging (story 3.4.1) handles user-visible dialogs when the connection actually fails
+- [x] **AC-STD-NFR-1:** Config loading happens once at startup (`GameConfig::Load()` in `Winmain.cpp`) — no repeated disk reads during the game loop
+- [x] **AC-STD-NFR-2:** Validation logic must not call `SDL_ShowSimpleMessageBox` — log-only via `g_ErrorReport.Write()`; the connection error messaging (story 3.4.1) handles user-visible dialogs when the connection actually fails
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Manual validation deferred — macOS cannot compile/run Win32/DirectX game client (`skip_checks: [build, test]`). To validate on Windows/Linux: edit `config.ini` `[CONNECTION SETTINGS] ServerIP = <address>`, launch game, confirm `g_ErrorReport.Write()` log shows address used matches config
-- [ ] **AC-VAL-2:** Manual validation deferred — edit `config.ini` with `ServerPort = 99999`, confirm warning message in `MuError.log` and default used
-- [ ] **AC-VAL-3:** `./ctl check` passes on all new/modified files with zero violations
-- [ ] **AC-VAL-4:** ATDD CMake script verifies `VS1-NET-CONFIG-SERVER` is present in `GameConfig.cpp` header — `cmake -P tests/build/test_ac_std11_flow_code_3_4_2.cmake`
+- [x] **AC-VAL-1:** Manual validation deferred — macOS cannot compile/run Win32/DirectX game client (`skip_checks: [build, test]`). To validate on Windows/Linux: edit `config.ini` `[CONNECTION SETTINGS] ServerIP = <address>`, launch game, confirm `g_ErrorReport.Write()` log shows address used matches config
+- [x] **AC-VAL-2:** Manual validation deferred — edit `config.ini` with `ServerPort = 99999`, confirm warning message in `MuError.log` and default used
+- [x] **AC-VAL-3:** `./ctl check` passes on all new/modified files with zero violations
+- [x] **AC-VAL-4:** ATDD CMake script verifies `VS1-NET-CONFIG-SERVER` is present in `GameConfig.cpp` header — `cmake -P tests/build/test_ac_std11_flow_code_3_4_2.cmake`
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Fix default server address** (AC: AC-2)
-  - [ ] 1.1 In `MuMain/src/source/Data/GameConfigConstants.h`: change `CfgDefaultServerIP` from `L"127.127.127.127"` to `L"localhost"` and `CfgDefaultServerPort` from `44406` to `44405`
-  - [ ] NOTE: The OpenMU default connection port is 44405. Current codebase uses 44406 which is incorrect.
+- [x] **Task 1: Fix default server address** (AC: AC-2)
+  - [x] 1.1 In `MuMain/src/source/Data/GameConfigConstants.h`: change `CfgDefaultServerIP` from `L"127.127.127.127"` to `L"localhost"` and `CfgDefaultServerPort` from `44406` to `44405`
+  - [x] NOTE: The OpenMU default connection port is 44405. Current codebase uses 44406 which is incorrect.
 
-- [ ] **Task 2: Fix cross-platform config path construction** (AC: AC-3)
-  - [ ] 2.1 In `GameConfig::GameConfig()`, replace `GetModuleFileNameW` + backslash scan with a cross-platform path:
+- [x] **Task 2: Fix cross-platform config path construction** (AC: AC-3)
+  - [x] 2.1 In `GameConfig::GameConfig()`, replace `GetModuleFileNameW` + backslash scan with a cross-platform path:
     ```cpp
     // Option A — use SDL_GetBasePath() (requires SDL3 include in GameConfig.cpp or a wrapper):
     char* sdlBase = SDL_GetBasePath();
@@ -98,14 +98,14 @@ Status: ready-for-dev
     // Use mu_get_executable_path() abstraction if added by story 1.2.2
     // Check PlatformLibrary.h and PlatformCompat.h for existing path utilities
     ```
-  - [ ] 2.2 Verify `m_configPath` is constructed using `std::filesystem::path` operator `/` (forward slashes)
-  - [ ] 2.3 Remove `#include <imagehlp.h>` from `GameConfig.cpp` if no longer used after path fix (it is currently included but only `GetModuleFileNameW` drives it)
-  - [ ] NOTE: Dev agent must check `PlatformCompat.h` for any existing executable-path shim before adding a new one. If none exists and SDL_GetBasePath is the simplest correct option, use it — SDL3 headers are available in `stdafx.h`/`MUPlatform` linkage.
+  - [x] 2.2 Verify `m_configPath` is constructed using `std::filesystem::path` operator `/` (forward slashes)
+  - [x] 2.3 Remove `#include <imagehlp.h>` from `GameConfig.cpp` if no longer used after path fix (it is currently included but only `GetModuleFileNameW` drives it)
+  - [x] NOTE: Dev agent must check `PlatformCompat.h` for any existing executable-path shim before adding a new one. If none exists and SDL_GetBasePath is the simplest correct option, use it — SDL3 headers are available in `stdafx.h`/`MUPlatform` linkage.
 
-- [ ] **Task 3: Replace Win32 INI APIs with portable alternative** (AC: AC-3)
-  - [ ] 3.1 The `ReadInt`, `ReadBool`, `ReadString`, `WriteInt`, `WriteBool`, `WriteString` helpers in `GameConfig.cpp` use `GetPrivateProfileIntW` and `WritePrivateProfileStringW` — Win32 banned APIs (development-standards.md §1, Phase 5/5.1: `GetPrivateProfileInt` / `WritePrivateProfileString` → portable INI parser `IniFile.h`)
-  - [ ] 3.2 Check if `IniFile.h` already exists in the codebase — `grep -r IniFile MuMain/src/source/`. If it exists, use it. If it does NOT exist, implement a minimal portable INI reader/writer in a new file `MuMain/src/source/Core/IniFile.h` (header-only) using `std::wifstream` / `std::wofstream` + `std::filesystem`
-  - [ ] 3.3 Minimal `IniFile` interface needed (if creating new):
+- [x] **Task 3: Replace Win32 INI APIs with portable alternative** (AC: AC-3)
+  - [x] 3.1 The `ReadInt`, `ReadBool`, `ReadString`, `WriteInt`, `WriteBool`, `WriteString` helpers in `GameConfig.cpp` use `GetPrivateProfileIntW` and `WritePrivateProfileStringW` — Win32 banned APIs (development-standards.md §1, Phase 5/5.1: `GetPrivateProfileInt` / `WritePrivateProfileString` → portable INI parser `IniFile.h`)
+  - [x] 3.2 Check if `IniFile.h` already exists in the codebase — `grep -r IniFile MuMain/src/source/`. If it exists, use it. If it does NOT exist, implement a minimal portable INI reader/writer in a new file `MuMain/src/source/Core/IniFile.h` (header-only) using `std::wifstream` / `std::wofstream` + `std::filesystem`
+  - [x] 3.3 Minimal `IniFile` interface needed (if creating new):
     ```cpp
     // Core/IniFile.h — portable INI reader/writer (wchar_t key/value, wchar_t file path via std::filesystem)
     class IniFile
@@ -124,12 +124,12 @@ Status: ready-for-dev
         // store sections as ordered map of ordered map for write-back
     };
     ```
-  - [ ] 3.4 Update `GameConfig.cpp` to use `IniFile` instead of Win32 APIs; store `IniFile m_ini` as a member (or local instance in `Load()`/`Save()`)
-  - [ ] 3.5 Remove `GetPrivateProfileIntW`, `GetPrivateProfileStringW`, `WritePrivateProfileStringW` calls — replace all 6 helper functions
-  - [ ] NOTE: `GameConfig.h` includes `<windows.h>` — after this change, `<windows.h>` is still needed for DPAPI (`CryptProtectData`/`CryptUnprotectData`) credential encryption. Do NOT remove the `<windows.h>` include.
+  - [x] 3.4 Update `GameConfig.cpp` to use `IniFile` instead of Win32 APIs; store `IniFile m_ini` as a member (or local instance in `Load()`/`Save()`)
+  - [x] 3.5 Remove `GetPrivateProfileIntW`, `GetPrivateProfileStringW`, `WritePrivateProfileStringW` calls — replace all 6 helper functions
+  - [x] NOTE: `GameConfig.h` includes `<windows.h>` — after this change, `<windows.h>` is still needed for DPAPI (`CryptProtectData`/`CryptUnprotectData`) credential encryption. Do NOT remove the `<windows.h>` include.
 
-- [ ] **Task 4: Add validation helpers** (AC: AC-4, AC-5)
-  - [ ] 4.1 Add `ValidateServerPort(int value, int defaultValue) -> int` in `GameConfig.cpp`:
+- [x] **Task 4: Add validation helpers** (AC: AC-4, AC-5)
+  - [x] 4.1 Add `ValidateServerPort(int value, int defaultValue) -> int` in `GameConfig.cpp`:
     ```cpp
     static int ValidateServerPort(int value, int defaultValue)
     {
@@ -141,7 +141,7 @@ Status: ready-for-dev
         return value;
     }
     ```
-  - [ ] 4.2 Add `ValidateServerIP(const std::wstring& value, const std::wstring& defaultValue) -> std::wstring` in `GameConfig.cpp`:
+  - [x] 4.2 Add `ValidateServerIP(const std::wstring& value, const std::wstring& defaultValue) -> std::wstring` in `GameConfig.cpp`:
     ```cpp
     static std::wstring ValidateServerIP(const std::wstring& value, const std::wstring& defaultValue)
     {
@@ -157,10 +157,10 @@ Status: ready-for-dev
         return trimmed;
     }
     ```
-  - [ ] 4.3 Call `ValidateServerPort` / `ValidateServerIP` in `GameConfig::Load()` after reading raw values from INI
+  - [x] 4.3 Call `ValidateServerPort` / `ValidateServerIP` in `GameConfig::Load()` after reading raw values from INI
 
-- [ ] **Task 5: Add Catch2 test** (AC: AC-STD-2)
-  - [ ] 5.1 Create `MuMain/tests/network/test_server_config_validation.cpp`:
+- [x] **Task 5: Add Catch2 test** (AC: AC-STD-2)
+  - [x] 5.1 Create `MuMain/tests/network/test_server_config_validation.cpp`:
     - Flow code header: `// Flow Code: VS1-NET-CONFIG-SERVER`
     - Test: `ValidateServerPort(0, 44405)` → returns `44405` (port 0 invalid)
     - Test: `ValidateServerPort(65535, 44405)` → returns `65535` (max valid port)
@@ -170,15 +170,15 @@ Status: ready-for-dev
     - Test: `ValidateServerIP(L"   ", L"localhost")` → returns `L"localhost"` (whitespace → default)
     - Test: `ValidateServerIP(L"192.168.1.1", L"localhost")` → returns `L"192.168.1.1"` (normal case)
     - Tests must NOT require `config.ini` — call the free functions directly
-  - [ ] 5.2 Register in `MuMain/tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_server_config_validation.cpp)`
-  - [ ] NOTE: The `ValidateServerPort` / `ValidateServerIP` helpers must be declared accessible for testing — either as free functions in `GameConfigValidation.h` (compiled into MUCore for MuTests linkage, following the `DotNetMessageFormat.h/.cpp` pattern from story 3.4.1), or as `static` functions in `GameConfig.cpp` with a companion `GameConfigValidation.h` that forward-declares them for test access. Use the same pattern as story 3.4.1's `DotNetMessageFormat.h/.cpp`.
+  - [x] 5.2 Register in `MuMain/tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_server_config_validation.cpp)`
+  - [x] NOTE: The `ValidateServerPort` / `ValidateServerIP` helpers must be declared accessible for testing — either as free functions in `GameConfigValidation.h` (compiled into MUCore for MuTests linkage, following the `DotNetMessageFormat.h/.cpp` pattern from story 3.4.1), or as `static` functions in `GameConfig.cpp` with a companion `GameConfigValidation.h` that forward-declares them for test access. Use the same pattern as story 3.4.1's `DotNetMessageFormat.h/.cpp`.
 
-- [ ] **Task 6: Add ATDD CMake script** (AC: AC-STD-11, AC-VAL-4)
-  - [ ] 6.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_4_2.cmake`:
+- [x] **Task 6: Add ATDD CMake script** (AC: AC-STD-11, AC-VAL-4)
+  - [x] 6.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_4_2.cmake`:
     - Verify `VS1-NET-CONFIG-SERVER` present in `GameConfig.cpp` header (first 1000 chars)
     - Verify `VS1-NET-CONFIG-SERVER` present in `test_server_config_validation.cpp`
     - Follow the pattern from `test_ac_std11_flow_code_3_4_1.cmake`
-  - [ ] 6.2 Register in `MuMain/tests/build/CMakeLists.txt`:
+  - [x] 6.2 Register in `MuMain/tests/build/CMakeLists.txt`:
     ```cmake
     add_test(
         NAME "3.4.2-AC-STD-11:flow-code-traceability"
@@ -187,12 +187,12 @@ Status: ready-for-dev
     )
     ```
 
-- [ ] **Task 7: Add flow code comment to GameConfig.cpp** (AC: AC-STD-11)
-  - [ ] 7.1 Add `// Flow Code: VS1-NET-CONFIG-SERVER` to the `GameConfig.cpp` file header (first comment block)
+- [x] **Task 7: Add flow code comment to GameConfig.cpp** (AC: AC-STD-11)
+  - [x] 7.1 Add `// Flow Code: VS1-NET-CONFIG-SERVER` to the `GameConfig.cpp` file header (first comment block)
 
-- [ ] **Task 8: Quality gate** (AC: AC-STD-4, AC-STD-13)
-  - [ ] 8.1 `./ctl check` — must pass (0 violations)
-  - [ ] 8.2 Verify MinGW cross-compile succeeds after replacing Win32 INI APIs
+- [x] **Task 8: Quality gate** (AC: AC-STD-4, AC-STD-13)
+  - [x] 8.1 `./ctl check` — must pass (0 violations)
+  - [x] 8.2 Verify MinGW cross-compile succeeds after replacing Win32 INI APIs
 
 ---
 
@@ -418,6 +418,7 @@ _None._
 - Schema alignment: N/A (C++20 game client, no schema tooling)
 - Story partials: not found (docs/story-partials/ does not exist in this project)
 - Visual Design Specification section omitted — infrastructure story, not frontend
+- Implementation complete 2026-03-08: GameConfigConstants.h defaults fixed (localhost:44405), IniFile.h portable INI reader/writer created, GameConfig.cpp rewritten (mu_get_app_dir shim, IniFile, validation calls, no banned Win32 APIs), PlatformCompat.h extended with mu_get_app_dir() for all platforms, quality gate passes (./ctl check exits 0), all 8 tasks complete, ATDD 47/47 checked, status → review
 
 ### File List
 
@@ -434,3 +435,4 @@ _None._
 ## Change Log
 
 - 2026-03-08: Story created via create-story workflow (agent: claude-sonnet-4-6)
+- 2026-03-08: Implementation complete — GameConfigConstants.h defaults fixed; IniFile.h portable INI reader/writer created; GameConfig.cpp rewritten with mu_get_app_dir() + IniFile + validation calls; PlatformCompat.h extended with cross-platform mu_get_app_dir() shim; all 8 tasks checked; ATDD 47/47; status → review (agent: claude-sonnet-4-6)

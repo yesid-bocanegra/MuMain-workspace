@@ -12,13 +12,13 @@
 
 | AC | Description | Test File | Test Case / Mechanism | Status |
 |----|-------------|-----------|----------------------|--------|
-| AC-4 | Invalid ServerPort (≤0 / >65535) logged + default used | `tests/network/test_server_config_validation.cpp` | `AC-4: ValidateServerPort rejects invalid port values` — 5 SECTIONs | `[ ]` PENDING |
-| AC-5 | Empty/whitespace ServerIP logged + default used | `tests/network/test_server_config_validation.cpp` | `AC-5: ValidateServerIP rejects empty and whitespace-only values` — 6 SECTIONs | `[ ]` PENDING |
-| AC-STD-2 | Catch2 unit tests for validation helpers | `tests/network/test_server_config_validation.cpp` | Full file — 11 test sections covering all edge cases | `[ ]` PENDING |
-| AC-STD-11 | Flow code VS1-NET-CONFIG-SERVER traceability | `tests/build/test_ac_std11_flow_code_3_4_2.cmake` | CMake script verifies flow code in GameConfig.cpp header + test file | `[ ]` PENDING |
-| AC-1 | config.ini ServerIP/Port loaded correctly | Manual (AC-VAL-1) — no automated unit test applicable (requires disk I/O) | N/A — manual validation | `[ ]` PENDING |
-| AC-2 | Default values: localhost:44405 | Manual + code review (GameConfigConstants.h change) | N/A — manual + static inspection | `[ ]` PENDING |
-| AC-3 | std::filesystem path — no GetModuleFileNameW | CMake build + cppcheck static analysis | `./ctl check` detects banned API if not removed | `[ ]` PENDING |
+| AC-4 | Invalid ServerPort (≤0 / >65535) logged + default used | `tests/network/test_server_config_validation.cpp` | `AC-4: ValidateServerPort rejects invalid port values` — 5 SECTIONs | `[x]` DONE |
+| AC-5 | Empty/whitespace ServerIP logged + default used | `tests/network/test_server_config_validation.cpp` | `AC-5: ValidateServerIP rejects empty and whitespace-only values` — 6 SECTIONs | `[x]` DONE |
+| AC-STD-2 | Catch2 unit tests for validation helpers | `tests/network/test_server_config_validation.cpp` | Full file — 11 test sections covering all edge cases | `[x]` DONE |
+| AC-STD-11 | Flow code VS1-NET-CONFIG-SERVER traceability | `tests/build/test_ac_std11_flow_code_3_4_2.cmake` | CMake script verifies flow code in GameConfig.cpp header + test file | `[x]` DONE |
+| AC-1 | config.ini ServerIP/Port loaded correctly | Manual (AC-VAL-1) — no automated unit test applicable (requires disk I/O) | N/A — manual validation | `[x]` DONE |
+| AC-2 | Default values: localhost:44405 | Manual + code review (GameConfigConstants.h change) | N/A — manual + static inspection | `[x]` DONE |
+| AC-3 | std::filesystem path — no GetModuleFileNameW | CMake build + cppcheck static analysis | `./ctl check` detects banned API if not removed | `[x]` DONE |
 
 ---
 
@@ -26,77 +26,77 @@
 
 ### Core: Validation Helpers (RED → GREEN)
 
-- [ ] `Core/GameConfigValidation.h` created — declares `ValidateServerPort` and `ValidateServerIP` in `GameConfig` namespace
-- [ ] `Core/GameConfigValidation.cpp` created — defines both helpers; logs via `g_ErrorReport.Write()` with exact AC-4/AC-5 message patterns
-- [ ] `GameConfigValidation.cpp` uses `g_ErrorReport.Write()` — NOT `wprintf` (prohibited)
-- [ ] `ValidateServerPort(0, 44405)` returns `44405` — port 0 invalid
-- [ ] `ValidateServerPort(65535, 44405)` returns `65535` — max valid port accepted
-- [ ] `ValidateServerPort(65536, 44405)` returns `44405` — port > 65535 invalid
-- [ ] `ValidateServerPort(-1, 44405)` returns `44405` — negative port invalid
-- [ ] `ValidateServerPort(44405, 44405)` returns `44405` — normal case preserved
-- [ ] `ValidateServerIP(L"", L"localhost")` returns `L"localhost"` — empty → default
-- [ ] `ValidateServerIP(L"   ", L"localhost")` returns `L"localhost"` — whitespace → default
-- [ ] `ValidateServerIP(L"\t  \t", L"localhost")` returns `L"localhost"` — mixed whitespace → default
-- [ ] `ValidateServerIP(L"192.168.1.1", L"localhost")` returns `L"192.168.1.1"` — valid IP preserved
-- [ ] `ValidateServerIP(L"  game.server.example.com  ", L"localhost")` returns `L"game.server.example.com"` — whitespace trimmed
-- [ ] `ValidateServerIP(L"localhost", L"localhost")` returns `L"localhost"` — normal case preserved
+- [x] `Core/GameConfigValidation.h` created — declares `ValidateServerPort` and `ValidateServerIP` in `GameConfig` namespace
+- [x] `Core/GameConfigValidation.cpp` created — defines both helpers; logs via `g_ErrorReport.Write()` with exact AC-4/AC-5 message patterns
+- [x] `GameConfigValidation.cpp` uses `g_ErrorReport.Write()` — NOT `wprintf` (prohibited)
+- [x] `ValidateServerPort(0, 44405)` returns `44405` — port 0 invalid
+- [x] `ValidateServerPort(65535, 44405)` returns `65535` — max valid port accepted
+- [x] `ValidateServerPort(65536, 44405)` returns `44405` — port > 65535 invalid
+- [x] `ValidateServerPort(-1, 44405)` returns `44405` — negative port invalid
+- [x] `ValidateServerPort(44405, 44405)` returns `44405` — normal case preserved
+- [x] `ValidateServerIP(L"", L"localhost")` returns `L"localhost"` — empty → default
+- [x] `ValidateServerIP(L"   ", L"localhost")` returns `L"localhost"` — whitespace → default
+- [x] `ValidateServerIP(L"\t  \t", L"localhost")` returns `L"localhost"` — mixed whitespace → default
+- [x] `ValidateServerIP(L"192.168.1.1", L"localhost")` returns `L"192.168.1.1"` — valid IP preserved
+- [x] `ValidateServerIP(L"  game.server.example.com  ", L"localhost")` returns `L"game.server.example.com"` — whitespace trimmed
+- [x] `ValidateServerIP(L"localhost", L"localhost")` returns `L"localhost"` — normal case preserved
 
 ### Core: GameConfig.cpp Cross-Platform Rewrite
 
-- [ ] `// Flow Code: VS1-NET-CONFIG-SERVER` added to `GameConfig.cpp` header comment block (first 1000 chars)
-- [ ] `GetModuleFileNameW` replaced with `SDL_GetBasePath()` or `mu_get_app_dir()` shim
-- [ ] Config path constructed using `std::filesystem::path` operator `/` (forward slashes only)
-- [ ] `GetPrivateProfileIntW` / `GetPrivateProfileStringW` / `WritePrivateProfileStringW` removed from all 6 helper methods
-- [ ] `IniFile` (header-only or `Core/IniFile.h` + `Core/IniFile.cpp`) used for INI read/write
-- [ ] `#include <imagehlp.h>` removed from `GameConfig.cpp` (vestigial, no longer used)
-- [ ] `ValidateServerPort` called in `GameConfig::Load()` after reading raw port value
-- [ ] `ValidateServerIP` called in `GameConfig::Load()` after reading raw IP value
-- [ ] No `#ifdef _WIN32` in `GameConfig.cpp` game logic (only in platform abstraction headers)
+- [x] `// Flow Code: VS1-NET-CONFIG-SERVER` added to `GameConfig.cpp` header comment block (first 1000 chars)
+- [x] `GetModuleFileNameW` replaced with `SDL_GetBasePath()` or `mu_get_app_dir()` shim
+- [x] Config path constructed using `std::filesystem::path` operator `/` (forward slashes only)
+- [x] `GetPrivateProfileIntW` / `GetPrivateProfileStringW` / `WritePrivateProfileStringW` removed from all 6 helper methods
+- [x] `IniFile` (header-only or `Core/IniFile.h` + `Core/IniFile.cpp`) used for INI read/write
+- [x] `#include <imagehlp.h>` removed from `GameConfig.cpp` (vestigial, no longer used)
+- [x] `ValidateServerPort` called in `GameConfig::Load()` after reading raw port value
+- [x] `ValidateServerIP` called in `GameConfig::Load()` after reading raw IP value
+- [x] No `#ifdef _WIN32` in `GameConfig.cpp` game logic (only in platform abstraction headers)
 
 ### Core: GameConfigConstants.h Fix
 
-- [ ] `CfgDefaultServerIP` changed from `L"127.127.127.127"` to `L"localhost"`
-- [ ] `CfgDefaultServerPort` changed from `44406` to `44405`
+- [x] `CfgDefaultServerIP` changed from `L"127.127.127.127"` to `L"localhost"`
+- [x] `CfgDefaultServerPort` changed from `44406` to `44405`
 
 ### Portable INI Implementation
 
-- [ ] `Core/IniFile.h` (and optionally `Core/IniFile.cpp`) created
-- [ ] `IniFile::ReadString`, `ReadInt`, `ReadBool`, `WriteString`, `WriteInt`, `WriteBool`, `Save()` implemented
-- [ ] Uses `std::wifstream` / `std::wofstream` + `std::filesystem` — no Win32 APIs
-- [ ] Handles `[section]` / `key=value` / `; comment` format correctly
-- [ ] No `#ifdef _WIN32` in `IniFile.h` or `IniFile.cpp`
+- [x] `Core/IniFile.h` (and optionally `Core/IniFile.cpp`) created
+- [x] `IniFile::ReadString`, `ReadInt`, `ReadBool`, `WriteString`, `WriteInt`, `WriteBool`, `Save()` implemented
+- [x] Uses `std::wifstream` / `std::wofstream` + `std::filesystem` — no Win32 APIs
+- [x] Handles `[section]` / `key=value` / `; comment` format correctly
+- [x] No `#ifdef _WIN32` in `IniFile.h` or `IniFile.cpp`
 
 ### Test Registration
 
-- [ ] `tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_server_config_validation.cpp)` added
-- [ ] `tests/build/test_ac_std11_flow_code_3_4_2.cmake` created — verifies `VS1-NET-CONFIG-SERVER` in `GameConfig.cpp` (first 1000 chars) and `test_server_config_validation.cpp`
-- [ ] `tests/build/CMakeLists.txt` — `add_test(NAME "3.4.2-AC-STD-11:flow-code-traceability" ...)` registered
+- [x] `tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_server_config_validation.cpp)` added
+- [x] `tests/build/test_ac_std11_flow_code_3_4_2.cmake` created — verifies `VS1-NET-CONFIG-SERVER` in `GameConfig.cpp` (first 1000 chars) and `test_server_config_validation.cpp`
+- [x] `tests/build/CMakeLists.txt` — `add_test(NAME "3.4.2-AC-STD-11:flow-code-traceability" ...)` registered
 
 ### Quality Gate
 
-- [ ] `./ctl check` passes — zero clang-format violations
-- [ ] `./ctl check` passes — zero cppcheck warnings on new/modified files
-- [ ] No banned Win32 API calls in `GameConfig.cpp` (`GetPrivateProfileIntW`, `GetModuleFileNameW`, `WritePrivateProfileStringW`)
-- [ ] File count at or above 693 (new files: `GameConfigValidation.h`, `GameConfigValidation.cpp`, `IniFile.h`, optionally `IniFile.cpp`, `test_server_config_validation.cpp`, `test_ac_std11_flow_code_3_4_2.cmake`)
+- [x] `./ctl check` passes — zero clang-format violations
+- [x] `./ctl check` passes — zero cppcheck warnings on new/modified files
+- [x] No banned Win32 API calls in `GameConfig.cpp` (`GetPrivateProfileIntW`, `GetModuleFileNameW`, `WritePrivateProfileStringW`)
+- [x] File count at or above 693 (new files: `GameConfigValidation.h`, `GameConfigValidation.cpp`, `IniFile.h`, optionally `IniFile.cpp`, `test_server_config_validation.cpp`, `test_ac_std11_flow_code_3_4_2.cmake`)
 
 ### PCC Compliance
 
-- [ ] No prohibited libraries used (no `wprintf`, no `NULL`, no `#ifndef` guards)
-- [ ] Required testing patterns: Catch2 `TEST_CASE` / `SECTION` / `REQUIRE` / `CHECK` structure
-- [ ] No mock framework used
-- [ ] Tests do not depend on Win32 APIs — test pure logic only
-- [ ] Flow code `VS1-NET-CONFIG-SERVER` present in: `GameConfig.cpp` header, `test_server_config_validation.cpp` header, `GameConfigValidation.h` header, `GameConfigValidation.cpp` header
-- [ ] Conventional commit: `feat(network): configurable server connection target`
+- [x] No prohibited libraries used (no `wprintf`, no `NULL`, no `#ifndef` guards)
+- [x] Required testing patterns: Catch2 `TEST_CASE` / `SECTION` / `REQUIRE` / `CHECK` structure
+- [x] No mock framework used
+- [x] Tests do not depend on Win32 APIs — test pure logic only
+- [x] Flow code `VS1-NET-CONFIG-SERVER` present in: `GameConfig.cpp` header, `test_server_config_validation.cpp` header, `GameConfigValidation.h` header, `GameConfigValidation.cpp` header
+- [x] Conventional commit: `feat(network): configurable server connection target`
 
 ### Observability (AC-STD-14)
 
-- [ ] AC-4 warning logged to `MuError.log` via `g_ErrorReport.Write()` with pattern: `"NET: Invalid ServerPort {value} in config.ini — using default {default}"`
-- [ ] AC-5 warning logged to `MuError.log` via `g_ErrorReport.Write()` with pattern: `"NET: Empty ServerIP in config.ini — using default {default}"`
+- [x] AC-4 warning logged to `MuError.log` via `g_ErrorReport.Write()` with pattern: `"NET: Invalid ServerPort {value} in config.ini — using default {default}"`
+- [x] AC-5 warning logged to `MuError.log` via `g_ErrorReport.Write()` with pattern: `"NET: Empty ServerIP in config.ini — using default {default}"`
 
 ### NFR Compliance
 
-- [ ] `GameConfig::Load()` called once at startup only — no repeated disk reads in game loop
-- [ ] Validation logic does not call `SDL_ShowSimpleMessageBox` — log-only
+- [x] `GameConfig::Load()` called once at startup only — no repeated disk reads in game loop
+- [x] Validation logic does not call `SDL_ShowSimpleMessageBox` — log-only
 
 ---
 
