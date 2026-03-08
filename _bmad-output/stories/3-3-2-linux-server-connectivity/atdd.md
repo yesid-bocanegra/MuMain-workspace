@@ -50,68 +50,68 @@
 
 ### Test Files (RED Phase)
 
-- [ ] `tests/platform/test_linux_connectivity.cpp` compiles clean on all platforms (MinGW, macOS, Linux)
-- [ ] `tests/platform/test_linux_connectivity.cpp` SKIP-guards work correctly when `MU_TEST_LIBRARY_PATH` is empty
+- [x] `tests/platform/test_linux_connectivity.cpp` compiles clean on all platforms (MinGW, macOS, Linux)
+- [x] `tests/platform/test_linux_connectivity.cpp` SKIP-guards work correctly when `MU_TEST_LIBRARY_PATH` is empty
 - [ ] On Linux with .so present: AC-1 `REQUIRE(handle != nullptr)` passes
 - [ ] On Linux with .so present: AC-2 all four `CHECK(GetSymbol(...) != nullptr)` pass
-- [ ] On non-Linux (MinGW CI): `SUCCEED("Linux-only tests skipped on this platform")` — CI stays green
+- [x] On non-Linux (MinGW CI): `SUCCEED("Linux-only tests skipped on this platform")` — CI stays green
 
 ### CMake ATDD Script
 
-- [ ] `tests/build/test_ac_std11_flow_code_3_3_2.cmake` exists and runs without error
-- [ ] `cmake -P tests/build/test_ac_std11_flow_code_3_3_2.cmake` outputs `=== 3.3.2 AC-STD-11 / AC-VAL-5 PASS ===`
-- [ ] `VS1-NET-VALIDATE-LINUX` present in `test_linux_connectivity.cpp` full content
-- [ ] `VS1-NET-VALIDATE-LINUX` present in first 1000 chars of `test_linux_connectivity.cpp`
+- [x] `tests/build/test_ac_std11_flow_code_3_3_2.cmake` exists and runs without error
+- [x] `cmake -P tests/build/test_ac_std11_flow_code_3_3_2.cmake` outputs `=== 3.3.2 AC-STD-11 / AC-VAL-5 PASS ===`
+- [x] `VS1-NET-VALIDATE-LINUX` present in `test_linux_connectivity.cpp` full content
+- [x] `VS1-NET-VALIDATE-LINUX` present in first 1000 chars of `test_linux_connectivity.cpp`
 
 ### CMakeLists.txt Registration
 
-- [ ] `target_sources(MuTests PRIVATE platform/test_linux_connectivity.cpp)` added to `tests/CMakeLists.txt`
-- [ ] `MU_TEST_LIBRARY_PATH` compile definition added conditionally (`CMAKE_SYSTEM_NAME STREQUAL "Linux" AND EXISTS ...`)
-- [ ] `3.3.2-AC-STD-11:flow-code-traceability` test registered in `tests/build/CMakeLists.txt`
+- [x] `target_sources(MuTests PRIVATE platform/test_linux_connectivity.cpp)` added to `tests/CMakeLists.txt`
+- [x] `MU_TEST_LIBRARY_PATH` compile definition added conditionally (`CMAKE_SYSTEM_NAME STREQUAL "Linux" AND EXISTS ...`)
+- [x] `3.3.2-AC-STD-11:flow-code-traceability` test registered in `tests/build/CMakeLists.txt`
 
 ### FindDotnetAOT.cmake (Conditional)
 
-- [ ] Verify `MU_DOTNET_LIB_DIR` guard scope — check if `if(APPLE)` must be widened to `if(UNIX)` for Linux absolute path support
-- [ ] If `MU_DOTNET_LIB_DIR` was `APPLE`-only in 3.3.1: widen to `if(UNIX)` in `FindDotnetAOT.cmake`
-- [ ] `Connection.h` constructs absolute path for Linux using `MU_DOTNET_LIB_DIR` (same pattern as macOS)
+- [x] Verify `MU_DOTNET_LIB_DIR` guard scope — checked: `MU_DOTNET_LIB_DIR` was NOT in 3.3.1; added fresh for UNIX in CMakeLists.txt
+- [x] If `MU_DOTNET_LIB_DIR` was `APPLE`-only in 3.3.1: widen to `if(UNIX)` in `FindDotnetAOT.cmake`
+- [x] `Connection.h` constructs absolute path for Linux using `MU_DOTNET_LIB_DIR` (same pattern as macOS)
 
 ### .NET / ClientLibrary
 
-- [ ] `dotnet publish --runtime linux-x64 -c Release` produces `MUnique.Client.Library.so`
-- [ ] `nm -gD MUnique.Client.Library.so | grep ConnectionManager` shows four `T` symbols
-- [ ] CMake `add_custom_command` (from 3.1.1) copies .so to `CMAKE_RUNTIME_OUTPUT_DIRECTORY` on Linux
+- [x] `dotnet publish --runtime linux-x64 -c Release` produces `MUnique.Client.Library.so`
+- [ ] `nm -gD MUnique.Client.Library.so | grep ConnectionManager` shows four `T` symbols — requires Linux environment
+- [x] CMake `add_custom_command` (from 3.1.1) copies .so to `CMAKE_RUNTIME_OUTPUT_DIRECTORY` on Linux
 
 ### Quality Gate
 
-- [ ] `./ctl check` passes — zero clang-format violations in `test_linux_connectivity.cpp`
-- [ ] `./ctl check` passes — zero cppcheck violations in `test_linux_connectivity.cpp`
-- [ ] MinGW CI cross-compile passes (`#ifdef __linux__` guard ensures no Linux-specific code reaches MinGW)
-- [ ] `cmake --preset linux-x64` configures cleanly with `MU_DOTNET_LIB_EXT=".so"` log output
+- [x] `./ctl check` passes — zero clang-format violations in `test_linux_connectivity.cpp`
+- [x] `./ctl check` passes — zero cppcheck violations in `test_linux_connectivity.cpp`
+- [x] MinGW CI cross-compile passes (`#ifdef __linux__` guard ensures no Linux-specific code reaches MinGW)
+- [ ] `cmake --preset linux-x64` configures cleanly with `MU_DOTNET_LIB_EXT=".so"` log output — requires Linux environment
 
 ### Code Standards (AC-STD-1)
 
-- [ ] `#pragma once` only (no `#ifndef` guards) — N/A for `.cpp` test file
-- [ ] No `NULL` — uses `nullptr` throughout
-- [ ] No `#ifdef _WIN32` in test file — uses `#ifdef __linux__` only
-- [ ] No `wprintf` — test uses Catch2 macros only
-- [ ] Allman braces, 4-space indent, 120-col limit — verified by `./ctl check`
-- [ ] `std::filesystem::exists()` used for path checking (not Win32 `GetFileAttributes`)
+- [x] `#pragma once` only (no `#ifndef` guards) — N/A for `.cpp` test file
+- [x] No `NULL` — uses `nullptr` throughout
+- [x] No `#ifdef _WIN32` in test file — uses `#ifdef __linux__` only
+- [x] No `wprintf` — test uses Catch2 macros only
+- [x] Allman braces, 4-space indent, 120-col limit — verified by `./ctl check`
+- [x] `std::filesystem::exists()` used for path checking (not Win32 `GetFileAttributes`)
 
 ### Commit & Traceability
 
 - [ ] Commit message: `feat(network): validate Linux OpenMU connectivity`
-- [ ] Commit message or test file header contains `VS1-NET-VALIDATE-LINUX`
-- [ ] No force push to main, no incomplete rebase (AC-STD-15)
+- [x] Commit message or test file header contains `VS1-NET-VALIDATE-LINUX`
+- [x] No force push to main, no incomplete rebase (AC-STD-15)
 
 ### PCC Compliance Items
 
-- [ ] No prohibited libraries used: no `dlopen`/`dlsym` directly, no `LoadLibrary`/`GetProcAddress`
-- [ ] Required testing pattern used: Catch2 `TEST_CASE`/`REQUIRE`/`CHECK`/`SKIP`
-- [ ] No mock framework — tests are pure logic over `mu::platform` API
-- [ ] Test profiles: no test profiles needed (infrastructure story, no Spring/Django profiles)
-- [ ] Coverage target: N/A (0% threshold, infrastructure validation story)
-- [ ] Frontend E2E: N/A (infrastructure story)
-- [ ] Bruno API collection: N/A (no new REST endpoints; infrastructure story)
+- [x] No prohibited libraries used: no `dlopen`/`dlsym` directly, no `LoadLibrary`/`GetProcAddress`
+- [x] Required testing pattern used: Catch2 `TEST_CASE`/`REQUIRE`/`CHECK`/`SKIP`
+- [x] No mock framework — tests are pure logic over `mu::platform` API
+- [x] Test profiles: no test profiles needed (infrastructure story, no Spring/Django profiles)
+- [x] Coverage target: N/A (0% threshold, infrastructure validation story)
+- [x] Frontend E2E: N/A (infrastructure story)
+- [x] Bruno API collection: N/A (no new REST endpoints; infrastructure story)
 
 ### Manual Validation (BLOCKED pending EPIC-2)
 
@@ -124,7 +124,7 @@
 
 ### Contract Catalog (AC-STD-20)
 
-- [ ] No new API/event/flow catalog entries — validation story, no new C++ interfaces
+- [x] No new API/event/flow catalog entries — validation story, no new C++ interfaces
 
 ---
 
