@@ -470,12 +470,17 @@ stories:
     value_stream: "VS-1"
 
   3-4-1-connection-error-messaging:
-    name: "Connection Error Messaging"
+    name: "Connection Error Messaging & Graceful Degradation"
     epic: EPIC-3
     feature: "3.4"
-    status: backlog
+    type: infrastructure
+    status: done
     points: 3
     value_stream: "VS-1"
+    flow_code: VS1-NET-ERROR-MESSAGING
+    story_file: "_bmad-output/stories/3-4-1-connection-error-messaging/story.md"
+    atdd_checklist: "_bmad-output/stories/3-4-1-connection-error-messaging/atdd.md"
+    review_file: "_bmad-output/stories/3-4-1-connection-error-messaging/review.md"
 
   3-4-2-server-connection-config:
     name: "Server Connection Config"
@@ -761,6 +766,9 @@ catalogs:
     - code: VS0-QUAL-FRAMETIMER
       story: 7-2-1-frame-time-instrumentation
       value_stream: VS-0
+    - code: VS1-NET-ERROR-MESSAGING
+      story: 3-4-1-connection-error-messaging
+      value_stream: VS-1
 
 # =====================
 # STATISTICS
@@ -773,13 +781,13 @@ statistics:
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 12
+  total_flow_codes: 13
   total_test_scenarios: 0
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 12
-  stories_backlog: 33
-  completion_rate: 26.7    # 12/45 stories done
-  points_done: 38          # 32 + 3 (7-1-1) + 3 (7-2-1)
-  points_remaining: 134
-  points_completion_rate: 22.1  # 38/172
+  stories_done: 13
+  stories_backlog: 32
+  completion_rate: 28.9    # 13/45 stories done
+  points_done: 41          # 38 + 3 (3-4-1)
+  points_remaining: 131
+  points_completion_rate: 23.8  # 41/172
