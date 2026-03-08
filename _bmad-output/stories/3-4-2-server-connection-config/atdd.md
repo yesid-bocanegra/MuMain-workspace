@@ -12,9 +12,9 @@
 
 | AC | Description | Test File | Test Case / Mechanism | Status |
 |----|-------------|-----------|----------------------|--------|
-| AC-4 | Invalid ServerPort (≤0 / >65535) logged + default used | `tests/network/test_server_config_validation.cpp` | `AC-4: ValidateServerPort rejects invalid port values` — 5 SECTIONs | `[x]` DONE |
+| AC-4 | Invalid ServerPort (≤0 / >65535) logged + default used | `tests/network/test_server_config_validation.cpp` | `AC-4: ValidateServerPort rejects invalid port values` — 6 SECTIONs (added port 1 lower boundary) | `[x]` DONE |
 | AC-5 | Empty/whitespace ServerIP logged + default used | `tests/network/test_server_config_validation.cpp` | `AC-5: ValidateServerIP rejects empty and whitespace-only values` — 6 SECTIONs | `[x]` DONE |
-| AC-STD-2 | Catch2 unit tests for validation helpers | `tests/network/test_server_config_validation.cpp` | Full file — 11 test sections covering all edge cases | `[x]` DONE |
+| AC-STD-2 | Catch2 unit tests for validation helpers | `tests/network/test_server_config_validation.cpp` | Full file — 12 test sections covering all edge cases | `[x]` DONE |
 | AC-STD-11 | Flow code VS1-NET-CONFIG-SERVER traceability | `tests/build/test_ac_std11_flow_code_3_4_2.cmake` | CMake script verifies flow code in GameConfig.cpp header + test file | `[x]` DONE |
 | AC-1 | config.ini ServerIP/Port loaded correctly | Manual (AC-VAL-1) — no automated unit test applicable (requires disk I/O) | N/A — manual validation | `[x]` DONE |
 | AC-2 | Default values: localhost:44405 | Manual + code review (GameConfigConstants.h change) | N/A — manual + static inspection | `[x]` DONE |
@@ -30,6 +30,7 @@
 - [x] `Core/GameConfigValidation.cpp` created — defines both helpers; logs via `g_ErrorReport.Write()` with exact AC-4/AC-5 message patterns
 - [x] `GameConfigValidation.cpp` uses `g_ErrorReport.Write()` — NOT `wprintf` (prohibited)
 - [x] `ValidateServerPort(0, 44405)` returns `44405` — port 0 invalid
+- [x] `ValidateServerPort(1, 44405)` returns `1` — minimum valid port (lower boundary)
 - [x] `ValidateServerPort(65535, 44405)` returns `65535` — max valid port accepted
 - [x] `ValidateServerPort(65536, 44405)` returns `44405` — port > 65535 invalid
 - [x] `ValidateServerPort(-1, 44405)` returns `44405` — negative port invalid

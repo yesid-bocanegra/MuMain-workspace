@@ -1,6 +1,6 @@
 # Story 3.4.2: Server Connection Configuration
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -431,6 +431,7 @@ _None._
 - [MODIFY] `MuMain/tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_server_config_validation.cpp)`
 - [CREATE] `MuMain/tests/build/test_ac_std11_flow_code_3_4_2.cmake` — ATDD: verify `VS1-NET-CONFIG-SERVER` in `GameConfig.cpp` header and test file header
 - [MODIFY] `MuMain/tests/build/CMakeLists.txt` — register `3.4.2-AC-STD-11:flow-code-traceability` test
+- [MODIFY] `MuMain/docs/build-guide.md` — updated build instructions (modified during ATDD phase, commits c0d4ee68, 492be55f)
 
 ## Change Log
 
