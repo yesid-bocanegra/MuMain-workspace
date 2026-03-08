@@ -52,8 +52,8 @@
 
 - [x] `tests/platform/test_linux_connectivity.cpp` compiles clean on all platforms (MinGW, macOS, Linux)
 - [x] `tests/platform/test_linux_connectivity.cpp` SKIP-guards work correctly when `MU_TEST_LIBRARY_PATH` is empty
-- [ ] On Linux with .so present: AC-1 `REQUIRE(handle != nullptr)` passes
-- [ ] On Linux with .so present: AC-2 all four `CHECK(GetSymbol(...) != nullptr)` pass
+- [~] On Linux with .so present: AC-1 `REQUIRE(handle != nullptr)` passes — DEFERRED: requires Linux runtime environment (not available on macOS dev machine)
+- [~] On Linux with .so present: AC-2 all four `CHECK(GetSymbol(...) != nullptr)` pass — DEFERRED: requires Linux runtime environment (not available on macOS dev machine)
 - [x] On non-Linux (MinGW CI): `SUCCEED("Linux-only tests skipped on this platform")` — CI stays green
 
 ### CMake ATDD Script
@@ -78,7 +78,7 @@
 ### .NET / ClientLibrary
 
 - [x] `dotnet publish --runtime linux-x64 -c Release` produces `MUnique.Client.Library.so`
-- [ ] `nm -gD MUnique.Client.Library.so | grep ConnectionManager` shows four `T` symbols — requires Linux environment
+- [~] `nm -gD MUnique.Client.Library.so | grep ConnectionManager` shows four `T` symbols — DEFERRED: requires Linux environment (nm tool not available on macOS)
 - [x] CMake `add_custom_command` (from 3.1.1) copies .so to `CMAKE_RUNTIME_OUTPUT_DIRECTORY` on Linux
 
 ### Quality Gate
@@ -86,7 +86,7 @@
 - [x] `./ctl check` passes — zero clang-format violations in `test_linux_connectivity.cpp`
 - [x] `./ctl check` passes — zero cppcheck violations in `test_linux_connectivity.cpp`
 - [x] MinGW CI cross-compile passes (`#ifdef __linux__` guard ensures no Linux-specific code reaches MinGW)
-- [ ] `cmake --preset linux-x64` configures cleanly with `MU_DOTNET_LIB_EXT=".so"` log output — requires Linux environment
+- [~] `cmake --preset linux-x64` configures cleanly with `MU_DOTNET_LIB_EXT=".so"` log output — DEFERRED: requires Linux environment (not available on macOS dev machine)
 
 ### Code Standards (AC-STD-1)
 
@@ -115,12 +115,12 @@
 
 ### Manual Validation (BLOCKED pending EPIC-2)
 
-- [ ] AC-3: Client connects to OpenMU server, handshake completes, server list received — BLOCKED (EPIC-2)
-- [ ] AC-4: Packet encryption output matches Windows baseline — BLOCKED (EPIC-2)
-- [ ] AC-5: Korean character name survives char16_t round-trip without corruption — BLOCKED (EPIC-2)
-- [ ] AC-VAL-1: Screenshot of server list on Linux — BLOCKED (EPIC-2)
-- [ ] AC-VAL-2: Wireshark capture matches Windows handshake bytes — BLOCKED (EPIC-2)
-- [ ] AC-VAL-3: Catch2 smoke test executes on Linux x64 — BLOCKED (EPIC-2 PCH fix)
+- [~] AC-3: Client connects to OpenMU server, handshake completes, server list received — BLOCKED (EPIC-2: windows.h PCH, external dependency)
+- [~] AC-4: Packet encryption output matches Windows baseline — BLOCKED (EPIC-2: windows.h PCH, external dependency)
+- [~] AC-5: Korean character name survives char16_t round-trip without corruption — BLOCKED (EPIC-2: windows.h PCH, external dependency)
+- [~] AC-VAL-1: Screenshot of server list on Linux — BLOCKED (EPIC-2: windows.h PCH, external dependency)
+- [~] AC-VAL-2: Wireshark capture matches Windows handshake bytes — BLOCKED (EPIC-2: windows.h PCH, external dependency)
+- [~] AC-VAL-3: Catch2 smoke test executes on Linux x64 — BLOCKED (EPIC-2: MuTests links MUCore which includes windows.h PCH)
 
 ### Contract Catalog (AC-STD-20)
 
