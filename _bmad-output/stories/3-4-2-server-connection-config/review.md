@@ -12,7 +12,7 @@
 |------|--------|
 | 1. Quality Gate | PASSED |
 | 2. Code Review Analysis | COMPLETE (re-run 2026-03-08, FRESH MODE) |
-| 3. Code Review Finalize | PENDING (re-run required after CRITICAL-1 fix) |
+| 3. Code Review Finalize | COMPLETE (2026-03-08) |
 
 ---
 
@@ -145,7 +145,7 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 - **Severity:** CRITICAL
 - **Category:** LOGIC
 - **File:Line:** `MuMain/src/source/Core/GameConfigValidation.cpp:17` + `GameConfigValidation.cpp:37`
-- **Status:** pending
+- **Status:** fixed
 - **Description:** Both `g_ErrorReport.Write()` format strings use `\xe2\x80\x94` in a `L"..."` wide string literal. In C++, `L"\xe2\x80\x94"` produces three distinct wide characters: U+00E2 (`â`), U+0080 (control), and U+0094 (control) — NOT the em-dash U+2014 (`—`). The bytes `0xE2 0x80 0x94` are the UTF-8 encoding of U+2014, but they are meaningless as individual wide chars. The AC-4 and AC-5 message patterns specified in the story story.md explicitly include "—" (em-dash), e.g., `"NET: Invalid ServerPort {value} in config.ini — using default {default}"`. The actual log output will contain three garbage characters instead. This is an AC violation: the log message pattern does not match what is specified in AC-4 and AC-5, and the observability requirement in AC-STD-14 is not met.
 - **Fix:** Replace `\xe2\x80\x94` with `\u2014` in both format strings:
   - Line 17: `L"NET: Invalid ServerPort %d in config.ini \u2014 using default %d\r\n"`
@@ -158,7 +158,7 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 - **Severity:** HIGH
 - **Category:** PERFORMANCE
 - **File:Line:** `MuMain/src/source/Data/GameConfig.cpp:83`
-- **Status:** pending
+- **Status:** fixed
 - **Description:** `GameConfig::Save()` creates `IniFile ini(m_configPath)` at line 83. The `IniFile` constructor unconditionally calls `Load()` (line 27 of `IniFile.h`), which opens and reads `config.ini` from disk. The method then overwrites all known keys via `WriteInt`/`WriteString`/`WriteBool` calls and calls `ini.Save()`. This means every `Save()` call performs a disk read followed by a disk write, even though all config values are already held in `GameConfig` member variables and the read is entirely wasted. `EncryptAndSaveCredentials()` (line 299) calls `Save()` on every login — this is the most frequent `Save()` path. The prior review fixed the double-Load in the constructor (CRITICAL-1); this pattern in `Save()` creates the same unnecessary disk read through a different code path. AC-STD-NFR-1 specifies "no repeated disk reads" — while technically "startup-only" in scope, this extends the pattern into credential-save operations.
 - **Fix:** Construct an `IniFile` without reading from disk (add a constructor overload that skips `Load()`), or construct a fresh `IniFile` via `IniFile ini; ini.SetPath(m_configPath);` pattern. Alternatively, the simplest fix is to write directly to `std::wofstream` in `Save()` without creating an `IniFile` instance — since `Save()` writes all fields in a known, fixed order, the full `IniFile` abstraction is not needed there.
 
@@ -169,7 +169,7 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 - **Severity:** MEDIUM
 - **Category:** CODE-QUALITY
 - **File:Line:** `MuMain/src/source/Core/GameConfigValidation.h:22` + `GameConfigValidation.h:27`
-- **Status:** pending
+- **Status:** fixed
 - **Description:** Both validation helpers return corrected values — they are the definition of "fallible functions whose return value must not be discarded" (CLAUDE.md conventions: `[[nodiscard]]` on new fallible functions). Without `[[nodiscard]]`, a future caller could write `GameConfigValidation::ValidateServerPort(rawPort, default);` without assigning the return value, silently skipping the validation. This violates the project convention and creates a latent correctness hazard.
 - **Fix:** Add `[[nodiscard]]` to both declarations in `GameConfigValidation.h`:
   - `[[nodiscard]] int ValidateServerPort(int value, int defaultValue);`
@@ -182,7 +182,7 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 - **Severity:** MEDIUM
 - **Category:** MR-DEAD-CODE
 - **File:Line:** `MuMain/tests/network/test_server_config_validation.cpp:10-13`
-- **Status:** pending
+- **Status:** fixed
 - **Description:** Lines 10-13 of the test file header read: `// RED PHASE: All tests compile but FAIL until the following are created: // - Core/GameConfigValidation.h ... // - Core/GameConfigValidation.cpp ...`. Both files were created in commit `c0d4ee68` and the story is done. These files now exist and the tests are GREEN. The stale RED PHASE comment will mislead future maintainers into thinking the test file is still in a failing pre-implementation state. The same class of issue was identified and fixed in `GameConfigValidation.cpp` as MEDIUM-1 in the prior review — the test file was missed.
 - **Fix:** Remove lines 10-13 (the RED PHASE comment block) from `test_server_config_validation.cpp`.
 
@@ -193,7 +193,7 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 - **Severity:** LOW
 - **Category:** ERROR-HANDLING
 - **File:Line:** `MuMain/src/source/Platform/PlatformCompat.h:17`
-- **Status:** pending
+- **Status:** fixed
 - **Description:** The Windows `mu_get_app_dir()` implementation at lines 14-19 calls `GetModuleFileNameW(nullptr, buf, MAX_PATH)` without checking the return value. If `GetModuleFileNameW` returns 0 (failure — e.g., buffer overflow or permission issue), `buf` is uninitialized. If it returns `MAX_PATH`, the path was truncated (no null terminator guaranteed in that case by Win32 contract). The Linux and macOS shims both check their return values and fall back to `current_path()`. The Windows implementation should do the same for consistency and correctness.
 - **Fix:** Add return-value check:
   ```cpp
@@ -209,7 +209,7 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 - **Severity:** LOW
 - **Category:** ERROR-HANDLING
 - **File:Line:** `MuMain/src/source/Core/IniFile.h:139-141`
-- **Status:** pending
+- **Status:** fixed
 - **Description:** `IniFile::Load()` returns silently when the file cannot be opened (`!in.is_open()`). This is intentional for the first-launch case where `config.ini` doesn't exist yet (defaults should be used). However, `IniFile::Save()` now logs an error for the equivalent open failure. A future maintainer reading `Load()` could interpret the silent `return` as a missing `g_ErrorReport.Write()` call and add one — breaking the expected first-launch behavior. There is no comment distinguishing the intentional silent-ok case from an error.
 - **Fix:** Add a comment: `// Intentional: if config.ini doesn't exist yet, all reads will use caller-supplied defaults.` before the `return`.
 
@@ -220,7 +220,7 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 - **Severity:** LOW
 - **Category:** DOCUMENTATION
 - **File:Line:** `MuMain/src/source/Data/GameConfigConstants.h:9`
-- **Status:** pending
+- **Status:** fixed
 - **Description:** `CfgSectionConnectionSettings = L"CONNECTION SETTINGS"` (with a space). This matches the story spec (`[CONNECTION SETTINGS]`). However, `IniFile.h` trims leading whitespace from section names (line 176) but not trailing whitespace, and section matching is case-sensitive and exact. If a handwritten `config.ini` uses `[Connection Settings]` or `[CONNECTION_SETTINGS]` the section will silently not match and the server IP/Port defaults will be used. This is a documentation gap — the expected exact key format is not commented in `GameConfigConstants.h`. The actual behavior is correct, but the fragility of case-sensitive exact matching is not surfaced.
 - **Fix:** Add a comment: `// Section name must match config.ini exactly (case-sensitive, space included).`
 
@@ -241,45 +241,41 @@ ATDD checklist fully green. All test files verified to exist with correct implem
 
 | Metric | Count |
 |--------|-------|
-| Issues Fixed | 10 |
+| Issues Fixed | 7 |
 | Action Items Created | 0 |
 
 ### Resolution Details
 
-- **CRITICAL-1:** fixed — removed `Load()` call from `GameConfig::GameConfig()` constructor; added member initializer list with defaults (fixes uninitialized member warning); load is now exclusively from `Winmain.cpp:998`
-- **HIGH-1:** fixed — removed 6 dead private INI helper declarations from `GameConfig.h` and their implementations from `GameConfig.cpp` (confirmed zero external callers)
-- **HIGH-2:** fixed — added `in.imbue(std::locale(""))` to `IniFile::Load()` and `out.imbue(std::locale(""))` to `IniFile::Save()` for cross-platform wide char encoding
-- **MEDIUM-1:** fixed — removed stale `// RED PHASE` / `// GREEN PHASE` comment block from `GameConfigValidation.cpp` header
-- **MEDIUM-2:** fixed — changed `EnsureSection` and `EnsureKey` from return-by-value (copy) to void pass-by-reference (in-place); updated all call sites
-- **MEDIUM-3:** fixed — renamed namespace from `GameConfig` to `GameConfigValidation` in `GameConfigValidation.h`, `GameConfigValidation.cpp`, `GameConfig.cpp`, and test file
-- **MEDIUM-4:** fixed — added `g_ErrorReport.Write()` call in `IniFile::Save()` before silent `return` on file open failure; added `#include "ErrorReport.h"` to `IniFile.h`
-- **LOW-1:** fixed — added `[MODIFY] MuMain/docs/build-guide.md` to story File List
-- **LOW-2:** fixed — added comment to `ValidateServerIP` in `GameConfigValidation.cpp` clarifying `erase(0, npos)` semantics
-- **LOW-3:** fixed — added `SECTION("AC-4: Port 1 is valid (minimum valid port) — returns 1")` to `test_server_config_validation.cpp`
+- **CRITICAL-1:** fixed — replaced `\xe2\x80\x94` UTF-8 byte escapes in both `L"..."` wide string literals in `GameConfigValidation.cpp` with `\u2014` (U+2014 em-dash); log messages now correctly produce em-dash as specified in AC-4 and AC-5
+- **HIGH-1:** fixed — added `SkipLoadTag` private tag type and `WriteOnly()` factory to `IniFile`; `GameConfig::Save()` now constructs `IniFile(m_configPath, IniFile::WriteOnly())` to skip the unnecessary disk read; `GameConfig::Load()` still uses the standard read-on-construct path
+- **MEDIUM-1:** fixed — added `[[nodiscard]]` to both `ValidateServerPort` and `ValidateServerIP` declarations in `GameConfigValidation.h`
+- **MEDIUM-2:** fixed — removed stale RED PHASE comment block (lines 10-13) from `test_server_config_validation.cpp` header; both `GameConfigValidation.h` and `GameConfigValidation.cpp` exist and tests are GREEN
+- **LOW-1:** fixed — added `DWORD len` return value check to `GetModuleFileNameW` in the Windows `mu_get_app_dir()` implementation in `PlatformCompat.h`; falls back to `std::filesystem::current_path()` on failure or truncation
+- **LOW-2:** fixed — added intentional comment to `IniFile::Load()` silent return on `!in.is_open()` distinguishing first-launch expected behavior from an error path
+- **LOW-3:** fixed — added comment to `CfgSectionConnectionSettings` in `GameConfigConstants.h` documenting case-sensitive exact match requirement
 
 ### Story Status Update
 
 - **Previous Status:** review
 - **New Status:** done
 - **Story File Updated:** `_bmad-output/stories/3-4-2-server-connection-config/story.md`
-- **ATDD Checklist Synchronized:** Yes
+- **ATDD Checklist Synchronized:** Yes (all 14 implementation items GREEN, all AC mappings DONE)
 
 ### Files Modified
 
-- `MuMain/src/source/Data/GameConfig.cpp` — removed `Load()` from constructor, added member initializer list, renamed validation namespace calls, removed dead private helper implementations
-- `MuMain/src/source/Data/GameConfig.h` — removed 6 dead private INI helper declarations
-- `MuMain/src/source/Core/IniFile.h` — added `imbue(std::locale(""))` to Load/Save, added `#include "ErrorReport.h"`, added `g_ErrorReport.Write()` on Save failure, changed `EnsureSection`/`EnsureKey` to pass-by-ref
-- `MuMain/src/source/Core/GameConfigValidation.h` — renamed namespace from `GameConfig` to `GameConfigValidation`
-- `MuMain/src/source/Core/GameConfigValidation.cpp` — renamed namespace, removed stale RED/GREEN PHASE comments, added `erase(0, npos)` clarifying comment
-- `MuMain/tests/network/test_server_config_validation.cpp` — renamed namespace references, added port 1 boundary test SECTION
-- `_bmad-output/stories/3-4-2-server-connection-config/story.md` — status → done, added docs/build-guide.md to File List
-- `_bmad-output/stories/3-4-2-server-connection-config/atdd.md` — added port 1 boundary test entry
+- `MuMain/src/source/Core/GameConfigValidation.cpp` — replaced `\xe2\x80\x94` with `\u2014` in both `g_ErrorReport.Write()` format strings
+- `MuMain/src/source/Core/GameConfigValidation.h` — added `[[nodiscard]]` to both function declarations
+- `MuMain/src/source/Core/IniFile.h` — added `SkipLoadTag` private struct + `WriteOnly()` factory + write-only constructor; added intentional comment to `Load()` silent return
+- `MuMain/src/source/Data/GameConfig.cpp` — updated `Save()` to use `IniFile(m_configPath, IniFile::WriteOnly())`
+- `MuMain/src/source/Platform/PlatformCompat.h` — added `DWORD len` return-value check to Windows `mu_get_app_dir()` with current_path() fallback
+- `MuMain/src/source/Data/GameConfigConstants.h` — added case-sensitive match comment to `CfgSectionConnectionSettings`
+- `MuMain/tests/network/test_server_config_validation.cpp` — removed stale RED PHASE comment block
 
 ### Fix Progress
 
 | Iteration | Issues Fixed | Quality Gate | Timestamp |
 |-----------|--------------|--------------|-----------|
-| 1 | 10 | PASSED (./ctl check exit 0) | 2026-03-08 |
+| 1 | 7 | PASSED (./ctl check exit 0, 697 files) | 2026-03-08 |
 
 
 ---
