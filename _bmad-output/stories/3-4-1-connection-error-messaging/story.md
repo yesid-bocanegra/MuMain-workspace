@@ -1,6 +1,6 @@
 # Story 3.4.1: Connection Error Messaging & Graceful Degradation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,31 +42,31 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** If .NET library not found at load time: message `"Network library not found at {path}. Build ClientLibrary for {platform} or check build docs."` — where `{path}` is the resolved `g_dotnetLibPath` and `{platform}` is the current OS (e.g., "Linux", "macOS", "Windows")
-- [ ] **AC-2:** If library loads but a symbol resolution fails: message `"Network library loaded but function {name} not found. Version mismatch?"` — where `{name}` is the function name passed to `ReportDotNetError()`
-- [ ] **AC-3:** If server unreachable (Connection::Connection returns `_handle <= 0` after dotnet_connect): message `"Cannot connect to {address}:{port}. Server may be offline."` — `{address}` and `{port}` logged from CreateSocket parameters
-- [ ] **AC-4:** If protocol mismatch (reserved for future use — structure but do not trigger): message template `"Server handshake failed. Check OpenMU version compatibility."` available in `Connection.cpp`; not triggered in this story scope
-- [ ] **AC-5:** If authentication fails (reserved for future use — structure but do not trigger): message template `"Login failed. Check credentials."` available in `Connection.cpp`; not triggered in this story scope
-- [ ] **AC-6:** Game launches and renders normally without .NET library present — `IsManagedLibraryAvailable()` returns false, game loop continues, network features simply not available; no crash
-- [ ] **AC-7:** All error messages are written to BOTH `MuError.log` (via `g_ErrorReport.Write()`) AND shown as a dialog (via `SDL_ShowSimpleMessageBox` shim from `PlatformCompat.h`) — shown at most ONCE per session (reuse `g_dotnetErrorDisplayed` guard)
+- [x] **AC-1:** If .NET library not found at load time: message `"Network library not found at {path}. Build ClientLibrary for {platform} or check build docs."` — where `{path}` is the resolved `g_dotnetLibPath` and `{platform}` is the current OS (e.g., "Linux", "macOS", "Windows")
+- [x] **AC-2:** If library loads but a symbol resolution fails: message `"Network library loaded but function {name} not found. Version mismatch?"` — where `{name}` is the function name passed to `ReportDotNetError()`
+- [x] **AC-3:** If server unreachable (Connection::Connection returns `_handle <= 0` after dotnet_connect): message `"Cannot connect to {address}:{port}. Server may be offline."` — `{address}` and `{port}` logged from CreateSocket parameters
+- [x] **AC-4:** If protocol mismatch (reserved for future use — structure but do not trigger): message template `"Server handshake failed. Check OpenMU version compatibility."` available in `Connection.cpp`; not triggered in this story scope
+- [x] **AC-5:** If authentication fails (reserved for future use — structure but do not trigger): message template `"Login failed. Check credentials."` available in `Connection.cpp`; not triggered in this story scope
+- [x] **AC-6:** Game launches and renders normally without .NET library present — `IsManagedLibraryAvailable()` returns false, game loop continues, network features simply not available; no crash
+- [x] **AC-7:** All error messages are written to BOTH `MuError.log` (via `g_ErrorReport.Write()`) AND shown as a dialog (via `SDL_ShowSimpleMessageBox` shim from `PlatformCompat.h`) — shown at most ONCE per session (reuse `g_dotnetErrorDisplayed` guard)
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code follows `project-context.md` standards — `#pragma once`, `nullptr`, no `NULL`, no `wprintf`, `g_ErrorReport.Write()` for log, `SDL_ShowSimpleMessageBox` (via `MessageBoxW` shim) for dialog, Allman braces, 4-space indent, no `#ifdef _WIN32` in `Connection.cpp` game logic
-- [ ] **AC-STD-2:** Catch2 unit test added: verify that the correct error message string is produced for AC-1 and AC-2 scenarios (test `DotNetBridge` helper functions directly if extractable, or test via integration with a mocked path)
-- [ ] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile build passes with `MU_ENABLE_DOTNET=OFF`
-- [ ] **AC-STD-6:** Conventional commit: `feat(network): add connection error messaging and graceful degradation`
-- [ ] **AC-STD-11:** Flow Code traceability — `VS1-NET-ERROR-MESSAGING` appears in `Connection.cpp` header comment and in new test file header — ATDD CMake script verifies
-- [ ] **AC-STD-13:** Quality gate passes — `./ctl check` clean (currently 691 files; count stays at 691 or increases by test file count)
-- [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
-- [ ] **AC-STD-20:** Contract Reachability — story introduces no new API/event/flow catalog entries (error messaging is an internal concern)
+- [x] **AC-STD-1:** Code follows `project-context.md` standards — `#pragma once`, `nullptr`, no `NULL`, no `wprintf`, `g_ErrorReport.Write()` for log, `SDL_ShowSimpleMessageBox` (via `MessageBoxW` shim) for dialog, Allman braces, 4-space indent, no `#ifdef _WIN32` in `Connection.cpp` game logic
+- [x] **AC-STD-2:** Catch2 unit test added: verify that the correct error message string is produced for AC-1 and AC-2 scenarios (test `DotNetBridge` helper functions directly if extractable, or test via integration with a mocked path)
+- [x] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile build passes with `MU_ENABLE_DOTNET=OFF`
+- [x] **AC-STD-6:** Conventional commit: `feat(network): add connection error messaging and graceful degradation`
+- [x] **AC-STD-11:** Flow Code traceability — `VS1-NET-ERROR-MESSAGING` appears in `Connection.cpp` header comment and in new test file header — ATDD CMake script verifies
+- [x] **AC-STD-13:** Quality gate passes — `./ctl check` clean (currently 691 files; count stays at 691 or increases by test file count)
+- [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [x] **AC-STD-20:** Contract Reachability — story introduces no new API/event/flow catalog entries (error messaging is an internal concern)
 
 ### NFR Acceptance Criteria
 
-- [ ] **AC-STD-NFR-1:** Error dialog appears at most ONCE per session even if multiple connection attempts fail — `g_dotnetErrorDisplayed` guard enforced
-- [ ] **AC-STD-NFR-2:** `SDL_ShowSimpleMessageBox` is called from the main thread only — the current `Connection` constructor and `ReportDotNetError()` are always called on the main game thread (single-threaded game loop), so no extra synchronization is needed
+- [x] **AC-STD-NFR-1:** Error dialog appears at most ONCE per session even if multiple connection attempts fail — `g_dotnetErrorDisplayed` guard enforced
+- [x] **AC-STD-NFR-2:** `SDL_ShowSimpleMessageBox` is called from the main thread only — the current `Connection` constructor and `ReportDotNetError()` are always called on the main game thread (single-threaded game loop), so no extra synchronization is needed
 
 ---
 
@@ -74,16 +74,16 @@ Status: ready-for-dev
 
 - [ ] **AC-VAL-1:** Each AC-1 and AC-2 error scenario manually triggered (remove library or rename symbol) and message verified in both dialog and `MuError.log`
 - [ ] **AC-VAL-2:** Game launches and renders correctly with `ClientLibrary` absent — confirm no crash, just missing network features
-- [ ] **AC-VAL-3:** `./ctl check` passes on all new/modified files with zero violations
-- [ ] **AC-VAL-4:** ATDD CMake script verifies `VS1-NET-ERROR-MESSAGING` is present in `Connection.cpp` header — `cmake -P tests/build/test_ac_std11_flow_code_3_4_1.cmake`
+- [x] **AC-VAL-3:** `./ctl check` passes on all new/modified files with zero violations
+- [x] **AC-VAL-4:** ATDD CMake script verifies `VS1-NET-ERROR-MESSAGING` is present in `Connection.cpp` header — `cmake -P tests/build/test_ac_std11_flow_code_3_4_1.cmake`
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Enhance `ReportDotNetError()` for structured messages** (AC: AC-1, AC-2, AC-7)
-  - [ ] 1.1 Add an `ErrorKind` enum or string parameter to distinguish "library not found" vs "symbol not found" vs "connect failed"
-  - [ ] 1.2 For AC-1 (library not found): format message with `g_dotnetLibPath` and platform string:
+- [x] **Task 1: Enhance `ReportDotNetError()` for structured messages** (AC: AC-1, AC-2, AC-7)
+  - [x] 1.1 Add an `ErrorKind` enum or string parameter to distinguish "library not found" vs "symbol not found" vs "connect failed"
+  - [x] 1.2 For AC-1 (library not found): format message with `g_dotnetLibPath` and platform string:
     ```cpp
     // Platform string: "Linux" | "macOS" | "Windows" (detect via #ifdef at compile time, in Connection.cpp only — acceptable since Connection.cpp is an impl file)
     const char* platformName =
@@ -97,47 +97,47 @@ Status: ready-for-dev
     std::string msg = "Network library not found at " + g_dotnetLibPath +
                       ". Build ClientLibrary for " + platformName + " or check build docs.";
     ```
-  - [ ] 1.3 For AC-2 (symbol not found): format message with symbol name:
+  - [x] 1.3 For AC-2 (symbol not found): format message with symbol name:
     ```cpp
     std::string msg = "Network library loaded but function " + std::string(detail) +
                       " not found. Version mismatch?";
     ```
-  - [ ] 1.4 Write message to `g_ErrorReport.Write(L"NET: %hs\r\n", msg.c_str())` AND show via `MessageBoxW(nullptr, wideMsg, L"MuMain", MB_ICONERROR | MB_OK)` which maps to `SDL_ShowSimpleMessageBox` via `PlatformCompat.h` shim
-  - [ ] 1.5 Add flow code comment to `Connection.cpp` header: `// Flow Code: VS1-NET-ERROR-MESSAGING`
+  - [x] 1.4 Write message to `g_ErrorReport.Write(L"NET: %hs\r\n", msg.c_str())` AND show via `MessageBoxW(nullptr, wideMsg, L"MuMain", MB_ICONERROR | MB_OK)` which maps to `SDL_ShowSimpleMessageBox` via `PlatformCompat.h` shim
+  - [x] 1.5 Add flow code comment to `Connection.cpp` header: `// Flow Code: VS1-NET-ERROR-MESSAGING`
 
-- [ ] **Task 2: Enhance `CreateSocket()` in `WSclient.cpp` for AC-3** (AC: AC-3, AC-7)
-  - [ ] 2.1 After `SocketClient->IsConnected()` returns false, log the specific address+port:
+- [x] **Task 2: Enhance `CreateSocket()` in `WSclient.cpp` for AC-3** (AC: AC-3, AC-7)
+  - [x] 2.1 After `SocketClient->IsConnected()` returns false, log the specific address+port:
     ```cpp
     wchar_t szConnectError[256];
     mu_swprintf(szConnectError, L"Cannot connect to %ls:%d. Server may be offline.", IpAddr, Port);
     g_ErrorReport.Write(L"NET: %ls\r\n", szConnectError);
     MessageBoxW(nullptr, szConnectError, L"Connection Error", MB_ICONERROR | MB_OK);
     ```
-  - [ ] 2.2 Keep the existing `CUIMng::Instance().PopUpMsgWin(MESSAGE_SERVER_LOST)` call — this shows the in-game message box; the `SDL_ShowSimpleMessageBox` is an additional early-startup diagnostic
+  - [x] 2.2 Keep the existing `CUIMng::Instance().PopUpMsgWin(MESSAGE_SERVER_LOST)` call — this shows the in-game message box; the `SDL_ShowSimpleMessageBox` is an additional early-startup diagnostic
   - [ ] NOTE: `MessageBoxW` in `WSclient.cpp` maps to `SDL_ShowSimpleMessageBox` via `PlatformCompat.h` — no Win32 dependency added
 
-- [ ] **Task 3: Verify AC-6 — graceful degradation** (AC: AC-6)
-  - [ ] 3.1 Confirm `IsManagedLibraryAvailable()` returns false when `.so`/`.dylib`/`.dll` is absent — already implemented in 3.1.2; verify with a negative test
-  - [ ] 3.2 Confirm game loop continues normally when `SocketClient == nullptr` — check `WSclient.cpp` guards; no new code needed
-  - [ ] 3.3 Confirm no crash occurs if `dotnet_connect`, `dotnet_disconnect`, etc. are null — already guarded by null checks in `Connection.cpp`
+- [x] **Task 3: Verify AC-6 — graceful degradation** (AC: AC-6)
+  - [x] 3.1 Confirm `IsManagedLibraryAvailable()` returns false when `.so`/`.dylib`/`.dll` is absent — already implemented in 3.1.2; verify with a negative test
+  - [x] 3.2 Confirm game loop continues normally when `SocketClient == nullptr` — check `WSclient.cpp` guards; no new code needed
+  - [x] 3.3 Confirm no crash occurs if `dotnet_connect`, `dotnet_disconnect`, etc. are null — already guarded by null checks in `Connection.cpp`
 
-- [ ] **Task 4: Add Catch2 test** (AC: AC-STD-2)
-  - [ ] 4.1 Create `MuMain/tests/network/test_connection_error_messages.cpp`:
+- [x] **Task 4: Add Catch2 test** (AC: AC-STD-2)
+  - [x] 4.1 Create `MuMain/tests/network/test_connection_error_messages.cpp`:
     - Test: `DotNetBridge::FormatLibraryNotFoundMessage(path, platform)` returns correct string (extract to testable free function if needed)
     - Test: `DotNetBridge::FormatSymbolNotFoundMessage(name)` returns correct string
     - Tests do NOT require an actual .NET library — they validate message formatting logic only
-  - [ ] 4.2 Register in `MuMain/tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_connection_error_messages.cpp)`
+  - [x] 4.2 Register in `MuMain/tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_connection_error_messages.cpp)`
   - [ ] NOTE: If the formatting cannot be cleanly extracted to a testable function without a full Connection dependency, acceptable fallback is testing the error log output string format as documented (verify reasoning in Dev Agent Record)
 
-- [ ] **Task 5: Add ATDD CMake script** (AC: AC-STD-11, AC-VAL-4)
-  - [ ] 5.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_4_1.cmake`:
+- [x] **Task 5: Add ATDD CMake script** (AC: AC-STD-11, AC-VAL-4)
+  - [x] 5.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_4_1.cmake`:
     - Verify `VS1-NET-ERROR-MESSAGING` present in `Connection.cpp`
     - Verify presence in first 1000 chars (header block)
-  - [ ] 5.2 Register in `MuMain/tests/build/CMakeLists.txt`
+  - [x] 5.2 Register in `MuMain/tests/build/CMakeLists.txt`
 
-- [ ] **Task 6: Quality gate** (AC: AC-STD-4, AC-STD-13)
-  - [ ] 6.1 `./ctl check` — must pass (0 violations)
-  - [ ] 6.2 Verify MinGW cross-compile (`-DMU_ENABLE_DOTNET=OFF`) continues to work — new dialog code goes through `MessageBoxW` shim which is already defined in `PlatformCompat.h` for MinGW
+- [x] **Task 6: Quality gate** (AC: AC-STD-4, AC-STD-13)
+  - [x] 6.1 `./ctl check` — must pass (0 violations)
+  - [x] 6.2 Verify MinGW cross-compile (`-DMU_ENABLE_DOTNET=OFF`) continues to work — new dialog code goes through `MessageBoxW` shim which is already defined in `PlatformCompat.h` for MinGW
 
 ---
 
@@ -450,24 +450,34 @@ _None._
 - `g_dotnetLibPath` is available in the anonymous namespace of `Connection.h` and accessible in `Connection.cpp` for the AC-1 error message
 - `MessageBoxW` shim is confirmed in `PlatformCompat.h` → `SDL_ShowSimpleMessageBox` — safe to use in `Connection.cpp` and `WSclient.cpp` without new Win32 dependencies
 - `mu_swprintf` available via `stdafx.h` — safe to use in `WSclient.cpp` for AC-3 message formatting
-- Specification corpus: specification-index.yaml not available
+- Specification corpus: specification-index.yaml found but no prerequisite implementation context loaded
 - Story partials: not found (docs/story-partials/ does not exist in this project)
 - Schema alignment: N/A (C++20 game client, no schema tooling)
 - Visual Design Specification section omitted — infrastructure story, not frontend
-- AC-4 and AC-5 (protocol mismatch, auth failure) are scoped as "message template available but not triggered" — the trigger mechanisms require server cooperation outside this story's scope
-- `symLoad` compatibility shim must NOT be removed — still required by XSLT-generated `PacketBindings_*.h`
-- Git intelligence: latest commits are all story 3-3-2 code review finalization — all EPIC-3 prerequisites (3.1.2, 3.2.1, 3.3.2) confirmed done
+- AC-4 and AC-5 (protocol mismatch, auth failure) are scoped as "message template available but not triggered" — documented as comments in Connection.cpp header
+- `symLoad` compatibility shim NOT removed — still required by XSLT-generated `PacketBindings_*.h`
+- Implementation decision: format helpers extracted to `Core/DotNetMessageFormat.h/.cpp` (compiled into MUCore) rather than staying in Connection.cpp (MUGame), enabling MuTests (which links MUCore) to test message formatting without the full MUGame dependency chain
+- `DotNetErrorKind` enum (Option A from Dev Notes) used as second parameter to `ReportDotNetError()` — explicit, caller-driven, avoids handle-state ambiguity
+- Platform name string uses compile-time `#if defined(__linux__)`/`__APPLE__`/else in `Connection.cpp` impl file only — acceptable per Dev Notes §Key Design Decisions
+- Wide string conversion: `std::wstring(msg.begin(), msg.end())` — safe for ASCII-only diagnostic messages
+- Quality gate: `./ctl check` passed 693 files (691 original + DotNetMessageFormat.h + DotNetMessageFormat.cpp)
+- ATDD CMake script: `cmake -P tests/build/test_ac_std11_flow_code_3_4_1.cmake` PASSED — VS1-NET-ERROR-MESSAGING verified in Connection.cpp header and test file
+- AC-VAL-1, AC-VAL-2: Manual validation items (require game runtime on target platform) — left unchecked per story scope
+- All automated checks: PASS
 
 ### File List
 
 - [MODIFY] `MuMain/src/source/Dotnet/Connection.h` — add `DotNetErrorKind` enum and updated `ReportDotNetError()` declaration in `DotNetBridge` namespace
-- [MODIFY] `MuMain/src/source/Dotnet/Connection.cpp` — add flow code comment header `VS1-NET-ERROR-MESSAGING`; enhance `ReportDotNetError()` with structured messages + `MessageBoxW` dialog; update callers with `DotNetErrorKind`; extract formatting helpers for testability
+- [MODIFY] `MuMain/src/source/Dotnet/Connection.cpp` — add flow code comment header `VS1-NET-ERROR-MESSAGING`; enhance `ReportDotNetError()` with structured messages + `MessageBoxW` dialog; update callers with `DotNetErrorKind`; include `DotNetMessageFormat.h`
+- [CREATE] `MuMain/src/source/Core/DotNetMessageFormat.h` — declares `FormatLibraryNotFoundMessage` and `FormatSymbolNotFoundMessage` in `DotNetBridge` namespace; compiled into MUCore for MuTests linkage
+- [CREATE] `MuMain/src/source/Core/DotNetMessageFormat.cpp` — defines format helpers; auto-discovered by MUCore `file(GLOB MU_CORE_SOURCES Core/*.cpp)`
 - [MODIFY] `MuMain/src/source/Network/WSclient.cpp` — enhance `CreateSocket()` to include address+port in the connection-fail error message (AC-3)
-- [CREATE] `MuMain/tests/network/test_connection_error_messages.cpp` — Catch2 unit test for message format functions (AC-STD-2)
-- [MODIFY] `MuMain/tests/CMakeLists.txt` — add `target_sources(MuTests PRIVATE network/test_connection_error_messages.cpp)`
-- [CREATE] `MuMain/tests/build/test_ac_std11_flow_code_3_4_1.cmake` — ATDD: verify `VS1-NET-ERROR-MESSAGING` in `Connection.cpp` header
-- [MODIFY] `MuMain/tests/build/CMakeLists.txt` — register `3.4.1-AC-STD-11:flow-code-traceability` test
+- [CREATE] `MuMain/tests/network/test_connection_error_messages.cpp` — Catch2 unit test for message format functions (AC-STD-2) — created in ATDD phase
+- [MODIFY] `MuMain/tests/CMakeLists.txt` — `target_sources(MuTests PRIVATE network/test_connection_error_messages.cpp)` — added in ATDD phase
+- [CREATE] `MuMain/tests/build/test_ac_std11_flow_code_3_4_1.cmake` — ATDD: verify `VS1-NET-ERROR-MESSAGING` in `Connection.cpp` header — created in ATDD phase
+- [MODIFY] `MuMain/tests/build/CMakeLists.txt` — register `3.4.1-AC-STD-11:flow-code-traceability` test — added in ATDD phase
 
 ## Change Log
 
 - 2026-03-08: Story created via create-story workflow (agent: claude-sonnet-4-6)
+- 2026-03-08: Implementation complete via dev-story workflow (agent: claude-sonnet-4-6) — all 6 tasks done, quality gate passed, status → review
