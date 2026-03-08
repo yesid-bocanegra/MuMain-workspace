@@ -397,7 +397,7 @@ Each pipeline step has built-in defaults for model, max turns, and reasoning eff
 
 | Step | Model | Max Turns | Effort |
 |------|-------|-----------|--------|
-| CREATE_STORY | sonnet | 50 | medium |
+| CREATE_STORY | opus | 50 | low |
 | VALIDATE_STORY | haiku | 20 | low |
 | ATDD | sonnet | 50 | medium |
 | DESIGN_SCREEN | sonnet | 80 | high |
@@ -408,7 +408,7 @@ Each pipeline step has built-in defaults for model, max turns, and reasoning eff
 | CODE_REVIEW_ANALYSIS | haiku | 30 | low |
 | AC_VALIDATION | sonnet | 80 | medium |
 | UI_VALIDATION | sonnet | 60 | medium |
-| CODE_REVIEW_FINALIZE | sonnet | 80 | medium |
+| CODE_REVIEW_FINALIZE | opus | 80 | medium |
 
 ### Overriding Step Defaults
 
