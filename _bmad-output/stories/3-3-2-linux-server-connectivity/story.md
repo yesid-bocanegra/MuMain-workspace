@@ -1,6 +1,6 @@
 # Story 3.3.2: Linux Server Connectivity Validation
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -84,7 +84,7 @@ Status: review
   - [x] 1.1 Run `dotnet publish --runtime linux-x64 -c Release` inside `MuMain/ClientLibrary/` — on WSL: may need `LIBRARY_PATH` overrides if SSL/brotli libs are non-standard; produced `MUnique.Client.Library.so`
   - [x] 1.2 Verify CMake's `add_custom_command` (from `FindDotnetAOT.cmake`, story 3.1.1) copies the .so to the build binary directory automatically; confirmed — `FindDotnetAOT.cmake` detects Linux and sets RID=linux-x64
   - [x] 1.3 Confirm `MU_DOTNET_LIB_EXT` is set to `.so` by `FindDotnetAOT.cmake` when configuring with `cmake --preset linux-x64` — expected: `PLAT: FindDotnetAOT — RID=linux-x64, LIB_EXT=.so`
-  - [x] 1.4 Confirm `g_dotnetLibPath` in `Connection.h` resolves to `"MUnique.Client.Library.so"` on Linux (compile-time macro expansion) — Connection.h uses `MU_DOTNET_LIB_EXT` from FindDotnetAOT
+  - [x] 1.4 Confirm `g_dotnetLibPath` in `Connection.h` resolves to an ABSOLUTE PATH on Linux (e.g. `/build/linux-x64/debug/MUnique.Client.Library.so`) via `MU_DOTNET_LIB_DIR` compile definition — bare filename is the Risk R6 bug; `MU_DOTNET_LIB_DIR` is defined in CMakeLists.txt for UNIX as `$<TARGET_FILE_DIR:Main>` and Connection.h uses it via `std::filesystem::path(MU_DOTNET_LIB_DIR) / ("MUnique.Client.Library" + MU_DOTNET_LIB_EXT)`
 
 - [x] **Task 2: Add Catch2 smoke test for Linux .so loading** (AC: AC-1, AC-2, AC-STD-2, AC-STD-11, AC-VAL-3)
   - [x] 2.1 Create `MuMain/tests/platform/test_linux_connectivity.cpp` — file contains `// Flow Code: VS1-NET-VALIDATE-LINUX` header, AC-1 and AC-2 TEST_CASEs guarded by `#ifdef __linux__`, SKIP when .so absent, non-Linux SUCCEED() no-op
@@ -95,13 +95,13 @@ Status: review
   - [x] 3.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_3_2.cmake` — script validates file existence, VS1-NET-VALIDATE-LINUX presence in full content, and in header block (first 1000 chars)
   - [x] 3.2 Register in `MuMain/tests/build/CMakeLists.txt` — `3.3.2-AC-STD-11:flow-code-traceability` test registered; verify PASS: `cmake -P tests/build/test_ac_std11_flow_code_3_3_2.cmake`
 
-- [x] **Task 4: Manual validation — connect to OpenMU server from Linux** (AC: AC-3, AC-4, AC-5, AC-VAL-1, AC-VAL-2)
-  - [x] 4.1 Run a local OpenMU server instance (default port 44405) — DEFERRED: requires running OpenMU server (known blocker, documented in story)
-  - [x] 4.2 Build and run game on Linux x64: `cmake --preset linux-x64 && cmake --build --preset linux-x64-debug` — BLOCKED by EPIC-2 (windows.h in stdafx.h PCH) — infrastructure blocker, not addressable in this story
-  - [x] 4.3 Verify `Connection::IsConnected()` returns true after game launch — observe `MuError.log` for NET messages — BLOCKED pending EPIC-2
-  - [x] 4.4 Reach the server list screen — take screenshot (AC-VAL-1) — BLOCKED pending EPIC-2
-  - [x] 4.5 Capture packet trace (Wireshark or similar) on the loopback interface during handshake — compare handshake bytes to Windows baseline (AC-VAL-2) — BLOCKED pending EPIC-2
-  - [x] 4.6 Log in with a character that has a Korean name — verify name displays without corruption (AC-5) — BLOCKED pending EPIC-2
+- [ ] **Task 4: Manual validation — connect to OpenMU server from Linux** (AC: AC-3, AC-4, AC-5, AC-VAL-1, AC-VAL-2) — DEFERRED: all subtasks require EPIC-2 (platform-agnostic PCH) + running OpenMU server; these are known infrastructure blockers documented in the original story spec and not addressable within story 3.3.2 scope
+  - [ ] 4.1 Run a local OpenMU server instance (default port 44405) — DEFERRED: requires running OpenMU server (known blocker, documented in story)
+  - [ ] 4.2 Build and run game on Linux x64: `cmake --preset linux-x64 && cmake --build --preset linux-x64-debug` — BLOCKED by EPIC-2 (windows.h in stdafx.h PCH) — infrastructure blocker, not addressable in this story
+  - [ ] 4.3 Verify `Connection::IsConnected()` returns true after game launch — observe `MuError.log` for NET messages — BLOCKED pending EPIC-2
+  - [ ] 4.4 Reach the server list screen — take screenshot (AC-VAL-1) — BLOCKED pending EPIC-2
+  - [ ] 4.5 Capture packet trace (Wireshark or similar) on the loopback interface during handshake — compare handshake bytes to Windows baseline (AC-VAL-2) — BLOCKED pending EPIC-2
+  - [ ] 4.6 Log in with a character that has a Korean name — verify name displays without corruption (AC-5) — BLOCKED pending EPIC-2
 
 - [x] **Task 5: Quality gate** (AC: AC-STD-4, AC-STD-13)
   - [x] 5.1 `./ctl check` — PASSED (691 files, 0 violations). `test_linux_connectivity.cpp` is clang-format clean
@@ -562,3 +562,4 @@ _None._
 
 - 2026-03-07: Story created via create-story workflow (agent: claude-sonnet-4-6)
 - 2026-03-07: Implementation complete — `MU_DOTNET_LIB_DIR` added for UNIX (CMakeLists.txt + Connection.h); Catch2 smoke test, ATDD CMake script, and CMakeLists.txt registrations verified present from ATDD phase; quality gate passed (`./ctl check`, 691 files, 0 violations); ATDD CMake script verified (`cmake -P` PASS); manual validation blocked by EPIC-2 as documented; story advanced to `review`
+- 2026-03-07: Code review complete (agent: claude-sonnet-4-6) — 0 HIGH, 2 MEDIUM fixed, 4 LOW noted. MEDIUM fixes: (1) Task 1.4 description corrected to reflect absolute path resolution via MU_DOTNET_LIB_DIR (not bare filename); (2) Task 4 subtasks 4.1-4.6 changed from [x] to [ ] to accurately reflect BLOCKED/DEFERRED status — corresponding ACs (AC-3/4/5) were already correctly unchecked. Implementation verified: commit 532a1184 in MuMain submodule, quality gate 691 files 0 violations, AC-STD-6 conventional commit confirmed. Story marked done.
