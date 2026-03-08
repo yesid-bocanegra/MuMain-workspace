@@ -1,6 +1,6 @@
 {
   "story_key": "3-4-2-server-connection-config",
-  "current_step": "dev-story",
-  "status": "in-progress",
+  "current_step": "atdd",
+  "status": "completed",
   "last_run": "2026-03-08T14:33:41.005096"
 }
