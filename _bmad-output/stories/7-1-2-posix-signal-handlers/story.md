@@ -1,6 +1,6 @@
 # Story 7.1.2: POSIX Signal Handlers for Crash Diagnostics
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
