@@ -3,7 +3,7 @@
 *Auto-generated 2026-03-05 by reorganize-docs workflow*
 *Updated 2026-03-06 — added stories 2-2-1, 2-2-2*
 
-## Stories (9)
+## Stories (10)
 
 ### Epic 1.1 — CMake Toolchains
 
@@ -44,3 +44,9 @@
 |-----|------|-----------|
 | [2-2-1](2-2-1-sdl3-keyboard-input/) | SDL3 Keyboard Input Migration | story, atdd, review, session-summary |
 | [2-2-2](2-2-2-sdl3-mouse-input/) | SDL3 Mouse Input Migration | story |
+
+### Epic 4.2 — MuRenderer Abstraction
+
+| Key | Name | Artifacts |
+|-----|------|-----------|
+| [4-2-1](4-2-1-murenderer-core-api/) | MuRenderer Core API with OpenGL Backend | story |
