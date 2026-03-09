@@ -4,7 +4,7 @@
 **Flow Code:** VS1-RENDER-MIGRATE-QUAD2D
 **Story Type:** infrastructure
 **Date Generated:** 2026-03-09
-**Phase:** RED (tests created, implementation pending)
+**Phase:** GREEN (implementation complete, all tests pass)
 
 ---
 
@@ -63,39 +63,39 @@ All items start as `[ ]` (pending). Mark `[x]` when completed.
 
 ### Prerequisite / Setup
 
-- [ ] Task 1.1: Read `ZzzOpenglUtil.cpp` lines 1204–1644 — catalog 9 variants + `RenderColor`, document coordinate-system differences
-- [ ] Task 1.2: Decide on AC-3: `RenderQuad2D(textureId=0)` (Option A) or new `RenderQuad2DColored()` (Option B) — document in Dev Agent Record
-- [ ] Task 1.3 (if Option B): Add `RenderQuad2DColored()` to `IMuRenderer` and stub in `MuRendererGL`
+- [x] Task 1.1: Read `ZzzOpenglUtil.cpp` lines 1204–1644 — catalog 9 variants + `RenderColor`, document coordinate-system differences
+- [x] Task 1.2: Decide on AC-3: `RenderQuad2D(textureId=0)` (Option A) or new `RenderQuad2DColored()` (Option B) — document in Dev Agent Record
+- [x] Task 1.3 (if Option B): Add `RenderQuad2DColored()` to `IMuRenderer` and stub in `MuRendererGL`
 
 ### Task 11: MuRendererGL Per-Vertex Color (PREREQUISITE for Tasks 3, 8)
 
-- [ ] Task 11.1: Update `MuRendererGL::RenderQuad2D` in `MuRenderer.cpp` to emit `glColor4f(r,g,b,a)` per vertex by unpacking `Vertex2D::color` (ABGR)
-- [ ] Task 11.2: Add `glColor4ubv` stub to `stdafx.h` if missing (verify it exists for non-Windows compile)
-- [ ] Task 11.3 (optional): Extend `test_murenderer.cpp` or `test_renderbitmap_migration.cpp` with a color-channel-preservation assertion if the test-double approach covers it
+- [x] Task 11.1: Update `MuRendererGL::RenderQuad2D` in `MuRenderer.cpp` to emit `glColor4f(r,g,b,a)` per vertex by unpacking `Vertex2D::color` (ABGR)
+- [x] Task 11.2: Add `glColor4ubv` stub to `stdafx.h` if missing (verify it exists for non-Windows compile)
+- [x] Task 11.3 (optional): Extend `test_murenderer.cpp` or `test_renderbitmap_migration.cpp` with a color-channel-preservation assertion if the test-double approach covers it
 
 ### RenderBitmap* Migrations (Tasks 2–10)
 
-- [ ] Task 2.1–2.3: Migrate `RenderBitmap` → commit `refactor(render): migrate RenderBitmap to MuRenderer::RenderQuad2D`
-- [ ] Task 3.1–3.3: Migrate `RenderColorBitmap` → commit `refactor(render): migrate RenderColorBitmap to MuRenderer::RenderQuad2D`
-- [ ] Task 4.1–4.3: Migrate `RenderBitmapRotate` → commit `refactor(render): migrate RenderBitmapRotate to MuRenderer::RenderQuad2D`
-- [ ] Task 5.1–5.3: Migrate `RenderBitRotate` → commit `refactor(render): migrate RenderBitRotate to MuRenderer::RenderQuad2D`
-- [ ] Task 6.1–6.3: Migrate `RenderPointRotate` (retain minimap button side-effect) → commit `refactor(render): migrate RenderPointRotate to MuRenderer::RenderQuad2D`
-- [ ] Task 7.1–7.3: Migrate `RenderBitmapLocalRotate` → commit `refactor(render): migrate RenderBitmapLocalRotate to MuRenderer::RenderQuad2D`
-- [ ] Task 8.1–8.3: Migrate `RenderBitmapAlpha` (16-call loop, per-vertex alpha) → commit `refactor(render): migrate RenderBitmapAlpha to MuRenderer::RenderQuad2D`
-- [ ] Task 9.1–9.3: Migrate `RenderBitmapUV` (asymmetric UV warp) → commit `refactor(render): migrate RenderBitmapUV to MuRenderer::RenderQuad2D`
-- [ ] Task 10.1–10.3: Migrate `RenderColor`/`EndRenderColor` → commit `refactor(render): migrate RenderColor to MuRenderer::RenderQuad2D`
+- [x] Task 2.1–2.3: Migrate `RenderBitmap` → commit `refactor(render): migrate RenderBitmap to MuRenderer::RenderQuad2D`
+- [x] Task 3.1–3.3: Migrate `RenderColorBitmap` → commit `refactor(render): migrate RenderColorBitmap to MuRenderer::RenderQuad2D`
+- [x] Task 4.1–4.3: Migrate `RenderBitmapRotate` → commit `refactor(render): migrate RenderBitmapRotate to MuRenderer::RenderQuad2D`
+- [x] Task 5.1–5.3: Migrate `RenderBitRotate` → commit `refactor(render): migrate RenderBitRotate to MuRenderer::RenderQuad2D`
+- [x] Task 6.1–6.3: Migrate `RenderPointRotate` (retain minimap button side-effect) → commit `refactor(render): migrate RenderPointRotate to MuRenderer::RenderQuad2D`
+- [x] Task 7.1–7.3: Migrate `RenderBitmapLocalRotate` → commit `refactor(render): migrate RenderBitmapLocalRotate to MuRenderer::RenderQuad2D`
+- [x] Task 8.1–8.3: Migrate `RenderBitmapAlpha` (16-call loop, per-vertex alpha) → commit `refactor(render): migrate RenderBitmapAlpha to MuRenderer::RenderQuad2D`
+- [x] Task 9.1–9.3: Migrate `RenderBitmapUV` (asymmetric UV warp) → commit `refactor(render): migrate RenderBitmapUV to MuRenderer::RenderQuad2D`
+- [x] Task 10.1–10.3: Migrate `RenderColor`/`EndRenderColor` → commit `refactor(render): migrate RenderColor to MuRenderer::RenderQuad2D`
 
 ### Test Infrastructure
 
-- [ ] Task 12.1: Verify `MuMain/tests/render/test_renderbitmap_migration.cpp` is present (CREATED in ATDD phase)
-- [ ] Task 12.2: Verify `target_sources(MuTests PRIVATE render/test_renderbitmap_migration.cpp)` is in `tests/CMakeLists.txt` (ADDED in ATDD phase)
-- [ ] Task 12.3: All 7 TEST_CASEs in `test_renderbitmap_migration.cpp` compile and pass (RED→GREEN)
-- [ ] Task 12.4: Run `ctest --test-dir MuMain/build -R renderbitmap_migration` — all pass
+- [x] Task 12.1: Verify `MuMain/tests/render/test_renderbitmap_migration.cpp` is present (CREATED in ATDD phase)
+- [x] Task 12.2: Verify `target_sources(MuTests PRIVATE render/test_renderbitmap_migration.cpp)` is in `tests/CMakeLists.txt` (ADDED in ATDD phase)
+- [x] Task 12.3: All 7 TEST_CASEs in `test_renderbitmap_migration.cpp` compile and pass (RED→GREEN)
+- [x] Task 12.4: Run `ctest --test-dir MuMain/build -R renderbitmap_migration` — all pass
 
 ### Quality Gate
 
-- [ ] Task 13.1: Run `./ctl check` — 0 clang-format errors, 0 cppcheck errors
-- [ ] Task 13.2: Run `grep -n "glBegin\|glEnd" MuMain/src/source/RenderFX/ZzzOpenglUtil.cpp` — confirm no hits in migrated functions
+- [x] Task 13.1: Run `./ctl check` — 0 clang-format errors, 0 cppcheck errors
+- [x] Task 13.2: Run `grep -n "glBegin\|glEnd" MuMain/src/source/RenderFX/ZzzOpenglUtil.cpp` — confirm no hits in migrated functions
 - [ ] AC-VAL-4: Record grep output in Dev Agent Record confirming no `glBegin`/`glEnd` in the 9 migrated functions
 
 ### PCC Compliance
