@@ -429,11 +429,32 @@ step_overrides:
 ```
 
 **Available values:**
-- `model`: `opus`, `sonnet`, `haiku`
+- `model`: `opus`, `o4`, `o46`, `sonnet`, `haiku`
 - `effort`: `low`, `medium`, `high` (maps to Claude reasoning effort — lower = fewer thinking tokens = faster and cheaper)
 - `max_turns`: any positive integer
 
 Step names use the kebab-case form (e.g., `dev-story`, `code-review-qg`, `ac-validation`).
+
+### Global Model Override with Effort Profiles
+
+When using `--model` to override all steps (e.g., `./paw run {key} --model opus`), the effort levels automatically tune for that model's capability. Opus is more capable per token, so lightweight steps drop effort:
+
+| Step | Default (mixed) | Opus profile |
+|------|----------------|--------------|
+| create-story | opus/low | opus/low |
+| validate-story | haiku/low | opus/low |
+| atdd | sonnet/medium | opus/low |
+| design-screen | sonnet/high | opus/medium |
+| dev-story | opus/high | opus/high |
+| completeness-gate | haiku/low | opus/low |
+| code-review | opus/high | opus/high |
+| code-review-qg | sonnet/medium | opus/low |
+| code-review-analysis | haiku/low | opus/low |
+| ac-validation | sonnet/medium | opus/low |
+| ui-validation | sonnet/medium | opus/medium |
+| code-review-finalize | opus/medium | opus/medium |
+
+Profiles exist for `opus` and `o46`. Models without a profile keep per-step default effort.
 
 ---
 
