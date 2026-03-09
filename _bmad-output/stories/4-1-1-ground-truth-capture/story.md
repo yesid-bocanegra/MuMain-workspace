@@ -1,6 +1,6 @@
 # Story 4.1.1: Ground Truth Capture Mechanism
 
-Status: done
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -47,7 +47,7 @@ Status: done
 - [x] **AC-3:** Automated scene sweep: iterate through UI windows via `CNewUIManager::Show()` / `Hide()` to capture each CNewUI* screen
 - [x] **AC-4:** All captures written to `tests/golden/` with structured naming: `{scene}_{width}x{height}.png` (e.g., `inventory_800x600.png`)
 - [x] **AC-5:** SSIM comparison function: perceptual diff with configurable threshold (default > 0.99); NOT pixel-exact match
-- [x] **AC-6:** Comparison produces failure report including visual diff image marking divergent regions when SSIM < threshold
+- [ ] **AC-6:** Comparison produces failure report including visual diff image marking divergent regions when SSIM < threshold — DEFERRED: requires `stb_image.h` for loading golden PNG from disk; deferred to story 4.2.x
 
 ---
 

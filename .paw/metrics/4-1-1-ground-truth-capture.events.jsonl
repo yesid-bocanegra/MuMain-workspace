@@ -16,3 +16,5 @@
 {"timestamp":"2026-03-09T18:49:11.478577+00:00","event_type":"step_retried","story_key":"4-1-1-ground-truth-capture","step":"completeness-gate","sprint":null,"epic":"4","data":{"attempt":2}}
 {"timestamp":"2026-03-09T18:49:11.480219+00:00","event_type":"feedback_saved","story_key":"4-1-1-ground-truth-capture","step":"completeness-gate","sprint":null,"epic":"4","data":{"regression_target":"completeness-gate"}}
 {"timestamp":"2026-03-09T18:49:13.486877+00:00","event_type":"step_started","story_key":"4-1-1-ground-truth-capture","step":"completeness-gate","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-09T19:03:20.745307+00:00","event_type":"step_passed","story_key":"4-1-1-ground-truth-capture","step":"completeness-gate","sprint":null,"epic":"4","data":{"duration_seconds":847.3,"input_tokens":82,"output_tokens":4154,"cache_creation_tokens":85864,"cache_read_tokens":2036217,"num_turns":33,"num_tool_calls":0}}
+{"timestamp":"2026-03-09T19:03:21.757258+00:00","event_type":"step_started","story_key":"4-1-1-ground-truth-capture","step":"code-review","sprint":null,"epic":"4","data":{}}
