@@ -499,14 +499,25 @@ _None._
   - AC-VAL-3 (Catch2 tests run on macOS) blocked by EPIC-2 — MuTests links MUCore which includes windows.h PCH; not a story-3.3.1 gap
   - NOTE: `dotnet publish` on macOS requires `LIBRARY_PATH=/opt/homebrew/opt/openssl/lib:/opt/homebrew/opt/brotli/lib` — document in docs or add to FindDotnetAOT.cmake for future CI setup. Future story: consider adding a `DOTNET_EXTRA_LIBRARY_PATH` CMake variable injected via environment or a cmake/macos-dotnet-env.sh wrapper.
   - NOTE (code review): 9 XSLT-generated PacketBindings/PacketFunctions files were regenerated in this commit (df7d137c) to apply changes from prior stories 3.1.2 and 3.2.1 whose XSLT templates had been updated but output not rebuilt. Files were regenerated via the code-gen tool — not manually edited. File List updated to document all changed files.
+- **code-review-finalize 2026-03-09:**
+  - MEDIUM-1 fixed: wrapped `-Wno-array-bounds` in `$<$<CXX_COMPILER_ID:GNU>:...>` (src/CMakeLists.txt)
+  - MEDIUM-2 fixed: replaced `EXISTS` configure-time guard with `DOTNETAOT_FOUND` in tests/CMakeLists.txt — MU_TEST_LIBRARY_PATH now always set on macOS/Linux when dotnet is available, allowing smoke tests to run post-build
+  - MEDIUM-3 fixed: added 10-line SIOF mitigation comment to Connection.h near `extern const std::string g_dotnetLibPath`
+  - LOW-1 fixed: added `HandleGuard` RAII struct in AC-2 test (test_macos_connectivity.cpp) for sanitizer-safe cleanup
+  - All 13 validation gates PASSED (infrastructure story)
+  - Quality gate: `./ctl check` passes (699 files, 0 violations)
+  - AC-3/4/5 and AC-VAL-1/2/3 converted from `[ ]` to `[~]` (correctly deferred/blocked by EPIC-2 — per workflow, these must be resolved or marked deferred)
+  - Story status: done (confirmed)
 
 ### File List
 
 - [CREATE] `MuMain/tests/platform/test_macos_connectivity.cpp` — Catch2 smoke test: dylib load + symbol resolution (guarded `#ifdef __APPLE__`; `SKIP` if dylib absent)
 - [CREATE] `MuMain/tests/build/test_ac_std11_flow_code_3_3_1.cmake` — ATDD: verify `VS1-NET-VALIDATE-MACOS` in test file header
-- [MODIFY] `MuMain/tests/CMakeLists.txt` — add `target_sources(MuTests PRIVATE platform/test_macos_connectivity.cpp)`; add `MU_TEST_LIBRARY_PATH` definition when dylib present
+- [MODIFY] `MuMain/tests/CMakeLists.txt` — add `target_sources(MuTests PRIVATE platform/test_macos_connectivity.cpp)`; add `MU_TEST_LIBRARY_PATH` definition when dylib present; MEDIUM-2 fix: replace EXISTS configure-time guard with DOTNETAOT_FOUND
 - [MODIFY] `MuMain/tests/build/CMakeLists.txt` — register `3.3.1-AC-STD-11:flow-code-traceability` test
-- [MODIFY] `MuMain/src/CMakeLists.txt` — wrap `-Wno-conversion-null`, `-Wno-memset-elt-size`, `-Wno-stringop-overread` in `$<$<CXX_COMPILER_ID:GNU>:...>` generator expressions so Clang/macOS does not error on unrecognized warning flags
+- [MODIFY] `MuMain/src/CMakeLists.txt` — wrap `-Wno-conversion-null`, `-Wno-memset-elt-size`, `-Wno-stringop-overread` in `$<$<CXX_COMPILER_ID:GNU>:...>` generator expressions so Clang/macOS does not error on unrecognized warning flags; MEDIUM-1 fix: also wrap `-Wno-array-bounds`
+- [MODIFY-CR] `MuMain/src/source/Dotnet/Connection.h` — MEDIUM-3 fix: add SIOF mitigation comment near `extern const std::string g_dotnetLibPath`
+- [MODIFY-CR] `MuMain/tests/platform/test_macos_connectivity.cpp` — LOW-1 fix: add HandleGuard RAII struct in AC-2 test for sanitizer-safe Unload cleanup
 - [REGENERATED] `MuMain/src/source/Dotnet/PacketBindings_ChatServer.h` — XSLT-regenerated (not manually edited): applies story 3.1.2 symLoad→GetSymbol and story 3.2.1 wchar_t*→char16_t* which had not been rebuilt since XSLT template updates
 - [REGENERATED] `MuMain/src/source/Dotnet/PacketBindings_ClientToServer.h` — XSLT-regenerated (see above)
 - [REGENERATED] `MuMain/src/source/Dotnet/PacketBindings_ConnectServer.h` — XSLT-regenerated (see above)
