@@ -1,5 +1,5 @@
 # Sprint Status
-# generated: 2026-03-07
+# generated: 2026-03-09
 # project: MuMain-workspace
 # project_key: MUMAIN
 # tracking_system: file-system
@@ -110,12 +110,37 @@ sprints:
       added: []
       removed: []
 
+  sprint-4:
+    name: "Sprint 4"
+    status: active
+    milestones: [M3]
+    start_date: "2026-03-09"
+    end_date: "2026-03-23"
+    planned_points: 48
+    stories:
+      # EPIC-4 — Rendering Pipeline Migration (all stories)
+      - 4-1-1-ground-truth-capture              # 5 pts | Deps: 2.1.1 ✓
+      - 4-2-1-murenderer-core-api               # 8 pts | Deps: 4.1.1
+      - 4-2-2-migrate-renderbitmap-quad2d        # 8 pts | Deps: 4.2.1
+      - 4-2-3-migrate-skeletal-mesh              # 5 pts | Deps: 4.2.1
+      - 4-2-4-migrate-trail-effects              # 3 pts | Deps: 4.2.1
+      - 4-2-5-migrate-blend-pipeline-state       # 3 pts | Deps: 4.2.1
+      - 4-3-1-sdlgpu-backend                    # 8 pts | Deps: 4.2.2-4.2.5
+      - 4-3-2-shader-programs                    # 5 pts | Deps: 4.3.1
+      - 4-4-1-texture-system-migration           # 8 pts | Deps: 4.3.1
+    velocity: null
+    delivered_points: null
+    commitment_reliability: null
+    scope_changes:
+      added: []
+      removed: []
+
 # =====================
 # FLOW METRICS (SAFe)
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 22         # Sprint 3: 22 pts delivered
+    current_sprint: 22         # Sprint 3 (last completed): 22 pts delivered
     previous_sprint: 28        # Sprint 2: 28 pts delivered
     rolling_average: 22.7      # 3-sprint average: (18+28+22)/3
     trend: stable              # Sprint 1→2: +55.6%; Sprint 2→3: −21.4% (Sprint 2 inflated by retroactive stories)
@@ -126,13 +151,13 @@ flow_metrics:
     in_progress: 2
     review: 3
   wip_violations: 0
-  flow_distribution:           # Sprint 3 actual distribution
-    Feature: 6      # EPIC-3 stories: 3-1-2, 3-2-1, 3-3-1, 3-3-2, 3-4-1, 3-4-2 (19 pts)
-    Enabler: 1      # EPIC-7: 7-1-2 (3 pts)
+  flow_distribution:           # Sprint 4 planned distribution
+    Feature: 9      # EPIC-4 stories: all 9 rendering pipeline stories (48 pts)
+    Enabler: 0
     Defect: 0
     Debt: 0
   flow_load:
-    total_wip: 0
+    total_wip: 0               # Updated when sprint-4 starts
     by_status:
       in_progress: 0
       review: 0
@@ -144,100 +169,110 @@ critical_path:
   # Epic Dependency Graph (Project Level):
   #
   # EPIC-1 (Platform Foundation) [DONE]
-  #   ├──> EPIC-2 (Windowing & Input) ──┐
-  #   │                                  ├──> EPIC-4 (Rendering) ──┐
-  #   ├──> EPIC-3 (.NET AOT) ──────────┘                           │
-  #   │                                                             ├──> EPIC-6 (Gameplay) ──> EPIC-7.3.1/7.3.2 (Stability)
-  #   ├──> EPIC-5 (Audio) ─────────────────────────────────────────┘
-  #   └──> EPIC-7.1.1-7.2.1 (Diagnostics — Phase 0, parallel with EPIC-2)
-  #                                      EPIC-4 ──> EPIC-7.4.1 (Native CI)
+  #   ├──> EPIC-2 (Windowing & Input) [DONE] ──┐
+  #   │                                          ├──> EPIC-4 (Rendering) [SPRINT-4] ──┐
+  #   ├──> EPIC-3 (.NET AOT) [DONE] ──────────┘                                       │
+  #   │                                                                                 ├──> EPIC-6 (Gameplay) ──> EPIC-7.3.1/7.3.2 (Stability)
+  #   ├──> EPIC-5 (Audio) ─────────────────────────────────────────────────────────────┘
+  #   └──> EPIC-7.1.1-7.2.1 (Diagnostics — Phase 0) [DONE]
+  #                                              EPIC-4 ──> EPIC-7.4.1 (Native CI)
 
   project_critical_path:
     sequence: "EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.3.1/7.3.2"
     total_points: 111
-    completed_points: 40     # EPIC-1 (18) + EPIC-2 (17) + 3-1-1 (5)
-    remaining_points: 71
+    completed_points: 59     # EPIC-1 (18) + EPIC-2 (17) + EPIC-3 (24)
+    remaining_points: 52     # EPIC-4 on critical path now; EPIC-6 (23) + EPIC-7 stability (10) after
     parallel_opportunities:
-      - "EPIC-3 completing this sprint — unblocks EPIC-4 dependency (with EPIC-2 done)"
-      - "EPIC-5 can start anytime (no dependency beyond foundation)"
-      - "EPIC-4 can start next sprint (EPIC-2 done, EPIC-3 completing)"
+      - "EPIC-5 can start anytime (no dependency beyond foundation) — 18 pts"
+      - "EPIC-7.4.1 (native CI) can start after EPIC-4 completes"
 
-  sprint_3_critical_path:
-    # Track A: 3-1-2 (3) → 3-2-1 (5) → 3-3-1 (3) → 3-4-2 (2) = 13 pts (longest chain)
-    # Track B: 3-1-2 (3) → 3-4-1 (3) parallel with Track A after 3-1-2
-    # Track C: 3-2-1 (5) → 3-3-2 (3) parallel with 3-3-1
-    # Track D: 7-1-2 (3) independent, parallel with everything
-    longest_chain: "3-1-2 → 3-2-1 → 3-3-1 → 3-4-2 (13 pts, 4 stories)"
+  sprint_4_critical_path:
+    # Track A (critical): 4-1-1 (5) → 4-2-1 (8) → 4-2-2 (8) → 4-3-1 (8) → 4-3-2 (5) = 34 pts
+    # Track B: 4-2-1 → 4-2-3 (5), parallel with 4-2-2
+    # Track C: 4-2-1 → 4-2-4 (3), parallel with 4-2-2
+    # Track D: 4-2-1 → 4-2-5 (3), parallel with 4-2-2
+    # Track E: 4-3-1 → 4-4-1 (8), parallel with 4-3-2
+    longest_chain: "4-1-1 → 4-2-1 → 4-2-2 → 4-3-1 → 4-3-2 (34 pts, 5 stories)"
     parallel_chains:
-      - track_a: "3-1-2 (3) → 3-2-1 (5) → 3-3-1 (3) → 3-4-2 (2)"
+      - track_a: "4-1-1 (5) → 4-2-1 (8) → 4-2-2 (8) → 4-3-1 (8) → 4-3-2 (5)"
+        points: 34
+        note: "Critical path — MuRenderer core through SDL_gpu backend to shaders"
+      - track_b: "4-2-1 (8) → 4-2-3 (5)"
         points: 13
-        note: "Critical path — completes EPIC-3 connectivity chain"
-      - track_b: "3-1-2 (3) → 3-4-1 (3)"
-        points: 6
-        note: "Error messaging, parallel with encoding after 3-1-2"
-      - track_c: "3-2-1 (5) → 3-3-2 (3)"
-        points: 8
-        note: "Linux connectivity, parallel with macOS (3-3-1)"
-      - track_d: "7-1-2 (3) independent"
-        points: 3
-        note: "POSIX signal handlers — M1 contribution, no EPIC-3 deps"
+        note: "Skeletal mesh migration, parallel with 4-2-2 after 4-2-1"
+      - track_c: "4-2-1 (8) → 4-2-4 (3)"
+        points: 11
+        note: "Trail effects, parallel with 4-2-2 after 4-2-1"
+      - track_d: "4-2-1 (8) → 4-2-5 (3)"
+        points: 11
+        note: "Blend/pipeline state, parallel with 4-2-2 after 4-2-1"
+      - track_e: "4-3-1 (8) → 4-4-1 (8)"
+        points: 16
+        note: "Texture system migration, parallel with 4-3-2 after 4-3-1"
     stories_with_no_dependencies:
-      - 3-1-2-connection-h-crossplatform    # deps already met: 1.2.2 ✓, 3.1.1 ✓
-      - 7-1-2-posix-signal-handlers         # dep already met: 7.1.1 ✓
+      - 4-1-1-ground-truth-capture    # deps already met: 2.1.1 ✓
     stories_that_unblock_other_stories:
-      - story: 3-1-2-connection-h-crossplatform
-        unblocks: "3-2-1-char16t-encoding, 3-4-1-connection-error-messaging"
-      - story: 3-2-1-char16t-encoding
-        unblocks: "3-3-1-macos-server-connectivity, 3-3-2-linux-server-connectivity"
-      - story: 3-3-1-macos-server-connectivity
-        unblocks: "3-4-2-server-connection-config (with 3-3-2)"
-      - story: 3-3-2-linux-server-connectivity
-        unblocks: "3-4-2-server-connection-config (with 3-3-1)"
+      - story: 4-1-1-ground-truth-capture
+        unblocks: "4-2-1-murenderer-core-api"
+      - story: 4-2-1-murenderer-core-api
+        unblocks: "4-2-2, 4-2-3, 4-2-4, 4-2-5 (all MuRenderer migrations)"
+      - story: 4-2-2-migrate-renderbitmap-quad2d
+        unblocks: "4-3-1-sdlgpu-backend (with 4-2-3, 4-2-4, 4-2-5)"
+      - story: 4-3-1-sdlgpu-backend
+        unblocks: "4-3-2-shader-programs, 4-4-1-texture-system-migration"
 
   blocking_dependencies:
-    - from: 3-1-2-connection-h-crossplatform
-      to: 3-2-1-char16t-encoding
+    - from: 4-1-1-ground-truth-capture
+      to: 4-2-1-murenderer-core-api
       type: sequential
-    - from: 3-1-2-connection-h-crossplatform
-      to: 3-4-1-connection-error-messaging
+    - from: 4-2-1-murenderer-core-api
+      to: 4-2-2-migrate-renderbitmap-quad2d
       type: sequential
-    - from: 3-2-1-char16t-encoding
-      to: 3-3-1-macos-server-connectivity
+    - from: 4-2-1-murenderer-core-api
+      to: 4-2-3-migrate-skeletal-mesh
       type: sequential
-    - from: 3-2-1-char16t-encoding
-      to: 3-3-2-linux-server-connectivity
+    - from: 4-2-1-murenderer-core-api
+      to: 4-2-4-migrate-trail-effects
       type: sequential
-    - from: 3-3-1-macos-server-connectivity
-      to: 3-4-2-server-connection-config
+    - from: 4-2-1-murenderer-core-api
+      to: 4-2-5-migrate-blend-pipeline-state
       type: sequential
-    - from: 3-3-2-linux-server-connectivity
-      to: 3-4-2-server-connection-config
+    - from: 4-2-2-migrate-renderbitmap-quad2d
+      to: 4-3-1-sdlgpu-backend
+      type: sequential
+    - from: 4-2-3-migrate-skeletal-mesh
+      to: 4-3-1-sdlgpu-backend
+      type: sequential
+    - from: 4-2-4-migrate-trail-effects
+      to: 4-3-1-sdlgpu-backend
+      type: sequential
+    - from: 4-2-5-migrate-blend-pipeline-state
+      to: 4-3-1-sdlgpu-backend
+      type: sequential
+    - from: 4-3-1-sdlgpu-backend
+      to: 4-3-2-shader-programs
+      type: sequential
+    - from: 4-3-1-sdlgpu-backend
+      to: 4-4-1-texture-system-migration
       type: sequential
 
   risk_items:
-    - id: R6
-      description: ".NET AOT native library loading differs per platform (dlopen vs LoadLibrary path resolution)"
-      affected_stories: [3-1-2-connection-h-crossplatform, 3-3-1-macos-server-connectivity, 3-3-2-linux-server-connectivity]
-      mitigation: "Abstract library loading behind PlatformLibrary; test with stub .so/.dylib first"
-      deferred_verification: |
-        Story 3.3.2 ATDD items deferred to EPIC-2 (linux runtime not yet available on macOS dev machine):
-        - Runtime AC-1/AC-2: mu::platform::Load() + symbol resolution on real Linux x64
-        - nm -gD symbol verification on actual .so output
-        - cmake --preset linux-x64 configure check with MU_DOTNET_LIB_EXT=.so log output
-        These will be re-verified when MuTests can execute on Linux (EPIC-2 removes windows.h PCH dependency).
-        Risk R6 mitigation (MU_DOTNET_LIB_DIR absolute path) is in place in code; runtime proof is deferred.
-    - id: R7
-      description: "char16_t encoding conversion may produce different results on GCC vs MSVC for edge cases"
-      affected_stories: [3-2-1-char16t-encoding]
-      mitigation: "Unit tests with known packet byte sequences; validate round-trip encoding"
-    - id: R8
-      description: "POSIX signal handlers may interfere with .NET AOT runtime signal handling"
-      affected_stories: [7-1-2-posix-signal-handlers]
-      mitigation: "Install signal handlers after .NET AOT init; chain to previous handlers"
-    - id: R9
-      description: ".NET SDK interop path resolution (WSL → Windows dotnet.exe) fragile for cross-compile"
-      affected_stories: [3-3-1-macos-server-connectivity, 3-3-2-linux-server-connectivity]
-      mitigation: "CMake detect dotnet at configure time; graceful fallback if missing"
+    - id: R10
+      description: "SDL_gpu API still evolving — shader format and pipeline creation may change between SDL3 releases"
+      affected_stories: [4-3-1-sdlgpu-backend, 4-3-2-shader-programs]
+      mitigation: "Pin SDL3 version via FetchContent; abstract shader loading behind MuRenderer"
+    - id: R11
+      description: "Ground truth capture requires functional OpenGL rendering on Windows — regression risk during migration"
+      affected_stories: [4-1-1-ground-truth-capture, 4-2-2-migrate-renderbitmap-quad2d]
+      mitigation: "Capture baselines BEFORE any OpenGL removal; SSIM comparison validates each migration step"
+    - id: R12
+      description: "~30,000 texture assets may expose format-specific loading issues across Metal/Vulkan/D3D backends"
+      affected_stories: [4-4-1-texture-system-migration]
+      mitigation: "Batch texture validation test; format conversion at load time if needed"
+    - id: R13
+      description: "MuRenderer abstraction scope — too thin risks leaking backend details, too thick risks performance overhead"
+      affected_stories: [4-2-1-murenderer-core-api]
+      mitigation: "Follow Architecture Decision 1: ~5 core functions; profile after integration"
 
 # =====================
 # SCHEMA ALIGNMENT
@@ -373,7 +408,7 @@ development_status:
   epic-2-retrospective: retrospective-done        # completed 2026-03-07
 
   # EPIC-3: .NET AOT Cross-Platform Networking [VS-1] [Feature] (24 pts)
-  epic-3: in-progress
+  epic-3: done
   3-1-1-cmake-rid-detection: done               # 5 pts | Flow:F | Deps: 1.1.1, 1.1.2 | Sprint-2
   3-1-2-connection-h-crossplatform: done           # 3 pts | Flow:F | Deps: 1.2.2 ✓, 3.1.1 ✓ | Sprint-3
   3-2-1-char16t-encoding: done                  # 5 pts | Flow:F | Deps: 3.1.2 | Sprint-3

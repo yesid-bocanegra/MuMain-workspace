@@ -39,7 +39,7 @@ milestones:
   M3:
     name: "Rendering Migration"
     contributing_epics: [EPIC-4]
-    linked_sprints: []
+    linked_sprints: [sprint-4]
     status: active
     validated_at: null
     report: null
