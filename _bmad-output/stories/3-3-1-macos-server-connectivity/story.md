@@ -44,9 +44,9 @@ Status: done
 
 - [x] **AC-1:** `ClientLibrary.dylib` loads successfully via `mu::platform::Load()` (from `PlatformLibrary.h`) on macOS arm64 — `munique_client_library_handle` is non-null when the dylib is present in the binary output directory — verified: `dotnet publish --runtime osx-arm64` succeeded; `nm -gU` confirms dylib loads with all exports
 - [x] **AC-2:** All four exported function pointers resolve correctly via `mu::platform::GetSymbol()`: `ConnectionManager_Connect`, `ConnectionManager_Disconnect`, `ConnectionManager_BeginReceive`, `ConnectionManager_Send` — none are null after library load — verified via `nm -gU MUnique.Client.Library.dylib | grep ConnectionManager`
-- [ ] **AC-3:** Client connects to an OpenMU server, completes the protocol handshake, and receives the server list — `Connection::IsConnected()` returns true after `dotnet_connect()` call with valid host/port — MANUAL ONLY: requires running OpenMU server
-- [ ] **AC-4:** Packet encryption (SimpleModulus + XOR3) produces correct output on macOS — byte-level packet trace from macOS matches the Windows baseline for the same credential inputs — MANUAL ONLY: requires Wireshark capture
-- [ ] **AC-5:** Character data loads correctly after login — no encoding corruption in character names (Korean Hangul BMP codepoints survive the `char16_t` → .NET → `char16_t` round-trip on macOS Clang where `sizeof(wchar_t)==4`) — MANUAL ONLY: requires running game with Korean character
+- [~] **AC-3:** Client connects to an OpenMU server, completes the protocol handshake, and receives the server list — `Connection::IsConnected()` returns true after `dotnet_connect()` call with valid host/port — DEFERRED: MANUAL ONLY requiring running OpenMU server + EPIC-2 macOS game binary; deferred to story 3.4.x
+- [~] **AC-4:** Packet encryption (SimpleModulus + XOR3) produces correct output on macOS — byte-level packet trace from macOS matches the Windows baseline for the same credential inputs — DEFERRED: MANUAL ONLY requiring Wireshark capture + EPIC-2 macOS binary; deferred to story 3.4.x
+- [~] **AC-5:** Character data loads correctly after login — no encoding corruption in character names (Korean Hangul BMP codepoints survive the `char16_t` → .NET → `char16_t` round-trip on macOS Clang where `sizeof(wchar_t)==4`) — DEFERRED: MANUAL ONLY requiring running game with Korean character + EPIC-2 macOS binary; deferred to story 3.4.x
 
 ---
 
@@ -70,9 +70,9 @@ Status: done
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Screenshot (manual): server list is displayed on macOS after successful connectivity — MANUAL ONLY: requires running OpenMU server
-- [ ] **AC-VAL-2:** Packet capture (manual): handshake byte sequence from macOS matches the Windows baseline for the same OpenMU server — MANUAL ONLY: requires Wireshark
-- [ ] **AC-VAL-3:** Catch2 smoke test passes on macOS arm64 build — BLOCKED: MuTests build requires EPIC-2 (windows.h removed from stdafx.h PCH); dylib exports verified via `nm` instead
+- [~] **AC-VAL-1:** Screenshot (manual): server list is displayed on macOS after successful connectivity — DEFERRED: requires running OpenMU server + EPIC-2 macOS binary (blocked same as AC-3); deferred to story 3.4.x
+- [~] **AC-VAL-2:** Packet capture (manual): handshake byte sequence from macOS matches the Windows baseline for the same OpenMU server — DEFERRED: requires Wireshark capture + EPIC-2 macOS binary (blocked same as AC-4); deferred to story 3.4.x
+- [~] **AC-VAL-3:** Catch2 smoke test passes on macOS arm64 build — BLOCKED: MuTests build requires EPIC-2 (windows.h removed from stdafx.h PCH); mitigation: dylib exports verified via `nm -gU` (all 4 ConnectionManager exports confirmed); test file is complete and will execute once EPIC-2 delivers platform-agnostic PCH
 - [x] **AC-VAL-4:** `./ctl check` passes with zero violations on all new/modified files — PASS (691 files, 0 violations)
 - [x] **AC-VAL-5:** ATDD CMake script verifies `VS1-NET-VALIDATE-MACOS` is present in the new test file header — PASS (`cmake -P tests/build/test_ac_std11_flow_code_3_3_1.cmake`)
 

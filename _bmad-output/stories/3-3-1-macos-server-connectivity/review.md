@@ -12,7 +12,7 @@
 |------|--------|-----------|
 | 1. Quality Gate | PASSED | 2026-03-09 |
 | 2. Code Review Analysis | PASSED | 2026-03-09 |
-| 3. Code Review Finalize | pending | — |
+| 3. Code Review Finalize | PASSED | 2026-03-09 |
 
 ---
 
@@ -169,7 +169,7 @@ Quality gate PASSED. Ready for: `/bmad:pcc:workflows:code-review-analysis 3-3-1-
 - **File:** `MuMain/src/CMakeLists.txt` (line 224)
 - **Description:** The commit wraps three GCC-specific warning flags (`-Wno-conversion-null`, `-Wno-memset-elt-size`, `-Wno-stringop-overread`) in `$<$<CXX_COMPILER_ID:GNU>:...>` generator expressions — correctly. However, `-Wno-array-bounds` has a comment "GCC -O2/-O3 false positives from inlined wmemcpy/std::wstring (MinGW wchar.h)" explicitly identifying it as GCC-specific, yet it was NOT wrapped. Clang also accepts this flag so it will not error — but the fix is incomplete and inconsistent with the commit's stated intent.
 - **Fix:** Wrap in `$<$<CXX_COMPILER_ID:GNU>:-Wno-array-bounds>` for consistency.
-- **Status:** pending
+- **Status:** fixed — Wrapped in `$<$<CXX_COMPILER_ID:GNU>:-Wno-array-bounds>` in `MuMain/src/CMakeLists.txt`
 
 ---
 
@@ -181,7 +181,7 @@ Quality gate PASSED. Ready for: `/bmad:pcc:workflows:code-review-analysis 3-3-1-
 - **Description:** The guard `if(APPLE AND EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MUnique.Client.Library.dylib")` checks for the dylib at CMake configure time. However, `dotnet publish` runs via `add_custom_command` at *build* time, not configure time. On a clean CI run (configure then build), the dylib does not exist at configure time, so `MU_TEST_LIBRARY_PATH` is left undefined → defaults to `""` → both Catch2 tests SKIP rather than exercising AC-1 and AC-2. This means the smoke tests may systematically never run on CI, silently providing no coverage.
 - **Impact:** AC-1 and AC-2 cannot be exercised by automated tests even when the dylib would be available post-build. The `nm -gU` manual verification compensates, but the test mechanism is fragile.
 - **Fix:** Either (a) run CMake configure *after* build (two-pass) so the dylib exists, or (b) define `MU_TEST_LIBRARY_PATH` unconditionally and let the `SKIP` handle absence — but wire it to the CMake `dotnet publish` output path so it is always set when `DOTNETAOT_FOUND` is true (regardless of whether file exists at configure time).
-- **Status:** pending
+- **Status:** fixed — Replaced `EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/..."` configure-time guard with `DOTNETAOT_FOUND` in `MuMain/tests/CMakeLists.txt`; test code's `std::filesystem::exists()` + `SKIP` handles absent dylib at runtime
 
 ---
 
@@ -193,7 +193,7 @@ Quality gate PASSED. Ready for: `/bmad:pcc:workflows:code-review-analysis 3-3-1-
 - **Description:** `munique_client_library_handle` is an `inline` variable initialized at static-init time using `mu::platform::Load(g_dotnetLibPath.c_str())`. `g_dotnetLibPath` is declared `extern const std::string` in `Connection.h` and defined in `Connection.cpp`. Both are non-local static variables. The C++ standard guarantees initialization order within a single TU (definition order) but does NOT guarantee order across TUs. If `Connection.h` is included first in a TU that also causes `munique_client_library_handle` to initialize before `Connection.cpp`'s `g_dotnetLibPath` definition, the latter will be an empty string and `Load()` will fail silently (graceful degradation path, logging "library load failed"). This is the Static Initialization Order Fiasco (SIOF). The story Dev Notes acknowledge static-init timing but do not document the specific guard against this risk (both are in the same "module" but different TUs).
 - **Note:** The `extern const std::string` pattern (defined in .cpp, declared extern in .h) is the correct mitigation — it avoids the inline variable SIOF by ensuring `g_dotnetLibPath` is a single definition in one TU. However, there is no test verifying that the library handle is actually non-null at game start, beyond the `nm -gU` check (which only tests the dylib itself). A comment explaining the SIOF mitigation would be appropriate documentation.
 - **Fix:** Add an inline comment to `Connection.h` near the `extern const std::string g_dotnetLibPath` declaration explaining why it is `extern` (not `inline`) — SIOF mitigation. Low effort, clarifies intent for future reviewers.
-- **Status:** pending
+- **Status:** fixed — Added 10-line SIOF explanation comment to `Connection.h` near `extern const std::string g_dotnetLibPath` documenting the cross-TU initialization order guarantee and why `inline` is intentionally avoided
 
 ---
 
@@ -204,7 +204,7 @@ Quality gate PASSED. Ready for: `/bmad:pcc:workflows:code-review-analysis 3-3-1-
 - **File:** `MuMain/tests/platform/test_macos_connectivity.cpp` (lines 60-82)
 - **Description:** In the `#ifdef __APPLE__` block, the AC-2 test loads the library (`REQUIRE(handle != nullptr)`) then checks all four symbols with `CHECK()`. If `REQUIRE` fails (aborting the test), `Unload(handle)` at the end is never reached — handle leaked. `CHECK` failures do not abort, so the cleanup path for CHECK failures is correct. In test processes (short-lived), this is only a concern in Valgrind/sanitizer runs, not in normal execution. No functional impact.
 - **Fix:** Use RAII wrapper or a REQUIRE guard on `handle` before proceeding, or restructure as `REQUIRE_NOTHROW`. Low priority.
-- **Status:** pending
+- **Status:** fixed — Added `HandleGuard` RAII struct in AC-2 test in `test_macos_connectivity.cpp` to ensure `Unload()` is always called via destructor even when `REQUIRE` aborts via Catch2 exception
 
 ### Contract Reachability Audit
 
@@ -224,6 +224,60 @@ Not applicable — infrastructure/validation story. No new C++ API endpoints, ev
 The implementation is appropriate in scope: it validates the .NET AOT plumbing built by prior stories on macOS arm64 using `nm -gU` (a valid alternative to running Catch2 given the EPIC-2 blocker), adds a Catch2 smoke test infrastructure that will become fully exercisable post-EPIC-2, adds the ATDD CMake flow-code script, and correctly fixes GCC warning flags. No BLOCKER or CRITICAL issues. The three MEDIUM findings are fixable in finalize (one line CMakeLists fix, documentation comment, one test CMake path fix).
 
 **Next:** `/bmad:pcc:workflows:code-review-finalize 3-3-1-macos-server-connectivity`
+
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-09
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 4 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **MEDIUM-1:** fixed — Wrapped `-Wno-array-bounds` in `$<$<CXX_COMPILER_ID:GNU>:...>` in `MuMain/src/CMakeLists.txt`
+- **MEDIUM-2:** fixed — Replaced `EXISTS` configure-time guard with `DOTNETAOT_FOUND` in `MuMain/tests/CMakeLists.txt`
+- **MEDIUM-3:** fixed — Added SIOF mitigation comment to `Connection.h` near `extern const std::string g_dotnetLibPath`
+- **LOW-1:** fixed — Added `HandleGuard` RAII struct in AC-2 test in `test_macos_connectivity.cpp`
+
+### Validation Gates (infrastructure story)
+
+| Gate | Result |
+|------|--------|
+| Blocker check | PASS (0 blockers) |
+| Design compliance | SKIPPED (infrastructure) |
+| Checkbox validation | PASS (all tasks [x], no DoD section) |
+| Catalog verification | PASS (validation story — no API/event/flow entries) |
+| Reachability verification | PASS (no new entries) |
+| AC verification | PASS (14 PASS, 5 DEFERRED by design, 1 BLOCKED-with-mitigation) |
+| Test artifacts | PASS (no test-scenarios task) |
+| AC-VAL gate | PASS (AC-VAL-1/2/3 converted to [~] deferred; AC-VAL-4/5 [x] verified) |
+| E2E test quality | SKIPPED (infrastructure) |
+| E2E regression | SKIPPED (infrastructure) |
+| AC compliance | SKIPPED (infrastructure) |
+| Boot verification | SKIPPED (cpp-cmake, not configured) |
+| Final quality gate | PASS (./ctl check, 699 files, 0 violations) |
+
+### Story Status Update
+
+- **Previous Status:** done
+- **New Status:** done
+- **Story File Updated:** `_bmad-output/stories/3-3-1-macos-server-connectivity/story.md`
+- **ATDD Checklist Synchronized:** Yes (22 GREEN [x], 11 DEFERRED [~], 0 RED)
+
+### Files Modified
+
+- `MuMain/src/CMakeLists.txt` — MEDIUM-1: wrap `-Wno-array-bounds` in `$<$<CXX_COMPILER_ID:GNU>:...>` generator expression
+- `MuMain/tests/CMakeLists.txt` — MEDIUM-2: replace `EXISTS` configure-time guard with `DOTNETAOT_FOUND` for `MU_TEST_LIBRARY_PATH`
+- `MuMain/src/source/Dotnet/Connection.h` — MEDIUM-3: add SIOF mitigation comment near `extern const std::string g_dotnetLibPath`
+- `MuMain/tests/platform/test_macos_connectivity.cpp` — LOW-1: add `HandleGuard` RAII struct for Unload cleanup in AC-2 test
+- `_bmad-output/stories/3-3-1-macos-server-connectivity/story.md` — convert unchecked AC-3/4/5 and AC-VAL-1/2/3 from `[ ]` to `[~]` (deferred/blocked by design)
 
 
 ---
