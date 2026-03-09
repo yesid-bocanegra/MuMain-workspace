@@ -105,8 +105,8 @@
 
 ### AC-6: Failure Report
 
-- [x] `CompareTo()` produces a diff image marking divergent regions when SSIM < threshold
-- [x] Diff image written alongside source images in `tests/golden/` with `-diff` suffix
+- [ ] `CompareTo()` produces a diff image marking divergent regions when SSIM < threshold
+- [ ] Diff image written alongside source images in `tests/golden/` with `-diff` suffix
 - [x] On comparison failure: `g_ErrorReport.Write(L"RENDER: ground truth -- SSIM below threshold: %.4f for %hs", score, sceneName)`
 
 ### Code Standards (AC-STD-1)

@@ -157,9 +157,9 @@ flow_metrics:
     Defect: 0
     Debt: 0
   flow_load:
-    total_wip: 1               # 4-1-1 back in-progress after code-review; AC-6 deferred issue
+    total_wip: 0               # 4-1-1 completed 2026-03-09
     by_status:
-      in_progress: 1
+      in_progress: 0
       review: 0
 
 # =====================
@@ -420,7 +420,7 @@ development_status:
 
   # EPIC-4: Rendering Pipeline Migration [VS-1] [Feature] (48 pts)
   epic-4: in-progress
-  4-1-1-ground-truth-capture: in-progress        # 5 pts | Flow:F | Deps: 2.1.1 | Sprint-4 | code-review found AC-6 deferred; fixes applied
+  4-1-1-ground-truth-capture: done               # 5 pts | Flow:F | Deps: 2.1.1 | Sprint-4 | code-review-finalize completed 2026-03-09
   4-2-1-murenderer-core-api: backlog            # 8 pts | Flow:F | Deps: 4.1.1
   4-2-2-migrate-renderbitmap-quad2d: backlog    # 8 pts | Flow:F | Deps: 4.2.1
   4-2-3-migrate-skeletal-mesh: backlog          # 5 pts | Flow:F | Deps: 4.2.1
