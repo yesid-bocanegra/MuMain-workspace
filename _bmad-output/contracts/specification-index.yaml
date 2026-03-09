@@ -47,7 +47,7 @@ epics:
     flow_type: Feature
     phase: "2.5"
     priority: P0
-    status: in-progress
+    status: done
     total_points: 24
     stories: 7
     features:
@@ -55,7 +55,7 @@ epics:
       - "3.2 Encoding"
       - "3.3 Platform Validation"
       - "3.4 UX & Config"
-    completion_pct: 43  # 3 of 7 stories done (3-1-2, 3-3-2, 3-4-1)
+    completion_pct: 100  # 7 of 7 stories done
 
   EPIC-4:
     name: "Rendering Pipeline Migration"
@@ -184,7 +184,7 @@ features:
     epic: EPIC-3
     stories: ["3-4-1", "3-4-2"]
     points: 5
-    completion_pct: 0
+    completion_pct: 100  # 2 of 2 stories done (3-4-1, 3-4-2)
   "4.1":
     name: "Ground Truth"
     epic: EPIC-4
@@ -488,12 +488,17 @@ stories:
     review_file: "_bmad-output/stories/3-4-1-connection-error-messaging/review.md"
 
   3-4-2-server-connection-config:
-    name: "Server Connection Config"
+    name: "Server Connection Configuration"
     epic: EPIC-3
     feature: "3.4"
-    status: backlog
+    type: infrastructure
+    status: done
     points: 2
     value_stream: "VS-1"
+    flow_code: VS1-NET-CONFIG-SERVER
+    story_file: "_bmad-output/stories/3-4-2-server-connection-config/story.md"
+    atdd_checklist: "_bmad-output/stories/3-4-2-server-connection-config/atdd.md"
+    review_file: "_bmad-output/stories/3-4-2-server-connection-config/review.md"
 
   4-1-1-ground-truth-capture:
     name: "Ground Truth Capture"
@@ -777,6 +782,9 @@ catalogs:
     - code: VS1-NET-VALIDATE-LINUX
       story: 3-3-2-linux-server-connectivity
       value_stream: VS-1
+    - code: VS1-NET-CONFIG-SERVER
+      story: 3-4-2-server-connection-config
+      value_stream: VS-1
 
 # =====================
 # STATISTICS
@@ -789,13 +797,13 @@ statistics:
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 14
+  total_flow_codes: 15
   total_test_scenarios: 0
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 14
-  stories_backlog: 31
-  completion_rate: 31.1    # 14/45 stories done
-  points_done: 44          # 41 + 3 (3-3-2)
-  points_remaining: 128
-  points_completion_rate: 25.6  # 44/172
+  stories_done: 21
+  stories_backlog: 24
+  completion_rate: 46.7    # 21/45 stories done
+  points_done: 68          # EPIC-1 (18) + EPIC-2 (17) + EPIC-3 (24) + 7-1-1 (3) + 7-1-2 (3) + 7-2-1 (3)
+  points_remaining: 104
+  points_completion_rate: 39.5  # 68/172
