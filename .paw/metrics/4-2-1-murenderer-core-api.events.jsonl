@@ -9,3 +9,5 @@
 {"timestamp":"2026-03-09T20:12:46.211631+00:00","event_type":"step_started","story_key":"4-2-1-murenderer-core-api","step":"design-screen","sprint":null,"epic":"4","data":{}}
 {"timestamp":"2026-03-09T20:12:46.214929+00:00","event_type":"step_passed","story_key":"4-2-1-murenderer-core-api","step":"design-screen","sprint":null,"epic":"4","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0,"cache_creation_tokens":0,"cache_read_tokens":0,"num_turns":0,"num_tool_calls":0}}
 {"timestamp":"2026-03-09T20:12:47.224449+00:00","event_type":"step_started","story_key":"4-2-1-murenderer-core-api","step":"dev-story","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-09T20:29:45.456285+00:00","event_type":"step_passed","story_key":"4-2-1-murenderer-core-api","step":"dev-story","sprint":null,"epic":"4","data":{"duration_seconds":1018.2,"input_tokens":32,"output_tokens":1422,"cache_creation_tokens":71693,"cache_read_tokens":442161,"num_turns":10,"num_tool_calls":0}}
+{"timestamp":"2026-03-09T20:29:46.462525+00:00","event_type":"step_started","story_key":"4-2-1-murenderer-core-api","step":"completeness-gate","sprint":null,"epic":"4","data":{}}
