@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint 3 Metrics Dashboard — 2026-03-09</title>
+<style>
+  :root { --green: #22c55e; --yellow: #eab308; --red: #ef4444; --blue: #3b82f6; --gray: #6b7280; --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --border: #334155; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 24px; }
+  .dashboard { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 8px; }
+  .subtitle { color: var(--gray); margin-bottom: 24px; }
+  .health { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 14px; }
+  .health-healthy { background: var(--green); color: #000; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card-label { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; }
+  .card-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
+  .card-sub { font-size: 13px; color: var(--gray); }
+  .trend-up { color: var(--green); }
+  .trend-flat { color: var(--gray); }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .section h2 { font-size: 16px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  .section h3 { font-size: 14px; margin: 16px 0 8px; color: var(--gray); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px; border-bottom: 2px solid var(--border); color: var(--gray); font-weight: 600; }
+  td { padding: 8px; border-bottom: 1px solid var(--border); }
+  .bar-container { background: var(--border); border-radius: 4px; height: 8px; width: 100%; min-width: 60px; }
+  .bar-fill { height: 8px; border-radius: 4px; }
+  .bar-green { background: var(--green); }
+  .bar-blue { background: var(--blue); }
+  .bar-yellow { background: var(--yellow); }
+  .chart { font-family: monospace; font-size: 12px; white-space: pre; background: var(--bg); padding: 12px; border-radius: 4px; overflow-x: auto; color: var(--text); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+  .badge-pass { background: #166534; color: var(--green); }
+  .badge-retry { background: #713f12; color: var(--yellow); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .note { font-size: 12px; color: var(--gray); margin-top: 8px; font-style: italic; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+  footer { text-align: center; color: var(--gray); font-size: 12px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .epic-bar { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .epic-label { font-size: 12px; width: 70px; color: var(--gray); }
+  .epic-bar-container { flex: 1; background: var(--border); border-radius: 4px; height: 12px; }
+  .epic-bar-fill { height: 12px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="dashboard">
+  <h1>Sprint 3 Metrics Dashboard</h1>
+  <p class="subtitle">2026-03-09 &middot; Sprint 3 &middot; 7 stories &middot; <span class="health health-healthy">HEALTHY</span></p>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="card">
+      <div class="card-label">Velocity</div>
+      <div class="card-value">22</div>
+      <div class="card-sub trend-flat">pts &middot; avg 22.7 (3-sprint)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Flow Time (avg)</div>
+      <div class="card-value">1.36d</div>
+      <div class="card-sub">P85: 1.73d &middot; max: 1.80d</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Predictability</div>
+      <div class="card-value trend-up">100%</div>
+      <div class="card-sub">22/22 pts &middot; 3/3 sprints</div>
+    </div>
+    <div class="card">
+      <div class="card-label">SPI (EVM)</div>
+      <div class="card-value trend-up">7.0</div>
+      <div class="card-sub">All done Day 2 of 14</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Throughput</div>
+      <div class="card-value">7</div>
+      <div class="card-sub">stories/sprint &middot; stable</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Gate Failure Rate</div>
+      <div class="card-value trend-up">0%</div>
+      <div class="card-sub">4 incidents &middot; 100% recovery</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Flow Efficiency</div>
+      <div class="card-value">~11%</div>
+      <div class="card-sub">~36% active-session est.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">WIP Violations</div>
+      <div class="card-value trend-up">0</div>
+      <div class="card-sub">limit: 2 in-progress, 3 review</div>
+    </div>
+  </div>
+
+  <!-- Burndown Chart -->
+  <div class="section">
+    <h2>Sprint Burndown</h2>
+    <div class="chart">Points
+     |
+  22 |- * (Day 0: Sprint Start, Mar 7)
+     |  \
+     |   \
+     |    \
+     |     * (Day 1 ~EOD: ~8 pts remaining actual)
+  19 .......  (Planned Day 1: 20.4 pts)
+     |      \
+     |       \
+     |        * (Day 2: 0 pts — COMPLETE, Mar 9 15:00 UTC)
+   0 +--+--+--+--+--+--+--+--+--+--+--+--+--+--
+     D1 D2 D3 D4 D5 D6 D7 D8 D9 D10 D11 D12 D13 D14
+
+  --- Planned   *-- Actual
+
+  Sprint completed 12 days early (Day 2 of 14)</div>
+    <p class="note">SPI=7.0 reflects paw batch pipeline compressing all work into 2 days. 14-day window was planned to accommodate human review cycles and scheduling gaps.</p>
+  </div>
+
+  <!-- Flow Distribution -->
+  <div class="section">
+    <h2>Flow Distribution</h2>
+    <table>
+      <tr><th>Type</th><th>Count</th><th>Points</th><th>Distribution</th></tr>
+      <tr>
+        <td>Feature</td><td>6</td><td>19</td>
+        <td><div class="bar-container"><div class="bar-fill bar-blue" style="width:86%"></div></div></td>
+      </tr>
+      <tr>
+        <td>Enabler</td><td>1</td><td>3</td>
+        <td><div class="bar-container"><div class="bar-fill bar-yellow" style="width:14%"></div></div></td>
+      </tr>
+      <tr><td>Defect</td><td>0</td><td>0</td><td><div class="bar-container"></div></td></tr>
+      <tr><td>Debt</td><td>0</td><td>0</td><td><div class="bar-container"></div></td></tr>
+    </table>
+  </div>
+
+  <!-- Pipeline Gate Results -->
+  <div class="section">
+    <h2>Pipeline Gate Results</h2>
+    <table>
+      <tr><th>Story</th><th>Pts</th><th>Completeness</th><th>QG</th><th>Analysis</th><th>AC Val</th><th>Finalize</th><th>Issues Fixed</th></tr>
+      <tr>
+        <td>3-1-2-connection-h</td><td>3</td>
+        <td><span class="badge badge-retry">RETRY&#10003;</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>3-2-1-char16t-encoding</td><td>5</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>3-3-1-macos-connectivity</td><td>3</td>
+        <td><span class="badge badge-retry">RETRY&#10003;</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>3-3-2-linux-connectivity</td><td>3</td>
+        <td><span class="badge badge-retry">RETRY&#10003;</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>3-4-1-error-messaging</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td>6</td>
+      </tr>
+      <tr>
+        <td>3-4-2-server-config</td><td>2</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td>14</td>
+      </tr>
+      <tr>
+        <td>7-1-2-posix-signals</td><td>3</td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-retry">RESUME&#10003;</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+        <td>5</td>
+      </tr>
+    </table>
+    <p class="note">RETRY = passed on 2nd attempt (self-healing). RESUME = resumed from checkpoint after interruption. All 7 stories: gate_result=PASSED. Total issues fixed: 48.</p>
+  </div>
+
+  <!-- EVM and Cycle Time (two-column) -->
+  <div class="two-col">
+    <div class="section">
+      <h2>EVM Schedule Performance</h2>
+      <table>
+        <tr><th>Metric</th><th>Value</th></tr>
+        <tr><td>BAC</td><td>22 pts</td></tr>
+        <tr><td>Days Elapsed</td><td>2 of 14</td></tr>
+        <tr><td>Planned Value (PV)</td><td>3.14 pts</td></tr>
+        <tr><td>Earned Value (EV)</td><td>22 pts</td></tr>
+        <tr><td>SPI</td><td style="color: var(--green); font-weight: 700">7.0</td></tr>
+        <tr><td>Schedule Variance</td><td style="color: var(--green)">+18.86 pts</td></tr>
+        <tr><td>Status</td><td><span class="badge badge-pass">MASSIVELY AHEAD</span></td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Cycle Time Distribution</h2>
+      <table>
+        <tr><th>Percentile</th><th>Days</th></tr>
+        <tr><td>Min (0th)</td><td>0.68d — 7-1-2</td></tr>
+        <tr><td>P25</td><td>0.79d</td></tr>
+        <tr><td>Median (P50)</td><td>1.43d</td></tr>
+        <tr><td>P85</td><td>1.73d</td></tr>
+        <tr><td>P95</td><td>1.80d</td></tr>
+        <tr><td>Max (100th)</td><td>1.80d — 3-1-2</td></tr>
+        <tr><td><strong>Average</strong></td><td><strong>1.36d</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Epic Progress -->
+  <div class="section">
+    <h2>Epic Progress</h2>
+    <div style="margin-bottom: 16px;">
+      <div class="epic-bar">
+        <div class="epic-label">EPIC-1</div>
+        <div class="epic-bar-container"><div class="epic-bar-fill bar-green" style="width:100%"></div></div>
+        <span style="font-size:12px; margin-left:8px; color:var(--green)">18/18 pts &#10003;</span>
+      </div>
+      <div class="epic-bar">
+        <div class="epic-label">EPIC-2</div>
+        <div class="epic-bar-container"><div class="epic-bar-fill bar-green" style="width:100%"></div></div>
+        <span style="font-size:12px; margin-left:8px; color:var(--green)">17/17 pts &#10003;</span>
+      </div>
+      <div class="epic-bar">
+        <div class="epic-label">EPIC-3</div>
+        <div class="epic-bar-container"><div class="epic-bar-fill bar-green" style="width:100%"></div></div>
+        <span style="font-size:12px; margin-left:8px; color:var(--green)">24/24 pts &#10003; NEW</span>
+      </div>
+      <div class="epic-bar">
+        <div class="epic-label">EPIC-7</div>
+        <div class="epic-bar-container"><div class="epic-bar-fill bar-yellow" style="width:37.5%"></div></div>
+        <span style="font-size:12px; margin-left:8px; color:var(--yellow)">9/24 pts (37.5%)</span>
+      </div>
+      <div class="epic-bar">
+        <div class="epic-label">EPIC-4</div>
+        <div class="epic-bar-container"><div class="epic-bar-fill" style="width:0%; background:var(--gray)"></div></div>
+        <span style="font-size:12px; margin-left:8px; color:var(--gray)">0/48 pts (backlog)</span>
+      </div>
+      <div class="epic-bar">
+        <div class="epic-label">EPIC-5</div>
+        <div class="epic-bar-container"><div class="epic-bar-fill" style="width:0%; background:var(--gray)"></div></div>
+        <span style="font-size:12px; margin-left:8px; color:var(--gray)">0/18 pts (backlog)</span>
+      </div>
+      <div class="epic-bar">
+        <div class="epic-label">EPIC-6</div>
+        <div class="epic-bar-container"><div class="epic-bar-fill" style="width:0%; background:var(--gray)"></div></div>
+        <span style="font-size:12px; margin-left:8px; color:var(--gray)">0/23 pts (backlog)</span>
+      </div>
+    </div>
+    <p class="note">Project progress: 85/174 pts delivered (48.8%) &middot; 21/45 stories done &middot; EPIC-3 closed this sprint &#127881;</p>
+  </div>
+
+  <!-- Velocity Trend -->
+  <div class="section">
+    <h2>Cross-Sprint Velocity Trend</h2>
+    <table>
+      <tr><th>Sprint</th><th>Stories</th><th>Points</th><th>Velocity</th><th>Predictability</th></tr>
+      <tr><td>Sprint 1</td><td>6</td><td>18</td><td>18 pts</td><td style="color:var(--green)">100%</td></tr>
+      <tr><td>Sprint 2</td><td>8</td><td>28</td><td>28 pts *</td><td style="color:var(--green)">100%</td></tr>
+      <tr><td>Sprint 3</td><td>7</td><td>22</td><td>22 pts</td><td style="color:var(--green)">100%</td></tr>
+      <tr style="font-weight:600"><td>3-Sprint Avg</td><td>7.0</td><td>22.7</td><td>22.7 pts</td><td style="color:var(--green)">100%</td></tr>
+    </table>
+    <p class="note">* Sprint 2 velocity (28) includes 8 pts retroactively assigned from pre-sprint work (2-1-1, 2-1-2). Net new Sprint 2 = 20 pts. Adjusted 3-sprint avg ≈ 20 pts/sprint.</p>
+  </div>
+
+  <!-- Pipeline Analytics -->
+  <div class="section">
+    <h2>Pipeline Step Duration Analysis</h2>
+    <table>
+      <tr><th>Step</th><th>Avg Duration</th><th>Min</th><th>Max</th><th>% of Cycle</th></tr>
+      <tr><td>create-story</td><td>5.9 min</td><td>5.3 min</td><td>6.5 min</td><td>6.7%</td></tr>
+      <tr><td>validate-story</td><td>2.6 min</td><td>2.0 min</td><td>3.4 min</td><td>3.0%</td></tr>
+      <tr><td>atdd</td><td>8.4 min</td><td>4.9 min</td><td>16.4 min</td><td>9.6%</td></tr>
+      <tr><td><strong>dev-story</strong></td><td><strong>19.7 min</strong></td><td>9.7 min</td><td>40.1 min</td><td><strong>22.5%</strong></td></tr>
+      <tr><td>completeness-gate</td><td>2.5 min</td><td>1.1 min</td><td>7.7 min</td><td>2.8%</td></tr>
+      <tr><td>code-review</td><td>18.1 min</td><td>10.9 min</td><td>42.4 min</td><td>20.7%</td></tr>
+      <tr><td>code-review-qg</td><td>17.1 min</td><td>11.8 min</td><td>29.1 min</td><td>19.5%</td></tr>
+      <tr><td>code-review-analysis</td><td>4.8 min</td><td>1.1 min</td><td>8.1 min</td><td>5.5%</td></tr>
+      <tr><td><strong>code-review-finalize</strong></td><td><strong>19.1 min</strong></td><td>11.8 min</td><td>30.1 min</td><td><strong>21.9%</strong></td></tr>
+    </table>
+    <p class="note">Bottleneck: Review pipeline (code-review + code-review-qg + code-review-finalize) = 62.1% of active cycle time. Completeness-gate retry rate = 43% (3/7 stories).</p>
+  </div>
+
+  <!-- Story Details -->
+  <div class="section">
+    <h2>Story Details</h2>
+    <table>
+      <tr><th>Story</th><th>Pts</th><th>Type</th><th>Flow Time</th><th>Retries</th><th>Issues Fixed</th></tr>
+      <tr><td>3-1-2-connection-h-crossplatform</td><td>3</td><td>Feature</td><td>1.80d</td><td>1</td><td>5</td></tr>
+      <tr><td>3-2-1-char16t-encoding</td><td>5</td><td>Feature</td><td>1.73d</td><td>0</td><td>7</td></tr>
+      <tr><td>3-3-1-macos-server-connectivity</td><td>3</td><td>Feature</td><td>1.71d</td><td>1</td><td>4</td></tr>
+      <tr><td>3-3-2-linux-server-connectivity</td><td>3</td><td>Feature</td><td>1.43d</td><td>1</td><td>7</td></tr>
+      <tr><td>3-4-1-connection-error-messaging</td><td>3</td><td>Feature</td><td>1.38d</td><td>0</td><td>6</td></tr>
+      <tr><td>3-4-2-server-connection-config</td><td>2</td><td>Feature</td><td>0.79d</td><td>0</td><td>14</td></tr>
+      <tr><td>7-1-2-posix-signal-handlers</td><td>3</td><td>Enabler</td><td>0.68d</td><td>0</td><td>5</td></tr>
+      <tr style="font-weight:600; border-top: 2px solid var(--border)"><td>TOTAL</td><td>22</td><td>—</td><td>1.36d avg</td><td>3</td><td>48</td></tr>
+    </table>
+  </div>
+
+  <footer>Generated by PCC Sprint Metrics Workflow &middot; Sprint 3 Complete &middot; 2026-03-09 &middot; Source: .paw/metrics/ event logs</footer>
+</div>
+</body>
+</html>
