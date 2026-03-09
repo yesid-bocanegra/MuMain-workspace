@@ -17,3 +17,5 @@
 {"timestamp":"2026-03-09T00:35:01.038847+00:00","event_type":"step_started","story_key":"7-1-2-posix-signal-handlers","step":"code-review","sprint":null,"epic":"7","data":{}}
 {"event":"story_phase_complete","story_key":"7-1-2-posix-signal-handlers","phase":"code-review","timestamp":"2026-03-09T00:46:45Z"}
 {"event":"story_done","story_key":"7-1-2-posix-signal-handlers","timestamp":"2026-03-09T00:46:45Z","points":3}
+{"timestamp":"2026-03-09T00:48:20.654615+00:00","event_type":"step_passed","story_key":"7-1-2-posix-signal-handlers","step":"code-review","sprint":null,"epic":"7","data":{"duration_seconds":799.6,"input_tokens":34023,"output_tokens":13768,"cache_creation_tokens":561099,"cache_read_tokens":9028187,"num_turns":92,"num_tool_calls":0}}
+{"timestamp":"2026-03-09T00:48:21.667451+00:00","event_type":"step_started","story_key":"7-1-2-posix-signal-handlers","step":"code-review-qg","sprint":null,"epic":"7","data":{}}
