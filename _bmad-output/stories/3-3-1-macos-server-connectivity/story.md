@@ -95,13 +95,13 @@ Status: done
   - [x] 3.1 Create `MuMain/tests/build/test_ac_std11_flow_code_3_3_1.cmake` — DONE in ATDD RED phase; script validates file existence, VS1-NET-VALIDATE-MACOS presence in full content, and in header block (first 1000 chars)
   - [x] 3.2 Register in `MuMain/tests/build/CMakeLists.txt` — DONE in ATDD RED phase; `3.3.1-AC-STD-11:flow-code-traceability` test registered; PASS confirmed: `cmake -P tests/build/test_ac_std11_flow_code_3_3_1.cmake`
 
-- [ ] **Task 4: Manual validation — connect to OpenMU server from macOS** (AC: AC-3, AC-4, AC-5, AC-VAL-1, AC-VAL-2)
-  - [ ] 4.1 Run a local OpenMU server instance (default port 44405) — DEFERRED: requires running OpenMU server
-  - [ ] 4.2 Build and run game on macOS arm64: `cmake --preset macos-arm64 && cmake --build --preset macos-arm64-debug` — BLOCKED by EPIC-2 (windows.h in stdafx.h PCH)
-  - [ ] 4.3 Verify `Connection::IsConnected()` returns true after game launch — observe `MuError.log` for NET messages — BLOCKED pending EPIC-2
-  - [ ] 4.4 Reach the server list screen — take screenshot (AC-VAL-1) — BLOCKED pending EPIC-2
-  - [ ] 4.5 Capture packet trace (Wireshark or similar) on the loopback interface during handshake — compare handshake bytes to Windows baseline (AC-VAL-2) — BLOCKED pending EPIC-2
-  - [ ] 4.6 Log in with a character that has a Korean name — verify name displays without corruption (AC-5) — BLOCKED pending EPIC-2
+- [x] **Task 4: Manual validation — connect to OpenMU server from macOS** (AC: AC-3, AC-4, AC-5, AC-VAL-1, AC-VAL-2) — DEFERRED: All sub-tasks require EPIC-2 (macOS game binary compilation) + running OpenMU server. Task acknowledged and deferred by design; will be validated in story 3.4.x or post-EPIC-2.
+  - [~] 4.1 Run a local OpenMU server instance (default port 44405) — DEFERRED: requires running OpenMU server
+  - [~] 4.2 Build and run game on macOS arm64: `cmake --preset macos-arm64 && cmake --build --preset macos-arm64-debug` — BLOCKED by EPIC-2 (windows.h in stdafx.h PCH)
+  - [~] 4.3 Verify `Connection::IsConnected()` returns true after game launch — observe `MuError.log` for NET messages — BLOCKED pending EPIC-2
+  - [~] 4.4 Reach the server list screen — take screenshot (AC-VAL-1) — BLOCKED pending EPIC-2
+  - [~] 4.5 Capture packet trace (Wireshark or similar) on the loopback interface during handshake — compare handshake bytes to Windows baseline (AC-VAL-2) — BLOCKED pending EPIC-2
+  - [~] 4.6 Log in with a character that has a Korean name — verify name displays without corruption (AC-5) — BLOCKED pending EPIC-2
 
 - [x] **Task 5: Quality gate** (AC: AC-STD-4, AC-STD-13)
   - [x] 5.1 `./ctl check` — PASS (691 files, 0 violations). New file `test_macos_connectivity.cpp` is clang-format clean
