@@ -3,7 +3,7 @@
 **Story Key:** `7-1-2-posix-signal-handlers`
 **Reviewer:** claude-sonnet-4-6 (adversarial code review)
 **Date:** 2026-03-09
-**Phase:** code-review-analysis
+**Phase:** code-review-finalize (complete)
 
 ---
 
@@ -13,7 +13,7 @@
 |------|----------|--------|------|
 | Step 1 | code-review-quality-gate | PASSED | 2026-03-08 |
 | Step 2 | code-review-analysis | COMPLETE | 2026-03-09 |
-| Step 3 | code-review-finalize | pending | — |
+| Step 3 | code-review-finalize | COMPLETE | 2026-03-09 |
 
 ---
 
@@ -76,7 +76,7 @@ All functional ACs (AC-1 through AC-5), all standard ACs (AC-STD-1 through AC-ST
 **Index:** H-1
 **Category:** CODE-QUALITY
 **File:** `MuMain/src/source/Platform/posix/PosixSignalHandlers.cpp:128-130`
-**Status:** pending
+**Status:** fixed
 
 **Description:**
 `InstallSignalHandlers()` has no guard against being called twice. On the first call, `sigaction(SIGSEGV, &act, &s_oldSIGSEGV)` correctly captures the previous handler (e.g., .NET AOT's) into `s_oldSIGSEGV`. On a second call, `sigaction(SIGSEGV, &act, &s_oldSIGSEGV)` overwrites `s_oldSIGSEGV` with the entry that was current at that moment — which is `CrashHandler` itself (installed by the first call).
@@ -109,7 +109,7 @@ Alternatively, note in the header comment that double-install is unsafe and remo
 **Index:** M-1
 **Category:** CODE-QUALITY / CROSS-PLATFORM
 **File:** `MuMain/src/source/Platform/posix/PosixSignalHandlers.cpp:16-21`
-**Status:** pending
+**Status:** fixed
 
 **Description:**
 ```cpp
@@ -134,7 +134,7 @@ These fallback defines are dead code on any conforming POSIX system (`<csignal>`
 **Index:** M-2
 **Category:** CODE-QUALITY
 **File:** `MuMain/src/source/Platform/posix/PosixSignalHandlers.cpp:122`
-**Status:** pending
+**Status:** fixed
 
 **Description:**
 ```cpp
@@ -156,7 +156,7 @@ On Linux (where `sigset_t` is `unsigned long[16]` or similar) and macOS (where i
 **Index:** M-3
 **Category:** CODE-QUALITY / NFR
 **File:** `MuMain/src/source/Platform/posix/PosixSignalHandlers.cpp:88-100`
-**Status:** pending
+**Status:** fixed
 
 **Description:**
 AC-STD-NFR-1 and the header comment claim only async-signal-safe functions are used. `backtrace()` and `backtrace_symbols_fd()` are NOT in the POSIX list of async-signal-safe functions (POSIX.1-2008 §2.4.3). On macOS, `backtrace()` internally acquires a lock via `_dyld_find_unwind_sections()`. If the crash signal interrupts code holding that lock, `backtrace()` in the signal handler will deadlock instead of producing a backtrace.
@@ -178,7 +178,7 @@ This is an accepted platform-specific pragmatism (glibc documents `backtrace()` 
 **Index:** L-1
 **Category:** CODE-QUALITY
 **File:** `MuMain/src/source/Platform/posix/PosixSignalHandlers.cpp:58-67`
-**Status:** pending
+**Status:** fixed
 
 **Description:**
 The code computes signal name length via a runtime `while (*p != '\0')` loop. The story's own Dev Notes (§Signal Handler Implementation Pattern) explicitly recommends using `sizeof("SIGSEGV") - 1` to compute lengths as compile-time constants, avoiding any potential ambiguity. While `strlen()` is async-signal-safe per POSIX 2008, a runtime loop in a signal handler is unnecessary overhead and less readable than compile-time constants.
@@ -220,11 +220,11 @@ int nameLen = (signum == SIGABRT) ? 6 : 7;  // "SIGABRT"=6, "SIGSEGV"/"SIGBUS "=
 |----------|-------|-------|
 | BLOCKER | 0 | — |
 | CRITICAL | 0 | — |
-| HIGH | 1 | 0 |
-| MEDIUM | 3 | 0 |
-| LOW | 1 | 0 |
+| HIGH | 1 | 1 |
+| MEDIUM | 3 | 3 |
+| LOW | 1 | 1 |
 
-**No ACs are violated. Story can proceed to code-review-finalize after fixing H-1 (double-install chain-loop) and optionally addressing M-1 through M-3.**
+**All 5 issues fixed. Quality gate re-verified: PASS (0 violations, 699/699 files).**
 
 ---
 
@@ -262,6 +262,47 @@ int nameLen = (signum == SIGABRT) ? 6 : 7;  // "SIGABRT"=6, "SIGSEGV"/"SIGBUS "=
 **Review artifacts saved to:** `_bmad-output/stories/7-1-2-posix-signal-handlers/review.md`
 
 **Next step:** Run `/bmad:pcc:workflows:code-review-finalize 7-1-2-posix-signal-handlers` to fix the issues and close the story.
+
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-09
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 5 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **H-1:** fixed — Added `static bool s_installed = false` guard in `InstallSignalHandlers()` to prevent double-install and recursive `CrashHandler` invocation
+- **M-1:** fixed — Removed Linux-specific fallback `#define` values for `SA_SIGACTION` (0x0040) and `SA_RESETHAND` (0x0004); both are always provided by `<csignal>` on supported POSIX targets
+- **M-2:** fixed — Added `sigemptyset(&act.sa_mask)` after `struct sigaction act = {}` to ensure POSIX-correct initialization of `sa_mask`
+- **M-3:** fixed — Added inline comment above `#ifdef MU_HAS_BACKTRACE` block documenting that `backtrace()`/`backtrace_symbols_fd()` are not strictly POSIX async-signal-safe but are an accepted trade-off per Story 7.1.2 Dev Notes
+- **L-1:** fixed — Replaced runtime `while (*p != '\0')` loop with compile-time `sizeof("SIGBUS") - 1` / `sizeof("SIGSEGV") - 1` expression
+
+### Fix Progress
+
+| Iteration | Issues Fixed | Quality Gate | Timestamp |
+|-----------|--------------|--------------|-----------|
+| 1 | 5 | PASSED (0 violations, 699/699 files) | 2026-03-09 |
+
+### Story Status Update
+
+- **Previous Status:** done (set during dev-story phase)
+- **New Status:** done
+- **Story File Updated:** `_bmad-output/stories/7-1-2-posix-signal-handlers/story.md`
+- **ATDD Checklist Synchronized:** Yes (AC-VAL-1 marked accepted non-automatable gap)
+
+### Files Modified
+
+- `MuMain/src/source/Platform/posix/PosixSignalHandlers.cpp` - Fixed H-1, M-1, M-2, M-3, L-1
+- `_bmad-output/stories/7-1-2-posix-signal-handlers/story.md` - Marked AC-VAL-1 as accepted (non-automatable)
+- `_bmad-output/stories/7-1-2-posix-signal-handlers/review.md` - Updated issue statuses and Step 3 resolution
 
 📋 Result:
 ## Code Review Analysis Complete — Story 7-1-2-posix-signal-handlers
