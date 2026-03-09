@@ -1,12 +1,12 @@
 # Output Directory Index
 
-*Auto-generated 2026-03-09 09:56 by `paw index`*
+*Auto-generated 2026-03-09 10:05 by `paw index`*
 
 ## Directories
 
 - **contracts/** — 1 items
 - **epics/** — 2 items
-- **implementation-artifacts/** — 12 items ([index](implementation-artifacts/_index.md)) *(sprint-3-completion and metrics at top-level)*
+- **implementation-artifacts/** — 12 items ([index](implementation-artifacts/_index.md))
 - **milestones/** — 5 items
 - **planning-artifacts/** — 6 items
 - **stories/** — 22 items ([index](stories/_index.md))
@@ -27,5 +27,6 @@
 - [sprint-2-metrics-2026-03-07.md](sprint-2-metrics-2026-03-07.md)
 - [sprint-2-retrospective.md](sprint-2-retrospective.md)
 - [sprint-3-completion.md](sprint-3-completion.md)
-- [sprint-3-metrics-2026-03-09.md](sprint-3-metrics-2026-03-09.md)
 - [sprint-3-metrics-2026-03-09.html](sprint-3-metrics-2026-03-09.html)
+- [sprint-3-metrics-2026-03-09.md](sprint-3-metrics-2026-03-09.md)
+- [sprint-3-retrospective.md](sprint-3-retrospective.md)
