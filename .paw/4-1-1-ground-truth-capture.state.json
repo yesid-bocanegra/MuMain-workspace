@@ -1,6 +1,6 @@
 {
   "story_key": "4-1-1-ground-truth-capture",
-  "current_step": "validate-story",
+  "current_step": "atdd",
   "status": "completed",
-  "last_run": "2026-03-09T13:05:26.694850"
+  "last_run": "2026-03-09T13:07:42.178559"
 }

@@ -3,3 +3,5 @@
 {"timestamp":"2026-03-09T18:00:13.665181+00:00","event_type":"step_started","story_key":"4-1-1-ground-truth-capture","step":"create-story","sprint":null,"epic":"4","data":{}}
 {"timestamp":"2026-03-09T18:05:25.685194+00:00","event_type":"step_passed","story_key":"4-1-1-ground-truth-capture","step":"create-story","sprint":null,"epic":"4","data":{"duration_seconds":312.0,"input_tokens":11,"output_tokens":397,"cache_creation_tokens":71200,"cache_read_tokens":77843,"num_turns":3,"num_tool_calls":0}}
 {"timestamp":"2026-03-09T18:05:26.691529+00:00","event_type":"step_started","story_key":"4-1-1-ground-truth-capture","step":"validate-story","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-09T18:07:41.163177+00:00","event_type":"step_passed","story_key":"4-1-1-ground-truth-capture","step":"validate-story","sprint":null,"epic":"4","data":{"duration_seconds":134.5,"input_tokens":11,"output_tokens":247,"cache_creation_tokens":67947,"cache_read_tokens":86628,"num_turns":3,"num_tool_calls":0}}
+{"timestamp":"2026-03-09T18:07:42.170015+00:00","event_type":"step_started","story_key":"4-1-1-ground-truth-capture","step":"atdd","sprint":null,"epic":"4","data":{}}
