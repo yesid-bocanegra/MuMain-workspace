@@ -55,7 +55,7 @@ Status: done
 - [x] **AC-STD-1:** Code follows `project-context.md` standards — `#pragma once`, `nullptr`, no new `NULL`, no `wprintf`, `g_ErrorReport.Write()` for errors, Allman braces, 4-space indent, no `#ifdef _WIN32` in new logic — verified by `./ctl check`
 - [x] **AC-STD-2:** Catch2 smoke test added: load library path → resolve all four symbols → verify non-null (Risk R6 mitigation: macOS dylib loading path resolution differs from dlopen on Linux) — test file created; executes when dylib present; SKIP if absent
 - [x] **AC-STD-4:** CI quality gate passes — `./ctl check` (clang-format + cppcheck) zero violations; MinGW cross-compile build passes with `MU_ENABLE_DOTNET=OFF`
-- [x] **AC-STD-6:** Conventional commit: `feat(network): validate macOS OpenMU connectivity` — committed as df7d137c
+- [x] **AC-STD-6:** Conventional commit: `feat(network): validate macOS OpenMU connectivity` — committed as `df7d137c` (MuMain submodule) / outer-repo `2077b4f`
 - [x] **AC-STD-11:** Flow Code traceability — `VS1-NET-VALIDATE-MACOS` appears in new test file header comment and commit message — CMake script test passes
 - [x] **AC-STD-13:** Quality gate passes — `./ctl check` clean (691 files, 0 violations)
 - [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
@@ -497,7 +497,8 @@ _None._
   - Fixed GCC-only warning flags (`-Wno-conversion-null`, `-Wno-memset-elt-size`, `-Wno-stringop-overread`) in `src/CMakeLists.txt` to use `$<$<CXX_COMPILER_ID:GNU>:...>` generator expressions — fixes Clang/macOS builds
   - Quality gate: `./ctl check` passes (691 files, 0 violations)
   - AC-VAL-3 (Catch2 tests run on macOS) blocked by EPIC-2 — MuTests links MUCore which includes windows.h PCH; not a story-3.3.1 gap
-  - NOTE: `dotnet publish` on macOS requires `LIBRARY_PATH=/opt/homebrew/opt/openssl/lib:/opt/homebrew/opt/brotli/lib` — document in docs or add to FindDotnetAOT.cmake for future CI setup
+  - NOTE: `dotnet publish` on macOS requires `LIBRARY_PATH=/opt/homebrew/opt/openssl/lib:/opt/homebrew/opt/brotli/lib` — document in docs or add to FindDotnetAOT.cmake for future CI setup. Future story: consider adding a `DOTNET_EXTRA_LIBRARY_PATH` CMake variable injected via environment or a cmake/macos-dotnet-env.sh wrapper.
+  - NOTE (code review): 9 XSLT-generated PacketBindings/PacketFunctions files were regenerated in this commit (df7d137c) to apply changes from prior stories 3.1.2 and 3.2.1 whose XSLT templates had been updated but output not rebuilt. Files were regenerated via the code-gen tool — not manually edited. File List updated to document all changed files.
 
 ### File List
 
@@ -505,5 +506,72 @@ _None._
 - [CREATE] `MuMain/tests/build/test_ac_std11_flow_code_3_3_1.cmake` — ATDD: verify `VS1-NET-VALIDATE-MACOS` in test file header
 - [MODIFY] `MuMain/tests/CMakeLists.txt` — add `target_sources(MuTests PRIVATE platform/test_macos_connectivity.cpp)`; add `MU_TEST_LIBRARY_PATH` definition when dylib present
 - [MODIFY] `MuMain/tests/build/CMakeLists.txt` — register `3.3.1-AC-STD-11:flow-code-traceability` test
+- [MODIFY] `MuMain/src/CMakeLists.txt` — wrap `-Wno-conversion-null`, `-Wno-memset-elt-size`, `-Wno-stringop-overread` in `$<$<CXX_COMPILER_ID:GNU>:...>` generator expressions so Clang/macOS does not error on unrecognized warning flags
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketBindings_ChatServer.h` — XSLT-regenerated (not manually edited): applies story 3.1.2 symLoad→GetSymbol and story 3.2.1 wchar_t*→char16_t* which had not been rebuilt since XSLT template updates
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketBindings_ClientToServer.h` — XSLT-regenerated (see above)
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketBindings_ConnectServer.h` — XSLT-regenerated (see above)
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketFunctions_ChatServer.h` — XSLT-regenerated (see above)
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketFunctions_ChatServer.cpp` — XSLT-regenerated (see above)
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketFunctions_ClientToServer.h` — XSLT-regenerated (see above)
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketFunctions_ClientToServer.cpp` — XSLT-regenerated (see above)
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketFunctions_ConnectServer.h` — XSLT-regenerated (see above)
+- [REGENERATED] `MuMain/src/source/Dotnet/PacketFunctions_ConnectServer.cpp` — XSLT-regenerated (see above)
 - [MODIFY IF NEEDED] `MuMain/cmake/FindDotnetAOT.cmake` — add `MU_DOTNET_LIB_DIR` compile definition for macOS absolute path resolution (only if bare filename `dlopen` fails in Task 4.3)
 - [MODIFY IF NEEDED] `MuMain/src/source/Dotnet/Connection.h` — use absolute path via `MU_DOTNET_LIB_DIR` on macOS (only if bare filename approach fails)
+
+---
+
+## Senior Developer Review (AI)
+
+**Reviewer:** claude-sonnet-4-6 (code-review workflow) — 2026-03-09
+
+**Verdict: APPROVED with fixes applied**
+
+### Review Summary
+
+Story 3.3.1 is a validation story that correctly verifies .NET AOT plumbing built in prior stories. The implementation scope is appropriately narrow. All core deliverables (Catch2 smoke test, ATDD CMake script, GCC warning flag fix) are correctly implemented and quality gate passes (699 files, 0 violations as of review date).
+
+### Issues Found and Fixed
+
+| # | Severity | Issue | Action |
+|---|----------|-------|--------|
+| 1 | 🔴 CRITICAL | `sprint-status.yaml` showed `ready-for-dev` for a `done` story — sprint tracking not synced | **FIXED**: Updated to `done` |
+| 2 | 🟠 HIGH | `src/CMakeLists.txt` (GCC warning flag fix) and 9 XSLT-regenerated Packet files were committed but absent from story File List | **FIXED**: Added all changed files to File List with `[MODIFY]` / `[REGENERATED]` tags |
+| 3 | 🟡 MEDIUM | AC-STD-6 commit SHA `df7d137c` is submodule hash, not outer-repo hash (`2077b4f`) — traceability confusion | **FIXED**: AC-STD-6 now documents both hashes |
+| 4 | 🟡 MEDIUM | ATDD.md AC table said "File count (693)" but implementation checklist said "691 files" — internal inconsistency | **FIXED**: Corrected to "691" |
+| 5 | 🟡 MEDIUM | `dotnet publish` on macOS requires `LIBRARY_PATH=` for Homebrew openssl/brotli — not documented for other devs | **NOTED**: Added to completion notes with future story suggestion |
+
+### Deferred Items (Not Blocking Done)
+
+| # | Severity | Issue | Reason Deferred |
+|---|----------|-------|----------------|
+| 6 | 🟢 LOW | AC-3/AC-4/AC-5 (full server connectivity, packet encryption, Korean char round-trip) remain unautomated | MANUAL ONLY — requires running OpenMU server + EPIC-2 macOS binary; properly deferred to 3.4.x |
+| 7 | 🟢 LOW | dylib path resolution risk R6 (SIP + bare `dlopen` path on macOS 15+) unverified | Deferred with AC-3; mitigation documented in Dev Notes; `MU_DOTNET_LIB_DIR` pattern ready if needed |
+
+### Code Quality Assessment
+
+- **test_macos_connectivity.cpp**: Clean. `#ifdef __APPLE__` guard correct. `SKIP` macro used properly. `REQUIRE`/`CHECK` semantics correct (REQUIRE for load, CHECK for symbols — if load fails, test aborts; if symbol missing, all 4 checked). No security concerns.
+- **test_ac_std11_flow_code_3_3_1.cmake**: Validates file existence, content match, and header-area presence — thorough.
+- **tests/CMakeLists.txt**: `if/elseif` block for macOS vs Linux dylib path avoids duplicate-definition — correct fix attributed to story 3.3.2 review (L-1 note present in file).
+- **src/CMakeLists.txt**: Generator expression wrapping of GCC-only flags is the correct CMake idiom.
+- **Generated files**: XSLT-regenerated output — not manually edited. Legitimate to commit regenerated output after template updates in 3.1.2/3.2.1.
+
+### AC Validation
+
+| AC | Status | Verdict |
+|----|--------|---------|
+| AC-1 | Verified via `nm -gU` + CMake configure output | ✅ PASS |
+| AC-2 | Verified via `nm -gU` for all 4 exports | ✅ PASS |
+| AC-3 | Manual only, EPIC-2 blocked | ⏸ DEFERRED |
+| AC-4 | Manual only, EPIC-2 blocked | ⏸ DEFERRED |
+| AC-5 | Manual only, EPIC-2 blocked | ⏸ DEFERRED |
+| AC-STD-1 | `./ctl check` 0 violations | ✅ PASS |
+| AC-STD-2 | Catch2 tests exist and correct | ✅ PASS |
+| AC-STD-4 | Quality gate clean | ✅ PASS |
+| AC-STD-6 | Conventional commit present | ✅ PASS |
+| AC-STD-11 | Flow code in header + CMake test passes | ✅ PASS |
+| AC-STD-13 | Quality gate passes (691 files) | ✅ PASS |
+| AC-STD-15 | No force push, clean history | ✅ PASS |
+| AC-STD-20 | No new API/event catalog entries | ✅ PASS |
+| AC-STD-NFR-1 | `MU_TEST_LIBRARY_PATH` → `CMAKE_RUNTIME_OUTPUT_DIRECTORY` | ✅ PASS |
+| AC-STD-NFR-2 | `dotnet publish` → dylib + 4 exports verified | ✅ PASS |

@@ -17,3 +17,5 @@
 {"timestamp":"2026-03-09T12:26:36.649369+00:00","event_type":"step_retried","story_key":"3-3-1-macos-server-connectivity","step":"completeness-gate","sprint":null,"epic":"3","data":{"attempt":2}}
 {"timestamp":"2026-03-09T12:26:36.650629+00:00","event_type":"feedback_saved","story_key":"3-3-1-macos-server-connectivity","step":"completeness-gate","sprint":null,"epic":"3","data":{"regression_target":"completeness-gate"}}
 {"timestamp":"2026-03-09T12:26:38.655513+00:00","event_type":"step_started","story_key":"3-3-1-macos-server-connectivity","step":"completeness-gate","sprint":null,"epic":"3","data":{}}
+{"timestamp":"2026-03-09T12:34:20.243822+00:00","event_type":"step_passed","story_key":"3-3-1-macos-server-connectivity","step":"completeness-gate","sprint":null,"epic":"3","data":{"duration_seconds":461.6,"input_tokens":68,"output_tokens":10348,"cache_creation_tokens":206902,"cache_read_tokens":2783598,"num_turns":31,"num_tool_calls":0}}
+{"timestamp":"2026-03-09T12:34:21.250535+00:00","event_type":"step_started","story_key":"3-3-1-macos-server-connectivity","step":"code-review","sprint":null,"epic":"3","data":{}}

@@ -46,7 +46,7 @@
 | AC-STD-2 | Catch2 smoke test for dylib loading | `3.3.1 AC-1:` + `3.3.1 AC-2:` TEST_CASEs | `test_macos_connectivity.cpp` |
 | AC-STD-4 | CI quality gate passes | `./ctl check` zero violations | — |
 | AC-STD-11 | `VS1-NET-VALIDATE-MACOS` flow code in test file header | `3.3.1-AC-STD-11:flow-code-traceability` CMake test | `test_ac_std11_flow_code_3_3_1.cmake` |
-| AC-STD-13 | File count consistent (693) | `./ctl check` passes | — |
+| AC-STD-13 | File count consistent (691) | `./ctl check` passes | — |
 | AC-STD-NFR-1 | dylib co-location with game binary | `MU_TEST_LIBRARY_PATH` CMake definition points to `CMAKE_RUNTIME_OUTPUT_DIRECTORY` | `tests/CMakeLists.txt` |
 | AC-STD-NFR-2 | `dotnet publish` produces dylib with 4 exports | `3.3.1 AC-2:` symbol resolution smoke test | `test_macos_connectivity.cpp` |
 | AC-VAL-1 | Screenshot: server list displayed (manual) | Manual validation only | — |
