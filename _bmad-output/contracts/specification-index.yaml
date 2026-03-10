@@ -71,7 +71,7 @@ epics:
       - "4.2 MuRenderer Abstraction"
       - "4.3 SDL_gpu Backend"
       - "4.4 Texture System"
-    completion_pct: 11  # 1 of 9 stories done (4-1-1)
+    completion_pct: 33  # 3 of 9 stories done (4-1-1, 4-2-1, 4-2-2)
 
   EPIC-5:
     name: "Audio System Migration"
@@ -196,7 +196,7 @@ features:
     epic: EPIC-4
     stories: ["4-2-1", "4-2-2", "4-2-3", "4-2-4", "4-2-5"]
     points: 22  # 8+8+5+3+3 = 27 — wait, per the feature map it says 22
-    completion_pct: 0
+    completion_pct: 40  # 2 of 5 stories done (4-2-1, 4-2-2)
   "4.3":
     name: "SDL_gpu Backend"
     epic: EPIC-4
@@ -517,9 +517,14 @@ stories:
     name: "MuRenderer Core API"
     epic: EPIC-4
     feature: "4.2"
-    status: backlog
+    type: infrastructure
+    status: done
     points: 8
     value_stream: "VS-1"
+    flow_code: VS1-RENDER-ABSTRACT-CORE
+    story_file: "_bmad-output/stories/4-2-1-murenderer-core-api/story.md"
+    atdd_checklist: "_bmad-output/stories/4-2-1-murenderer-core-api/atdd.md"
+    review_file: "_bmad-output/stories/4-2-1-murenderer-core-api/review.md"
 
   4-2-2-migrate-renderbitmap-quad2d:
     name: "Migrate RenderBitmap & Quad2D"
@@ -793,6 +798,9 @@ catalogs:
     - code: VS1-RENDER-GROUNDTRUTH-CAPTURE
       story: 4-1-1-ground-truth-capture
       value_stream: VS-1
+    - code: VS1-RENDER-ABSTRACT-CORE
+      story: 4-2-1-murenderer-core-api
+      value_stream: VS-1
 
 # =====================
 # STATISTICS
@@ -805,13 +813,13 @@ statistics:
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 16
+  total_flow_codes: 17
   total_test_scenarios: 0
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 22
-  stories_backlog: 23
-  completion_rate: 48.9    # 22/45 stories done
-  points_done: 73          # EPIC-1 (18) + EPIC-2 (17) + EPIC-3 (24) + 7-1-1 (3) + 7-1-2 (3) + 7-2-1 (3) + 4-1-1 (5)
-  points_remaining: 99
-  points_completion_rate: 42.4  # 73/172
+  stories_done: 23
+  stories_backlog: 22
+  completion_rate: 51.1    # 23/45 stories done
+  points_done: 81          # EPIC-1 (18) + EPIC-2 (17) + EPIC-3 (24) + 7-1-1 (3) + 7-1-2 (3) + 7-2-1 (3) + 4-1-1 (5) + 4-2-1 (8) [note: 4-2-2 done per sprint-status, tracked separately]
+  points_remaining: 91
+  points_completion_rate: 47.1  # 81/172
