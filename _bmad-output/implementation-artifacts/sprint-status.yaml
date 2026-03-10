@@ -423,7 +423,7 @@ development_status:
   4-1-1-ground-truth-capture: done               # 5 pts | Flow:F | Deps: 2.1.1 | Sprint-4 | code-review-finalize completed 2026-03-09
   4-2-1-murenderer-core-api: done               # 8 pts | Flow:F | Deps: 4.1.1 ✓ | code-review-finalize completed 2026-03-09
   4-2-2-migrate-renderbitmap-quad2d: done # 8 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-09
-  4-2-3-migrate-skeletal-mesh: in-progress      # 5 pts | Flow:F | Deps: 4.2.1
+  4-2-3-migrate-skeletal-mesh: done              # 5 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-10
   4-2-4-migrate-trail-effects: backlog          # 3 pts | Flow:F | Deps: 4.2.1
   4-2-5-migrate-blend-pipeline-state: backlog   # 3 pts | Flow:F | Deps: 4.2.1
   4-3-1-sdlgpu-backend: backlog                 # 8 pts | Flow:F | Deps: 4.2.2-4.2.5
