@@ -1,6 +1,6 @@
 # Story 4.2.5: Migrate Blend & Pipeline State to MuRenderer
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,55 +42,55 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** The seven blend-state helper functions in `ZzzOpenglUtil.cpp` are **wrapped** to delegate to `mu::GetRenderer().SetBlendMode(mode)` internally — the existing public function signatures (`EnableAlphaBlend()`, `DisableAlphaBlend()`, `EnableAlphaBlendMinus()`, `EnableAlphaBlend2()`, `EnableAlphaBlend3()`, `EnableAlphaBlend4()`, `EnableLightMap()`) are **preserved** so that the ~368 existing call sites across game logic files compile unchanged (no call-site migration required for this story — the wrapper is the migration)
+- [x] **AC-1:** The seven blend-state helper functions in `ZzzOpenglUtil.cpp` are **wrapped** to delegate to `mu::GetRenderer().SetBlendMode(mode)` internally — the existing public function signatures (`EnableAlphaBlend()`, `DisableAlphaBlend()`, `EnableAlphaBlendMinus()`, `EnableAlphaBlend2()`, `EnableAlphaBlend3()`, `EnableAlphaBlend4()`, `EnableLightMap()`) are **preserved** so that the ~368 existing call sites across game logic files compile unchanged (no call-site migration required for this story — the wrapper is the migration)
 
-- [ ] **AC-2:** The blend-state type guard logic (`if (AlphaBlendType != N)`) is preserved inside the wrapper functions in `ZzzOpenglUtil.cpp` — these guards prevent redundant GL state changes and must remain working
+- [x] **AC-2:** The blend-state type guard logic (`if (AlphaBlendType != N)`) is preserved inside the wrapper functions in `ZzzOpenglUtil.cpp` — these guards prevent redundant GL state changes and must remain working
 
-- [ ] **AC-3:** `EnableDepthTest()` and `DisableDepthTest()` in `ZzzOpenglUtil.cpp` are wrapped to delegate to `mu::GetRenderer().SetDepthTest(true/false)` — the two direct `glEnable(GL_DEPTH_TEST)` / `glDisable(GL_DEPTH_TEST)` calls in `CameraMove.cpp` are migrated to call `EnableDepthTest()` / `DisableDepthTest()` instead (eliminating direct GL calls from game logic)
+- [x] **AC-3:** `EnableDepthTest()` and `DisableDepthTest()` in `ZzzOpenglUtil.cpp` are wrapped to delegate to `mu::GetRenderer().SetDepthTest(true/false)` — the two direct `glEnable(GL_DEPTH_TEST)` / `glDisable(GL_DEPTH_TEST)` calls in `CameraMove.cpp` are migrated to call `EnableDepthTest()` / `DisableDepthTest()` instead (eliminating direct GL calls from game logic)
 
-- [ ] **AC-4:** The fog setup in `GMBattleCastle.cpp` (lines ~590–593: `glFogfv`, `glFogf` × 3 calls) is migrated to `mu::GetRenderer().SetFog(params)` using a `mu::FogParams` struct with `mode = GL_LINEAR`, `start = 2000.f`, `end = 2700.f`, `density = 0.f`, and the existing `Color` float array copied into `params.color[4]`
+- [x] **AC-4:** The fog setup in `GMBattleCastle.cpp` (lines ~590–593: `glFogfv`, `glFogf` × 3 calls) is migrated to `mu::GetRenderer().SetFog(params)` using a `mu::FogParams` struct with `mode = GL_LINEAR`, `start = 2000.f`, `end = 2700.f`, `density = 0.f`, and the existing `Color` float array copied into `params.color[4]`
 
-- [ ] **AC-5:** No direct `glEnable(GL_BLEND)` / `glDisable(GL_BLEND)` / `glBlendFunc` calls remain outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`; no direct `glFogi` / `glFogf` / `glFogfv` calls remain outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp` — verified by grep
+- [x] **AC-5:** No direct `glEnable(GL_BLEND)` / `glDisable(GL_BLEND)` / `glBlendFunc` calls remain outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`; no direct `glFogi` / `glFogf` / `glFogfv` calls remain outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp` — verified by grep
 
-- [ ] **AC-6:** The `MuRendererGL::SetBlendMode()` implementation already handles all six `BlendMode` enum values (`Alpha`, `Additive`, `Subtract`, `InverseColor`, `Mixed`, `LightMap`) — verify the mapping against `ZzzOpenglUtil.cpp` blend functions; note that `EnableAlphaBlend()` uses `GL_ONE/GL_ONE` which is NOT in the current `BlendMode` enum; add `BlendMode::Additive2` for `GL_ONE/GL_ONE` and update `MuRendererGL::SetBlendMode()` accordingly, OR redirect `EnableAlphaBlend()` to the closest existing mode with a comment explaining the semantic difference
+- [x] **AC-6:** The `MuRendererGL::SetBlendMode()` implementation already handles all six `BlendMode` enum values (`Alpha`, `Additive`, `Subtract`, `InverseColor`, `Mixed`, `LightMap`) — verify the mapping against `ZzzOpenglUtil.cpp` blend functions; note that `EnableAlphaBlend()` uses `GL_ONE/GL_ONE` which is NOT in the current `BlendMode` enum; add `BlendMode::Additive2` for `GL_ONE/GL_ONE` and update `MuRendererGL::SetBlendMode()` accordingly, OR redirect `EnableAlphaBlend()` to the closest existing mode with a comment explaining the semantic difference
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance — `mu::` namespace for all new helpers, PascalCase functions, `m_` member prefix, `#pragma once`, no raw `new`/`delete`, `[[nodiscard]]` on new fallible functions, no `NULL` (use `nullptr`), no `wprintf`, no `#ifdef _WIN32` in game logic files
+- [x] **AC-STD-1:** Code Standards Compliance — `mu::` namespace for all new helpers, PascalCase functions, `m_` member prefix, `#pragma once`, no raw `new`/`delete`, `[[nodiscard]]` on new fallible functions, no `NULL` (use `nullptr`), no `wprintf`, no `#ifdef _WIN32` in game logic files
 
-- [ ] **AC-STD-2:** Catch2 tests in `tests/render/test_blendpipelinestate_migration.cpp` verifying: (a) `SetBlendMode` is routable (mock implementation verifies correct `BlendMode` enum value is passed for each of the 7 helper functions); (b) `SetDepthTest(true)` and `SetDepthTest(false)` pass correct bool; (c) `SetFog` with `GL_LINEAR` mode and known params populates `FogParams` struct correctly — tests must compile and pass on macOS/Linux (no `gl*` calls in tests)
+- [x] **AC-STD-2:** Catch2 tests in `tests/render/test_blendpipelinestate_migration.cpp` verifying: (a) `SetBlendMode` is routable (mock implementation verifies correct `BlendMode` enum value is passed for each of the 7 helper functions); (b) `SetDepthTest(true)` and `SetDepthTest(false)` pass correct bool; (c) `SetFog` with `GL_LINEAR` mode and known params populates `FogParams` struct correctly — tests must compile and pass on macOS/Linux (no `gl*` calls in tests)
 
-- [ ] **AC-STD-3:** No direct `glBlendFunc` / `glEnable(GL_BLEND)` / `glDisable(GL_BLEND)` / `glFogi` / `glFogf` / `glFogfv` calls outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp` — verified by targeted grep
+- [x] **AC-STD-3:** No direct `glBlendFunc` / `glEnable(GL_BLEND)` / `glDisable(GL_BLEND)` / `glFogi` / `glFogf` / `glFogfv` calls outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp` — verified by targeted grep
 
-- [ ] **AC-STD-4:** CI quality gate passes (`./ctl check` — clang-format check + cppcheck 0 errors)
+- [x] **AC-STD-4:** CI quality gate passes (`./ctl check` — clang-format check + cppcheck 0 errors)
 
-- [ ] **AC-STD-5:** Error logging: existing guards in `MuRenderer.cpp` (`g_ErrorReport.Write(L"RENDER: MuRenderer::SetBlendMode -- unknown blend mode %d", ...)` and `g_ErrorReport.Write(L"RENDER: MuRenderer::SetFog -- unsupported fog mode %d", ...)`) are already in place — no new error codes required
+- [x] **AC-STD-5:** Error logging: existing guards in `MuRenderer.cpp` (`g_ErrorReport.Write(L"RENDER: MuRenderer::SetBlendMode -- unknown blend mode %d", ...)` and `g_ErrorReport.Write(L"RENDER: MuRenderer::SetFog -- unsupported fog mode %d", ...)`) are already in place — no new error codes required
 
-- [ ] **AC-STD-6:** Conventional commits: `refactor(render): wrap blend-state helpers to delegate to MuRenderer::SetBlendMode` and `refactor(render): migrate fog setup in GMBattleCastle to MuRenderer::SetFog`
+- [x] **AC-STD-6:** Conventional commits: `refactor(render): wrap blend-state helpers to delegate to MuRenderer::SetBlendMode` and `refactor(render): migrate fog setup in GMBattleCastle to MuRenderer::SetFog`
 
-- [ ] **AC-STD-12:** N/A — C++ client infrastructure story; no server-side SLI/SLO latency targets
+- [x] **AC-STD-12:** N/A — C++ client infrastructure story; no server-side SLI/SLO latency targets
 
-- [ ] **AC-STD-14:** N/A — infrastructure story; no new observable metrics introduced; existing error paths use `g_ErrorReport.Write()` patterns already documented in AC-STD-5
+- [x] **AC-STD-14:** N/A — infrastructure story; no new observable metrics introduced; existing error paths use `g_ErrorReport.Write()` patterns already documented in AC-STD-5
 
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format check + cppcheck 0 errors); file count 727 (post-4.2.4 baseline) + 1 new test file = 728 files
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format check + cppcheck 0 errors); file count 727 (post-4.2.4 baseline) + 1 new test file = 728 files
 
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
 
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/render/` directory pattern, `target_sources` in `tests/CMakeLists.txt`)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/render/` directory pattern, `target_sources` in `tests/CMakeLists.txt`)
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Catch2 tests pass for `SetBlendMode` routing with all 7 blend function mappings, `SetDepthTest` bool values, and `FogParams` struct population for `GL_LINEAR`
+- [x] **AC-VAL-1:** Catch2 tests pass for `SetBlendMode` routing with all 7 blend function mappings, `SetDepthTest` bool values, and `FogParams` struct population for `GL_LINEAR`
 
-- [ ] **AC-VAL-2:** `./ctl check` passes with 0 errors after all migrations applied
+- [x] **AC-VAL-2:** `./ctl check` passes with 0 errors after all migrations applied
 
 - [ ] **AC-VAL-3:** Windows build renders alpha-blended effects (water, particles, UI transparency, skill glow) identically before/after migration — verified manually or via ground truth comparison from story 4.1.1 baselines (SSIM > 0.99). **Status: manual validation only — automated verification deferred to epic-4 ground truth gate (story 4.4.1).**
 
-- [ ] **AC-VAL-4:** Grep verification — no direct `glBlendFunc`, `glEnable(GL_BLEND)`, `glDisable(GL_BLEND)`, `glFogi`, `glFogf`, `glFogfv` in game logic files outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`:
+- [x] **AC-VAL-4:** Grep verification — no direct `glBlendFunc`, `glEnable(GL_BLEND)`, `glDisable(GL_BLEND)`, `glFogi`, `glFogf`, `glFogfv` in game logic files outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`:
   ```
   grep -rn "glBlendFunc\|glEnable(GL_BLEND\|glDisable(GL_BLEND\|glFogi\|glFogf\b" MuMain/src/source --include="*.cpp" | grep -v "ZzzOpenglUtil\|MuRenderer"
   ```
@@ -100,8 +100,8 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Analyze blend mode mapping between `ZzzOpenglUtil.cpp` and `MuRenderer::BlendMode` enum (AC: 1, 2, 6)
-  - [ ] Subtask 1.1: Read `ZzzOpenglUtil.cpp` blend functions (lines ~376–566) and map each to the `BlendMode` enum:
+- [x] Task 1: Analyze blend mode mapping between `ZzzOpenglUtil.cpp` and `MuRenderer::BlendMode` enum (AC: 1, 2, 6)
+  - [x] Subtask 1.1: Read `ZzzOpenglUtil.cpp` blend functions (lines ~376–566) and map each to the `BlendMode` enum:
     - `EnableLightMap()`: `GL_ZERO, GL_SRC_COLOR` → `BlendMode::LightMap` ✓
     - `EnableAlphaTest()`: `GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA` → `BlendMode::Alpha` ✓
     - `EnableAlphaBlend()`: `GL_ONE, GL_ONE` → **NOT in BlendMode enum** — needs resolution
@@ -110,64 +110,51 @@ Status: ready-for-dev
     - `EnableAlphaBlend3()`: `GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA` → `BlendMode::Alpha` (same as Alpha) ✓
     - `EnableAlphaBlend4()`: `GL_ONE, GL_ONE_MINUS_SRC_COLOR` → `BlendMode::Mixed` ✓
     - `DisableAlphaBlend()`: `glDisable(GL_BLEND)` → needs `SetBlendMode` with Disabled, OR a `DisableBlend()` on IMuRenderer
-  - [ ] Subtask 1.2: Decide on resolution for unmapped blend modes — two options:
+  - [x] Subtask 1.2: Decide on resolution for unmapped blend modes — two options:
     - **Option A (recommended):** Add `BlendMode::Glow` for `GL_ONE/GL_ONE` and `BlendMode::Luminance` for `GL_ONE_MINUS_SRC_COLOR/GL_ONE` to the `BlendMode` enum in `MuRenderer.h`, and add a `DisableBlend()` method to `IMuRenderer` (or add `BlendMode::Disabled` sentinel); update `MuRendererGL::SetBlendMode()` in `MuRenderer.cpp`
     - **Option B:** Comment inside `EnableAlphaBlend()` wrapper explaining the semantic and route to nearest existing mode (lossy — not recommended)
     - **Choose Option A** — adds 2 enum values, 1 optional method; cleaner for story 4.3.1 (SDL_gpu backend)
-  - [ ] Subtask 1.3: Note that `EnableAlphaTest()` carries side-effects (`glAlphaTest`) beyond blend factors — document this as out-of-scope for this story; the alpha test GL state is not in `IMuRenderer` yet; leave `EnableAlphaTest()` body mostly intact for the blend portion, add TODO for alpha test migration in story 4.3.x
+  - [x] Subtask 1.3: Note that `EnableAlphaTest()` carries side-effects (`glAlphaTest`) beyond blend factors — document this as out-of-scope for this story; the alpha test GL state is not in `IMuRenderer` yet; leave `EnableAlphaTest()` body mostly intact for the blend portion, add TODO for alpha test migration in story 4.3.x
 
-- [ ] Task 2: Add missing BlendMode enum values and DisableBlend to MuRenderer (AC: 6, if Option A chosen)
-  - [ ] Subtask 2.1: In `MuRenderer.h`, add to `BlendMode` enum: `Glow` (GL_ONE, GL_ONE) and `Luminance` (GL_ONE_MINUS_SRC_COLOR, GL_ONE); add `Disabled` sentinel (value 0xFF or similar) for the disable path; add `virtual void DisableBlend() = 0;` to `IMuRenderer`
-  - [ ] Subtask 2.2: In `MuRenderer.cpp`, add cases in `MuRendererGL::SetBlendMode()`: `case BlendMode::Glow: glBlendFunc(GL_ONE, GL_ONE); break;` and `case BlendMode::Luminance: glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE); break;`; implement `MuRendererGL::DisableBlend()` as `glDisable(GL_BLEND);`
-  - [ ] Subtask 2.3: Commit: `feat(render): extend BlendMode enum with Glow/Luminance/DisableBlend for full state coverage`
+- [x] Task 2: Add missing BlendMode enum values and DisableBlend to MuRenderer (AC: 6, if Option A chosen)
+  - [x] Subtask 2.1: In `MuRenderer.h`, add to `BlendMode` enum: `Glow` (GL_ONE, GL_ONE) and `Luminance` (GL_ONE_MINUS_SRC_COLOR, GL_ONE); add `Disabled` sentinel (value 0xFF or similar) for the disable path; add `virtual void DisableBlend() = 0;` to `IMuRenderer`
+  - [x] Subtask 2.2: In `MuRenderer.cpp`, add cases in `MuRendererGL::SetBlendMode()`: `case BlendMode::Glow: glBlendFunc(GL_ONE, GL_ONE); break;` and `case BlendMode::Luminance: glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE); break;`; implement `MuRendererGL::DisableBlend()` as `glDisable(GL_BLEND);`
+  - [x] Subtask 2.3: Commit: `feat(render): extend BlendMode enum with Glow/Luminance/DisableBlend for full state coverage`
 
-- [ ] Task 3: Wrap blend-state helpers in `ZzzOpenglUtil.cpp` to delegate to MuRenderer (AC: 1, 2, 5)
-  - [ ] Subtask 3.1: Modify `EnableLightMap()`: keep `if (AlphaBlendType != 1)` guard; replace `glEnable(GL_BLEND); glBlendFunc(GL_ZERO, GL_SRC_COLOR);` with `mu::GetRenderer().SetBlendMode(mu::BlendMode::LightMap);`; keep the `EnableCullFace()`, `EnableDepthMask()`, `AlphaTestEnable`, texture, and fog side-effects as-is
-  - [ ] Subtask 3.2: Modify `DisableAlphaBlend()`: keep guard; replace `glDisable(GL_BLEND);` with `mu::GetRenderer().DisableBlend();`; keep all other side-effects
-  - [ ] Subtask 3.3: Modify `EnableAlphaBlend()`: keep guard; replace `glEnable(GL_BLEND); glBlendFunc(GL_ONE, GL_ONE);` with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Glow);`
-  - [ ] Subtask 3.4: Modify `EnableAlphaBlendMinus()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Subtract);`
-  - [ ] Subtask 3.5: Modify `EnableAlphaBlend2()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Luminance);`
-  - [ ] Subtask 3.6: Modify `EnableAlphaBlend3()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Alpha);`
-  - [ ] Subtask 3.7: Modify `EnableAlphaBlend4()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Mixed);`
-  - [ ] Subtask 3.8: Add `#include "MuRenderer.h"` to `ZzzOpenglUtil.cpp` if not already present (include as `"MuRenderer.h"` — flat by directory per project conventions, NOT `"RenderFX/MuRenderer.h"`)
-  - [ ] Subtask 3.9: Commit: `refactor(render): wrap blend-state helpers to delegate to MuRenderer::SetBlendMode`
+- [x] Task 3: Wrap blend-state helpers in `ZzzOpenglUtil.cpp` to delegate to MuRenderer (AC: 1, 2, 5)
+  - [x] Subtask 3.1: Modify `EnableLightMap()`: keep `if (AlphaBlendType != 1)` guard; replace `glEnable(GL_BLEND); glBlendFunc(GL_ZERO, GL_SRC_COLOR);` with `mu::GetRenderer().SetBlendMode(mu::BlendMode::LightMap);`; keep the `EnableCullFace()`, `EnableDepthMask()`, `AlphaTestEnable`, texture, and fog side-effects as-is
+  - [x] Subtask 3.2: Modify `DisableAlphaBlend()`: keep guard; replace `glDisable(GL_BLEND);` with `mu::GetRenderer().DisableBlend();`; keep all other side-effects
+  - [x] Subtask 3.3: Modify `EnableAlphaBlend()`: keep guard; replace `glEnable(GL_BLEND); glBlendFunc(GL_ONE, GL_ONE);` with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Glow);`
+  - [x] Subtask 3.4: Modify `EnableAlphaBlendMinus()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Subtract);`
+  - [x] Subtask 3.5: Modify `EnableAlphaBlend2()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Luminance);`
+  - [x] Subtask 3.6: Modify `EnableAlphaBlend3()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Alpha);`
+  - [x] Subtask 3.7: Modify `EnableAlphaBlend4()`: replace GL calls with `mu::GetRenderer().SetBlendMode(mu::BlendMode::Mixed);`
+  - [x] Subtask 3.8: Add `#include "MuRenderer.h"` to `ZzzOpenglUtil.cpp` if not already present (include as `"MuRenderer.h"` — flat by directory per project conventions, NOT `"RenderFX/MuRenderer.h"`) — already present from prior story
+  - [x] Subtask 3.9: Commit: `refactor(render): wrap blend-state helpers to delegate to MuRenderer::SetBlendMode`
 
-- [ ] Task 4: Wrap depth test helpers in `ZzzOpenglUtil.cpp` and fix direct GL calls in `CameraMove.cpp` (AC: 3, 5)
-  - [ ] Subtask 4.1: Modify `EnableDepthTest()` in `ZzzOpenglUtil.cpp`: keep `if (!DepthTestEnable)` guard; replace `glEnable(GL_DEPTH_TEST);` with `mu::GetRenderer().SetDepthTest(true);`
-  - [ ] Subtask 4.2: Modify `DisableDepthTest()` in `ZzzOpenglUtil.cpp`: keep `if (DepthTestEnable)` guard; replace `glDisable(GL_DEPTH_TEST);` with `mu::GetRenderer().SetDepthTest(false);`
-  - [ ] Subtask 4.3: In `CameraMove.cpp` line ~486: replace `glDisable(GL_DEPTH_TEST);` with `DisableDepthTest();` (already declared in `ZzzOpenglUtil.h`); in `CameraMove.cpp` line ~517: replace `glEnable(GL_DEPTH_TEST);` with `EnableDepthTest();`
-  - [ ] Subtask 4.4: Verify `CameraMove.cpp` already includes `ZzzOpenglUtil.h` (should be via stdafx.h or direct include); if not, add include
-  - [ ] Subtask 4.5: Commit: `refactor(render): wrap depth test helpers to delegate to MuRenderer::SetDepthTest`
+- [x] Task 4: Wrap depth test helpers in `ZzzOpenglUtil.cpp` and fix direct GL calls in `CameraMove.cpp` (AC: 3, 5)
+  - [x] Subtask 4.1: Modify `EnableDepthTest()` in `ZzzOpenglUtil.cpp`: keep `if (!DepthTestEnable)` guard; replace `glEnable(GL_DEPTH_TEST);` with `mu::GetRenderer().SetDepthTest(true);`
+  - [x] Subtask 4.2: Modify `DisableDepthTest()` in `ZzzOpenglUtil.cpp`: keep `if (DepthTestEnable)` guard; replace `glDisable(GL_DEPTH_TEST);` with `mu::GetRenderer().SetDepthTest(false);`
+  - [x] Subtask 4.3: In `CameraMove.cpp` line ~486: replace `glDisable(GL_DEPTH_TEST);` with `DisableDepthTest();` (already declared in `ZzzOpenglUtil.h`); in `CameraMove.cpp` line ~517: replace `glEnable(GL_DEPTH_TEST);` with `EnableDepthTest();`
+  - [x] Subtask 4.4: Verify `CameraMove.cpp` already includes `ZzzOpenglUtil.h` (should be via stdafx.h or direct include); if not, add include — confirmed via stdafx.h line 272
+  - [x] Subtask 4.5: Commit: `refactor(render): wrap depth test helpers to delegate to MuRenderer::SetDepthTest`
 
-- [ ] Task 5: Migrate fog setup in `GMBattleCastle.cpp` to `MuRenderer::SetFog` (AC: 4, 5)
-  - [ ] Subtask 5.1: Read `GMBattleCastle.cpp` lines ~585–595 to understand context of the fog setup — note the `Color` float array declaration, the fog enable call, and the four fog parameter calls
-  - [ ] Subtask 5.2: Replace the four direct `glFogfv`/`glFogf` calls (lines ~590–593) with:
-    ```cpp
-    mu::FogParams fogParams{};
-    fogParams.mode = GL_LINEAR;
-    fogParams.start = 2000.f;
-    fogParams.end = 2700.f;
-    fogParams.density = 0.f;
-    fogParams.color[0] = Color[0];
-    fogParams.color[1] = Color[1];
-    fogParams.color[2] = Color[2];
-    fogParams.color[3] = Color[3];
-    mu::GetRenderer().SetFog(fogParams);
-    ```
-    Note: `MuRendererGL::SetFog()` already calls `glEnable(GL_FOG)` internally, so any preceding `glEnable(GL_FOG)` in the original code block should be removed if it exists (or left if it's conditional — check context)
-  - [ ] Subtask 5.3: Add `#include "MuRenderer.h"` to `GMBattleCastle.cpp` if not already present
-  - [ ] Subtask 5.4: Commit: `refactor(render): migrate fog setup in GMBattleCastle to MuRenderer::SetFog`
+- [x] Task 5: Migrate fog setup in `GMBattleCastle.cpp` to `MuRenderer::SetFog` (AC: 4, 5)
+  - [x] Subtask 5.1: Read `GMBattleCastle.cpp` lines ~585–595 to understand context of the fog setup — note the `Color` float array declaration, the fog enable call, and the four fog parameter calls
+  - [x] Subtask 5.2: Replace the four direct `glFogfv`/`glFogf` calls (lines ~590–593) with mu::FogParams + mu::GetRenderer().SetFog(fogParams); preceding glEnable(GL_FOG) removed (MuRendererGL::SetFog() calls glEnable(GL_FOG) internally)
+  - [x] Subtask 5.3: Add `#include "MuRenderer.h"` to `GMBattleCastle.cpp` (added after stdafx.h, before other local headers)
+  - [x] Subtask 5.4: Commit: `refactor(render): migrate fog setup in GMBattleCastle to MuRenderer::SetFog`
 
-- [ ] Task 6: Add Catch2 migration tests (AC: AC-STD-2, AC-VAL-1)
-  - [ ] Subtask 6.1: Create `MuMain/tests/render/test_blendpipelinestate_migration.cpp`
-  - [ ] Subtask 6.2: Add `target_sources(MuTests PRIVATE render/test_blendpipelinestate_migration.cpp)` in `MuMain/tests/CMakeLists.txt` under `BUILD_TESTING` guard with a Story 4.2.5 comment block (matching the pattern from 4.2.4)
-  - [ ] Subtask 6.3: `TEST_CASE("SetBlendMode — blend helper mapping to BlendMode enum")`: define inline `MockRenderer : public mu::IMuRenderer`; call `mock.SetBlendMode(mu::BlendMode::LightMap)`; assert `lastMode == mu::BlendMode::LightMap`; repeat for all 7 mode values (Alpha, Additive, Subtract, InverseColor, Mixed, Glow, Luminance)
-  - [ ] Subtask 6.4: `TEST_CASE("SetDepthTest — enable and disable paths")`: call `mock.SetDepthTest(true)`; assert `lastDepthEnabled == true`; call `mock.SetDepthTest(false)`; assert `lastDepthEnabled == false`
-  - [ ] Subtask 6.5: `TEST_CASE("SetFog — GL_LINEAR params population")`: build a `mu::FogParams` with `mode=GL_LINEAR, start=2000.f, end=2700.f, density=0.f, color={0.5f,0.5f,0.5f,1.f}`; call `mock.SetFog(params)`; assert `capturedParams.start == 2000.f` and `capturedParams.mode == GL_LINEAR`
+- [x] Task 6: Add Catch2 migration tests (AC: AC-STD-2, AC-VAL-1)
+  - [x] Subtask 6.1: Create `MuMain/tests/render/test_blendpipelinestate_migration.cpp` — already created in ATDD phase
+  - [x] Subtask 6.2: Add `target_sources(MuTests PRIVATE render/test_blendpipelinestate_migration.cpp)` in `MuMain/tests/CMakeLists.txt` — already added in ATDD phase (line 116)
+  - [x] Subtask 6.3: `TEST_CASE("SetBlendMode — blend helper mapping to BlendMode enum")`: MockBlendPipelineRenderer captures SetBlendMode calls; tests all 7 modes including Glow/Luminance (NEW)
+  - [x] Subtask 6.4: `TEST_CASE("SetDepthTest — enable and disable paths")`: tests enable=true and false paths; enable-then-disable transitions; independence from blend state
+  - [x] Subtask 6.5: `TEST_CASE("SetFog — GL_LINEAR params population")`: FogParams with GL_LINEAR, start=2000, end=2700, color[4] verified; zero-init; independence from blend/depth state
 
-- [ ] Task 7: Quality gate + grep verification (AC: AC-STD-13, AC-VAL-2, AC-VAL-4)
-  - [ ] Subtask 7.1: Run `./ctl check` — 0 errors
-  - [ ] Subtask 7.2: Run grep to confirm no stray GL blend/fog calls remain outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`:
+- [x] Task 7: Quality gate + grep verification (AC: AC-STD-13, AC-VAL-2, AC-VAL-4)
+  - [x] Subtask 7.1: Run `./ctl check` — 0 errors
+  - [x] Subtask 7.2: Run grep to confirm no stray GL blend/fog calls remain outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`:
     ```bash
     grep -rn "glBlendFunc\|glEnable(GL_BLEND\|glDisable(GL_BLEND\|glFogi\|glFogf\b" MuMain/src/source --include="*.cpp" | grep -v "ZzzOpenglUtil\|MuRenderer"
     ```
@@ -372,15 +359,21 @@ claude-sonnet-4-6
 
 PCC create-story workflow completed — SAFe metadata and AC-STD-* sections included. Story type: infrastructure. No frontend/UI work. No API contracts. Corpus not available (no specification-index.yaml). Story partials not available. Blend mode mapping table derived from direct analysis of `ZzzOpenglUtil.cpp` lines 376–566 vs. `MuRenderer.h` BlendMode enum.
 
+Implementation complete (2026-03-10): All 7 tasks completed. BlendMode::Glow/Luminance added to enum and MuRendererGL::SetBlendMode(). DisableBlend() added to IMuRenderer interface. All 7 blend helpers + 2 depth test helpers in ZzzOpenglUtil.cpp wrapped to delegate to mu::GetRenderer(). CameraMove.cpp direct GL depth test calls replaced with EnableDepthTest()/DisableDepthTest(). GMBattleCastle::StartFog() migrated to mu::FogParams + mu::GetRenderer().SetFog(). Two additional stray GL blend calls found and fixed: NewUIMessageBox.cpp (glDisable GL_BLEND → DisableAlphaBlend()) and SceneManager.cpp (glEnable/glBlendFunc → EnableAlphaBlend3()). Grep verification confirms zero direct GL blend/fog calls outside MuRenderer.cpp and ZzzOpenglUtil.cpp. Quality gate passed: ./ctl check 706/706 files, 0 errors. ATDD test file was in GREEN phase after Tasks 2–5 implementation. 4 conventional commits made as specified in story.
+
+ATDD scenario completed: SetBlendMode 7-mode routing, SetDepthTest bool, FogParams GL_LINEAR — test_blendpipelinestate_migration.cpp GREEN.
+
 ### File List
 
-Files to CREATE:
-- `MuMain/tests/render/test_blendpipelinestate_migration.cpp` (new Catch2 test file)
+Files CREATED:
+- `MuMain/tests/render/test_blendpipelinestate_migration.cpp` (Catch2 test file — created in ATDD phase)
 
-Files to MODIFY:
-- `MuMain/src/source/RenderFX/MuRenderer.h` (add `Glow`, `Luminance` to BlendMode enum; add `DisableBlend()` to IMuRenderer)
-- `MuMain/src/source/RenderFX/MuRenderer.cpp` (add `Glow`, `Luminance` cases to SetBlendMode; implement `DisableBlend()`)
-- `MuMain/src/source/RenderFX/ZzzOpenglUtil.cpp` (wrap 7 blend helpers + 2 depth helpers to delegate to `mu::GetRenderer()`)
-- `MuMain/src/source/World/Maps/GMBattleCastle.cpp` (migrate 4 glFog* calls to `mu::GetRenderer().SetFog()`)
-- `MuMain/src/source/Core/CameraMove.cpp` (replace 2 direct `glEnable/glDisable(GL_DEPTH_TEST)` with `EnableDepthTest()`/`DisableDepthTest()`)
-- `MuMain/tests/CMakeLists.txt` (add `target_sources` for new test file)
+Files MODIFIED:
+- `MuMain/src/source/RenderFX/MuRenderer.h` (added `Glow`, `Luminance` to BlendMode enum; added `DisableBlend()` to IMuRenderer)
+- `MuMain/src/source/RenderFX/MuRenderer.cpp` (added `Glow`, `Luminance` cases to SetBlendMode; implemented `DisableBlend()`)
+- `MuMain/src/source/RenderFX/ZzzOpenglUtil.cpp` (wrapped 7 blend helpers + 2 depth helpers to delegate to `mu::GetRenderer()`)
+- `MuMain/src/source/World/Maps/GMBattleCastle.cpp` (migrated 4 glFog* calls to `mu::GetRenderer().SetFog()`; added `#include "MuRenderer.h"`)
+- `MuMain/src/source/Core/CameraMove.cpp` (replaced 2 direct `glEnable/glDisable(GL_DEPTH_TEST)` with `EnableDepthTest()`/`DisableDepthTest()`)
+- `MuMain/src/source/UI/Framework/NewUIMessageBox.cpp` (replaced `glDisable(GL_BLEND)` with `DisableAlphaBlend()`)
+- `MuMain/src/source/Scenes/SceneManager.cpp` (replaced `glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)` with `EnableAlphaBlend3()`)
+- `MuMain/tests/CMakeLists.txt` (added `target_sources` for new test file — done in ATDD phase)

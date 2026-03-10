@@ -425,7 +425,7 @@ development_status:
   4-2-2-migrate-renderbitmap-quad2d: done # 8 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-09
   4-2-3-migrate-skeletal-mesh: done              # 5 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-10
   4-2-4-migrate-trail-effects: done              # 3 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-10
-  4-2-5-migrate-blend-pipeline-state: ready-for-dev   # 3 pts | Flow:F | Deps: 4.2.1 | story created 2026-03-10
+  4-2-5-migrate-blend-pipeline-state: review          # 3 pts | Flow:F | Deps: 4.2.1 | dev-story complete 2026-03-10 | awaiting code-review
   4-3-1-sdlgpu-backend: backlog                 # 8 pts | Flow:F | Deps: 4.2.2-4.2.5
   4-3-2-shader-programs: backlog                # 5 pts | Flow:F | Deps: 4.3.1
   4-4-1-texture-system-migration: backlog       # 8 pts | Flow:F | Deps: 4.3.1

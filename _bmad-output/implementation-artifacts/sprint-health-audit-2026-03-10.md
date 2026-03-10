@@ -14,7 +14,7 @@
 
 ## Overall Health
 
-**AT RISK** — 1 CRITICAL gap detected. Immediate action required to unblock story 4-2-3-migrate-skeletal-mesh before the sprint critical path is impacted.
+**AT RISK** — 1 CRITICAL gap found (pipeline regression with feedback pending).
 
 ---
 
@@ -22,22 +22,42 @@
 
 | Gap Type | CRITICAL | HIGH | MEDIUM | LOW | Total |
 |----------|----------|------|--------|-----|-------|
-| BLOCKER | 0 | 0 | 0 | 0 | 0 |
-| USER_ACTION | 0 | 0 | 0 | 0 | 0 |
-| AC_FAIL | 0 | 0 | 0 | 0 | 0 |
-| ATDD_GAP | 0 | 1 | 0 | 0 | 1 |
-| IN_PROGRESS | 0 | 0 | 0 | 0 | 0 |
-| STALLED | 0 | 0 | 0 | 0 | 0 |
+| BLOCKER | 0 | — | — | — | 0 |
+| USER_ACTION | — | 0 | — | — | 0 |
+| AC_FAIL | 0 | 0 | — | — | 0 |
+| ATDD_GAP | 0 | 0 | 0 | — | 0 |
+| IN_PROGRESS | — | — | 0 | 0 | 0 |
+| STALLED | — | — | 0 | — | 0 |
 | STRUCT_MISS | 0 | 0 | 0 | 0 | 0 |
-| FEEDBACK | 1 | 0 | 0 | 0 | 1 |
-| PHANTOM | 0 | 0 | 0 | 0 | 0 |
-| PLACEHOLDER | 0 | 0 | 0 | 0 | 0 |
-| REACH_ORPHAN | 0 | 0 | 0 | 0 | 0 |
-| BOOT_FAIL | 0 | 0 | 0 | 0 | 0 |
-| TEST_ANTIPATTERN | 0 | 0 | 0 | 0 | 0 |
-| CONTRACT_BREAK | 0 | 0 | 0 | 0 | 0 |
-| PEN_DRIFT | 0 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **1** | **1** | **0** | **0** | **2** |
+| FEEDBACK | **1** | — | — | — | **1** |
+| PHANTOM | 0 | — | — | — | 0 |
+| PLACEHOLDER | — | 0 | — | — | 0 |
+| REACH_ORPHAN | 0 | — | — | — | 0 |
+| BOOT_FAIL | 0 | — | — | — | 0 |
+| TEST_ANTIPATTERN | 0 | — | — | — | 0 |
+| CONTRACT_BREAK | 0 | — | — | — | 0 |
+| PEN_DRIFT | — | 0 | — | — | 0 |
+| **TOTAL** | **1** | **0** | **0** | **0** | **1** |
+
+---
+
+## Summary Statistics
+
+| Metric | Value |
+|--------|-------|
+| Stories scanned | 1 |
+| Stories with gaps | 1 |
+| Stories gap-free | 0 |
+| CRITICAL gaps | 1 |
+| HIGH gaps | 0 |
+| MEDIUM gaps | 0 |
+| LOW gaps | 0 |
+
+**Per gap type:**
+
+| Gap Type | Count | Example Story |
+|----------|-------|---------------|
+| FEEDBACK | 1 | 4-2-5-migrate-blend-pipeline-state |
 
 ---
 
@@ -45,66 +65,51 @@
 
 ### CRITICAL Gaps
 
-#### FEEDBACK — 4-2-3-migrate-skeletal-mesh
+#### [4-2-5-migrate-blend-pipeline-state] — FEEDBACK
 
 | Field | Value |
 |-------|-------|
-| **Story** | 4-2-3-migrate-skeletal-mesh |
+| **Story** | 4-2-5-migrate-blend-pipeline-state |
 | **Gap Type** | FEEDBACK |
 | **Severity** | CRITICAL |
-| **Finding** | Pipeline regressed from `dev-story` — feedback pending. Two consecutive dev-story runs both exited with code `-15` (SIGTERM after 916s). The process was forcibly terminated before any tool calls could execute (2 turns, 0 tool calls). A feedback file exists at `.paw/4-2-3-migrate-skeletal-mesh.feedback.md`. State file shows `status: failed`. |
-| **Artifact Path** | `.paw/4-2-3-migrate-skeletal-mesh.feedback.md`, `.paw/logs/4-2-3-migrate-skeletal-mesh_dev-story_20260310_012219.log` |
-| **Action** | Run `./paw 4-2-3-migrate-skeletal-mesh` — pipeline will consume the feedback file and retry dev-story. Investigate root cause of SIGTERM (max-turns limit, manual interruption, or system-level timeout). Both runs hit exactly 916s duration — this suggests an external process timeout. |
-| **Suggested Workflow** | `./paw 4-2-3-migrate-skeletal-mesh` (pipeline auto-resume) |
-
----
-
-### HIGH Gaps
-
-#### ATDD_GAP — 4-2-3-migrate-skeletal-mesh
-
-| Field | Value |
-|-------|-------|
-| **Story** | 4-2-3-migrate-skeletal-mesh |
-| **Gap Type** | ATDD_GAP |
-| **Severity** | HIGH |
-| **Finding** | 41/49 items unchecked (83.7%) in Implementation Checklist. The story is in RED phase — no implementation tasks have been completed. Unchecked areas span: Prerequisite/Setup (3), Function Migrations (6 functions: RenderMesh, EndRenderCoinHeap, RenderMeshAlternative, RenderMeshTranslate, AddMeshShadowTriangles, AddClothesShadowTriangles), Catch2 tests (9), Grep verification (1), Public API stability (1), Code Standards (6), Quality Gate (2), PCC Compliance (5), Git Safety (4), Test Infrastructure (3). |
-| **Artifact Path** | `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/atdd.md` |
-| **Action** | This is expected for an in-progress story that has not completed dev-story. Resolving the FEEDBACK gap (above) via `./paw 4-2-3-migrate-skeletal-mesh` will resume dev-story and drive checklist completion. The ATDD_GAP will be re-evaluated on next audit after successful dev-story completion. |
-| **Suggested Workflow** | `dev-story` (resume to complete unchecked items) — triggered automatically via `./paw 4-2-3-migrate-skeletal-mesh` |
+| **Finding** | Pipeline regressed from dev-story — feedback pending. Two consecutive dev-story runs both failed with exit code -15 (SIGTERM). Log: `.paw/logs/4-2-5-migrate-blend-pipeline-state_dev-story_20260310_133211.log` (exit -15, 917.9s) and `.paw/logs/4-2-5-migrate-blend-pipeline-state_dev-story_20260310_134731.log` (exit -15, 915.9s). Both runs: 2 turns, 0 tool calls — the Claude process was killed before completing any work. |
+| **Artifact** | `.paw/4-2-5-migrate-blend-pipeline-state.feedback.md` |
+| **State** | `.paw/4-2-5-migrate-blend-pipeline-state.state.json` → `status: failed`, `current_step: dev-story`, `last_run: 2026-03-10T13:47:31` |
+| **Action** | Run `./paw 4-2-5-migrate-blend-pipeline-state` — paw_runner will detect the feedback file and retry dev-story. Investigate SIGTERM root cause before re-running (potential: max-turns=150 hitting hard wall, session timeout, or system-level kill). Both dev-story runs terminated at ~915s with 0 tool calls — this pattern suggests the Claude process is being killed by a timeout or resource limit before any tool calls execute. |
+| **Suggested Workflow** | `./paw 4-2-5-migrate-blend-pipeline-state` (pipeline will consume feedback and retry) |
+| **Note** | Story artifacts (story.md, atdd.md, progress.md, session-summary.md) show full implementation completion — all 7 tasks done, 4 commits made, quality gate passed (706/706 files, 0 errors), ATDD 51/51 checked. The pipeline failure appears to be a runner/infrastructure issue (SIGTERM), NOT an implementation gap. The story content is ready for code-review — dev-story just needs to complete its pipeline post-processing step. |
 
 ---
 
 ## Artifact Coverage
 
-| Story | Story | ATDD | Session | Progress | Review | AC-FE | AC-BE | Pen | State | Feedback | Gaps |
-|-------|-------|------|---------|----------|--------|-------|-------|-----|-------|----------|------|
-| 4-2-3-migrate-skeletal-mesh | yes | yes | yes | yes | -- | -- | -- | -- | yes | yes | 2 (1 CRITICAL, 1 HIGH) |
+```
+ARTIFACT INVENTORY (1 story)
 
-**Notes:**
-- Review, AC compliance, and pen sidecar artifacts are not yet expected for an `in-progress` infrastructure story
-- Session summary reports "Unresolved Blockers: None" and no USER_ACTION items
-- Progress file shows Task 7 (RenderTriangles per-vertex color) was identified as a prerequisite — the session summary confirms this was addressed before the SIGTERM cut the pipeline
+| Story                              | Story | ATDD | Session | Progress | Review | AC-FE | AC-BE | Pen | State | Feedback |
+|------------------------------------|-------|------|---------|----------|--------|-------|-------|-----|-------|----------|
+| 4-2-5-migrate-blend-pipeline-state |  yes  | yes  |   yes   |   yes    |  --    |  --   |  --   | --  |  yes  |   YES*   |
+```
+
+> `*` Feedback file = pipeline regression indicator (CRITICAL gap)
+>
+> **Pen sidecar:** Not applicable — story type is `infrastructure`, not frontend/fullstack.
+>
+> **Review.md:** Not yet created — expected as part of code-review workflow after dev-story completes.
+>
+> **AC compliance files:** Not applicable for C++ infrastructure stories (no HTTP endpoints or frontend ACs).
 
 ---
 
-## Root Cause Analysis — SIGTERM Pattern
+## Observations (Informational)
 
-Both dev-story log runs show an identical signature:
+1. **Story content is complete:** The implementation artifacts confirm all 7 tasks were executed, 4 conventional commits made, `./ctl check` passed 706/706 files with 0 errors, and grep verification confirmed zero direct GL blend/fog calls outside the allowed files. The ATDD implementation checklist is 51/51 checked.
 
-```
-Duration: 916.4s / 916.6s
-Exit-code: -15
-Turns: 2 (0 tool calls)
-```
+2. **SIGTERM pattern:** Both dev-story runs show 2 turns / 0 tool calls / ~915s duration / exit -15. This strongly suggests a session-level timeout (not a story implementation failure). The story is ready to advance to code-review.
 
-Two turns with zero tool calls before termination at ~916 seconds suggests the Claude session was still in initial context loading when the OS sent SIGTERM. This is likely caused by:
+3. **AC-VAL-3 deferred:** Windows SSIM render validation (>0.99) is explicitly deferred to story 4.4.1 ground truth gate. This is intentional and documented in the story.
 
-1. **Context window saturation** — the story has extensive history (5 prior logs + progress.md + atdd.md = large context). The model may time out before producing any output.
-2. **External timeout** — paw_runner or the shell has a ~15-minute wall-clock timeout.
-3. **Manual interruption** — user or system killed the process.
-
-Recommended mitigation: Resume with `./paw 4-2-3-migrate-skeletal-mesh`. If the pattern repeats, consider invoking the workflow directly in a fresh context: `/bmad:pcc:workflows:dev-story`.
+4. **Sprint-4 pipeline progress:** With 4-2-5 at `review` (pending code-review after dev-story pipeline resolves), sprint-4 has 5 of 9 stories done (4-1-1, 4-2-1, 4-2-2, 4-2-3, 4-2-4). The next blocker on the critical path is 4-3-1-sdlgpu-backend, which depends on 4-2-2 through 4-2-5 all completing.
 
 ---
 
@@ -112,31 +117,6 @@ Recommended mitigation: Resume with `./paw 4-2-3-migrate-skeletal-mesh`. If the 
 
 | Gap Type | Suggested Workflow |
 |----------|--------------------|
-| FEEDBACK | `./paw 4-2-3-migrate-skeletal-mesh` (pipeline auto-resume) |
-| ATDD_GAP | `dev-story` (resume to complete unchecked items) |
+| FEEDBACK | `./paw {story-key}` (pipeline will consume feedback and retry) |
 
-*Full taxonomy reference: `_bmad/pcc/partials/gap-taxonomy.md`*
-
----
-
-## Step 10: Next Steps — Remediation Loop
-
-**Priority 1 (CRITICAL — act now):**
-```
-./paw 4-2-3-migrate-skeletal-mesh
-```
-This will consume the feedback file and retry dev-story from where it left off (Task 7 complete, tasks 2–6 pending).
-
-**If SIGTERM repeats:**
-- Run the dev-story workflow directly in a fresh Claude Code session
-- Consider splitting the story into smaller sessions
-- Check if paw_runner has a configurable timeout
-
-After remediation, re-run this audit. Loop until HEALTHY, then run `sprint-complete` (when all Sprint 4 stories are done).
-
-**Sprint 4 Remaining Work:**
-- 4-2-3: in-progress (this audit) — unblock SIGTERM issue
-- 4-2-4, 4-2-5: backlog (not yet started, not in scope for active filter)
-- 4-3-1, 4-3-2, 4-4-1: backlog (blocked on 4-2-x completion)
-
-*Report generated by sprint-health-audit v1.1.0 — READ-ONLY, no artifact files modified*
+Full gap taxonomy: `_bmad/pcc/partials/gap-taxonomy.md`

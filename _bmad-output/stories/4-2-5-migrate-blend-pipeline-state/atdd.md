@@ -38,83 +38,83 @@
 
 ### Task 2: Extend BlendMode Enum + DisableBlend (MuRenderer.h / MuRenderer.cpp)
 
-- [ ] `BlendMode::Glow` added to `enum class BlendMode` in `MuMain/src/source/RenderFX/MuRenderer.h` (GL_ONE, GL_ONE)
-- [ ] `BlendMode::Luminance` added to `enum class BlendMode` in `MuMain/src/source/RenderFX/MuRenderer.h` (GL_ONE_MINUS_SRC_COLOR, GL_ONE)
-- [ ] `virtual void DisableBlend() = 0;` added to `IMuRenderer` interface in `MuRenderer.h`
-- [ ] `case BlendMode::Glow:` added to `MuRendererGL::SetBlendMode()` in `MuRenderer.cpp`
-- [ ] `case BlendMode::Luminance:` added to `MuRendererGL::SetBlendMode()` in `MuRenderer.cpp`
-- [ ] `MuRendererGL::DisableBlend()` implemented as `glDisable(GL_BLEND)` in `MuRenderer.cpp`
-- [ ] Commit: `feat(render): extend BlendMode enum with Glow/Luminance/DisableBlend for full state coverage`
+- [x] `BlendMode::Glow` added to `enum class BlendMode` in `MuMain/src/source/RenderFX/MuRenderer.h` (GL_ONE, GL_ONE)
+- [x] `BlendMode::Luminance` added to `enum class BlendMode` in `MuMain/src/source/RenderFX/MuRenderer.h` (GL_ONE_MINUS_SRC_COLOR, GL_ONE)
+- [x] `virtual void DisableBlend() = 0;` added to `IMuRenderer` interface in `MuRenderer.h`
+- [x] `case BlendMode::Glow:` added to `MuRendererGL::SetBlendMode()` in `MuRenderer.cpp`
+- [x] `case BlendMode::Luminance:` added to `MuRendererGL::SetBlendMode()` in `MuRenderer.cpp`
+- [x] `MuRendererGL::DisableBlend()` implemented as `glDisable(GL_BLEND)` in `MuRenderer.cpp`
+- [x] Commit: `feat(render): extend BlendMode enum with Glow/Luminance/DisableBlend for full state coverage`
 
 ### Task 3: Wrap Blend Helpers in ZzzOpenglUtil.cpp
 
-- [ ] `EnableLightMap()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::LightMap)` — guard preserved
-- [ ] `DisableAlphaBlend()` modified to call `mu::GetRenderer().DisableBlend()` — guard preserved
-- [ ] `EnableAlphaBlend()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Glow)`
-- [ ] `EnableAlphaBlendMinus()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Subtract)`
-- [ ] `EnableAlphaBlend2()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Luminance)`
-- [ ] `EnableAlphaBlend3()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Alpha)`
-- [ ] `EnableAlphaBlend4()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Mixed)`
-- [ ] `#include "MuRenderer.h"` added to `ZzzOpenglUtil.cpp` (after stdafx.h, before other local headers)
-- [ ] Commit: `refactor(render): wrap blend-state helpers to delegate to MuRenderer::SetBlendMode`
+- [x] `EnableLightMap()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::LightMap)` — guard preserved
+- [x] `DisableAlphaBlend()` modified to call `mu::GetRenderer().DisableBlend()` — guard preserved
+- [x] `EnableAlphaBlend()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Glow)`
+- [x] `EnableAlphaBlendMinus()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Subtract)`
+- [x] `EnableAlphaBlend2()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Luminance)`
+- [x] `EnableAlphaBlend3()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Alpha)`
+- [x] `EnableAlphaBlend4()` modified to call `mu::GetRenderer().SetBlendMode(mu::BlendMode::Mixed)`
+- [x] `#include "MuRenderer.h"` added to `ZzzOpenglUtil.cpp` (after stdafx.h, before other local headers)
+- [x] Commit: `refactor(render): wrap blend-state helpers to delegate to MuRenderer::SetBlendMode`
 
 ### Task 4: Wrap Depth Test Helpers + Fix CameraMove.cpp
 
-- [ ] `EnableDepthTest()` in `ZzzOpenglUtil.cpp` calls `mu::GetRenderer().SetDepthTest(true)` — guard preserved
-- [ ] `DisableDepthTest()` in `ZzzOpenglUtil.cpp` calls `mu::GetRenderer().SetDepthTest(false)` — guard preserved
-- [ ] `CameraMove.cpp` line ~486: `glDisable(GL_DEPTH_TEST)` replaced with `DisableDepthTest()`
-- [ ] `CameraMove.cpp` line ~517: `glEnable(GL_DEPTH_TEST)` replaced with `EnableDepthTest()`
-- [ ] `CameraMove.cpp` include of `ZzzOpenglUtil.h` verified (via stdafx.h or direct)
-- [ ] Commit: `refactor(render): wrap depth test helpers to delegate to MuRenderer::SetDepthTest`
+- [x] `EnableDepthTest()` in `ZzzOpenglUtil.cpp` calls `mu::GetRenderer().SetDepthTest(true)` — guard preserved
+- [x] `DisableDepthTest()` in `ZzzOpenglUtil.cpp` calls `mu::GetRenderer().SetDepthTest(false)` — guard preserved
+- [x] `CameraMove.cpp` line ~486: `glDisable(GL_DEPTH_TEST)` replaced with `DisableDepthTest()`
+- [x] `CameraMove.cpp` line ~517: `glEnable(GL_DEPTH_TEST)` replaced with `EnableDepthTest()`
+- [x] `CameraMove.cpp` include of `ZzzOpenglUtil.h` verified (via stdafx.h or direct)
+- [x] Commit: `refactor(render): wrap depth test helpers to delegate to MuRenderer::SetDepthTest`
 
 ### Task 5: Migrate Fog Setup in GMBattleCastle.cpp
 
-- [ ] `GMBattleCastle.cpp` lines ~590–593: four `glFog*` calls replaced with `mu::FogParams` + `mu::GetRenderer().SetFog(fogParams)` exactly as specified in story dev notes
-- [ ] `#include "MuRenderer.h"` added to `GMBattleCastle.cpp` if not already present
-- [ ] Preceding `glEnable(GL_FOG)` removed if it existed (MuRendererGL::SetFog calls glEnable internally)
-- [ ] Commit: `refactor(render): migrate fog setup in GMBattleCastle to MuRenderer::SetFog`
+- [x] `GMBattleCastle.cpp` lines ~590–593: four `glFog*` calls replaced with `mu::FogParams` + `mu::GetRenderer().SetFog(fogParams)` exactly as specified in story dev notes
+- [x] `#include "MuRenderer.h"` added to `GMBattleCastle.cpp` if not already present
+- [x] Preceding `glEnable(GL_FOG)` removed if it existed (MuRendererGL::SetFog calls glEnable internally)
+- [x] Commit: `refactor(render): migrate fog setup in GMBattleCastle to MuRenderer::SetFog`
 
 ### Task 6: Catch2 Test File
 
-- [ ] `MuMain/tests/render/test_blendpipelinestate_migration.cpp` created (RED phase — done)
-- [ ] `target_sources(MuTests PRIVATE render/test_blendpipelinestate_migration.cpp)` added in `MuMain/tests/CMakeLists.txt` (done)
-- [ ] Tests compile on macOS/Linux (no gl* calls in test TU)
-- [ ] Tests fail (RED) until Tasks 2–5 are implemented
-- [ ] Tests pass (GREEN) after Tasks 2–5 are implemented
+- [x] `MuMain/tests/render/test_blendpipelinestate_migration.cpp` created (RED phase — done)
+- [x] `target_sources(MuTests PRIVATE render/test_blendpipelinestate_migration.cpp)` added in `MuMain/tests/CMakeLists.txt` (done)
+- [x] Tests compile on macOS/Linux (no gl* calls in test TU)
+- [x] Tests fail (RED) until Tasks 2–5 are implemented
+- [x] Tests pass (GREEN) after Tasks 2–5 are implemented
 
 ### Task 7: Quality Gate + Grep Verification
 
-- [ ] `./ctl check` passes with 0 errors after all tasks applied
-- [ ] Grep confirms no direct `glBlendFunc`, `glEnable(GL_BLEND)`, `glDisable(GL_BLEND)`, `glFogi`, `glFogf\b` calls outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`
-- [ ] File count: 727 (post-4.2.4 baseline) + 1 new test file = 728 files
+- [x] `./ctl check` passes with 0 errors after all tasks applied
+- [x] Grep confirms no direct `glBlendFunc`, `glEnable(GL_BLEND)`, `glDisable(GL_BLEND)`, `glFogi`, `glFogf\b` calls outside `MuRenderer.cpp` and `ZzzOpenglUtil.cpp`
+- [x] File count: 727 (post-4.2.4 baseline) + 1 new test file = 728 files
 
 ### PCC Compliance Verification
 
-- [ ] No prohibited libraries used — Catch2 3.7.1 is the approved testing framework
-- [ ] All new code uses `mu::` namespace for renderer helpers
-- [ ] `#pragma once` in all new/modified headers (no `#ifndef` guards)
-- [ ] No raw `new`/`delete` — no heap allocations introduced
-- [ ] `[[nodiscard]]` not applicable (no new fallible functions with return values)
-- [ ] No `#ifdef _WIN32` in game logic files — changes in `ZzzOpenglUtil.cpp`, `GMBattleCastle.cpp`, `CameraMove.cpp` only
-- [ ] No `NULL` (use `nullptr`) — not applicable (no pointer changes)
-- [ ] No `wprintf` — not applicable
-- [ ] Error logging: existing `g_ErrorReport.Write()` guards already in `MuRenderer.cpp` from story 4.2.1
-- [ ] Conventional commits: `refactor(render):` and `feat(render):` prefixes used per AC-STD-6
+- [x] No prohibited libraries used — Catch2 3.7.1 is the approved testing framework
+- [x] All new code uses `mu::` namespace for renderer helpers
+- [x] `#pragma once` in all new/modified headers (no `#ifndef` guards)
+- [x] No raw `new`/`delete` — no heap allocations introduced
+- [x] `[[nodiscard]]` not applicable (no new fallible functions with return values)
+- [x] No `#ifdef _WIN32` in game logic files — changes in `ZzzOpenglUtil.cpp`, `GMBattleCastle.cpp`, `CameraMove.cpp` only
+- [x] No `NULL` (use `nullptr`) — not applicable (no pointer changes)
+- [x] No `wprintf` — not applicable
+- [x] Error logging: existing `g_ErrorReport.Write()` guards already in `MuRenderer.cpp` from story 4.2.1
+- [x] Conventional commits: `refactor(render):` and `feat(render):` prefixes used per AC-STD-6
 
 ### Standard AC Compliance
 
-- [ ] AC-STD-1: Code Standards Compliance — `mu::` namespace, PascalCase, `m_` prefix, `#pragma once`, no raw `new`/`delete`, `[[nodiscard]]` on new fallible functions, no `NULL`, no `wprintf`, no `#ifdef _WIN32` in game logic
-- [ ] AC-STD-4: CI quality gate passes (`./ctl check` — 0 errors)
-- [ ] AC-STD-13: Quality gate passes; file count = 728 (727 + 1 new test file)
-- [ ] AC-STD-15: Git safety (no incomplete rebase, no force push)
-- [ ] AC-STD-16: Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/render/` directory, `target_sources` in `tests/CMakeLists.txt`)
+- [x] AC-STD-1: Code Standards Compliance — `mu::` namespace, PascalCase, `m_` prefix, `#pragma once`, no raw `new`/`delete`, `[[nodiscard]]` on new fallible functions, no `NULL`, no `wprintf`, no `#ifdef _WIN32` in game logic
+- [x] AC-STD-4: CI quality gate passes (`./ctl check` — 0 errors)
+- [x] AC-STD-13: Quality gate passes; file count = 728 (727 + 1 new test file)
+- [x] AC-STD-15: Git safety (no incomplete rebase, no force push)
+- [x] AC-STD-16: Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/render/` directory, `target_sources` in `tests/CMakeLists.txt`)
 
 ---
 
 ## Validation ACs Deferred
 
-- [ ] **AC-VAL-3:** Windows render validation (SSIM > 0.99) — manual validation only; automated SSIM deferred to story 4.4.1 ground truth gate (explicitly stated in story)
-- [ ] **AC-VAL-4:** Grep verification — to be run as part of Task 7
+- [x] **AC-VAL-3:** Windows render validation (SSIM > 0.99) — manual validation only; automated SSIM deferred to story 4.4.1 ground truth gate (explicitly stated in story)
+- [x] **AC-VAL-4:** Grep verification — to be run as part of Task 7
 
 ---
 

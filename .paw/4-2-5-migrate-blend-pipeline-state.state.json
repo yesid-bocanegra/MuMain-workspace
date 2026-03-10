@@ -1,6 +1,6 @@
 {
   "story_key": "4-2-5-migrate-blend-pipeline-state",
-  "current_step": "atdd",
-  "status": "completed",
-  "last_run": "2026-03-10T13:27:29.688503"
+  "current_step": "dev-story",
+  "status": "failed",
+  "last_run": "2026-03-10T13:47:31.453509"
 }
