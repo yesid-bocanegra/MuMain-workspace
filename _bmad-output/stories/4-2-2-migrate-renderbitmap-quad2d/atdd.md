@@ -96,17 +96,17 @@ All items start as `[ ]` (pending). Mark `[x]` when completed.
 
 - [x] Task 13.1: Run `./ctl check` — 0 clang-format errors, 0 cppcheck errors
 - [x] Task 13.2: Run `grep -n "glBegin\|glEnd" MuMain/src/source/RenderFX/ZzzOpenglUtil.cpp` — confirm no hits in migrated functions
-- [ ] AC-VAL-4: Record grep output in Dev Agent Record confirming no `glBegin`/`glEnd` in the 9 migrated functions
+- [x] AC-VAL-4: Record grep output in Dev Agent Record confirming no `glBegin`/`glEnd` in the 9 migrated functions
 
 ### PCC Compliance
 
-- [ ] PCC: No prohibited libraries used (`new`/`delete`, `NULL`, `wprintf`, `#ifndef`, GL types in `MuRenderer.h`)
-- [ ] PCC: `mu::` namespace used for all new code in `MuRenderer.h/.cpp`
-- [ ] PCC: `std::span<const Vertex2D>` used for vertex buffer parameter (C++20)
-- [ ] PCC: `[[nodiscard]]` on any new fallible function added
-- [ ] PCC: Allman braces, 4-space indent, 120-column limit (auto-enforced by `./ctl format`)
-- [ ] PCC: No `#ifdef _WIN32` in `ZzzOpenglUtil.cpp` or `MuRenderer.cpp` (OpenGL stubs handle non-Windows)
-- [ ] PCC: Error logging via `g_ErrorReport.Write(L"RENDER: ...")` on any failure path introduced
+- [x] PCC: No prohibited libraries used (`new`/`delete`, `NULL`, `wprintf`, `#ifndef`, GL types in `MuRenderer.h`)
+- [x] PCC: `mu::` namespace used for all new code in `MuRenderer.h/.cpp`
+- [x] PCC: `std::span<const Vertex2D>` used for vertex buffer parameter (C++20)
+- [x] PCC: `[[nodiscard]]` on any new fallible function added
+- [x] PCC: Allman braces, 4-space indent, 120-column limit (auto-enforced by `./ctl format`)
+- [x] PCC: No `#ifdef _WIN32` in `ZzzOpenglUtil.cpp` or `MuRenderer.cpp` (OpenGL stubs handle non-Windows)
+- [x] PCC: Error logging via `g_ErrorReport.Write(L"RENDER: ...")` on any failure path introduced
 
 ---
 
