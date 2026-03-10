@@ -525,7 +525,7 @@ stories:
     name: "Migrate RenderBitmap & Quad2D"
     epic: EPIC-4
     feature: "4.2"
-    status: backlog
+    status: done
     points: 8
     value_stream: "VS-1"
 
