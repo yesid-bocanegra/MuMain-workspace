@@ -78,7 +78,11 @@ Status: ready-for-dev
 
 - [x] **AC-STD-6:** Conventional commit: `feat(render): implement SDL_gpu backend for MuRenderer` (commit b0ba1d6)
 
+- [x] **AC-STD-12:** SLI/SLO — N/A for this story (no HTTP endpoints; rendering backend). Frame latency is implicit in the SDL_gpu command buffer submit cadence — no explicit p95 target applicable.
+
 - [x] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format check + cppcheck 0 errors); 707 files verified (Subtask 9.1)
+
+- [x] **AC-STD-14:** Observability — `g_ErrorReport.Write()` on all SDL_gpu failure paths: device creation failure, window claim failure, pipeline creation failure per blend mode, and unknown textureId warnings on every draw call path. All logging patterns documented in "Error Codes Introduced" section.
 
 - [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
 
