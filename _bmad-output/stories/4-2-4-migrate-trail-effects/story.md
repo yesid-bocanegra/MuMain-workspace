@@ -1,6 +1,6 @@
 # Story 4.2.4: Migrate Trail Effects to RenderQuadStrip
 
-Status: in-progress
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -404,8 +404,9 @@ claude-sonnet-4-6
 |------|--------|-------|
 | `MuMain/src/source/RenderFX/ZzzEffectJoint.cpp` | MODIFIED | Migrated 4 `glBegin(GL_QUADS)` trail segment blocks in `RenderJoints()`; added `PackABGR` helper and `#include "MuRenderer.h"` |
 | `MuMain/src/source/RenderFX/MuRenderer.cpp` | MODIFIED | Added per-vertex ABGR color emission (`glColor4f`) to `MuRendererGL::RenderQuadStrip` |
-| `MuMain/tests/render/test_traileffects_migration.cpp` | CREATED | Catch2 tests for `RenderQuadStrip` call-through, UV mapping, Luminosity packing (RED phase — ATDD) |
-| `MuMain/tests/CMakeLists.txt` | MODIFIED | Added `target_sources(MuTests PRIVATE render/test_traileffects_migration.cpp)` under Story 4.2.4 comment block |
+| `MuMain/tests/render/test_traileffects_migration.cpp` | CREATED | Catch2 tests for `RenderQuadStrip` call-through, UV mapping, Luminosity packing (GREEN phase — all 7 TEST_CASEs implemented and passing) |
+| `MuMain/tests/CMakeLists.txt` | MODIFIED | Added `target_sources(MuTests PRIVATE render/test_traileffects_migration.cpp)` under Story 4.2.4 comment block (GREEN phase comment, code-review-finalize) |
+| `MuMain/src/source/RenderFX/RenderUtils.h` | CREATED | Shared `mu::PackABGR` inline header (code-review-finalize, H-1 fix — eliminates 3-way duplication across ZzzEffectJoint.cpp, ZzzBMD.cpp, test_traileffects_migration.cpp) |
 
 ### Change Log
 
@@ -416,4 +417,5 @@ claude-sonnet-4-6
 | 2026-03-10 | Tasks 1-2: Analyzed trail paths; migrated BITMAP_JOINT_FORCE SubType==0 | Commit `refactor(render): migrate BITMAP_JOINT_FORCE trail segment to MuRenderer::RenderQuadStrip` |
 | 2026-03-10 | Task 3: Migrated GUILD_WAR_EVENT double-face trail | Commit `refactor(render): migrate GUILD_WAR_EVENT trail segment to MuRenderer::RenderQuadStrip` |
 | 2026-03-10 | Task 4: Migrated RENDER_FACE_ONE/TWO trail segments | Commit `refactor(render): migrate RENDER_FACE_ONE/TWO trail segments to MuRenderer::RenderQuadStrip` |
-| 2026-03-10 | Tasks 6-7: Tests exist (RED phase); quality gate passed; grep confirms zero GL_QUADS in lines 7150-7421 | AC-5 verified |
+| 2026-03-10 | Tasks 6-7: Tests implemented (GREEN phase); quality gate passed; grep confirms zero GL_QUADS in lines 7150-7421 | AC-5 verified |
+| 2026-03-10 | Code-review-finalize: Fixed H-2 (operator precedence in BITMAP_FLARE_FORCE condition, both pre-existing occurrences), H-3 (story phase labels RED→GREEN), M-2 (MuRenderer.cpp quad strip comment), M-3 (CMakeLists RED→GREEN comment), L-1 ([[nodiscard]] on PackABGR in ZzzBMD.cpp), H-1 (extracted PackABGR to shared RenderUtils.h, removed 3 local copies); quality gate: 706 files, 0 errors | Story → done |
