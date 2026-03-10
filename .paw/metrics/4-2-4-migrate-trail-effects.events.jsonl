@@ -19,3 +19,5 @@
 {"timestamp":"2026-03-10T17:37:07.773208+00:00","event_type":"step_retried","story_key":"4-2-4-migrate-trail-effects","step":"code-review","sprint":null,"epic":"4","data":{"attempt":2}}
 {"timestamp":"2026-03-10T17:37:07.773768+00:00","event_type":"feedback_saved","story_key":"4-2-4-migrate-trail-effects","step":"code-review","sprint":null,"epic":"4","data":{"regression_target":"code-review"}}
 {"timestamp":"2026-03-10T17:37:09.779385+00:00","event_type":"step_started","story_key":"4-2-4-migrate-trail-effects","step":"code-review","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-10T17:43:53.234396+00:00","event_type":"step_passed","story_key":"4-2-4-migrate-trail-effects","step":"code-review","sprint":null,"epic":"4","data":{"duration_seconds":403.5,"input_tokens":80,"output_tokens":7632,"cache_creation_tokens":298754,"cache_read_tokens":3280470,"num_turns":41,"num_tool_calls":0}}
+{"timestamp":"2026-03-10T17:43:54.245912+00:00","event_type":"step_started","story_key":"4-2-4-migrate-trail-effects","step":"code-review-qg","sprint":null,"epic":"4","data":{}}
