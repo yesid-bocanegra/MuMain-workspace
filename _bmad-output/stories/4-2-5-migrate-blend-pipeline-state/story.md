@@ -72,6 +72,8 @@ Status: ready-for-dev
 
 - [ ] **AC-STD-12:** N/A — C++ client infrastructure story; no server-side SLI/SLO latency targets
 
+- [ ] **AC-STD-14:** N/A — infrastructure story; no new observable metrics introduced; existing error paths use `g_ErrorReport.Write()` patterns already documented in AC-STD-5
+
 - [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format check + cppcheck 0 errors); file count 727 (post-4.2.4 baseline) + 1 new test file = 728 files
 
 - [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
