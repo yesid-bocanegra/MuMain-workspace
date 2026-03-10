@@ -1,6 +1,6 @@
 # Story 4.3.1: SDL_gpu Backend Implementation
 
-Status: in-progress
+Status: ready-for-dev
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
