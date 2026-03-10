@@ -59,6 +59,7 @@ Status: ready-for-dev
 - [ ] **AC-STD-3:** No `glBegin(GL_TRIANGLES)`, `glEnd`, `glDrawArrays(GL_TRIANGLES, ...)`, `glVertexPointer`, `glColorPointer`, `glTexCoordPointer`, `glEnableClientState(GL_VERTEX_ARRAY)`, or `glDisableClientState(GL_VERTEX_ARRAY)` remain in any of the 5 migrated functions in `ZzzBMD.cpp`
 - [ ] **AC-STD-5:** Error logging via `g_ErrorReport.Write(L"RENDER: ...")` on failure paths (e.g., empty vertex buffer guard in `RenderTriangles` already exists in `MuRenderer.cpp`)
 - [ ] **AC-STD-6:** Conventional commits per migrated function: `refactor(render): migrate {function} to MuRenderer::RenderTriangles`
+- [ ] **AC-STD-12:** N/A — C++ client infrastructure story; no server-side SLI/SLO latency targets
 - [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format check + cppcheck 0 errors); file count increases from 705 by +1 test file = 706 files
 - [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
 - [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/render/` directory pattern)
