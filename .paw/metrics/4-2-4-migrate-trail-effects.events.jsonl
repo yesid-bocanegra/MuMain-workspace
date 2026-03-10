@@ -2,3 +2,5 @@
 {"timestamp":"2026-03-10T16:15:18.511482+00:00","event_type":"step_started","story_key":"4-2-4-migrate-trail-effects","step":"create-story","sprint":null,"epic":"4","data":{}}
 {"timestamp":"2026-03-10T16:21:46.631381+00:00","event_type":"step_passed","story_key":"4-2-4-migrate-trail-effects","step":"create-story","sprint":null,"epic":"4","data":{"duration_seconds":388.1,"input_tokens":11,"output_tokens":341,"cache_creation_tokens":63005,"cache_read_tokens":83801,"num_turns":3,"num_tool_calls":0}}
 {"timestamp":"2026-03-10T16:21:47.643352+00:00","event_type":"step_started","story_key":"4-2-4-migrate-trail-effects","step":"validate-story","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-10T16:24:18.302940+00:00","event_type":"step_passed","story_key":"4-2-4-migrate-trail-effects","step":"validate-story","sprint":null,"epic":"4","data":{"duration_seconds":150.7,"input_tokens":11,"output_tokens":296,"cache_creation_tokens":68351,"cache_read_tokens":83665,"num_turns":3,"num_tool_calls":0}}
+{"timestamp":"2026-03-10T16:24:19.310136+00:00","event_type":"step_started","story_key":"4-2-4-migrate-trail-effects","step":"atdd","sprint":null,"epic":"4","data":{}}
