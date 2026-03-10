@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-10T05:50:17.556641+00:00","event_type":"story_started","story_key":"4-2-3-migrate-skeletal-mesh","step":null,"sprint":null,"epic":"4","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-10T05:50:17.557526+00:00","event_type":"step_started","story_key":"4-2-3-migrate-skeletal-mesh","step":"create-story","sprint":null,"epic":"4","data":{}}
