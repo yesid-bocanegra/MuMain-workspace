@@ -11,8 +11,8 @@
 | Step | Status |
 |------|--------|
 | 1. Quality Gate | PASSED |
-| 2. Code Review Analysis | PASSED |
-| 3. Code Review Finalize | done |
+| 2. Code Review Analysis | PASSED (re-run 2026-03-10 FRESH MODE — H-4 added) |
+| 3. Code Review Finalize | requires re-run (H-4 pending fix) |
 
 ---
 
@@ -92,7 +92,7 @@ Next step: `/bmad:pcc:workflows:code-review-analysis 4-2-4-migrate-trail-effects
 ## Step 2: Analysis Results
 
 **Status:** PASSED
-**Date:** 2026-03-10
+**Date:** 2026-03-10 (re-analyzed 2026-03-10 — FRESH MODE)
 **Reviewer:** Claude Sonnet 4.6 (adversarial mode)
 
 ### Severity Summary
@@ -101,10 +101,12 @@ Next step: `/bmad:pcc:workflows:code-review-analysis 4-2-4-migrate-trail-effects
 |----------|-------|
 | BLOCKER  | 0     |
 | CRITICAL | 0     |
-| HIGH     | 3     |
+| HIGH     | 4     |
 | MEDIUM   | 3     |
 | LOW      | 1     |
-| **Total** | **7** |
+| **Total** | **8** |
+
+> **Fresh analysis note (2026-03-10):** Re-run of adversarial review in FRESH MODE revealed one additional HIGH finding (H-4: line 7178 operator precedence — third occurrence of the BITMAP_FLARE_FORCE || bug, missed by code-review-finalize which fixed only the two occurrences at lines 7336–7337 and 7374–7375). All previously-found issues H-1 through H-3, M-1 through M-3, and L-1 remain marked `fixed` per code-review-finalize. H-4 is new and requires resolution.
 
 ---
 
@@ -236,6 +238,17 @@ ATDD truth verification: All 7 test cases found in `test_traileffects_migration.
 
 ---
 
+#### HIGH — H-4: Line 7178 BITMAP_FLARE_FORCE operator precedence — third occurrence, NOT fixed in finalize
+
+- **Category:** CODE-QUALITY / BUG
+- **Severity:** HIGH
+- **File:Line:** `ZzzEffectJoint.cpp:7178–7180`
+- **Description:** `if (o->Type == BITMAP_FLARE_FORCE && o->SubType >= 0 && o->SubType <= 4 || (o->SubType >= 11 && o->SubType <= 13))` — the `||` at lower precedence means the second clause `(o->SubType >= 11 && o->SubType <= 13)` evaluates independently of the `o->Type == BITMAP_FLARE_FORCE` guard. Any object with SubType 11–13 (regardless of Type) will have its `Light1`/`Light2` UV values recomputed using the BITMAP_FLARE_FORCE formula at lines 7182–7185. The previous code-review-finalize (H-2) fixed the two occurrences at lines 7336–7337 and 7374–7375 but missed this third occurrence in the UV computation section. This pre-existing bug is now more consequential because the migrated `RenderQuadStrip` calls use `Light1`/`Light2` as UV coordinates — incorrectly recomputed UVs will silently produce wrong texture mapping for non-FLARE_FORCE objects with SubType 11–13 on the new rendering path.
+- **Fix Suggestion:** Wrap the full condition: `if (o->Type == BITMAP_FLARE_FORCE && ((o->SubType >= 0 && o->SubType <= 4) || (o->SubType >= 11 && o->SubType <= 13)))`. Matching the fix pattern applied at lines 7336 and 7374 in the previous finalize.
+- **Status:** pending
+
+---
+
 ### Not-Applicable Checks
 
 - **StructuredLogger Compliance:** N/A — C++ game client, no Spring/Java logging framework
@@ -262,9 +275,11 @@ No tasks marked [x] without evidence.
 
 ### Review Verdict
 
-**Overall:** PASSED — no BLOCKER or CRITICAL issues found. The migration is correctly implemented across all 4 trail segment paths. The 3 HIGH findings are: code duplication (PackABGR in 3 files — debt to track), an operator precedence issue that was present in legacy code and inherited by the new color capture logic, and a documentation inconsistency in the story (phase labels not updated from RED to GREEN). The 3 MEDIUM findings are documentation/comment issues. The 1 LOW finding is a missing `[[nodiscard]]` on production `PackABGR`.
+**Overall (original):** PASSED — no BLOCKER or CRITICAL issues found. The migration is correctly implemented across all 4 trail segment paths. The 3 HIGH findings are: code duplication (PackABGR in 3 files — debt to track), an operator precedence issue that was present in legacy code and inherited by the new color capture logic, and a documentation inconsistency in the story (phase labels not updated from RED to GREEN). The 3 MEDIUM findings are documentation/comment issues. The 1 LOW finding is a missing `[[nodiscard]]` on production `PackABGR`.
 
-**Recommendation:** Proceed to `code-review-finalize`. Fix H-3 (update story phase labels from RED to GREEN), M-2 (fix MuRenderer.cpp comment), and M-3 (fix CMakeLists comment) during finalize. H-1 (PackABGR consolidation) and H-2 (operator precedence) should be logged as follow-up items for a future refactor story, as they require broader cross-file changes beyond this story's scope.
+**Fresh analysis (2026-03-10):** Adding H-4 — a third occurrence of the BITMAP_FLARE_FORCE operator precedence bug at line 7178 that was not fixed by the previous code-review-finalize. This is the UV Light1/Light2 recomputation section; the bug means non-FLARE_FORCE objects with SubType 11–13 receive incorrect UV values on the new `RenderQuadStrip` path. Since H-1 through H-3, M-1 through M-3, and L-1 were all resolved in the previous finalize, only H-4 remains.
+
+**Recommendation:** Run `code-review-finalize` to fix H-4 (add parentheses at line 7178 matching the pattern applied at lines 7336 and 7374 in the previous finalize) and re-mark the story done.
 
 Next step: `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects`
 
@@ -272,8 +287,8 @@ Next step: `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects
 
 ## Step 3: Resolution
 
-**Completed:** 2026-03-10
-**Final Status:** done
+**Status:** REQUIRES RE-RUN — H-4 (line 7178 operator precedence) added by fresh analysis.
+**Previous completion:** 2026-03-10 (now superseded — story status rolled back pending H-4 fix)
 
 ### Summary
 
@@ -324,3 +339,42 @@ Next step: `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects
 - `MuMain/tests/render/test_traileffects_migration.cpp` — H-3 header comment RED→GREEN, H-1 local PackABGR removed + RenderUtils.h included
 - `MuMain/tests/CMakeLists.txt` — M-3 comment RED PHASE→GREEN PHASE
 - `_bmad-output/stories/4-2-4-migrate-trail-effects/story.md` — H-3 File List + Change Log RED→GREEN, status → done, RenderUtils.h added to File List
+
+
+---
+
+## Code Review Analysis (Step 2)
+
+**Date:** 2026-03-10 13:01
+**Reviewer:** Claude (Adversarial Analysis)
+
+💬 The code review analysis is complete. Here's the summary:
+
+**Story 4-2-4-migrate-trail-effects — Code Review Analysis**
+
+- **Quality Gate:** PASSED (0 errors, 706 files)
+- **ATDD:** 51/51 (100% complete)
+- **ACs:** 14/15 implemented (visual validation deferred per established pattern)
+
+**New finding (H-4):**
+- `ZzzEffectJoint.cpp:7178` — Third occurrence of the `BITMAP_FLARE_FORCE` operator precedence bug. The condition `o->Type == BITMAP_FLARE_FORCE && ... || (o->SubType >= 11 && o->SubType <= 13)` incorrectly applies UV recomputation to any object with SubType 11–13 regardless of Type. The prior finalize fixed lines 7336 and 7374 but missed this third instance.
+
+**All previously found issues (H-1 through H-3, M-1 through M-3, L-1) remain resolved.**
+
+**Next step:** Run `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects` to fix H-4 and close out the story.
+
+📋 Result:
+The code review analysis is complete. Here's the summary:
+
+**Story 4-2-4-migrate-trail-effects — Code Review Analysis**
+
+- **Quality Gate:** PASSED (0 errors, 706 files)
+- **ATDD:** 51/51 (100% complete)
+- **ACs:** 14/15 implemented (visual validation deferred per established pattern)
+
+**New finding (H-4):**
+- `ZzzEffectJoint.cpp:7178` — Third occurrence of the `BITMAP_FLARE_FORCE` operator precedence bug. The condition `o->Type == BITMAP_FLARE_FORCE && ... || (o->SubType >= 11 && o->SubType <= 13)` incorrectly applies UV recomputation to any object with SubType 11–13 regardless of Type. The prior finalize fixed lines 7336 and 7374 but missed this third instance.
+
+**All previously found issues (H-1 through H-3, M-1 through M-3, L-1) remain resolved.**
+
+**Next step:** Run `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects` to fix H-4 and close out the story.
