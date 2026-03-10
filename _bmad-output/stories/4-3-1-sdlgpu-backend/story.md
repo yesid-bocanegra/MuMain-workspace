@@ -103,62 +103,58 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Set up `MuRendererSDLGpu` class skeleton and device initialization (AC: 1, 2, 3)
-  - [ ] Subtask 1.1: Create `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` — declare `MuRendererSDLGpu : public mu::IMuRenderer` (internal class, no separate header needed); implement all pure virtuals with stub bodies initially
-  - [ ] Subtask 1.2: Add `Init(SDL_Window* pWindow) -> bool` static method to `MuRendererSDLGpu` (called once from startup): `SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL, true, NULL)`; log failure via `g_ErrorReport.Write(L"RENDER: SDL_gpu -- %hs", SDL_GetError())`; call `SDL_ClaimWindowForGPUDevice`
-  - [ ] Subtask 1.3: Add `Shutdown()` static method: `SDL_DestroyGPUDevice`; release all pipelines and buffers
-  - [ ] Subtask 1.4: Wire `GetRenderer()` in `MuRenderer.cpp` to return a static `MuRendererSDLGpu` instance (replace `MuRendererGL`); wrap old code in `#ifdef MU_USE_OPENGL_BACKEND`
-  - [ ] Subtask 1.5: Add call to `MuRendererSDLGpu::Init(g_hWnd)` in `Winmain.cpp` after the SDL window is created (after `SDL_CreateWindow`, before the game loop); add `MuRendererSDLGpu::Shutdown()` call in cleanup path
+- [x] Task 1: Set up `MuRendererSDLGpu` class skeleton and device initialization (AC: 1, 2, 3)
+  - [x] Subtask 1.1: Create `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` — declare `MuRendererSDLGpu : public mu::IMuRenderer` (internal class, no separate header needed); implement all pure virtuals with stub bodies initially
+  - [x] Subtask 1.2: Add `Init(SDL_Window* pWindow) -> bool` static method to `MuRendererSDLGpu` (called once from startup): `SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL, true, NULL)`; log failure via `g_ErrorReport.Write(L"RENDER: SDL_gpu -- %hs", SDL_GetError())`; call `SDL_ClaimWindowForGPUDevice`
+  - [x] Subtask 1.3: Add `Shutdown()` static method: `SDL_DestroyGPUDevice`; release all pipelines and buffers
+  - [x] Subtask 1.4: Wire `GetRenderer()` in `MuRenderer.cpp` to return a static `MuRendererSDLGpu` instance (replace `MuRendererGL`); wrap old code in `#ifdef MU_USE_OPENGL_BACKEND`
+  - [x] Subtask 1.5: Add call to `MuRendererSDLGpu::Init(g_hWnd)` in `Winmain.cpp` after the SDL window is created (after `SDL_CreateWindow`, before the game loop); add `MuRendererSDLGpu::Shutdown()` call in cleanup path
 
-- [ ] Task 2: Implement per-frame command buffer and render pass management (AC: 3)
-  - [ ] Subtask 2.1: Add frame lifecycle methods `BeginFrame()` and `EndFrame()` to `MuRendererSDLGpu` — `BeginFrame()` calls `SDL_AcquireGPUCommandBuffer()` + `SDL_AcquireGPUSwapchainTexture()` + `SDL_BeginGPURenderPass()`; `EndFrame()` calls `SDL_EndGPURenderPass()` + `SDL_SubmitGPUCommandBuffer()`
-  - [ ] Subtask 2.2: Wire `BeginFrame()` / `EndFrame()` calls in `Winmain.cpp` game loop: `BeginFrame()` at the start of the render section (where `SDL_GL_SwapWindow` was called), `EndFrame()` at the end (replacing `SDL_GL_SwapWindow`)
-  - [ ] Subtask 2.3: Handle `SDL_AcquireGPUSwapchainTexture` returning `nullptr` (window minimized / occluded): skip draw calls for that frame; log at debug level only
+- [x] Task 2: Implement per-frame command buffer and render pass management (AC: 3)
+  - [x] Subtask 2.1: Add frame lifecycle methods `BeginFrame()` and `EndFrame()` to `MuRendererSDLGpu` — `BeginFrame()` calls `SDL_AcquireGPUCommandBuffer()` + `SDL_AcquireGPUSwapchainTexture()` + `SDL_BeginGPURenderPass()`; `EndFrame()` calls `SDL_EndGPURenderPass()` + `SDL_SubmitGPUCommandBuffer()`
+  - [x] Subtask 2.2: Wire `BeginFrame()` / `EndFrame()` calls in `Winmain.cpp` game loop: `BeginFrame()` at the start of the render section (where `SDL_GL_SwapWindow` was called), `EndFrame()` at the end (replacing `SDL_GL_SwapWindow`)
+  - [x] Subtask 2.3: Handle `SDL_AcquireGPUSwapchainTexture` returning `nullptr` (window minimized / occluded): skip draw calls for that frame; log at debug level only
 
-- [ ] Task 3: Create blend mode pipeline objects (AC: 6)
-  - [ ] Subtask 3.1: Define a helper `BuildBlendPipeline(SDL_GPUDevice*, SDL_GPUColorTargetBlendState, SDL_GPUShader* vert, SDL_GPUShader* frag) -> SDL_GPUGraphicsPipeline*` in `MuRendererSDLGpu.cpp` — this wraps `SDL_CreateGPUGraphicsPipeline` with the blend state
-  - [ ] Subtask 3.2: In `Init()`, after device creation, create 9 pipelines (one per blend mode + disabled): use the `BlendState` table from architecture-rendering.md. Note: story 4.3.2 provides proper HLSL shaders; for this story, use NULL shaders or placeholder shaders if the SDL_gpu validation layer allows pipeline creation without shaders — if not, create minimal HLSL stubs inline (vertex: pass-through; fragment: sample texture * color) sufficient to compile
-  - [ ] Subtask 3.3: Store pipelines in `static SDL_GPUGraphicsPipeline* s_pipelines[9]` array indexed by `BlendMode` enum cast to int; index 8 = disabled
-  - [ ] Subtask 3.4: Implement `SetBlendMode(BlendMode mode)` — store `m_activeBlendMode = mode`; active pipeline applied at draw time via `SDL_BindGPUGraphicsPipeline(renderPass, s_pipelines[...])` at the start of each draw call
-  - [ ] Subtask 3.5: Implement `DisableBlend()` — set active pipeline to index 8 (no-blend pipeline)
+- [x] Task 3: Create blend mode pipeline objects (AC: 6)
+  - [x] Subtask 3.1: Define a helper `BuildBlendPipeline(SDL_GPUDevice*, SDL_GPUColorTargetBlendState, SDL_GPUShader* vert, SDL_GPUShader* frag) -> SDL_GPUGraphicsPipeline*` in `MuRendererSDLGpu.cpp` — this wraps `SDL_CreateGPUGraphicsPipeline` with the blend state
+  - [x] Subtask 3.2: In `Init()`, after device creation, create 9 pipelines (one per blend mode + disabled): use the `BlendState` table from architecture-rendering.md. Note: story 4.3.2 provides proper HLSL shaders; for this story, use NULL shaders or placeholder shaders if the SDL_gpu validation layer allows pipeline creation without shaders — if not, create minimal HLSL stubs inline (vertex: pass-through; fragment: sample texture * color) sufficient to compile
+  - [x] Subtask 3.3: Store pipelines in `static SDL_GPUGraphicsPipeline* s_pipelines[9]` array indexed by `BlendMode` enum cast to int; index 8 = disabled
+  - [x] Subtask 3.4: Implement `SetBlendMode(BlendMode mode)` — store `m_activeBlendMode = mode`; active pipeline applied at draw time via `SDL_BindGPUGraphicsPipeline(renderPass, s_pipelines[...])` at the start of each draw call
+  - [x] Subtask 3.5: Implement `DisableBlend()` — set active pipeline to index 8 (no-blend pipeline)
 
-- [ ] Task 4: Implement vertex buffer upload and draw calls (AC: 4)
-  - [ ] Subtask 4.1: Allocate a per-frame `SDL_GPUTransferBuffer` (scratch buffer, e.g., 4 MB) in `Init()` using `SDL_CreateGPUTransferBuffer` with `SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD`; allocate a matching `SDL_GPUBuffer` for vertex data with `SDL_GPU_BUFFERUSAGE_VERTEX`
-  - [ ] Subtask 4.2: Implement `UploadVertices(const void* data, size_t byteSize) -> Uint32 offset` helper: map transfer buffer via `SDL_MapGPUTransferBuffer`, memcpy data, track current offset; the transfer to the GPU buffer happens once at `BeginFrame()` via a copy pass (`SDL_BeginGPUCopyPass` + `SDL_UploadToGPUBuffer` + `SDL_EndGPUCopyPass`)
-  - [ ] Subtask 4.3: Implement `RenderQuad2D(span<const Vertex2D>, textureId)`: look up texture from registry (skip with warning if unknown); upload 4 vertices via `UploadVertices`; bind pipeline; bind sampler+texture via `SDL_BindGPUFragmentSamplers`; bind vertex buffer via `SDL_BindGPUVertexBuffers`; draw via `SDL_DrawGPUPrimitives(renderPass, 4, 1, offset/sizeof(Vertex2D), 0)` — note SDL_gpu uses triangle lists; a quad (4 vertices) requires either an index buffer or two triangles (6 vertices); use index buffer approach: create a static index buffer with pattern `[0,1,2, 0,2,3]` repeated for up to N quads
-  - [ ] Subtask 4.4: Implement `RenderTriangles(span<const Vertex3D>, textureId)`: same pattern as 4.3 but with `Vertex3D` and `SDL_GPU_PRIMITIVETYPE_TRIANGLELIST`
-  - [ ] Subtask 4.5: Implement `RenderQuadStrip(span<const Vertex3D>, textureId)`: SDL_gpu has no quad strip primitive; convert to triangle list by generating `(0,1,2), (1,3,2), (2,3,4), ...` index pattern from the strip; upload converted indices to a dynamic index buffer
+- [x] Task 4: Implement vertex buffer upload and draw calls (AC: 4)
+  - [x] Subtask 4.1: Allocate a per-frame `SDL_GPUTransferBuffer` (scratch buffer, e.g., 4 MB) in `Init()` using `SDL_CreateGPUTransferBuffer` with `SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD`; allocate a matching `SDL_GPUBuffer` for vertex data with `SDL_GPU_BUFFERUSAGE_VERTEX`
+  - [x] Subtask 4.2: Implement `UploadVertices(const void* data, size_t byteSize) -> Uint32 offset` helper: map transfer buffer via `SDL_MapGPUTransferBuffer`, memcpy data, track current offset; the transfer to the GPU buffer happens once at `BeginFrame()` via a copy pass (`SDL_BeginGPUCopyPass` + `SDL_UploadToGPUBuffer` + `SDL_EndGPUCopyPass`)
+  - [x] Subtask 4.3: Implement `RenderQuad2D(span<const Vertex2D>, textureId)`: look up texture from registry (skip with warning if unknown); upload 4 vertices via `UploadVertices`; bind pipeline; bind sampler+texture via `SDL_BindGPUFragmentSamplers`; bind vertex buffer via `SDL_BindGPUVertexBuffers`; draw via `SDL_DrawGPUPrimitives(renderPass, 4, 1, offset/sizeof(Vertex2D), 0)` — note SDL_gpu uses triangle lists; a quad (4 vertices) requires either an index buffer or two triangles (6 vertices); use index buffer approach: create a static index buffer with pattern `[0,1,2, 0,2,3]` repeated for up to N quads
+  - [x] Subtask 4.4: Implement `RenderTriangles(span<const Vertex3D>, textureId)`: same pattern as 4.3 but with `Vertex3D` and `SDL_GPU_PRIMITIVETYPE_TRIANGLELIST`
+  - [x] Subtask 4.5: Implement `RenderQuadStrip(span<const Vertex3D>, textureId)`: SDL_gpu has no quad strip primitive; convert to triangle list by generating `(0,1,2), (1,3,2), (2,3,4), ...` index pattern from the strip; upload converted indices to a dynamic index buffer
 
-- [ ] Task 5: Implement texture registry and sampler (AC: 5)
-  - [ ] Subtask 5.1: Add `static std::unordered_map<std::uint32_t, SDL_GPUTexture*> s_textureMap` to `MuRendererSDLGpu.cpp`
-  - [ ] Subtask 5.2: Add `static void RegisterTexture(std::uint32_t id, SDL_GPUTexture* pTex)` and `static void UnregisterTexture(std::uint32_t id)` functions — called by story 4.4.1
-  - [ ] Subtask 5.3: Create a default white 1×1 `SDL_GPUTexture*` (`s_whiteTexture`) in `Init()` used for untextured draws (`textureId == 0`) and unknown IDs — avoids skipping draws entirely while texture system is not yet migrated
-  - [ ] Subtask 5.4: Create a single `SDL_GPUSampler*` (`s_defaultSampler`) in `Init()` using `SDL_CreateGPUSampler` with `SDL_GPU_FILTER_NEAREST`/`SDL_GPU_FILTER_LINEAR` based on texture type (use LINEAR as the safe default matching `GL_LINEAR`)
+- [x] Task 5: Implement texture registry and sampler (AC: 5)
+  - [x] Subtask 5.1: Add `static std::unordered_map<std::uint32_t, SDL_GPUTexture*> s_textureMap` to `MuRendererSDLGpu.cpp`
+  - [x] Subtask 5.2: Add `static void RegisterTexture(std::uint32_t id, SDL_GPUTexture* pTex)` and `static void UnregisterTexture(std::uint32_t id)` functions — called by story 4.4.1
+  - [x] Subtask 5.3: Create a default white 1×1 `SDL_GPUTexture*` (`s_whiteTexture`) in `Init()` used for untextured draws (`textureId == 0`) and unknown IDs — avoids skipping draws entirely while texture system is not yet migrated
+  - [x] Subtask 5.4: Create a single `SDL_GPUSampler*` (`s_defaultSampler`) in `Init()` using `SDL_CreateGPUSampler` with `SDL_GPU_FILTER_NEAREST`/`SDL_GPU_FILTER_LINEAR` based on texture type (use LINEAR as the safe default matching `GL_LINEAR`)
 
-- [ ] Task 6: Implement SetDepthTest and SetFog (AC: 1)
-  - [ ] Subtask 6.1: `SetDepthTest(bool enabled)` — SDL_gpu depth state is baked into pipeline objects; create a second set of pipelines with depth test disabled (9 × 2 = 18 pipelines total); track `m_depthTestEnabled` and select appropriate pipeline at draw time; OR: create pipelines with depth test enabled by default (matching the OpenGL default from `MuRendererGL`) and document that `SetDepthTest(false)` is deferred to a follow-up (acceptable since all existing game rendering uses depth test enabled; the two skybox calls use `DisableDepthTest()` → `EnableDepthTest()` via `ZzzOpenglUtil.cpp` which still delegates to this method)
-  - [ ] Subtask 6.2: `SetFog(const FogParams& params)` — fog is implemented as a per-frame uniform buffer; for this story, store the `FogParams` in `m_fogParams` member and note that applying it requires shader support (story 4.3.2 adds the `basic_textured` shader with fog); in this story fog is stored but not applied to pixels (visual regression is acceptable — fog zones will look wrong until 4.3.2)
+- [x] Task 6: Implement SetDepthTest and SetFog (AC: 1)
+  - [x] Subtask 6.1: `SetDepthTest(bool enabled)` — SDL_gpu depth state is baked into pipeline objects; create a second set of pipelines with depth test disabled (9 × 2 = 18 pipelines total); track `m_depthTestEnabled` and select appropriate pipeline at draw time; OR: create pipelines with depth test enabled by default (matching the OpenGL default from `MuRendererGL`) and document that `SetDepthTest(false)` is deferred to a follow-up (acceptable since all existing game rendering uses depth test enabled; the two skybox calls use `DisableDepthTest()` → `EnableDepthTest()` via `ZzzOpenglUtil.cpp` which still delegates to this method)
+  - [x] Subtask 6.2: `SetFog(const FogParams& params)` — fog is implemented as a per-frame uniform buffer; for this story, store the `FogParams` in `m_fogParams` member and note that applying it requires shader support (story 4.3.2 adds the `basic_textured` shader with fog); in this story fog is stored but not applied to pixels (visual regression is acceptable — fog zones will look wrong until 4.3.2)
 
-- [ ] Task 7: Remove GLEW and wrap OpenGL backend (AC: 7, 8)
-  - [ ] Subtask 7.1: In `MuMain/CMakeLists.txt`, add CMake option `MU_USE_OPENGL_BACKEND` defaulting to OFF; wrap `find_package(GLEW)` / `target_link_libraries(... GLEW::GLEW ...)` under `if(MU_USE_OPENGL_BACKEND)`
-  - [ ] Subtask 7.2: In `MuMain/src/source/Main/stdafx.h`, wrap the `#include <GL/glew.h>` and all OpenGL `#include` directives under `#ifdef MU_USE_OPENGL_BACKEND`; add corresponding `#else` no-op stubs if needed for non-OpenGL compile (but OpenGL stubs were already present for macOS — verify they remain accessible)
-  - [ ] Subtask 7.3: Wrap `MuRenderer.cpp` OpenGL-specific code in `#ifdef MU_USE_OPENGL_BACKEND` so it compiles out when the SDL_gpu backend is active; the file still compiles (as an empty translation unit) when the flag is OFF
-  - [ ] Subtask 7.4: Verify CI (MinGW) build passes with `MU_USE_OPENGL_BACKEND=OFF`; Windows MSVC build passes with `MU_USE_OPENGL_BACKEND=ON` (regression guard) AND `MU_USE_OPENGL_BACKEND=OFF` (new SDL_gpu path)
+- [x] Task 7: Remove GLEW and wrap OpenGL backend (AC: 7, 8)
+  - [x] Subtask 7.1: In `MuMain/CMakeLists.txt`, add CMake option `MU_USE_OPENGL_BACKEND` defaulting to OFF; wrap `find_package(GLEW)` / `target_link_libraries(... GLEW::GLEW ...)` under `if(MU_USE_OPENGL_BACKEND)`
+  - [x] Subtask 7.2: In `MuMain/src/source/Main/stdafx.h`, wrap the `#include <GL/glew.h>` and all OpenGL `#include` directives under `#ifdef MU_USE_OPENGL_BACKEND`; add corresponding `#else` no-op stubs if needed for non-OpenGL compile (but OpenGL stubs were already present for macOS — verify they remain accessible)
+  - [x] Subtask 7.3: Wrap `MuRenderer.cpp` OpenGL-specific code in `#ifdef MU_USE_OPENGL_BACKEND` so it compiles out when the SDL_gpu backend is active; the file still compiles (as an empty translation unit) when the flag is OFF
+  - [ ] Subtask 7.4: Verify CI (MinGW) build passes with `MU_USE_OPENGL_BACKEND=OFF`; Windows MSVC build passes with `MU_USE_OPENGL_BACKEND=ON` (regression guard) AND `MU_USE_OPENGL_BACKEND=OFF` (new SDL_gpu path) — deferred (macOS CI only)
 
-- [ ] Task 8: Add Catch2 tests (AC: AC-STD-2, AC-VAL-1)
-  - [ ] Subtask 8.1: Create `MuMain/tests/render/test_sdlgpubackend.cpp`
-  - [ ] Subtask 8.2: Add `target_sources(MuTests PRIVATE render/test_sdlgpubackend.cpp)` in `MuMain/tests/CMakeLists.txt` under `BUILD_TESTING` guard with story comment
-  - [ ] Subtask 8.3: `TEST_CASE("TextureRegistry — register and lookup")`: call `MuRendererSDLGpu::RegisterTexture(42, reinterpret_cast<SDL_GPUTexture*>(0xDEADBEEF))`; verify `LookupTexture(42)` returns the same pointer; call `UnregisterTexture(42)`; verify `LookupTexture(42)` returns `nullptr` (or the white fallback texture)
-  - [ ] Subtask 8.4: `TEST_CASE("BlendMode — SDL_gpu factor table")`: for each `BlendMode` value, verify the expected `SDL_GPUBlendFactor` pair (`src_color_blendfactor`, `dst_color_blendfactor`) per architecture-rendering.md table; use a helper `GetBlendFactors(BlendMode) -> pair<SDL_GPUBlendFactor, SDL_GPUBlendFactor>` extracted as a free function for testability
-  - [ ] Subtask 8.5: `TEST_CASE("SetFog — FogParams storage")`: create a `MuRendererSDLGpu` test subclass that overrides device-requiring init; call `SetFog(params)` with known values; verify `GetLastFogParams().start == 2000.f` etc.
+- [x] Task 8: Add Catch2 tests (AC: AC-STD-2, AC-VAL-1)
+  - [x] Subtask 8.1: Create `MuMain/tests/render/test_sdlgpubackend.cpp` (created in RED phase by testarch-atdd)
+  - [x] Subtask 8.2: Add `target_sources(MuTests PRIVATE render/test_sdlgpubackend.cpp)` in `MuMain/tests/CMakeLists.txt` (done in RED phase)
+  - [x] Subtask 8.3: `TEST_CASE("TextureRegistry — register and lookup")` — implementation provides RegisterTexture/UnregisterTexture/LookupTexture free functions
+  - [x] Subtask 8.4: `TEST_CASE("BlendMode — SDL_gpu factor table")` — GetBlendFactors() free function implemented with correct SDL_GPUBlendFactor values
+  - [x] Subtask 8.5: `TEST_CASE("SetFog — FogParams storage")` — FogCaptureMock test approach; SetFog stores m_fogParams
 
 - [ ] Task 9: Quality gate + grep verification (AC: AC-STD-13, AC-VAL-2, AC-VAL-5)
-  - [ ] Subtask 9.1: Run `./ctl check` — 0 errors (729 files expected)
-  - [ ] Subtask 9.2: Run grep to confirm no stray `glBegin`/`glEnd` calls outside `MuRenderer.cpp`:
-    ```bash
-    grep -rn "glBegin\|glEnd" MuMain/src/source --include="*.cpp" | grep -v MuRenderer.cpp
-    ```
-    Expected: zero hits
+  - [x] Subtask 9.1: Run `./ctl check` — 707 files, 0 errors (PASSED)
+  - [ ] Subtask 9.2: Run grep to confirm no stray `glBegin`/`glEnd` calls outside `MuRenderer.cpp` — BLOCKED: 13 files with pre-existing GL calls from migration gaps in stories 4.2.2–4.2.4 (see progress.md Blocker #3)
   - [ ] Subtask 9.3: Commit with message `feat(render): implement SDL_gpu backend for MuRenderer`
 
 ---
