@@ -1,6 +1,6 @@
 # Story 4.2.2: Migrate RenderBitmap Variants to RenderQuad2D
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
