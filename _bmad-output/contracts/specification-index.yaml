@@ -551,7 +551,7 @@ stories:
     name: "Migrate Trail Effects"
     epic: EPIC-4
     feature: "4.2"
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-1"
 

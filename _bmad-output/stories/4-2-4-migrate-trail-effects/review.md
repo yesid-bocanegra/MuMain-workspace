@@ -12,7 +12,7 @@
 |------|--------|
 | 1. Quality Gate | PASSED |
 | 2. Code Review Analysis | PASSED (re-run 2026-03-10 FRESH MODE — H-4 added) |
-| 3. Code Review Finalize | requires re-run (H-4 pending fix) |
+| 3. Code Review Finalize | PASSED (2026-03-10 re-run — H-4 fixed) |
 
 ---
 
@@ -245,7 +245,7 @@ ATDD truth verification: All 7 test cases found in `test_traileffects_migration.
 - **File:Line:** `ZzzEffectJoint.cpp:7178–7180`
 - **Description:** `if (o->Type == BITMAP_FLARE_FORCE && o->SubType >= 0 && o->SubType <= 4 || (o->SubType >= 11 && o->SubType <= 13))` — the `||` at lower precedence means the second clause `(o->SubType >= 11 && o->SubType <= 13)` evaluates independently of the `o->Type == BITMAP_FLARE_FORCE` guard. Any object with SubType 11–13 (regardless of Type) will have its `Light1`/`Light2` UV values recomputed using the BITMAP_FLARE_FORCE formula at lines 7182–7185. The previous code-review-finalize (H-2) fixed the two occurrences at lines 7336–7337 and 7374–7375 but missed this third occurrence in the UV computation section. This pre-existing bug is now more consequential because the migrated `RenderQuadStrip` calls use `Light1`/`Light2` as UV coordinates — incorrectly recomputed UVs will silently produce wrong texture mapping for non-FLARE_FORCE objects with SubType 11–13 on the new rendering path.
 - **Fix Suggestion:** Wrap the full condition: `if (o->Type == BITMAP_FLARE_FORCE && ((o->SubType >= 0 && o->SubType <= 4) || (o->SubType >= 11 && o->SubType <= 13)))`. Matching the fix pattern applied at lines 7336 and 7374 in the previous finalize.
-- **Status:** pending
+- **Status:** fixed
 
 ---
 
@@ -287,14 +287,14 @@ Next step: `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects
 
 ## Step 3: Resolution
 
-**Status:** REQUIRES RE-RUN — H-4 (line 7178 operator precedence) added by fresh analysis.
-**Previous completion:** 2026-03-10 (now superseded — story status rolled back pending H-4 fix)
+**Completed:** 2026-03-10
+**Final Status:** done
 
 ### Summary
 
 | Metric | Count |
 |--------|-------|
-| Issues Fixed | 7 |
+| Issues Fixed | 8 |
 | Action Items Created | 0 |
 
 ### Resolution Details
@@ -302,6 +302,7 @@ Next step: `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects
 - **H-1:** fixed — Extracted `PackABGR` from 3 file-static inline copies into shared `MuMain/src/source/RenderFX/RenderUtils.h` as `mu::PackABGR`. Updated `ZzzEffectJoint.cpp`, `ZzzBMD.cpp`, and `test_traileffects_migration.cpp` to include `RenderUtils.h` and use `mu::PackABGR` via `using` declaration. Eliminates silent divergence risk; removes "KEEP IN SYNC WITH" comment burden.
 - **H-2:** fixed — Wrapped full `BITMAP_FLARE_FORCE` condition in explicit parentheses at both occurrences (line 7347 pre-existing + line 7385 new load-bearing block): `(o->Type == BITMAP_FLARE_FORCE && ((o->SubType >= 0 && o->SubType <= 4) || (o->SubType >= 11 && o->SubType <= 13)))`. Prevents any non-FLARE_FORCE object with SubType 11–13 from incorrectly receiving the luminosity faceColor.
 - **H-3:** fixed — Updated story.md File List notes column and Change Log entry for `test_traileffects_migration.cpp` from "RED phase" to "GREEN phase — all 7 TEST_CASEs implemented and passing". Updated test file header comment from RED PHASE to GREEN PHASE.
+- **H-4:** fixed — Wrapped full `BITMAP_FLARE_FORCE` condition at line 7178 (UV Light1/Light2 recomputation section) in explicit parentheses: `(o->Type == BITMAP_FLARE_FORCE && ((o->SubType >= 0 && o->SubType <= 4) || (o->SubType >= 11 && o->SubType <= 13)))`. Matching the fix pattern applied at lines 7336 and 7374 in the previous finalize. Prevents any non-FLARE_FORCE object with SubType 11–13 from receiving incorrect UV values on the new `RenderQuadStrip` path. Quality gate: 706 files, 0 errors.
 - **M-1:** fixed — Noted in ATDD checklist; no code change required (limitation mitigated by AC-VAL-4 grep verification per analysis).
 - **M-2:** fixed — Updated `MuRenderer.cpp` line 103 comment from "Render a triangle strip" to "Render a quad strip" to match the actual `GL_QUAD_STRIP` implementation.
 - **M-3:** fixed — Updated `tests/CMakeLists.txt` Story 4.2.4 comment block from "RED PHASE" to "GREEN PHASE: All 7 TEST_CASEs pass."
@@ -328,17 +329,17 @@ Next step: `/bmad:pcc:workflows:code-review-finalize 4-2-4-migrate-trail-effects
 - **Previous Status:** in-progress (ready-for-review)
 - **New Status:** done
 - **Story File Updated:** `_bmad-output/stories/4-2-4-migrate-trail-effects/story.md`
-- **ATDD Checklist Synchronized:** Yes (already 51/51 GREEN)
+- **ATDD Checklist Synchronized:** Yes (51/51 GREEN)
 
 ### Files Modified
 
-- `MuMain/src/source/RenderFX/ZzzEffectJoint.cpp` — H-2 operator precedence fix (×2), H-1 local PackABGR removed + RenderUtils.h included, L-1 [[nodiscard]] (via shared header)
-- `MuMain/src/source/RenderFX/ZzzBMD.cpp` — H-1 local PackABGR removed + RenderUtils.h included, L-1 [[nodiscard]] (via shared header)
+- `MuMain/src/source/RenderFX/ZzzEffectJoint.cpp` — H-4 operator precedence fix at line 7178 (UV recomputation section); H-2 operator precedence fix (×2); H-1 local PackABGR removed + RenderUtils.h included; L-1 [[nodiscard]] (via shared header)
+- `MuMain/src/source/RenderFX/ZzzBMD.cpp` — H-1 local PackABGR removed + RenderUtils.h included; L-1 [[nodiscard]] (via shared header)
 - `MuMain/src/source/RenderFX/MuRenderer.cpp` — M-2 comment fix ("triangle strip" → "quad strip")
 - `MuMain/src/source/RenderFX/RenderUtils.h` — CREATED (H-1 fix: shared mu::PackABGR)
-- `MuMain/tests/render/test_traileffects_migration.cpp` — H-3 header comment RED→GREEN, H-1 local PackABGR removed + RenderUtils.h included
+- `MuMain/tests/render/test_traileffects_migration.cpp` — H-3 header comment RED→GREEN; H-1 local PackABGR removed + RenderUtils.h included
 - `MuMain/tests/CMakeLists.txt` — M-3 comment RED PHASE→GREEN PHASE
-- `_bmad-output/stories/4-2-4-migrate-trail-effects/story.md` — H-3 File List + Change Log RED→GREEN, status → done, RenderUtils.h added to File List
+- `_bmad-output/stories/4-2-4-migrate-trail-effects/story.md` — H-3 File List + Change Log RED→GREEN; status → done; RenderUtils.h added to File List
 
 
 ---
