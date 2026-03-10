@@ -16,6 +16,7 @@ Status: ready-for-dev
 | Story Points | 8 |
 | Priority | P0 - Must Have |
 | Story Type | `infrastructure` |
+| SAFe Flow Type | Enabler |
 | Value Stream | VS-1 (Core Experience) |
 | Flow Code | VS1-RENDER-SDLGPU-BACKEND |
 | FRs Covered | FR12, FR13, FR14, FR15 |
