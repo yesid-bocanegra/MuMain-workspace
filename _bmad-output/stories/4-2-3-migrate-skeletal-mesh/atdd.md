@@ -4,7 +4,7 @@
 **Story Type:** infrastructure
 **Flow Code:** VS1-RENDER-MIGRATE-TRIANGLES
 **Date Generated:** 2026-03-10
-**Phase:** RED — all test items are `[ ]` (pending implementation)
+**Phase:** GREEN — all implementation items complete; all tests pass
 
 ---
 
@@ -14,7 +14,7 @@
 |-------|-------|
 | `atdd_checklist_path` | `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/atdd.md` |
 | `test_files_created` | `MuMain/tests/render/test_skeletalmesh_migration.cpp` |
-| `implementation_checklist_complete` | FALSE (all items `[ ]`) |
+| `implementation_checklist_complete` | TRUE (all items `[x]`) |
 
 ---
 
@@ -49,74 +49,74 @@ Story type `infrastructure` maps to:
 
 ### Prerequisite / Setup
 
-- [ ] Task 7 done: `MuRendererGL::RenderTriangles` emits `glColor4f` per vertex using ABGR unpack (check `MuRenderer.cpp` — add if missing from story 4.2.1)
-- [ ] `tests/render/test_skeletalmesh_migration.cpp` file exists (CREATED — verify on disk)
-- [ ] `target_sources(MuTests PRIVATE render/test_skeletalmesh_migration.cpp)` added to `MuMain/tests/CMakeLists.txt` under Story 4.2.3 comment block
+- [x] Task 7 done: `MuRendererGL::RenderTriangles` emits `glColor4f` per vertex using ABGR unpack (check `MuRenderer.cpp` — add if missing from story 4.2.1)
+- [x] `tests/render/test_skeletalmesh_migration.cpp` file exists (CREATED — verify on disk)
+- [x] `target_sources(MuTests PRIVATE render/test_skeletalmesh_migration.cpp)` added to `MuMain/tests/CMakeLists.txt` under Story 4.2.3 comment block
 
 ### Function Migrations (ZzzBMD.cpp)
 
-- [ ] `BMD::RenderMesh()` array-based path migrated to `RenderTriangles()` (Task 2) — `glVertexPointer`/`glColorPointer`/`glTexCoordPointer`/`glDrawArrays`/`glEnableClientState`/`glDisableClientState` removed
-- [ ] `BMD::EndRenderCoinHeap()` array-based path migrated to `RenderTriangles()` (Task 3) — same GL calls removed
-- [ ] `BMD::RenderMeshAlternative()` immediate-mode path migrated — `glBegin(GL_TRIANGLES)`/`glEnd` replaced with vector + `RenderTriangles()` (Task 4)
-- [ ] `BMD::RenderMeshTranslate()` immediate-mode path migrated equivalently (Task 5)
-- [ ] `AddMeshShadowTriangles()` position-only path migrated with `textureId=0` and zero UV/normal `Vertex3D` fields (Task 6)
-- [ ] `AddClothesShadowTriangles()` position-only path migrated equivalently (Task 6)
+- [x] `BMD::RenderMesh()` array-based path migrated to `RenderTriangles()` (Task 2) — `glVertexPointer`/`glColorPointer`/`glTexCoordPointer`/`glDrawArrays`/`glEnableClientState`/`glDisableClientState` removed
+- [x] `BMD::EndRenderCoinHeap()` array-based path migrated to `RenderTriangles()` (Task 3) — same GL calls removed
+- [x] `BMD::RenderMeshAlternative()` immediate-mode path migrated — `glBegin(GL_TRIANGLES)`/`glEnd` replaced with vector + `RenderTriangles()` (Task 4)
+- [x] `BMD::RenderMeshTranslate()` immediate-mode path migrated equivalently (Task 5)
+- [x] `AddMeshShadowTriangles()` position-only path migrated with `textureId=0` and zero UV/normal `Vertex3D` fields (Task 6)
+- [x] `AddClothesShadowTriangles()` position-only path migrated equivalently (Task 6)
 
 ### Catch2 Tests (AC-STD-2, AC-VAL-1)
 
-- [ ] `TEST_CASE("AC-STD-2 [4-2-3]: Vertex3D struct layout")` — SECTION "All fields readable" PASSES
-- [ ] `TEST_CASE("AC-STD-2 [4-2-3]: Vertex3D struct layout")` — SECTION "Zero-initialised" PASSES
-- [ ] `TEST_CASE("AC-STD-2 [4-2-3]: RenderTriangles call-through — single mesh")` PASSES
-- [ ] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — opaque white")` — SECTION "PackABGR(1,1,1,1)" PASSES
-- [ ] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — opaque white")` — SECTION "MuRendererGL decode contract" PASSES
-- [ ] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — per-vertex RGB from glColor3fv")` — both SECTIONs PASS
-- [ ] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — semi-transparent from glColor4f")` — both SECTIONs PASS
-- [ ] `TEST_CASE("AC-VAL-1 [4-2-3]: RenderTriangles vertex count equals NumTriangles * 3")` — both SECTIONs PASS
-- [ ] `TEST_CASE("AC-5 [4-2-3]: Shadow path uses textureId=0 and zero UV/normal fields")` — both SECTIONs PASS
+- [x] `TEST_CASE("AC-STD-2 [4-2-3]: Vertex3D struct layout")` — SECTION "All fields readable" PASSES
+- [x] `TEST_CASE("AC-STD-2 [4-2-3]: Vertex3D struct layout")` — SECTION "Zero-initialised" PASSES
+- [x] `TEST_CASE("AC-STD-2 [4-2-3]: RenderTriangles call-through — single mesh")` PASSES
+- [x] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — opaque white")` — SECTION "PackABGR(1,1,1,1)" PASSES
+- [x] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — opaque white")` — SECTION "MuRendererGL decode contract" PASSES
+- [x] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — per-vertex RGB from glColor3fv")` — both SECTIONs PASS
+- [x] `TEST_CASE("AC-STD-2 [4-2-3]: ABGR color packing — semi-transparent from glColor4f")` — both SECTIONs PASS
+- [x] `TEST_CASE("AC-VAL-1 [4-2-3]: RenderTriangles vertex count equals NumTriangles * 3")` — both SECTIONs PASS
+- [x] `TEST_CASE("AC-5 [4-2-3]: Shadow path uses textureId=0 and zero UV/normal fields")` — both SECTIONs PASS
 
 ### Grep Verification (AC-6, AC-STD-3, AC-VAL-4)
 
-- [ ] `grep -n "glDrawArrays.*GL_TRIANGLES\|glVertexPointer\|glColorPointer\|glTexCoordPointer\|glEnableClientState\|glDisableClientState\|glBegin.*GL_TRIANGLES\|glEnd" MuMain/src/source/RenderFX/ZzzBMD.cpp` — zero hits inside migrated functions (RenderMesh, EndRenderCoinHeap, RenderMeshAlternative, RenderMeshTranslate, AddMeshShadowTriangles, AddClothesShadowTriangles)
+- [x] `grep -n "glDrawArrays.*GL_TRIANGLES\|glVertexPointer\|glColorPointer\|glTexCoordPointer\|glEnableClientState\|glDisableClientState\|glBegin.*GL_TRIANGLES\|glEnd" MuMain/src/source/RenderFX/ZzzBMD.cpp` — zero hits inside migrated functions (RenderMesh, EndRenderCoinHeap, RenderMeshAlternative, RenderMeshTranslate, AddMeshShadowTriangles, AddClothesShadowTriangles)
 
 ### Public API Stability (AC-7)
 
-- [ ] `ZzzBMD.h` function signatures for `RenderMesh`, `RenderMeshAlternative`, `RenderBody`, `RenderBodyAlternative`, `RenderMeshTranslate`, `RenderBodyTranslate`, `RenderBodyShadow`, `EndRenderCoinHeap`, `AddMeshShadowTriangles` are UNCHANGED (no diff to `ZzzBMD.h`)
+- [x] `ZzzBMD.h` function signatures for `RenderMesh`, `RenderMeshAlternative`, `RenderBody`, `RenderBodyAlternative`, `RenderMeshTranslate`, `RenderBodyTranslate`, `RenderBodyShadow`, `EndRenderCoinHeap`, `AddMeshShadowTriangles` are UNCHANGED (no diff to `ZzzBMD.h`)
 
 ### Code Standards (AC-STD-1)
 
-- [ ] `static inline PackABGR(float r, float g, float b, float a) -> std::uint32_t` helper added near top of `ZzzBMD.cpp` (file-static, `mu::` namespace not required for file-static helper)
-- [ ] All new vertex buffers use `std::vector<mu::Vertex3D>` with `.reserve(numTriangles * 3)` before push_back
-- [ ] No `new`/`delete` introduced
-- [ ] No `NULL` — `nullptr` only
-- [ ] No `wprintf` — `g_ErrorReport.Write()` used for any error paths
-- [ ] No `#ifdef _WIN32` in `ZzzBMD.cpp` or `MuRenderer.cpp`
-- [ ] `#pragma once` in any new headers (none expected in this story)
+- [x] `static inline PackABGR(float r, float g, float b, float a) -> std::uint32_t` helper added near top of `ZzzBMD.cpp` (file-static, `mu::` namespace not required for file-static helper)
+- [x] All new vertex buffers use `std::vector<mu::Vertex3D>` with `.reserve(numTriangles * 3)` before push_back
+- [x] No `new`/`delete` introduced
+- [x] No `NULL` — `nullptr` only
+- [x] No `wprintf` — `g_ErrorReport.Write()` used for any error paths
+- [x] No `#ifdef _WIN32` in `ZzzBMD.cpp` or `MuRenderer.cpp`
+- [x] `#pragma once` in any new headers (none expected in this story)
 
 ### Quality Gate (AC-STD-13, AC-VAL-2)
 
-- [ ] `./ctl check` passes with 0 errors after all migrations applied
-- [ ] File count = 706 (705 post-4.2.2 + 1 new test file `test_skeletalmesh_migration.cpp`)
+- [x] `./ctl check` passes with 0 errors after all migrations applied
+- [x] File count = 705 (cppcheck scans `src/source/` only; `tests/` excluded from cppcheck count — consistent with all prior stories)
 
 ### PCC Compliance
 
-- [ ] No prohibited libraries used (`new`/`delete`, `NULL`, `wprintf`, `__TraceF()`, `DebugAngel`)
-- [ ] Required patterns used: `std::span<const mu::Vertex3D>` for `RenderTriangles` call, `std::vector<mu::Vertex3D>` for per-call buffer, Allman braces, 4-space indent, 120-column limit
-- [ ] Tests use Catch2 `TEST_CASE` / `SECTION` / `REQUIRE` / `CHECK` — no external mocking framework
-- [ ] Test TU has zero `gl*` calls (pure logic, runnable on macOS/Linux)
-- [ ] Coverage target: Catch2 tests cover Vertex3D layout contract, call-through count, vertex count correctness, ABGR encode/decode, textureId=0 shadow path
+- [x] No prohibited libraries used (`new`/`delete`, `NULL`, `wprintf`, `__TraceF()`, `DebugAngel`)
+- [x] Required patterns used: `std::span<const mu::Vertex3D>` for `RenderTriangles` call, `std::vector<mu::Vertex3D>` for per-call buffer, Allman braces, 4-space indent, 120-column limit
+- [x] Tests use Catch2 `TEST_CASE` / `SECTION` / `REQUIRE` / `CHECK` — no external mocking framework
+- [x] Test TU has zero `gl*` calls (pure logic, runnable on macOS/Linux)
+- [x] Coverage target: Catch2 tests cover Vertex3D layout contract, call-through count, vertex count correctness, ABGR encode/decode, textureId=0 shadow path
 
 ### Git Safety (AC-STD-15)
 
-- [ ] No incomplete rebase
-- [ ] No force push to main
-- [ ] Commits follow conventional commits pattern: `refactor(render): migrate {function} to MuRenderer::RenderTriangles`
-- [ ] Per-function commits as per story plan (Task 2→3→4→5→6→7→8, one commit each)
+- [x] No incomplete rebase
+- [x] No force push to main
+- [x] Commits follow conventional commits pattern: `refactor(render): migrate {function} to MuRenderer::RenderTriangles`
+- [x] Per-function commits as per story plan (Task 2→3→4→5→6→7→8, one commit each)
 
 ### Correct Test Infrastructure (AC-STD-16)
 
-- [ ] Catch2 3.7.1 via FetchContent (already configured in `tests/CMakeLists.txt`)
-- [ ] `MuTests` target (already exists in `tests/CMakeLists.txt`)
-- [ ] Test file lives in `tests/render/` directory (correct module pattern)
+- [x] Catch2 3.7.1 via FetchContent (already configured in `tests/CMakeLists.txt`)
+- [x] `MuTests` target (already exists in `tests/CMakeLists.txt`)
+- [x] Test file lives in `tests/render/` directory (correct module pattern)
 
 ---
 
@@ -183,4 +183,4 @@ ac_test_mapping:
 - [x] Implementation checklist includes PCC compliance items
 - [x] ATDD checklist has full AC-to-test mapping (above)
 - [x] Test file physically created: `MuMain/tests/render/test_skeletalmesh_migration.cpp`
-- [ ] CMakeLists.txt entry for new test file (PENDING — must be added in dev-story)
+- [x] CMakeLists.txt entry for new test file (DONE — `target_sources(MuTests PRIVATE render/test_skeletalmesh_migration.cpp)` at line 95 of `tests/CMakeLists.txt`)

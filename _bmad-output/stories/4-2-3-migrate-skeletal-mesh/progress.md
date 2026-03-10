@@ -3,7 +3,7 @@
 **Story:** Migrate Skeletal Mesh Rendering to RenderTriangles
 **Story File:** `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/story.md`
 **ATDD Checklist:** `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/atdd.md`
-**Status:** in-progress
+**Status:** complete
 **Started:** 2026-03-10
 **Last Updated:** 2026-03-10
 
@@ -11,39 +11,24 @@
 
 ## Quick Resume
 
-> **Next Action:** Begin implementation of: Task 7 — Update MuRendererGL::RenderTriangles for per-vertex color
-> **Active File:** `MuMain/src/source/RenderFX/MuRenderer.cpp`
+> **Next Action:** Proceed to story completion validation (code-review pipeline)
+> **Active File:** `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/story.md`
 > **Blocker:** (none)
 
 ### Current Position
 
 | Metric | Value |
 |--------|-------|
-| Tasks Complete | 0/9 (0%) |
-| Current Task | Task 7: Update MuRendererGL::RenderTriangles for per-vertex color |
-| Task Progress | 0% |
-| Session Count | 1 |
+| Tasks Complete | 9/9 (100%) |
+| Current Task | All tasks complete |
+| Task Progress | 100% |
+| Session Count | 2 |
 
 ---
 
 ## Active Task Details
 
-### Task 7: Update MuRendererGL::RenderTriangles for per-vertex color (prerequisite check)
-
-**Status:** not-started
-**Progress:** 0%
-
-**Subtasks:**
-- [ ] 7.1: Read current MuRenderer.cpp RenderTriangles — confirm/add glColor4f per vertex ABGR unpack
-- [ ] 7.2: If updated, commit: `feat(render): add per-vertex color to MuRendererGL::RenderTriangles`
-
-**Current Work:**
-Starting implementation — Task 7 is prerequisite for all function migrations.
-
-**Files Being Modified:**
-| File | Status | Notes |
-|------|--------|-------|
-| MuMain/src/source/RenderFX/MuRenderer.cpp | pending | Add glColor4f per-vertex ABGR unpack to RenderTriangles |
+All tasks complete. Story advanced to `code-review` status.
 
 ---
 
@@ -56,6 +41,7 @@ Starting implementation — Task 7 is prerequisite for all function migrations.
 | 3 | textureId for shadow paths | 0 | No texture — DisableTexture() called by caller | 2026-03-10 |
 | 4 | Normals in array-based path | {0,0,0} | RenderArrayNormals not populated; SDL_gpu backend will address lighting | 2026-03-10 |
 | 5 | Task execution order | Task 7 first (prerequisite), then 2→3→4→5→6, then 8, then 9 | Task 7 enables per-vertex color for all migrations | 2026-03-10 |
+| 6 | File count for quality gate | 705 (not 706) | cppcheck scans `src/source/` only; `tests/` excluded from cppcheck count — consistent with all prior stories | 2026-03-10 |
 
 ---
 
@@ -64,15 +50,30 @@ Starting implementation — Task 7 is prerequisite for all function migrations.
 ### Session 1 (2026-03-10)
 
 **Duration:** Started
-**Tasks Worked:** Task 7
-**Tasks Completed:** 0
+**Tasks Worked:** Task 7 (prerequisite), 2, 3, 4, 5, 6, 8
+**Tasks Completed:** 7 (T7, T2, T3, T4, T5, T6, T8)
 
 **Summary:**
-Fresh implementation session started. All setup steps (0-4.1) complete.
-Story has 9 tasks + ATDD checklist with 35+ implementation items.
-Test file already exists at MuMain/tests/render/test_skeletalmesh_migration.cpp (created in ATDD phase).
-CMakeLists.txt entry still needs to be added (ATDD checklist item).
-RenderTriangles in MuRenderer.cpp confirmed missing glColor4f — Task 7 must run first.
+Implementation performed in MuMain submodule. All 6 functions migrated with per-function commits. Test file created with 7 TEST_CASEs. CMakeLists.txt updated.
+
+**Files Modified:**
+- `MuMain/src/source/RenderFX/ZzzBMD.cpp` — 6 function migrations + PackABGR helper
+- `MuMain/src/source/RenderFX/MuRenderer.cpp` — per-vertex color in RenderTriangles
+- `MuMain/tests/render/test_skeletalmesh_migration.cpp` — 7 Catch2 TEST_CASEs (CREATED)
+- `MuMain/tests/CMakeLists.txt` — added test file entry
+
+### Session 2 (2026-03-10)
+
+**Duration:** Story verification and completion
+**Tasks Worked:** Task 9 (quality gate + grep verification) + story file finalization
+**Tasks Completed:** All 9 tasks
+
+**Summary:**
+Resumed with all implementation already complete in MuMain submodule. Verified:
+- Quality gate passes (0 errors, 705 files)
+- Grep verification: zero hits in 6 migrated functions
+- ATDD checklist: all items marked [x]
+- Story status advanced to `code-review`
 
 ---
 
@@ -87,7 +88,7 @@ RenderTriangles in MuRenderer.cpp confirmed missing glColor4f — Task 7 must ru
 ## Progress Verification Record
 
 **Last Verified:** 2026-03-10
-**Verification Method:** fresh-start
+**Verification Method:** grep + quality gate + ATDD checklist review
 
 ---
 
