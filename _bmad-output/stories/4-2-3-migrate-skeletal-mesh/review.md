@@ -19,7 +19,7 @@
 ## Step 1: Quality Gate Results
 
 **Status:** PASSED
-**Date:** 2026-03-10
+**Date:** 2026-03-10 (re-validated 2026-03-10)
 
 ### Components Validated
 
@@ -33,13 +33,14 @@
 |-------|--------|---------|
 | Backend Local (format-check) | PASSED | `make -C MuMain format-check` → exit 0, "Checking formatting..." clean |
 | Backend Local (cppcheck lint) | PASSED | `make -C MuMain lint` → exit 0, 705/705 files, 0 errors |
-| SonarCloud | SKIPPED | Not configured (no SONAR_TOKEN) |
+| SonarCloud | SKIPPED | cpp-cmake tech profile has no sonar_cmd; no sonar_key configured for mumain component |
 | Frontend | N/A | No frontend components (infrastructure story) |
 
 **Quality Gate Notes:**
 - File count: 705 files (cppcheck scans `src/source/` only; `tests/` excluded — consistent with prior stories)
 - `skip_checks: [build, test]` — macOS cannot compile Win32/DirectX (per `.pcc-config.yaml`)
 - Story type: `infrastructure` — AC compliance tests skipped
+- Re-validation confirmed: codebase still clean after all code-review-finalize fixes
 
 **Overall:** PASSED — ready for analysis
 
