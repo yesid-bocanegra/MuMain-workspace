@@ -11,7 +11,7 @@
 | Step | Workflow | Status | Timestamp |
 |------|----------|--------|-----------|
 | Step 1 | code-review-quality-gate | PASSED | 2026-03-10 |
-| Step 2 | code-review-analysis | PASSED | 2026-03-10 |
+| Step 2 | code-review-analysis | PASSED | 2026-03-10 (re-analysis: 2026-03-10) |
 | Step 3 | code-review-finalize | PASSED | 2026-03-10 |
 
 ---
@@ -49,7 +49,7 @@
 ## Step 2: Analysis Results
 
 **Status:** PASSED
-**Date:** 2026-03-10
+**Date:** 2026-03-10 (re-analysis: 2026-03-10)
 
 ### Summary
 
@@ -58,9 +58,11 @@
 | BLOCKER | 0 |
 | CRITICAL | 0 |
 | HIGH | 1 |
-| MEDIUM | 2 |
-| LOW | 2 |
-| **TOTAL** | **5** |
+| MEDIUM | 4 |
+| LOW | 3 |
+| **TOTAL** | **8** |
+
+*Note: Issues 1–5 were identified and fixed in the initial analysis pass. Issues 6–8 were identified in the FRESH re-analysis.*
 
 ### ATDD Audit
 
@@ -167,6 +169,68 @@ The file header comment (lines 1-9) says "RED PHASE: Tests fail until..." and li
 
 ---
 
+**ISSUE-6** | Severity: MEDIUM | Category: CODE-CORRECTNESS
+**Title:** `RENDER_BRIGHT` path in `RenderMeshAlternative` and `RenderMeshTranslate` defaults per-vertex color to `0xFFFFFFFFu` (white) — loses BodyLight color modulation
+
+**Location:** `MuMain/src/source/RenderFX/ZzzBMD.cpp` (RenderMeshAlternative line 1697–1761; RenderMeshTranslate line 2203–2251)
+
+**Description:**
+Both `RenderMeshAlternative` and `RenderMeshTranslate` set `Render = RENDER_BRIGHT` (lines 1682 and 2193 respectively) when the `RENDER_BRIGHT` flag is set without `RENDER_TEXTURE`. However, the per-vertex switch in the migration loop only handles `RENDER_TEXTURE` and `RENDER_CHROME` — `RENDER_BRIGHT` does not match any case, so all vertices receive the default `color = 0xFFFFFFFFu` (opaque white).
+
+In the original OpenGL code, the GL color state before the loop would persist into the `glBegin(GL_TRIANGLES)` vertex stream. For `RenderMeshTranslate`, line 2067 sets `glColor3fv(BodyLight)` for the `StreamMesh` case before the vertex loop. For the pure RENDER_BRIGHT case (no StreamMesh, no RENDER_COLOR), the GL color is inherited from prior state. The migration drops this ambient color inheritance.
+
+This means with `EnableAlphaBlend()` active, RENDER_BRIGHT geometry is now modulated by white (1,1,1) instead of whatever BodyLight color was set. On most bright geometry this may produce slightly overbright surfaces compared to the original. This is a behavioral regression for `RENDER_BRIGHT`-only paths that relied on BodyLight ambient color.
+
+**Fix (non-blocking for this story):** Add `RENDER_BRIGHT` handling in the per-vertex switch:
+```cpp
+case RENDER_BRIGHT:
+{
+    // No UV for bright (untextured) geometry; use BodyLight color
+    color = PackABGR(BodyLight[0], BodyLight[1], BodyLight[2], Alpha >= 0.99f ? 1.f : Alpha);
+    break;
+}
+```
+This is a regression that should be fixed in a follow-up story (4.2.4 or 4.2.5). It does not block this story since `RENDER_BRIGHT` paths are edge cases and the visual difference (white vs. BodyLight modulation with additive blending) may be subtle.
+
+**Status:** pending — identified in FRESH re-analysis. Non-blocking but should be addressed in story 4.2.5 (remaining `glColor` + state migration scope).
+
+---
+
+**ISSUE-7** | Severity: MEDIUM | Category: ARCHITECTURE-CONSISTENCY
+**Title:** `MuRendererGL::RenderQuadStrip` still calls `glBindTexture` — inconsistent with the corrected `RenderTriangles` pattern
+
+**Location:** `MuMain/src/source/RenderFX/MuRenderer.cpp:115`
+
+**Description:**
+`RenderQuadStrip` at line 115 calls `glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(textureId))`. This is the same BITMAP-slot-index vs. GL-texture-object-name problem that ISSUE-1 fixed for `RenderTriangles`. The fix to `RenderTriangles` established the correct pattern: on the OpenGL backend, texture binding is managed by the caller, and `textureId` is reserved for the SDL_gpu backend (4.3.1). `RenderQuadStrip` was not in scope for story 4.2.3, but the inconsistency was introduced by the decision to fix `RenderTriangles` without a corresponding update to `RenderQuadStrip`.
+
+If any `RenderQuadStrip` caller binds a chrome or special texture before calling, `RenderQuadStrip` will re-bind using the BITMAP index and corrupt that state.
+
+**Fix (non-blocking):** Apply the same `(void)textureId;` pattern with GL-backend comment to `RenderQuadStrip`. Candidate for story 4.2.4 or 4.2.5.
+
+**Status:** pending — identified in FRESH re-analysis. Out of story 4.2.3 scope. Should be tracked for story 4.2.4/4.2.5.
+
+---
+
+**ISSUE-8** | Severity: LOW | Category: DOCUMENTATION
+**Title:** Shadow construction sites lack comment explaining `0xFF000000u` vs. caller's `glColor4f(0,0,0,0.5f)` color intent
+
+**Location:** `MuMain/src/source/RenderFX/ZzzBMD.cpp:2367, 2418`
+
+**Description:**
+Shadow vertices use `0xFF000000u` (ABGR: A=0xFF opaque, R=0, G=0, B=0). The story Dev Notes explain that shadow transparency comes from the caller's `glColor4f(0,0,0,0.5f)` set before the shadow helpers are invoked, and that story 4.2.5 will eventually migrate this. However, there is no inline comment at the vertex construction site explaining why `0xFF000000u` (black opaque) is used rather than a semi-transparent value. Future developers reading `AddMeshShadowTriangles` or `AddClothesShadowTriangles` will see black-opaque shadow vertices and may not understand the relationship to the caller's `glColor4f` state.
+
+**Fix:** Add a comment at the construction site:
+```cpp
+// color = 0xFF000000u (black opaque): shadow transparency is set by caller via
+// glColor4f(0,0,0,0.5f) before invoking this helper. This overrides per-vertex
+// color in the legacy GL pipeline. Story 4.2.5 will migrate the caller state.
+```
+
+**Status:** pending — identified in FRESH re-analysis. Low severity; documentation only.
+
+---
+
 ### AC Validation Results
 
 | AC | Description | Status | Evidence |
@@ -261,3 +325,40 @@ All 9 tasks marked `[x]` in story.md. Implementation evidence verified:
 - `MuMain/src/source/RenderFX/ZzzBMD.cpp` — ISSUE-2: `PackABGR` clamping; ISSUE-3: `textureId=0` comment in `EndRenderCoinHeap`
 - `MuMain/tests/render/test_skeletalmesh_migration.cpp` — ISSUE-4: test `PackABGR` clamping + sync comment; ISSUE-5: GREEN PHASE header
 - `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/story.md` — Status: done; AC-VAL-3 checkbox converted to note
+
+
+---
+
+## Code Review Analysis (Step 2)
+
+**Date:** 2026-03-10 11:07
+**Reviewer:** Claude (Adversarial Analysis)
+
+💬 **Code review analysis complete** for story `4-2-3-migrate-skeletal-mesh`.
+
+**Summary:**
+- **ATDD:** 33/33 (100%) — all tests verified, no blockers
+- **Prior issues (5):** All fixed in previous session
+- **New issues found (3):**
+  - **ISSUE-6 (MEDIUM):** `RENDER_BRIGHT` path loses `BodyLight` color modulation — defaults to white instead of packing ambient color. Behavioral regression, deferred to story 4.2.5
+  - **ISSUE-7 (MEDIUM):** `MuRendererGL::RenderQuadStrip` (`MuRenderer.cpp:115`) still uses `glBindTexture` with BITMAP slot index — same error as ISSUE-1, not propagated during prior fix. Deferred to 4.2.4/4.2.5
+  - **ISSUE-8 (LOW):** Shadow vertex `0xFF000000u` lacks explanatory comment. Documentation only
+
+**No blockers.** Story remains `done`. Review artifacts updated at `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/review.md`.
+
+**Next step:** `/bmad:pcc:workflows:code-review-finalize 4-2-3-migrate-skeletal-mesh`
+
+📋 Result:
+**Code review analysis complete** for story `4-2-3-migrate-skeletal-mesh`.
+
+**Summary:**
+- **ATDD:** 33/33 (100%) — all tests verified, no blockers
+- **Prior issues (5):** All fixed in previous session
+- **New issues found (3):**
+  - **ISSUE-6 (MEDIUM):** `RENDER_BRIGHT` path loses `BodyLight` color modulation — defaults to white instead of packing ambient color. Behavioral regression, deferred to story 4.2.5
+  - **ISSUE-7 (MEDIUM):** `MuRendererGL::RenderQuadStrip` (`MuRenderer.cpp:115`) still uses `glBindTexture` with BITMAP slot index — same error as ISSUE-1, not propagated during prior fix. Deferred to 4.2.4/4.2.5
+  - **ISSUE-8 (LOW):** Shadow vertex `0xFF000000u` lacks explanatory comment. Documentation only
+
+**No blockers.** Story remains `done`. Review artifacts updated at `_bmad-output/stories/4-2-3-migrate-skeletal-mesh/review.md`.
+
+**Next step:** `/bmad:pcc:workflows:code-review-finalize 4-2-3-migrate-skeletal-mesh`
