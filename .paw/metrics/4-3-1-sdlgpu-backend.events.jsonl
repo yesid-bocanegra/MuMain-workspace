@@ -74,3 +74,5 @@
 {"timestamp":"2026-03-11T00:52:44.031113+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"design-screen","sprint":null,"epic":"4","data":{}}
 {"timestamp":"2026-03-11T00:52:44.035105+00:00","event_type":"step_passed","story_key":"4-3-1-sdlgpu-backend","step":"design-screen","sprint":null,"epic":"4","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0,"cache_creation_tokens":0,"cache_read_tokens":0,"num_turns":0,"num_tool_calls":0}}
 {"timestamp":"2026-03-11T00:52:45.041542+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"dev-story","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-11T00:57:03.906713+00:00","event_type":"step_passed","story_key":"4-3-1-sdlgpu-backend","step":"dev-story","sprint":null,"epic":"4","data":{"duration_seconds":258.9,"input_tokens":11,"output_tokens":361,"cache_creation_tokens":63049,"cache_read_tokens":83817,"num_turns":3,"num_tool_calls":1}}
+{"timestamp":"2026-03-11T00:57:04.917717+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"completeness-gate","sprint":null,"epic":"4","data":{}}
