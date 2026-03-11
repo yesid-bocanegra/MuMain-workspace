@@ -121,40 +121,40 @@ Status: review
   - [x] Subtask 2.4: Create a custom target `ShaderCompilation` that depends on all shader blob outputs. Add `add_dependencies(Main ShaderCompilation)` so the game binary cannot be built without compiled shaders.
   - [x] Subtask 2.5: Add shader blob output directory path as a compile definition: `add_compile_definitions(MU_SHADER_DIR="${CMAKE_BINARY_DIR}/shaders/")` so `MuRendererSDLGpu.cpp` can construct blob paths at runtime without hardcoded paths.
 
-- [ ] Task 3: Update MuRendererSDLGpu.cpp — shader loading (AC: 6)
-  - [ ] Subtask 3.1: Remove `k_VertexShaderSPIRV` and `k_FragmentShaderSPIRV` byte arrays from `MuRendererSDLGpu.cpp`.
-  - [ ] Subtask 3.2: Add free function `[[nodiscard]] static std::vector<Uint8> LoadShaderBlob(const char* name, const char* stage, const char* driver)` that constructs the blob path from `MU_SHADER_DIR`, the shader name, stage suffix, and driver → extension mapping; reads file with `std::ifstream` in binary mode; returns the byte vector. Logs failure via `g_ErrorReport.Write`.
-  - [ ] Subtask 3.3: Add free function `[[nodiscard]] static const char* GetShaderFormat(const char* driver)` returning `"spirv"`, `"dxil"`, or `"msl"` based on `SDL_GetGPUDeviceDriver(s_device)`.
-  - [ ] Subtask 3.4: In `Init()`, after `SDL_CreateGPUDevice`, call `LoadShaderBlob` for `basic_textured.vert`, `basic_textured.frag`, `basic_colored.vert`, `basic_colored.frag`, `shadow_volume.vert`; create `SDL_GPUShader` handles; pass to `BuildBlendPipeline` (replaces placeholder shader args). On blob load failure or `SDL_CreateGPUShader` returning null, log error and return `false` (non-fatal for shaders used only by non-critical pipelines, fatal for `basic_textured`).
-  - [ ] Subtask 3.5: Release shader handles after pipeline creation (already done in 4.3.1 — verify this still happens).
+- [x] Task 3: Update MuRendererSDLGpu.cpp — shader loading (AC: 6)
+  - [x] Subtask 3.1: Remove `k_VertexShaderSPIRV` and `k_FragmentShaderSPIRV` byte arrays from `MuRendererSDLGpu.cpp`.
+  - [x] Subtask 3.2: Add free function `[[nodiscard]] static std::vector<Uint8> LoadShaderBlob(const char* name, const char* stage, const char* driver)` that constructs the blob path from `MU_SHADER_DIR`, the shader name, stage suffix, and driver → extension mapping; reads file with `std::ifstream` in binary mode; returns the byte vector. Logs failure via `g_ErrorReport.Write`.
+  - [x] Subtask 3.3: Add free function `[[nodiscard]] static const char* GetShaderFormat(const char* driver)` returning `"spirv"`, `"dxil"`, or `"msl"` based on `SDL_GetGPUDeviceDriver(s_device)`.
+  - [x] Subtask 3.4: In `Init()`, after `SDL_CreateGPUDevice`, call `LoadShaderBlob` for `basic_textured.vert`, `basic_textured.frag`, `basic_colored.vert`, `basic_colored.frag`, `shadow_volume.vert`; create `SDL_GPUShader` handles; pass to `BuildBlendPipeline` (replaces placeholder shader args). On blob load failure or `SDL_CreateGPUShader` returning null, log error and return `false` (non-fatal for shaders used only by non-critical pipelines, fatal for `basic_textured`).
+  - [x] Subtask 3.5: Release shader handles after pipeline creation (already done in 4.3.1 — verify this still happens).
 
-- [ ] Task 4: Fix AI-Review deferred issues from story 4.3.1 (AC: 7, 8, 9)
-  - [ ] Subtask 4.1: [HIGH] Fix copy/render pass overlap in `UploadVertices()`. Replace per-draw-call copy pass with a pre-frame single copy pass strategy:
+- [x] Task 4: Fix AI-Review deferred issues from story 4.3.1 (AC: 7, 8, 9)
+  - [x] Subtask 4.1: [HIGH] Fix copy/render pass overlap in `UploadVertices()`. Replace per-draw-call copy pass with a pre-frame single copy pass strategy:
     - Map transfer buffer once in `BeginFrame()` using `SDL_MapGPUTransferBuffer(device, s_vtxTransferBuf, false)` (cycle=false — reuse same backing); store mapped pointer as `s_vtxMappedPtr`.
     - `UploadVertices(data, byteSize)` writes to `s_vtxMappedPtr + s_vtxOffset`; advances `s_vtxOffset`; returns offset for draw call use.
     - Before `SDL_BeginGPURenderPass()`: call `SDL_UnmapGPUTransferBuffer(device, s_vtxTransferBuf)`, then open copy pass, upload entire `s_vtxOffset` bytes to GPU buffer, close copy pass. Then begin render pass.
     - Reset `s_vtxOffset = 0` at start of each `BeginFrame()`.
-  - [ ] Subtask 4.2: [HIGH] Fix Vertex3D / Vertex2D pipeline layout mismatch. In `BuildBlendPipeline()`, add `bool bUse3DLayout` parameter. When `true`, use `Vertex3D` attribute descriptors (pos=float3@0, normal=float3@12, uv=float2@24, color=ubyte4norm@32, pitch=40). When `false`, use `Vertex2D` layout (pos=float2@0, uv=float2@8, color=ubyte4norm@16, pitch=20). Create pipeline sets `s_pipelines2D[k_PipelineCount]` and `s_pipelines3DDepthOn[k_PipelineCount]` (and matching depth-off variants). In `RenderQuad2D`, select `s_pipelines2D`; in `RenderTriangles`/`RenderQuadStrip`, select `s_pipelines3DDepthOn`.
-  - [ ] Subtask 4.3: [MEDIUM] Fix `SDL_MapGPUTransferBuffer cycle=true` per draw. This is resolved by Subtask 4.1 (single map/unmap per frame with `cycle=false`). Verify in code review that no other map call with `cycle=true` per draw call exists.
+  - [x] Subtask 4.2: [HIGH] Fix Vertex3D / Vertex2D pipeline layout mismatch. In `BuildBlendPipeline()`, add `bool bUse3DLayout` parameter. When `true`, use `Vertex3D` attribute descriptors (pos=float3@0, normal=float3@12, uv=float2@24, color=ubyte4norm@32, pitch=40). When `false`, use `Vertex2D` layout (pos=float2@0, uv=float2@8, color=ubyte4norm@16, pitch=20). Create pipeline sets `s_pipelines2D[k_PipelineCount]` and `s_pipelines3DDepthOn[k_PipelineCount]` (and matching depth-off variants). In `RenderQuad2D`, select `s_pipelines2D`; in `RenderTriangles`/`RenderQuadStrip`, select `s_pipelines3DDepthOn`.
+  - [x] Subtask 4.3: [MEDIUM] Fix `SDL_MapGPUTransferBuffer cycle=true` per draw. This is resolved by Subtask 4.1 (single map/unmap per frame with `cycle=false`). Verify in code review that no other map call with `cycle=true` per draw call exists.
 
-- [ ] Task 5: Implement fog uniform buffer (AC: 10)
-  - [ ] Subtask 5.1: Define `struct FogUniform { Uint32 fogEnabled; Uint32 alphaDiscardEnabled; float alphaThreshold; float pad0; float fogStart; float fogEnd; float fogColor[4]; float pad1[2]; }` (std140 alignment) in an anonymous namespace in `MuRendererSDLGpu.cpp`.
-  - [ ] Subtask 5.2: In `Init()`, create `s_fogUniformBuf` as `SDL_CreateGPUBuffer(device, {SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ, sizeof(FogUniform), 0})`. Also create `s_fogTransferBuf` as `SDL_CreateGPUTransferBuffer`.
-  - [ ] Subtask 5.3: In `SetFog()`, populate `m_fogParams`; additionally upload a `FogUniform` to `s_fogUniformBuf` via a copy pass (or stage in a dirty flag + upload in `BeginFrame()` before the render pass). Use `SDL_GPU_FILTER_NEAREST` sampler — no texture sampling needed for fog (it is a uniform).
-  - [ ] Subtask 5.4: In draw calls that use `basic_textured` pipeline (`RenderQuad2D`, `RenderTriangles`, `RenderQuadStrip`), bind `s_fogUniformBuf` at fragment shader storage buffer slot 0 via `SDL_BindGPUFragmentStorageBuffers(renderPass, 0, &s_fogUniformBuf, 1)`.
-  - [ ] Subtask 5.5: In `Shutdown()`, release `s_fogUniformBuf` and `s_fogTransferBuf` via `SDL_ReleaseGPUBuffer`.
+- [x] Task 5: Implement fog uniform buffer (AC: 10)
+  - [x] Subtask 5.1: Define `struct FogUniform { Uint32 fogEnabled; Uint32 alphaDiscardEnabled; float alphaThreshold; float pad0; float fogStart; float fogEnd; float fogColor[4]; float pad1[2]; }` (std140 alignment) in an anonymous namespace in `MuRendererSDLGpu.cpp`.
+  - [x] Subtask 5.2: In `Init()`, create `s_fogUniformBuf` as `SDL_CreateGPUBuffer(device, {SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ, sizeof(FogUniform), 0})`. Also create `s_fogTransferBuf` as `SDL_CreateGPUTransferBuffer`.
+  - [x] Subtask 5.3: In `SetFog()`, populate `m_fogParams`; additionally upload a `FogUniform` to `s_fogUniformBuf` via a copy pass (or stage in a dirty flag + upload in `BeginFrame()` before the render pass). Use `SDL_GPU_FILTER_NEAREST` sampler — no texture sampling needed for fog (it is a uniform).
+  - [x] Subtask 5.4: In draw calls that use `basic_textured` pipeline (`RenderQuad2D`, `RenderTriangles`, `RenderQuadStrip`), bind `s_fogUniformBuf` at fragment shader storage buffer slot 0 via `SDL_BindGPUFragmentStorageBuffers(renderPass, 0, &s_fogUniformBuf, 1)`.
+  - [x] Subtask 5.5: In `Shutdown()`, release `s_fogUniformBuf` and `s_fogTransferBuf` via `SDL_ReleaseGPUBuffer`.
 
-- [ ] Task 6: Add Catch2 tests (AC: AC-STD-2, AC-VAL-1)
-  - [ ] Subtask 6.1: Create `MuMain/tests/render/test_shaderprograms.cpp`
-  - [ ] Subtask 6.2: Add `target_sources(MuTests PRIVATE render/test_shaderprograms.cpp)` to `MuMain/tests/CMakeLists.txt` (with story comment as per convention)
-  - [ ] Subtask 6.3: `TEST_CASE("ShaderBlobPath — driver-to-extension mapping")` — test `GetShaderBlobPath` helper for all three drivers; no GPU device required
-  - [ ] Subtask 6.4: `TEST_CASE("FogUniform — struct layout static_assert")` — verify `sizeof(FogUniform)` and field offsets match the HLSL cbuffer declaration
-  - [ ] Subtask 6.5: `TEST_CASE("Pipeline selection — Vertex3D uses 3D pipeline set")` — expose a free function `GetPipelineSetFor3D()` or test subclass that verifies `RenderTriangles`/`RenderQuadStrip` select `s_pipelines3DDepthOn`
+- [x] Task 6: Add Catch2 tests (AC: AC-STD-2, AC-VAL-1)
+  - [x] Subtask 6.1: Create `MuMain/tests/render/test_shaderprograms.cpp`
+  - [x] Subtask 6.2: Add `target_sources(MuTests PRIVATE render/test_shaderprograms.cpp)` to `MuMain/tests/CMakeLists.txt` (with story comment as per convention)
+  - [x] Subtask 6.3: `TEST_CASE("ShaderBlobPath — driver-to-extension mapping")` — test `GetShaderBlobPath` helper for all three drivers; no GPU device required
+  - [x] Subtask 6.4: `TEST_CASE("FogUniform — struct layout static_assert")` — verify `sizeof(FogUniform)` and field offsets match the HLSL cbuffer declaration
+  - [x] Subtask 6.5: `TEST_CASE("Pipeline selection — Vertex3D uses 3D pipeline set")` — expose a free function `GetPipelineSetFor3D()` or test subclass that verifies `RenderTriangles`/`RenderQuadStrip` select `s_pipelines3DDepthOn`
 
-- [ ] Task 7: Quality gate + verification (AC: AC-STD-13, AC-VAL-2, AC-VAL-6)
-  - [ ] Subtask 7.1: Run `./ctl check` — expect 0 errors. File count should increase from 707 by 1 (`test_shaderprograms.cpp`).
-  - [ ] Subtask 7.2: grep verification — confirm no `k_VertexShaderSPIRV` or `k_FragmentShaderSPIRV` remain; confirm no `glBegin`/`glEnd` calls in new or modified files.
-  - [ ] Subtask 7.3: Create conventional commit: `feat(render): add HLSL shader programs with SDL_shadercross`
+- [x] Task 7: Quality gate + verification (AC: AC-STD-13, AC-VAL-2, AC-VAL-6)
+  - [x] Subtask 7.1: Run `./ctl check` — expect 0 errors. File count should increase from 707 by 1 (`test_shaderprograms.cpp`).
+  - [x] Subtask 7.2: grep verification — confirm no `k_VertexShaderSPIRV` or `k_FragmentShaderSPIRV` remain; confirm no `glBegin`/`glEnd` calls in new or modified files.
+  - [x] Subtask 7.3: Create conventional commit: `feat(render): add HLSL shader programs with SDL_shadercross`
 
 ---
 

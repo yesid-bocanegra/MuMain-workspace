@@ -130,7 +130,7 @@
 - [x] `grep` confirms `k_VertexShaderSPIRV` and `k_FragmentShaderSPIRV` are fully removed from `MuRendererSDLGpu.cpp`
 - [x] `grep` confirms no `glBegin`, `glEnd`, `glVertex*`, `glEnable`, `glDisable` in new or modified files
 - [x] All 3 Catch2 `TEST_CASE`s compile — GREEN phase (symbols implemented in mu:: namespace)
-- [ ] Conventional commit created: `feat(render): add HLSL shader programs with SDL_shadercross`
+- [x] Conventional commit created: `feat(render): add HLSL shader programs with SDL_shadercross`
 
 ### PCC Compliance Items
 
