@@ -1,3 +1,5 @@
 {"timestamp":"2026-03-11T01:24:43.545723+00:00","event_type":"batch_started","story_key":"4-3-2-shader-programs","step":null,"sprint":null,"epic":"4","data":{"story_count":2,"story_keys":["4-3-2-shader-programs","4-4-1-texture-system-migration"]}}
 {"timestamp":"2026-03-11T01:24:43.562411+00:00","event_type":"story_started","story_key":"4-3-2-shader-programs","step":null,"sprint":null,"epic":"4","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-11T01:24:43.562619+00:00","event_type":"step_started","story_key":"4-3-2-shader-programs","step":"create-story","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-11T01:32:58.442443+00:00","event_type":"step_passed","story_key":"4-3-2-shader-programs","step":"create-story","sprint":null,"epic":"4","data":{"duration_seconds":494.9,"input_tokens":11,"output_tokens":379,"cache_creation_tokens":61061,"cache_read_tokens":82585,"num_turns":3,"num_tool_calls":1}}
+{"timestamp":"2026-03-11T01:32:59.451360+00:00","event_type":"step_started","story_key":"4-3-2-shader-programs","step":"validate-story","sprint":null,"epic":"4","data":{}}
