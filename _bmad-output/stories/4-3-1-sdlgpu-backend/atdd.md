@@ -264,3 +264,5 @@ Step 0.5 mapping confirmed: all 4 testable ACs already have matched `TEST_CASE` 
 Implementation is complete: `MuRendererSDLGpu.cpp` (1401 lines), all Tasks 1–9 done, quality gate passed. AC-to-Test Mapping updated to GREEN/VERIFIED status to reflect actual implementation state. Three deferred manual validations (AC-9, AC-VAL-3, AC-VAL-4) remain pending per story dev notes (require Windows D3D12 or actual GPU device). Task 7.4 CI build deferred (macOS CI only).
 
 FSM transition: STATE_0_STORY_CREATED → STATE_1_ATDD_READY — COMPLETE.
+
+**FRESH MODE re-verification (2026-03-10):** grep counts confirmed — Implementation Checklist: 52 checked / 53 total. 1 unchecked item (Task 7.4) is a valid environment-constrained deferral (macOS CI cannot compile Win32/DirectX per CLAUDE.md). Test file `test_sdlgpubackend.cpp` confirmed: 4 TEST_CASE blocks, 21 SECTION blocks, all `[4-3-1]` prefixed. Implementation file `MuRendererSDLGpu.cpp` (1401 lines) exists. ATDD is STATE_1_ATDD_READY — ready for code-review-quality-gate.
