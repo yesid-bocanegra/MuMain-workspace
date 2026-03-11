@@ -1,6 +1,6 @@
 # Story 4.3.1: SDL_gpu Backend Implementation
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -459,6 +459,13 @@ Known issues for story 4.3.2 (AI-Review findings):
 - [MEDIUM] SDL_MapGPUTransferBuffer cycle=true per-draw-call may discard accumulated data
 
 Story ready for code-review. Conventional commit: b0ba1d6 feat(render): implement SDL_gpu backend for MuRenderer.
+
+Code-review complete (2026-03-10). Issues found and fixed:
+- [HIGH] H-1: ODR violation — `GetRenderer()`, `InitSDLGpuRenderer()`, `ShutdownSDLGpuRenderer()` were defined unconditionally in `MuRendererSDLGpu.cpp` AND inside `#ifdef MU_USE_OPENGL_BACKEND` in `MuRenderer.cpp`. Fixed: wrapped the three SDL_gpu functions in `#ifndef MU_USE_OPENGL_BACKEND` to prevent duplicate definition when the OpenGL backend is enabled. [MuRendererSDLGpu.cpp:1380-1410]
+- [HIGH] H-2: `RenderQuad2D` missing bounds check for `numQuads > k_MaxQuads` — draw call could read past end of static quad index buffer (24,576-entry limit). Fixed: clamped `drawQuads` to `k_MaxQuads` with warning log. [MuRendererSDLGpu.cpp:561-570]
+- [MEDIUM] M-1: `RenderTriangles` missing `vertices.size() % 3 != 0` validation. Fixed: added consistent early-return guard matching `RenderQuad2D`. [MuRendererSDLGpu.cpp:577-586]
+- [MEDIUM] M-2: `BeginFrame()` and `EndFrame()` missing `override` keyword. Fixed: added `override`. [MuRendererSDLGpu.cpp:407,474]
+Quality gate: `./ctl check` passes 0 errors post-fix (format + cppcheck verified on modified file).
 
 Test scenarios created: `_bmad-output/test-scenarios/epic-4/4-3-1-sdlgpu-backend.md` (20 scenarios)
 

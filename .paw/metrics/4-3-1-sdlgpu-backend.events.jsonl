@@ -76,3 +76,5 @@
 {"timestamp":"2026-03-11T00:52:45.041542+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"dev-story","sprint":null,"epic":"4","data":{}}
 {"timestamp":"2026-03-11T00:57:03.906713+00:00","event_type":"step_passed","story_key":"4-3-1-sdlgpu-backend","step":"dev-story","sprint":null,"epic":"4","data":{"duration_seconds":258.9,"input_tokens":11,"output_tokens":361,"cache_creation_tokens":63049,"cache_read_tokens":83817,"num_turns":3,"num_tool_calls":1}}
 {"timestamp":"2026-03-11T00:57:04.917717+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"completeness-gate","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-11T01:00:12.297710+00:00","event_type":"step_passed","story_key":"4-3-1-sdlgpu-backend","step":"completeness-gate","sprint":null,"epic":"4","data":{"duration_seconds":187.4,"input_tokens":42,"output_tokens":3955,"cache_creation_tokens":233813,"cache_read_tokens":1593080,"num_turns":24,"num_tool_calls":15}}
+{"timestamp":"2026-03-11T01:00:13.300095+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"code-review","sprint":null,"epic":"4","data":{}}
