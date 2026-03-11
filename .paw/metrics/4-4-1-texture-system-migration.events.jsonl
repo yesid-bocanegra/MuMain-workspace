@@ -1,2 +1,4 @@
 {"timestamp":"2026-03-11T04:26:58.978264+00:00","event_type":"story_started","story_key":"4-4-1-texture-system-migration","step":null,"sprint":null,"epic":"4","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-11T04:26:58.978647+00:00","event_type":"step_started","story_key":"4-4-1-texture-system-migration","step":"create-story","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-11T04:34:02.959129+00:00","event_type":"step_passed","story_key":"4-4-1-texture-system-migration","step":"create-story","sprint":null,"epic":"4","data":{"duration_seconds":424.0,"input_tokens":11,"output_tokens":488,"cache_creation_tokens":61707,"cache_read_tokens":83049,"num_turns":3,"num_tool_calls":1}}
+{"timestamp":"2026-03-11T04:34:03.966259+00:00","event_type":"step_started","story_key":"4-4-1-texture-system-migration","step":"validate-story","sprint":null,"epic":"4","data":{}}
