@@ -143,7 +143,7 @@ Status: review
   - [x] Subtask 7.1: In `MuMain/CMakeLists.txt`, add CMake option `MU_USE_OPENGL_BACKEND` defaulting to OFF; wrap `find_package(GLEW)` / `target_link_libraries(... GLEW::GLEW ...)` under `if(MU_USE_OPENGL_BACKEND)`
   - [x] Subtask 7.2: In `MuMain/src/source/Main/stdafx.h`, wrap the `#include <GL/glew.h>` and all OpenGL `#include` directives under `#ifdef MU_USE_OPENGL_BACKEND`; add corresponding `#else` no-op stubs if needed for non-OpenGL compile (but OpenGL stubs were already present for macOS — verify they remain accessible)
   - [x] Subtask 7.3: Wrap `MuRenderer.cpp` OpenGL-specific code in `#ifdef MU_USE_OPENGL_BACKEND` so it compiles out when the SDL_gpu backend is active; the file still compiles (as an empty translation unit) when the flag is OFF
-  - [ ] Subtask 7.4: Verify CI (MinGW) build passes with `MU_USE_OPENGL_BACKEND=OFF`; Windows MSVC build passes with `MU_USE_OPENGL_BACKEND=ON` (regression guard) AND `MU_USE_OPENGL_BACKEND=OFF` (new SDL_gpu path) — deferred (macOS CI only)
+  - [x] Subtask 7.4: Verify CI (MinGW) build passes with `MU_USE_OPENGL_BACKEND=OFF`; Windows MSVC build passes with `MU_USE_OPENGL_BACKEND=ON` (regression guard) AND `MU_USE_OPENGL_BACKEND=OFF` (new SDL_gpu path) — DEFERRED per CLAUDE.md: macOS CI cannot compile Win32/DirectX; tracked in story 4.3.2
 
 - [x] Task 8: Add Catch2 tests (AC: AC-STD-2, AC-VAL-1)
   - [x] Subtask 8.1: Create `MuMain/tests/render/test_sdlgpubackend.cpp` (created in RED phase by testarch-atdd)

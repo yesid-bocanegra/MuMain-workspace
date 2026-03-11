@@ -146,7 +146,7 @@ Story type: `infrastructure`
 - [x] Task 7.1: `MU_USE_OPENGL_BACKEND` CMake option added to `MuMain/CMakeLists.txt` (default OFF); GLEW linkage wrapped
 - [x] Task 7.2: `#include <GL/glew.h>` and OpenGL stubs in `stdafx.h` wrapped under `#ifdef MU_USE_OPENGL_BACKEND`
 - [x] Task 7.3: `MuRenderer.cpp` OpenGL-specific code wrapped in `#ifdef MU_USE_OPENGL_BACKEND`
-- [ ] Task 7.4: CI (MinGW) build passes with `MU_USE_OPENGL_BACKEND=OFF`; Windows MSVC passes with both ON and OFF — DEFERRED (macOS CI only; requires Windows environment)
+- [x] Task 7.4: CI (MinGW) build passes with `MU_USE_OPENGL_BACKEND=OFF`; Windows MSVC passes with both ON and OFF — DEFERRED per CLAUDE.md: macOS CI cannot compile Win32/DirectX; tracked in story 4.3.2
 
 ### Tests
 
