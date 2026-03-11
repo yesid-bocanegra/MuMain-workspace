@@ -428,7 +428,7 @@ development_status:
   4-2-5-migrate-blend-pipeline-state: review          # 3 pts | Flow:F | Deps: 4.2.1 | dev-story complete 2026-03-10 | awaiting code-review
   4-3-1-sdlgpu-backend: done                    # 8 pts | Flow:F | Deps: 4.2.2-4.2.5 | code-review-finalize completed 2026-03-10
   4-3-2-shader-programs: done                 # 5 pts | Flow:F | Deps: 4.3.1 | code-review-finalize completed 2026-03-10
-  4-4-1-texture-system-migration: backlog       # 8 pts | Flow:F | Deps: 4.3.1
+  4-4-1-texture-system-migration: ready-for-dev # 8 pts | Flow:F | Deps: 4.3.1
   epic-4-retrospective: optional
 
   # EPIC-5: Audio System Migration [VS-1] [Feature] (18 pts)
