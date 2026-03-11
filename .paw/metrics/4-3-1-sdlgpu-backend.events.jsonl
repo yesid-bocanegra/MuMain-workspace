@@ -56,3 +56,5 @@
 {"timestamp":"2026-03-10T23:52:07.046835+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"create-story","sprint":null,"epic":"4","data":{}}
 {"timestamp":"2026-03-10T23:53:43.777514+00:00","event_type":"step_passed","story_key":"4-3-1-sdlgpu-backend","step":"create-story","sprint":null,"epic":"4","data":{"duration_seconds":96.7,"input_tokens":11,"output_tokens":172,"cache_creation_tokens":30775,"cache_read_tokens":87014,"num_turns":3,"num_tool_calls":0}}
 {"timestamp":"2026-03-10T23:53:44.783596+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"validate-story","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-10T23:57:03.090649+00:00","event_type":"step_passed","story_key":"4-3-1-sdlgpu-backend","step":"validate-story","sprint":null,"epic":"4","data":{"duration_seconds":198.3,"input_tokens":11,"output_tokens":201,"cache_creation_tokens":62003,"cache_read_tokens":83409,"num_turns":3,"num_tool_calls":0}}
+{"timestamp":"2026-03-10T23:57:04.095529+00:00","event_type":"step_started","story_key":"4-3-1-sdlgpu-backend","step":"atdd","sprint":null,"epic":"4","data":{}}
