@@ -6,7 +6,7 @@
 |------|----------|--------|------|
 | Step 1 | code-review-quality-gate | PASSED | 2026-03-10 (re-verified 2026-03-10) |
 | Step 2 | code-review-analysis | COMPLETE | 2026-03-10 (re-run 2026-03-10) |
-| Step 3 | code-review-finalize | COMPLETE | 2026-03-10 |
+| Step 3 | code-review-finalize | COMPLETE | 2026-03-10 (re-run 2026-03-10) |
 
 > Quality gate evidence: `./ctl check` confirmed 0 errors, 707 C++ files, format-check PASS, cppcheck PASS (per completeness-gate feedback 2026-03-10, re-verified 2026-03-10 via `make -C MuMain format-check` [exit 0] + `make -C MuMain lint` [707/707 files, 0 errors, exit 0]).
 
@@ -129,7 +129,7 @@ Verifying `git show ab2a6e88 -- tests/render/test_shaderprograms.cpp` shows the 
 **Category:** IMPLEMENTATION
 **Severity:** HIGH
 **File:** `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp:1392-1399`
-**Status:** open
+**Status:** fixed
 
 **Description:** `LoadShaders()` creates five shader handles (`s_vertShader2D`, `s_fragShaderTex`, `s_vertShader2DCol`, `s_fragShaderCol`, `s_vertShaderShadow`). However, `BuildBlendPipeline()` at lines 1398-1399 hardcodes `pipelineInfo.vertex_shader = s_vertShader2D` and `pipelineInfo.fragment_shader = s_fragShaderTex` for ALL 36 pipelines (4 sets × 9 blend modes), regardless of the `bUse3DLayout` parameter. The `s_vertShader2DCol`, `s_fragShaderCol`, and `s_vertShaderShadow` shader handles are loaded, stored in statics, and immediately discarded by `ReleaseShaders()` after `CreatePipelines()` — they are **never assigned to any pipeline**.
 
@@ -146,7 +146,7 @@ Consequence: All 36 pipelines (`s_pipelines2D`, `s_pipelines2DDepthOff`, `s_pipe
 **Category:** CODE-QUALITY
 **Severity:** MEDIUM
 **File:** `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp:1242`
-**Status:** open
+**Status:** fixed
 
 **Description:** After the LOW-1 code-review-finalize fix (commit `353516be`), `basic_colored.vert.hlsl` was updated to remove the unused `float2 uv : TEXCOORD1` input from `VSInput`. However, the `LoadShaders()` function at line 1242 still has the comment:
 ```
@@ -273,14 +273,14 @@ The original concerns (HIGH-1 through LOW-2) were addressed in commit `353516be`
 
 ## Step 3: Resolution
 
-**Completed:** 2026-03-10
+**Completed:** 2026-03-10 (re-run 2026-03-10 for fresh analysis findings)
 **Final Status:** done
 
 ### Summary
 
 | Metric | Count |
 |--------|-------|
-| Issues Fixed | 8 |
+| Issues Fixed | 10 |
 | Action Items Created | 1 (follow-up story for MEDIUM-3 strip-index batching) |
 
 ### Resolution Details
@@ -288,28 +288,31 @@ The original concerns (HIGH-1 through LOW-2) were addressed in commit `353516be`
 - **HIGH-1:** Fixed — Added CMake configure-time warning when all pre-compiled blobs are 0 bytes (`MuMain/CMakeLists.txt`); SDL_shadercross unavailable in macOS dev environment — blobs must be compiled on Windows/Linux when tool is available; warning guides future developers
 - **HIGH-2:** Fixed — Documented `basic_textured.vert` float2/float3 position mismatch as known story-scope limitation in AC-8 and Dev Notes (Decision #5, progress.md); dedicated `basic_textured_3d.vert.hlsl` deferred to 3D world rendering story (4.x)
 - **HIGH-3:** Fixed — Corrected file count in AC-STD-13 from 708 → 707 (pre-story baseline was 706, not 707 as initially stated; +1 test file = 707 total); updated story.md, atdd.md, and Dev Notes PCC Constraints section
+- **HIGH-4:** Fixed — Documented `basic_colored` and `shadow_volume` shader handles as explicit pipeline hooks for future `IMuRenderer::RenderColoredGeometry()` / `IMuRenderer::RenderShadowVolume()` methods (deferred to follow-up story); added explanatory NOTE comment in `LoadShaders()` at `basic_colored.vert` load site (`MuRendererSDLGpu.cpp:1241-1247`)
 - **MEDIUM-1:** Fixed — Added `[[nodiscard]]` to `GetShaderBlobPath` in `MuRendererSDLGpu.cpp` and matching forward declaration in `test_shaderprograms.cpp`
 - **MEDIUM-2:** Fixed — Changed `FogUniform.fogColor` from `float[4]` to `std::array<float, 4>` in `MuRendererSDLGpu.cpp`; added `<array>` include; updated forward declaration in `test_shaderprograms.cpp`; `offsetof` unchanged, `static_assert` message updated
 - **MEDIUM-3:** Fixed (documented) — `RenderQuadStrip` end/reopen render pass pattern is a known performance limitation; documented as Decision #6 in progress.md; strip-index batching tracked as follow-up story action item
+- **MEDIUM-4:** Fixed — Updated stale comment at `MuRendererSDLGpu.cpp:1242` from `pos(TEXCOORD0), uv(TEXCOORD1), color(TEXCOORD2)` to `pos(TEXCOORD0), color(TEXCOORD2)` (reflecting the LOW-1 removal of `float2 uv` from `basic_colored.vert.hlsl`)
 - **LOW-1:** Fixed — Removed unused `float2 uv : TEXCOORD1` input from `basic_colored.vert.hlsl`
 - **LOW-2:** Fixed — Added `g_ErrorReport.Write(L"RENDER: GetPipelineSetFor -- unknown DrawMode %d", ...)` in default case of `GetPipelineSetFor` switch
 
 ### Story Status Update
 
-- **Previous Status:** review
+- **Previous Status:** done
 - **New Status:** done
 - **Story File Updated:** `_bmad-output/stories/4-3-2-shader-programs/story.md`
 - **ATDD Checklist Synchronized:** Yes
 
 ### Files Modified
 
-- `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` — MEDIUM-1 (`[[nodiscard]]`), MEDIUM-2 (`std::array<float,4>`), LOW-2 (`g_ErrorReport.Write` default case), `<array>` include added
+- `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` — HIGH-4 (pipeline hook documentation NOTE comment), MEDIUM-1 (`[[nodiscard]]`), MEDIUM-2 (`std::array<float,4>`), MEDIUM-4 (stale comment fixed), LOW-2 (`g_ErrorReport.Write` default case), `<array>` include added
 - `MuMain/src/shaders/basic_colored.vert.hlsl` — LOW-1 (removed unused `float2 uv` input)
 - `MuMain/CMakeLists.txt` — HIGH-1 (configure-time empty blob warning)
 - `MuMain/tests/render/test_shaderprograms.cpp` — MEDIUM-1/MEDIUM-2 (matching `[[nodiscard]]` and `std::array<float,4>` in forward declaration), `<array>` include added
-- `_bmad-output/stories/4-3-2-shader-programs/story.md` — HIGH-2/HIGH-3 (AC-8 note, AC-STD-13 file count corrected, AC-VAL checkboxes, status → done)
+- `_bmad-output/stories/4-3-2-shader-programs/story.md` — HIGH-2/HIGH-3 (AC-8 note, AC-STD-13 file count corrected, AC-VAL checkboxes, status → done), HIGH-4/MEDIUM-4 (Dev Agent Record updated)
 - `_bmad-output/stories/4-3-2-shader-programs/atdd.md` — HIGH-3 (file count corrected)
 - `_bmad-output/stories/4-3-2-shader-programs/progress.md` — MEDIUM-3 (Decision #6 documented)
+- `_bmad-output/contracts/specification-index.yaml` — story 4-3-2 artifact paths, flow code VS1-RENDER-SHADERS added to catalog
 
 
 ---

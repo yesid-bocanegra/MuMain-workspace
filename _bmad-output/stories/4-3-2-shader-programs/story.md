@@ -412,6 +412,8 @@ Dev-story implementation complete (2026-03-10). All 7 tasks complete. Key decisi
 
 Code-review-finalize complete (2026-03-10). Issues addressed: (HIGH-1) Added CMake configure-time warning when all pre-compiled blobs are empty — SDL_shadercross unavailable in macOS dev environment, blobs must be compiled on Windows/Linux with the tool available; (HIGH-2) Documented `basic_textured.vert` float2/float3 mismatch as known deferred limitation in AC-8 and Dev Notes; (HIGH-3) Corrected file count from 708→707 (baseline was 706 after 4.3.1, not 707 as stated); (MEDIUM-1) Added `[[nodiscard]]` to `GetShaderBlobPath`; (MEDIUM-2) Changed `FogUniform.fogColor` from `float[4]` to `std::array<float,4>`; (MEDIUM-3) `RenderQuadStrip` end/reopen render pass pattern is a known performance limitation — documented as follow-up for a dedicated strip-batching story; (LOW-1) Removed unused `float2 uv` input from `basic_colored.vert.hlsl`; (LOW-2) Added `g_ErrorReport.Write` in `GetPipelineSetFor` default case.
 
+Code-review-finalize re-run (2026-03-10, fresh analysis findings). (HIGH-4) `basic_colored` and `shadow_volume` shader handles are loaded but never assigned to any pipeline — documented as explicit pipeline hooks for future `IMuRenderer::RenderColoredGeometry()` / `IMuRenderer::RenderShadowVolume()` methods deferred to a follow-up story; added explanatory NOTE comment in `LoadShaders()` at the `basic_colored.vert` load site. (MEDIUM-4) Fixed stale comment at `LoadShaders()` line that still referenced removed `uv(TEXCOORD1)` input after LOW-1 fix; updated to `pos(TEXCOORD0), color(TEXCOORD2)`.
+
 ### File List
 
 - `MuMain/src/shaders/basic_textured.vert.hlsl` — Created

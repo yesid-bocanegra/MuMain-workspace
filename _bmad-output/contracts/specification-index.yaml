@@ -575,9 +575,14 @@ stories:
     name: "Shader Programs"
     epic: EPIC-4
     feature: "4.3"
+    type: infrastructure
     status: done
     points: 5
     value_stream: "VS-1"
+    flow_code: VS1-RENDER-SHADERS
+    story_file: "_bmad-output/stories/4-3-2-shader-programs/story.md"
+    atdd_checklist: "_bmad-output/stories/4-3-2-shader-programs/atdd.md"
+    review_file: "_bmad-output/stories/4-3-2-shader-programs/review.md"
 
   4-4-1-texture-system-migration:
     name: "Texture System Migration"
@@ -809,6 +814,9 @@ catalogs:
     - code: VS1-RENDER-MIGRATE-QUAD2D
       story: 4-2-2-migrate-renderbitmap-quad2d
       value_stream: VS-1
+    - code: VS1-RENDER-SHADERS
+      story: 4-3-2-shader-programs
+      value_stream: VS-1
 
 # =====================
 # STATISTICS
@@ -821,7 +829,7 @@ statistics:
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 18
+  total_flow_codes: 19
   total_test_scenarios: 0
   total_bruno_collections: 0
   total_mockups: 0
