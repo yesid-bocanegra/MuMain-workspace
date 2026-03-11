@@ -328,3 +328,9 @@
 {"timestamp":"2026-03-11T01:43:10.387403+00:00","event_type":"step_started","story_key":"4-3-2-shader-programs","step":"dev-story","sprint":null,"epic":"4","data":{}}
 {"timestamp":"2026-03-11T02:45:00.000000+00:00","event_type":"step_passed","story_key":"4-3-2-shader-programs","step":"dev-story","sprint":null,"epic":"4","data":{"duration_seconds":3710,"tasks_complete":7,"quality_gate":"pass"}}
 {"timestamp":"2026-03-11T02:45:01.000000+00:00","event_type":"step_started","story_key":"4-3-2-shader-programs","step":"code-review","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-11T02:18:55.309573+00:00","event_type":"step_passed","story_key":"4-3-2-shader-programs","step":"dev-story","sprint":null,"epic":"4","data":{"duration_seconds":2144.9,"input_tokens":6,"output_tokens":16,"cache_creation_tokens":43550,"cache_read_tokens":17134,"num_turns":2,"num_tool_calls":1}}
+{"timestamp":"2026-03-11T02:18:56.320552+00:00","event_type":"step_started","story_key":"4-3-2-shader-programs","step":"completeness-gate","sprint":null,"epic":"4","data":{}}
+{"timestamp":"2026-03-11T02:20:19.968822+00:00","event_type":"step_failed","story_key":"4-3-2-shader-programs","step":"completeness-gate","sprint":null,"epic":"4","data":{"duration_seconds":83.6,"retry_count":0,"error":"Exit code 1","input_tokens":27,"output_tokens":3975,"num_turns":14,"num_tool_calls":9}}
+{"timestamp":"2026-03-11T02:20:19.970792+00:00","event_type":"step_retried","story_key":"4-3-2-shader-programs","step":"completeness-gate","sprint":null,"epic":"4","data":{"attempt":2}}
+{"timestamp":"2026-03-11T02:20:19.972165+00:00","event_type":"feedback_saved","story_key":"4-3-2-shader-programs","step":"completeness-gate","sprint":null,"epic":"4","data":{"regression_target":"completeness-gate"}}
+{"timestamp":"2026-03-11T02:20:21.974236+00:00","event_type":"step_started","story_key":"4-3-2-shader-programs","step":"completeness-gate","sprint":null,"epic":"4","data":{}}
