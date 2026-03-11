@@ -112,25 +112,26 @@ sprints:
 
   sprint-4:
     name: "Sprint 4"
-    status: active
+    status: retrospective-done
     milestones: [M3]
     start_date: "2026-03-09"
     end_date: "2026-03-23"
+    completed_date: "2026-03-11"
     planned_points: 48
     stories:
       # EPIC-4 — Rendering Pipeline Migration (all stories)
-      - 4-1-1-ground-truth-capture              # 5 pts | Deps: 2.1.1 ✓
-      - 4-2-1-murenderer-core-api               # 8 pts | Deps: 4.1.1
-      - 4-2-2-migrate-renderbitmap-quad2d        # 8 pts | Deps: 4.2.1
-      - 4-2-3-migrate-skeletal-mesh              # 5 pts | Deps: 4.2.1
-      - 4-2-4-migrate-trail-effects              # 3 pts | Deps: 4.2.1
-      - 4-2-5-migrate-blend-pipeline-state       # 3 pts | Deps: 4.2.1
-      - 4-3-1-sdlgpu-backend                    # 8 pts | Deps: 4.2.2-4.2.5
-      - 4-3-2-shader-programs                    # 5 pts | Deps: 4.3.1
-      - 4-4-1-texture-system-migration           # 8 pts | Deps: 4.3.1
-    velocity: null
-    delivered_points: null
-    commitment_reliability: null
+      - 4-1-1-ground-truth-capture              # 5 pts | done
+      - 4-2-1-murenderer-core-api               # 8 pts | done
+      - 4-2-2-migrate-renderbitmap-quad2d        # 8 pts | done
+      - 4-2-3-migrate-skeletal-mesh              # 5 pts | done
+      - 4-2-4-migrate-trail-effects              # 3 pts | done
+      - 4-2-5-migrate-blend-pipeline-state       # 3 pts | done
+      - 4-3-1-sdlgpu-backend                    # 8 pts | done
+      - 4-3-2-shader-programs                    # 5 pts | done
+      - 4-4-1-texture-system-migration           # 8 pts | done
+    velocity: 48
+    delivered_points: 48
+    commitment_reliability: 1.0
     scope_changes:
       added: []
       removed: []
@@ -140,13 +141,13 @@ sprints:
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 22         # Sprint 3 (last completed): 22 pts delivered
-    previous_sprint: 28        # Sprint 2: 28 pts delivered
-    rolling_average: 22.7      # 3-sprint average: (18+28+22)/3
-    trend: stable              # Sprint 1→2: +55.6%; Sprint 2→3: −21.4% (Sprint 2 inflated by retroactive stories)
-  flow_time_avg_hours: 32.6    # Sprint 3: avg 32.6h (1.36d) per story, create-story→code-review-finalize
-  flow_efficiency_pct: 10.7    # Sprint 3: estimated; includes overnight scheduling gaps (~35-40% active-session)
-  commitment_reliability_pct: 100.0  # 3/3 sprints at 100%
+    current_sprint: 48         # Sprint 4 (last completed): 48 pts delivered
+    previous_sprint: 22        # Sprint 3: 22 pts delivered
+    rolling_average: 29.0      # 4-sprint average: (18+28+22+48)/4
+    trend: improving           # Sprint 3→4: +118.2% (EPIC-4 density, 9 stories pre-planned)
+  flow_time_avg_hours: 26.6    # Sprint 4: avg ~1.11d per story, create-story→code-review-finalize (8 stories)
+  flow_efficiency_pct: 12.0    # Sprint 4: estimated; includes overnight scheduling gaps (~35-40% active-session)
+  commitment_reliability_pct: 100.0  # 4/4 sprints at 100%
   wip_limits:
     in_progress: 2
     review: 3
