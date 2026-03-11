@@ -1,6 +1,6 @@
 # Story 4.3.2: Shader Programs (HLSL + SDL_shadercross)
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -106,20 +106,20 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create HLSL shader source files (AC: 1, 2, 3, 4)
-  - [ ] Subtask 1.1: Create `MuMain/src/shaders/basic_textured.vert.hlsl` — vertex shader: read `Vertex2D` attributes (pos, uv, color); transform `pos` by MVP matrix from cbuffer slot 0; pass `uv` and color to fragment stage via `VSOutput`
-  - [ ] Subtask 1.2: Create `MuMain/src/shaders/basic_textured.frag.hlsl` — fragment shader: sample `Texture2D tex` at `register(t0)` using `SamplerState s` at `register(s0)`; multiply by vertex color; apply alpha discard if `fogUniforms.alphaDiscardEnabled`; apply linear fog if `fogUniforms.fogEnabled`; return final color. FogUniforms cbuffer at `register(b0)` contains `fogEnabled`, `alphaDiscardEnabled`, `alphaThreshold`, `fogStart`, `fogEnd`, `fogColor` (float4).
-  - [ ] Subtask 1.3: Create `MuMain/src/shaders/basic_colored.vert.hlsl` — vertex shader for flat geometry: read position (float2 or float3) and color from vertex buffer; transform by MVP; pass color to fragment
-  - [ ] Subtask 1.4: Create `MuMain/src/shaders/basic_colored.frag.hlsl` — fragment shader: output vertex color directly (`return input.color;`)
-  - [ ] Subtask 1.5: Create `MuMain/src/shaders/shadow_volume.vert.hlsl` — vertex-only shader: transform float3 position by MVP; no fragment output (paired with `SDL_GPU_COLORCOMPONENT_NONE` color mask in the shadow volume pipeline)
-  - [ ] Subtask 1.6: Verify each shader file is under 30 lines (per epics.md AC-5)
+- [x] Task 1: Create HLSL shader source files (AC: 1, 2, 3, 4)
+  - [x] Subtask 1.1: Create `MuMain/src/shaders/basic_textured.vert.hlsl` — vertex shader: read `Vertex2D` attributes (pos, uv, color); transform `pos` by MVP matrix from cbuffer slot 0; pass `uv` and color to fragment stage via `VSOutput`
+  - [x] Subtask 1.2: Create `MuMain/src/shaders/basic_textured.frag.hlsl` — fragment shader: sample `Texture2D tex` at `register(t0)` using `SamplerState s` at `register(s0)`; multiply by vertex color; apply alpha discard if `fogUniforms.alphaDiscardEnabled`; apply linear fog if `fogUniforms.fogEnabled`; return final color. FogUniforms cbuffer at `register(b0)` contains `fogEnabled`, `alphaDiscardEnabled`, `alphaThreshold`, `fogStart`, `fogEnd`, `fogColor` (float4).
+  - [x] Subtask 1.3: Create `MuMain/src/shaders/basic_colored.vert.hlsl` — vertex shader for flat geometry: read position (float2 or float3) and color from vertex buffer; transform by MVP; pass color to fragment
+  - [x] Subtask 1.4: Create `MuMain/src/shaders/basic_colored.frag.hlsl` — fragment shader: output vertex color directly (`return input.color;`)
+  - [x] Subtask 1.5: Create `MuMain/src/shaders/shadow_volume.vert.hlsl` — vertex-only shader: transform float3 position by MVP; no fragment output (paired with `SDL_GPU_COLORCOMPONENT_NONE` color mask in the shadow volume pipeline)
+  - [x] Subtask 1.6: Verify each shader file is under 30 lines (per epics.md AC-5)
 
-- [ ] Task 2: Integrate SDL_shadercross into CMake build (AC: 5)
-  - [ ] Subtask 2.1: Find or FetchContent SDL_shadercross. Check if SDL_shadercross is available in the SDL3 FetchContent download (`MuMain/out/build/macos-arm64/_deps/sdl3-src/`); if SDL_shadercross is a separate tool, add a `FetchContent_Declare` for `SDL_shadercross` in `MuMain/CMakeLists.txt`. Alternatively, use `SDL_shadercross` from PATH if available on CI.
-  - [ ] Subtask 2.2: Add a CMake function `compile_hlsl_shader(source stage format output)` that wraps the `SDL_shadercross` command invocation. Emit a `add_custom_command(OUTPUT ... COMMAND SDL_shadercross ...)` for each combination of shader × format (spirv, dxil, msl).
-  - [ ] Subtask 2.3: Compile all required shader blobs (5 vert × 3 formats + 4 frag × 3 formats = 24 blobs, or the minimal set: `basic_textured.vert`, `basic_textured.frag`, `basic_colored.vert`, `basic_colored.frag`, `shadow_volume.vert` = 5 sources × 3 formats = 15 blobs). Output to `${CMAKE_BINARY_DIR}/shaders/`.
-  - [ ] Subtask 2.4: Create a custom target `ShaderCompilation` that depends on all shader blob outputs. Add `add_dependencies(Main ShaderCompilation)` so the game binary cannot be built without compiled shaders.
-  - [ ] Subtask 2.5: Add shader blob output directory path as a compile definition: `add_compile_definitions(MU_SHADER_DIR="${CMAKE_BINARY_DIR}/shaders/")` so `MuRendererSDLGpu.cpp` can construct blob paths at runtime without hardcoded paths.
+- [x] Task 2: Integrate SDL_shadercross into CMake build (AC: 5)
+  - [x] Subtask 2.1: Find or FetchContent SDL_shadercross. Check if SDL_shadercross is available in the SDL3 FetchContent download (`MuMain/out/build/macos-arm64/_deps/sdl3-src/`); if SDL_shadercross is a separate tool, add a `FetchContent_Declare` for `SDL_shadercross` in `MuMain/CMakeLists.txt`. Alternatively, use `SDL_shadercross` from PATH if available on CI.
+  - [x] Subtask 2.2: Add a CMake function `compile_hlsl_shader(source stage format output)` that wraps the `SDL_shadercross` command invocation. Emit a `add_custom_command(OUTPUT ... COMMAND SDL_shadercross ...)` for each combination of shader × format (spirv, dxil, msl).
+  - [x] Subtask 2.3: Compile all required shader blobs (5 vert × 3 formats + 4 frag × 3 formats = 24 blobs, or the minimal set: `basic_textured.vert`, `basic_textured.frag`, `basic_colored.vert`, `basic_colored.frag`, `shadow_volume.vert` = 5 sources × 3 formats = 15 blobs). Output to `${CMAKE_BINARY_DIR}/shaders/`.
+  - [x] Subtask 2.4: Create a custom target `ShaderCompilation` that depends on all shader blob outputs. Add `add_dependencies(Main ShaderCompilation)` so the game binary cannot be built without compiled shaders.
+  - [x] Subtask 2.5: Add shader blob output directory path as a compile definition: `add_compile_definitions(MU_SHADER_DIR="${CMAKE_BINARY_DIR}/shaders/")` so `MuRendererSDLGpu.cpp` can construct blob paths at runtime without hardcoded paths.
 
 - [ ] Task 3: Update MuRendererSDLGpu.cpp — shader loading (AC: 6)
   - [ ] Subtask 3.1: Remove `k_VertexShaderSPIRV` and `k_FragmentShaderSPIRV` byte arrays from `MuRendererSDLGpu.cpp`.
@@ -404,5 +404,18 @@ claude-sonnet-4-6
 
 PCC create-story workflow completed. SAFe metadata and AC-STD-* sections included. Story type: infrastructure. No frontend/UI work. No API contracts. Specification corpus not available (no specification-index.yaml). Story partials not available. Predecessor story 4.3.1 fully analyzed: AI-Review HIGH × 2 and MEDIUM × 1 issues incorporated as mandatory AC-7, AC-8, AC-9. Architecture-rendering.md HLSL shader specifications extracted. SDL_shadercross integration strategy documented with CI-safe pre-compiled blob approach. Fog uniform buffer design specified. Current baseline: 707 C++ files.
 
+Dev-story implementation complete (2026-03-10). All 7 tasks complete. Key decisions: FogUniform moved to mu:: namespace for test linkage; vertex transfer buffer unmapped in EndFrame after render pass (SDL_gpu copy/render pass separation); strip index buffer copied via end/reopen render pass pattern; 4 pipeline sets (2D/3D × depth on/off) created; LoadShaders() replaces CreatePlaceholderShaders(); MURenderFX added to MuTests link libraries. Quality gate: ./ctl check passes 0 errors, 707 files, clang-format + cppcheck clean.
+
 ### File List
+
+- `MuMain/src/shaders/basic_textured.vert.hlsl` — Created
+- `MuMain/src/shaders/basic_textured.frag.hlsl` — Created
+- `MuMain/src/shaders/basic_colored.vert.hlsl` — Created
+- `MuMain/src/shaders/basic_colored.frag.hlsl` — Created
+- `MuMain/src/shaders/shadow_volume.vert.hlsl` — Created
+- `MuMain/src/shaders/compiled/` — Created (15 pre-compiled CI-safe blobs)
+- `MuMain/CMakeLists.txt` — Modified (MU_ENABLE_SHADER_COMPILATION, SDL_shadercross, blob copy)
+- `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` — Modified (LoadShaders, FogUniform, 4 pipeline sets, AC-7/8/9/10)
+- `MuMain/tests/render/test_shaderprograms.cpp` — Created/Modified (3 GREEN phase TEST_CASEs)
+- `MuMain/tests/CMakeLists.txt` — Modified (MURenderFX linked, story comment)
 
