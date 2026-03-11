@@ -429,7 +429,7 @@ development_status:
   4-3-1-sdlgpu-backend: done                    # 8 pts | Flow:F | Deps: 4.2.2-4.2.5 | code-review-finalize completed 2026-03-10
   4-3-2-shader-programs: done                 # 5 pts | Flow:F | Deps: 4.3.1 | code-review-finalize completed 2026-03-10
   4-4-1-texture-system-migration: done          # 8 pts | Flow:F | Deps: 4.3.1 | code-review-finalize completed 2026-03-11
-  epic-4-retrospective: optional
+  epic-4-retrospective: retrospective-done        # completed 2026-03-11
 
   # EPIC-5: Audio System Migration [VS-1] [Feature] (18 pts)
   epic-5: backlog

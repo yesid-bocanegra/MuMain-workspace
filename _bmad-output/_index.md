@@ -1,11 +1,11 @@
 # Output Directory Index
 
-*Auto-generated 2026-03-11 01:50 by `paw index`*
+*Auto-generated 2026-03-11 02:10 by `paw index`*
 
 ## Directories
 
 - **contracts/** — 1 items
-- **epics/** — 2 items
+- **epics/** — 3 items
 - **implementation-artifacts/** — 14 items ([index](implementation-artifacts/_index.md))
 - **milestones/** — 5 items
 - **planning-artifacts/** — 6 items
