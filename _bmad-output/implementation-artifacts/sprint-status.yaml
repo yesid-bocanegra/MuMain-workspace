@@ -352,7 +352,16 @@ epic_completion_gates:
       - ground_truth_ssim_above_099
       - no_frame_time_regression
       - all_30000_textures_load
-    status: pending
+    status: done
+    completed_date: "2026-03-11"
+    epic_validation:
+      status: validated
+      validated_at: "2026-03-11"
+      report: "_bmad-output/test-scenarios/epic-4/epic-validation.md"
+      automated_checks: PASS
+      catalog_registration: PARTIAL  # 4/9 flow codes in spec-index; 5 missing (maintenance gap)
+      bruno_tests: N/A
+      manual_scenarios: GENERATED
   epic_5:
     name: "Audio System Migration"
     criteria:
@@ -420,16 +429,17 @@ development_status:
   epic-3-retrospective: optional
 
   # EPIC-4: Rendering Pipeline Migration [VS-1] [Feature] (48 pts)
-  epic-4: in-progress
+  epic-4: done
   4-1-1-ground-truth-capture: done               # 5 pts | Flow:F | Deps: 2.1.1 | Sprint-4 | code-review-finalize completed 2026-03-09
   4-2-1-murenderer-core-api: done               # 8 pts | Flow:F | Deps: 4.1.1 ✓ | code-review-finalize completed 2026-03-09
   4-2-2-migrate-renderbitmap-quad2d: done # 8 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-09
   4-2-3-migrate-skeletal-mesh: done              # 5 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-10
   4-2-4-migrate-trail-effects: done              # 3 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-10
-  4-2-5-migrate-blend-pipeline-state: review          # 3 pts | Flow:F | Deps: 4.2.1 | dev-story complete 2026-03-10 | awaiting code-review
+  4-2-5-migrate-blend-pipeline-state: done             # 3 pts | Flow:F | Deps: 4.2.1 | code-review-finalize completed 2026-03-10 (pipeline SIGTERM resolved)
   4-3-1-sdlgpu-backend: done                    # 8 pts | Flow:F | Deps: 4.2.2-4.2.5 | code-review-finalize completed 2026-03-10
   4-3-2-shader-programs: done                 # 5 pts | Flow:F | Deps: 4.3.1 | code-review-finalize completed 2026-03-10
   4-4-1-texture-system-migration: done          # 8 pts | Flow:F | Deps: 4.3.1 | code-review-finalize completed 2026-03-11
+  epic-4-epic-validation: done                    # validated 2026-03-11
   epic-4-retrospective: retrospective-done        # completed 2026-03-11
 
   # EPIC-5: Audio System Migration [VS-1] [Feature] (18 pts)
