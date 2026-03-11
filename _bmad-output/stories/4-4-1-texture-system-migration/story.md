@@ -1,6 +1,6 @@
 # Story 4.4.1: Texture System Migration (CGlobalBitmap → SDL_gpu)
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -358,6 +358,8 @@ claude-sonnet-4-6
 PCC create-story workflow completed. SAFe metadata and AC-STD-* sections included. Story type: infrastructure. No frontend/UI work. No API contracts. Specification corpus not available (no specification-index.yaml). Story partials not available. Predecessor story 4.3.2 fully analyzed: TextureRegistry pattern established, sampler binding identified as needing per-texture sampler registry extension. Architecture decision documented for SDL_gpu device accessor (Option B: IMuRenderer::GetDevice() virtual method). Sampler strategy documented (per-texture, Option A). Copy command buffer pattern for async upload documented. BITMAP_t forward declaration strategy documented. RGB→RGBA8 padding requirement identified. GL enum values documented for mapping functions. Current baseline: 707 C++ files (pre-story).
 
 Dev-story implementation completed 2026-03-11. All 8 tasks implemented and verified. Quality gate passed (707 files, 0 errors). Key decisions: (1) `MapGLFilterToSDL`/`MapGLWrapToSDL`/`PadRGBToRGBA` placed at global scope (not anonymous namespace) to enable test TU linkage; (2) `IMuRenderer::GetDevice()` returns `void*` (not `SDL_GPUDevice*`) to avoid pulling SDL3 headers into `MuRenderer.h` unconditionally; (3) `mu::UnregisterTexture` forward-declared outside `#ifdef MU_ENABLE_SDL3` since it is called unconditionally in `UnloadImage` (safe no-op on GL path since nothing is registered). Per-texture sampler registry extended with `RegisterSampler`/`LookupSampler`/`UnregisterSampler`. `./ctl format` was required after initial implementation to fix two clang-format violations (trailing whitespace alignment and line wrapping). Commit: e857263c.
+
+Code review completed 2026-03-11 (adversarial review, claude-sonnet-4-6). 2 HIGH + 3 MEDIUM issues found and fixed. Quality gate re-verified: 707 files, 0 errors. Issues fixed: (HIGH-1) `UploadTextureSDLGpu` — silent failure when `SDL_AcquireGPUCommandBuffer` returns null; added error log + `return false` + resource cleanup; (HIGH-2) `UnloadAllImages` — SDL_gpu resource leak bypassing `UnloadImage`; added SDL_gpu texture/sampler release loop before `m_mapBitmap.clear()`; (MEDIUM-3/4) `SDL_MapGPUTransferBuffer` and `SDL_AcquireGPUCommandBuffer` failures now log and return false; (MEDIUM-5) fixed incorrect comment in test file claiming helpers are in anonymous namespace. LOW issues documented only (file count discrepancy in story docs, test comment SDL enum naming, global namespace placement). Story status: done.
 
 ### File List
 
