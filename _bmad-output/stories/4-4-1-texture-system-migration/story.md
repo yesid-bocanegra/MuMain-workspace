@@ -263,7 +263,7 @@ In `CGlobalBitmap::LoadImage`, the `uiBitmapIndex` parameter becomes `pBitmap->B
 ### Previous Story Intelligence
 
 **From Story 4.3.2 (Shader Programs):**
-- Quality gate baseline: **707 C++ files**, 0 errors. This story adds 1 test file → 708 files expected.
+- Quality gate baseline: **707 C++ files**, 0 errors. This story adds 1 test file in `tests/render/` → **707 files** confirmed post-story (cppcheck scans `src/source/` only; `tests/` is outside the scan scope, so the file count remains 707).
 - `MuRendererSDLGpu.cpp` is now 1900 lines (post 4.3.2 restructuring). `GetSDLDevice()` is a small addition.
 - `TextureRegistry` functions (`RegisterTexture`, `UnregisterTexture`, `LookupTexture`, `ClearTextureRegistry`) are already implemented in the `mu::` namespace in `MuRendererSDLGpu.cpp`. This story extends the pattern with `RegisterSampler`/`LookupSampler`/`UnregisterSampler`.
 - Draw calls in `RenderQuad2D` currently use `LookupTexture(textureId)` returning `s_whiteTexture` for all IDs > 0 (no real textures registered yet). After this story, they will resolve to actual texture objects.
@@ -304,7 +304,7 @@ In `CGlobalBitmap::LoadImage`, the `uiBitmapIndex` parameter becomes `pBitmap->B
 - `std::filesystem::path` for any new path construction (existing code uses `NarrowPath` helper — keep as-is)
 - No new `SAFE_DELETE`/`SAFE_DELETE_ARRAY` — smart pointers already used in `CGlobalBitmap` (`std::unique_ptr<BITMAP_t>`)
 
-**Quality gate:** `./ctl check` (macOS) — must pass 0 errors. File count: **708 C++ files** (707 baseline post-4.3.2, +1 test file).
+**Quality gate:** `./ctl check` (macOS) — must pass 0 errors. File count: **707 C++ files** confirmed post-story. The test file (`tests/render/test_texturesystemmigration.cpp`) is outside the `src/source/` scan scope used by cppcheck, so it does not increment the count.
 
 **Testing:** Catch2 `TEST_CASE` / `SECTION` / `REQUIRE` / `CHECK`. No mocking framework. Free functions for unit-testable format mapping logic. Static helpers in anonymous namespace of `GlobalBitmap.cpp`, forward-declared for test TU.
 

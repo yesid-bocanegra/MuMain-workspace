@@ -219,7 +219,7 @@ All items start as `[ ]` (pending). Items become `[x]` when verified by the dev 
 | Bruno API tests | N/A (infrastructure story, no HTTP endpoints) |
 | E2E tests | N/A (no frontend) |
 | PCC compliance | All rules verified — no prohibited libraries, correct patterns |
-| Expected file count post-story | **708 C++ files** (707 baseline + 1 new test file) |
+| Expected file count post-story | **707 C++ files** (test file is in `tests/` directory, outside cppcheck `src/source/` scan scope) |
 
 ---
 
