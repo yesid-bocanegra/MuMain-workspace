@@ -58,6 +58,7 @@
 | 3 | Strip index copy timing | end/reopen render pass | No deferred command buffer available; copy must be outside render pass | 2026-03-10 |
 | 4 | FogUniform.fogEnabled | `(params.mode != 0)` | FogParams uses GL mode constants; mode==0 = no fog | 2026-03-10 |
 | 5 | 3D pipeline vertex shader | reuse s_vertShader2D | basic_textured.vert serves both 2D/3D for this story; dedicated 3D shader deferred | 2026-03-10 |
+| 6 | RenderQuadStrip index copy | end/reopen render pass per strip | SDL_gpu requires copy pass outside render pass; per-strip copy is expensive; strip index accumulation batching deferred to follow-up story (MEDIUM-3 code review finding) | 2026-03-10 |
 
 ---
 
