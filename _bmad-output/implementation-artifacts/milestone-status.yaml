@@ -4,7 +4,7 @@ milestones:
   M1:
     name: "Platform Foundation"
     contributing_epics: [EPIC-1, EPIC-7]
-    linked_sprints: [sprint-1, sprint-2, sprint-3]
+    linked_sprints: [sprint-1, sprint-2, sprint-3, sprint-5]
     status: active
     validated_at: null
     report: null
@@ -19,6 +19,7 @@ milestones:
       - { name: "MuError.log works on all platforms", status: null }
       - { name: "POSIX signal handlers produce crash diagnostics", status: null }
       - { name: "Frame time instrumentation operational", status: null }
+      - { name: "Native CI runners validate all platforms", status: null }
   M2:
     name: "Cross-Platform I/O"
     contributing_epics: [EPIC-2, EPIC-3]
@@ -54,7 +55,7 @@ milestones:
   M4:
     name: "Audio Migration"
     contributing_epics: [EPIC-5]
-    linked_sprints: []
+    linked_sprints: [sprint-5]
     status: active
     validated_at: null
     report: null

@@ -16,6 +16,82 @@ Stories run on autopilot via `./paw`. Everything above story-level uses Claude C
 
 ---
 
+## How Slash Commands Work
+
+### Discovery Mechanism
+
+Claude Code automatically discovers slash commands from `.claude/commands/` in the project root. Each `.md` file in that directory becomes a slash command named after the filename (minus the `.md` extension).
+
+```
+.claude/commands/
+├── bmad-pcc-dev-story.md        →  /bmad-pcc-dev-story
+├── bmad-pcc-create-story.md     →  /bmad-pcc-create-story
+├── bmad-pcc.agent.md            →  /bmad-pcc
+└── ...                          →  83 total commands
+```
+
+Claude Code scans this directory on session start. No additional registration or configuration is needed — if the file is present, the command is available.
+
+### Installation
+
+Commands are installed automatically by both distribution methods:
+
+| Method | What happens |
+|--------|-------------|
+| `./package` (zip) | Copies `_bmad/pcc/commands/*.md` → `.claude/commands/` in the archive |
+| `./deploy <target>` | Syncs `_bmad/pcc/commands/*.md` → `.claude/commands/` in the target workspace |
+
+The authoritative source for all commands is `_bmad/pcc/commands/`. The `.claude/commands/` directory is a deployment target — never edit files there directly.
+
+### Command File Format
+
+Each command file has YAML frontmatter and step instructions:
+
+```yaml
+---
+name: 'pcc-dev-story'
+description: 'Implement story with quality gates'
+context: fork          # fork = runs in isolated context (zero main context tokens)
+---
+
+<steps>
+1. Load workflow.xml engine
+2. Read workflow config
+3. Execute workflow instructions
+</steps>
+```
+
+The `context: fork` directive means the command runs in a forked Claude Code session, keeping the main conversation context clean.
+
+### Naming Convention
+
+Commands follow the pattern `bmad-pcc-{name}.md`:
+
+| File pattern | Slash command | Type |
+|-------------|--------------|------|
+| `bmad-pcc-{workflow}.md` | `/bmad-pcc-{workflow}` | Workflow command (74) |
+| `bmad-pcc-{name}.agent.md` | `/bmad-pcc-{name}` | Agent command (6) |
+| `bmad-pcc-{task}.md` | `/bmad-pcc-{task}` | Task command (3) |
+
+### Verifying Installation
+
+```bash
+# Count installed commands
+ls .claude/commands/bmad-pcc-*.md | wc -l    # Should be 83
+
+# Check a specific command exists
+ls .claude/commands/bmad-pcc-dev-story.md
+
+# In Claude Code, type /bmad-pcc- and autocomplete will show available commands
+```
+
+If commands are missing after extraction or deployment, re-run `./deploy` or manually copy:
+```bash
+cp _bmad/pcc/commands/*.md .claude/commands/
+```
+
+---
+
 ## First-Time Setup
 
 ### Option A: Full Project Init (Recommended)
@@ -471,6 +547,7 @@ Profiles exist for `opus` and `o46`. Models without a profile keep per-step defa
 | `epic-validation` FAIL | Review individual story code-review-finalize outputs | `/bmad:pcc:workflows:sprint-health-audit` |
 | `milestone-validation` FAIL | Identify failing epics from report | Fix cross-epic contracts, re-validate epics |
 | Past sprint/epic not formally closed | `./paw backfill sprint {key}` or `./paw backfill epic {num}` | Ensure all stories are `done` first |
+| Slash commands not available | `ls .claude/commands/bmad-pcc-*.md \| wc -l` | `cp _bmad/pcc/commands/*.md .claude/commands/` then restart session |
 | Quality gate fails on push | `./paw check` → `./paw fix` | Check `.pcc-config.yaml` build commands (run `workspace-configure`) |
 | `./paw commit` can't generate message | Run `/bmad:pcc:workflows:guidelines-init` | Provide explicit: `./paw commit -m "msg"` |
 | Don't know what to do next | `./paw status` | Ask the PCC agent (below) |

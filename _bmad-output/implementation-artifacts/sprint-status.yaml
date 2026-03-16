@@ -136,29 +136,52 @@ sprints:
       added: []
       removed: []
 
+  sprint-5:
+    name: "Sprint 5"
+    status: active
+    milestones: [M4, M1]
+    start_date: "2026-03-16"
+    end_date: "2026-03-30"
+    planned_points: 23
+    stories:
+      # EPIC-5 — Audio System Migration (M4)
+      - 5-1-1-muaudio-abstraction-layer          # 3 pts | No deps
+      - 5-2-1-miniaudio-bgm                      # 5 pts | Deps: 5.1.1
+      - 5-2-2-miniaudio-sfx                      # 5 pts | Deps: 5.1.1
+      - 5-3-1-audio-format-validation            # 3 pts | Deps: 5.2.1, 5.2.2
+      - 5-4-1-volume-controls                    # 2 pts | Deps: 5.2.1, 5.2.2
+      # EPIC-7 — Native CI (M1 contribution)
+      - 7-4-1-native-ci-runners                  # 5 pts | Deps: EPIC-4 ✓
+    velocity: null
+    delivered_points: null
+    commitment_reliability: null
+    scope_changes:
+      added: []
+      removed: []
+
 # =====================
 # FLOW METRICS (SAFe)
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 48         # Sprint 4 (last completed): 48 pts delivered
-    previous_sprint: 22        # Sprint 3: 22 pts delivered
+    current_sprint: null       # Sprint 5: planned, not yet started
+    previous_sprint: 48        # Sprint 4: 48 pts delivered
     rolling_average: 29.0      # 4-sprint average: (18+28+22+48)/4
     trend: improving           # Sprint 3→4: +118.2% (EPIC-4 density, 9 stories pre-planned)
-  flow_time_avg_hours: 26.6    # Sprint 4: avg ~1.11d per story, create-story→code-review-finalize (8 stories)
-  flow_efficiency_pct: 12.0    # Sprint 4: estimated; includes overnight scheduling gaps (~35-40% active-session)
+  flow_time_avg_hours: 26.6    # Carried from Sprint 4: avg ~1.11d per story
+  flow_efficiency_pct: 12.0    # Carried from Sprint 4: includes overnight scheduling gaps
   commitment_reliability_pct: 100.0  # 4/4 sprints at 100%
   wip_limits:
     in_progress: 2
     review: 3
   wip_violations: 0
-  flow_distribution:           # Sprint 4 planned distribution
-    Feature: 9      # EPIC-4 stories: all 9 rendering pipeline stories (48 pts)
-    Enabler: 0
+  flow_distribution:           # Sprint 5 planned distribution
+    Feature: 5      # EPIC-5 stories: 5 audio migration stories (18 pts)
+    Enabler: 1      # 7-4-1 native CI runners (5 pts)
     Defect: 0
     Debt: 0
   flow_load:
-    total_wip: 0               # 4-1-1 completed 2026-03-09
+    total_wip: 0               # Sprint 5 not yet started
     by_status:
       in_progress: 0
       review: 0
@@ -180,100 +203,73 @@ critical_path:
 
   project_critical_path:
     sequence: "EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.3.1/7.3.2"
-    total_points: 111
-    completed_points: 59     # EPIC-1 (18) + EPIC-2 (17) + EPIC-3 (24)
-    remaining_points: 52     # EPIC-4 on critical path now; EPIC-6 (23) + EPIC-7 stability (10) after
+    total_points: 116          # 18+17+48+23+10 on critical path
+    completed_points: 83       # EPIC-1 (18) + EPIC-2 (17) + EPIC-4 (48)
+    remaining_points: 33       # EPIC-6 (23) + EPIC-7 stability (10)
     parallel_opportunities:
-      - "EPIC-5 can start anytime (no dependency beyond foundation) — 18 pts"
-      - "EPIC-7.4.1 (native CI) can start after EPIC-4 completes"
+      - "EPIC-5 starts Sprint 5 (18 pts) — parallel with critical path"
+      - "7-4-1 (native CI, 5 pts) starts Sprint 5 — deps satisfied (EPIC-4 done)"
+      - "EPIC-6 can start Sprint 6 once EPIC-5 completes (or parallel if capacity allows)"
 
-  sprint_4_critical_path:
-    # Track A (critical): 4-1-1 (5) → 4-2-1 (8) → 4-2-2 (8) → 4-3-1 (8) → 4-3-2 (5) = 34 pts
-    # Track B: 4-2-1 → 4-2-3 (5), parallel with 4-2-2
-    # Track C: 4-2-1 → 4-2-4 (3), parallel with 4-2-2
-    # Track D: 4-2-1 → 4-2-5 (3), parallel with 4-2-2
-    # Track E: 4-3-1 → 4-4-1 (8), parallel with 4-3-2
-    longest_chain: "4-1-1 → 4-2-1 → 4-2-2 → 4-3-1 → 4-3-2 (34 pts, 5 stories)"
+  sprint_5_critical_path:
+    # Track A (critical): 5-1-1 (3) → 5-2-1 (5) → 5-3-1 (3) = 11 pts
+    # Track B: 5-1-1 → 5-2-2 (5) → 5-4-1 (2) = 10 pts
+    # Track C: 7-4-1 (5) — independent, can start immediately
+    longest_chain: "5-1-1 → 5-2-1 → 5-3-1 (11 pts, 3 stories)"
     parallel_chains:
-      - track_a: "4-1-1 (5) → 4-2-1 (8) → 4-2-2 (8) → 4-3-1 (8) → 4-3-2 (5)"
-        points: 34
-        note: "Critical path — MuRenderer core through SDL_gpu backend to shaders"
-      - track_b: "4-2-1 (8) → 4-2-3 (5)"
-        points: 13
-        note: "Skeletal mesh migration, parallel with 4-2-2 after 4-2-1"
-      - track_c: "4-2-1 (8) → 4-2-4 (3)"
+      - track_a: "5-1-1 (3) → 5-2-1 (5) → 5-3-1 (3)"
         points: 11
-        note: "Trail effects, parallel with 4-2-2 after 4-2-1"
-      - track_d: "4-2-1 (8) → 4-2-5 (3)"
-        points: 11
-        note: "Blend/pipeline state, parallel with 4-2-2 after 4-2-1"
-      - track_e: "4-3-1 (8) → 4-4-1 (8)"
-        points: 16
-        note: "Texture system migration, parallel with 4-3-2 after 4-3-1"
+        note: "Critical path — abstraction through BGM to format validation"
+      - track_b: "5-1-1 (3) → 5-2-2 (5) → 5-4-1 (2)"
+        points: 10
+        note: "SFX + volume controls, parallel with Track A after 5-1-1"
+      - track_c: "7-4-1 (5)"
+        points: 5
+        note: "Native CI — fully independent, can start immediately"
     stories_with_no_dependencies:
-      - 4-1-1-ground-truth-capture    # deps already met: 2.1.1 ✓
+      - 5-1-1-muaudio-abstraction-layer   # No deps
+      - 7-4-1-native-ci-runners           # deps: EPIC-4 ✓
     stories_that_unblock_other_stories:
-      - story: 4-1-1-ground-truth-capture
-        unblocks: "4-2-1-murenderer-core-api"
-      - story: 4-2-1-murenderer-core-api
-        unblocks: "4-2-2, 4-2-3, 4-2-4, 4-2-5 (all MuRenderer migrations)"
-      - story: 4-2-2-migrate-renderbitmap-quad2d
-        unblocks: "4-3-1-sdlgpu-backend (with 4-2-3, 4-2-4, 4-2-5)"
-      - story: 4-3-1-sdlgpu-backend
-        unblocks: "4-3-2-shader-programs, 4-4-1-texture-system-migration"
+      - story: 5-1-1-muaudio-abstraction-layer
+        unblocks: "5-2-1-miniaudio-bgm, 5-2-2-miniaudio-sfx"
+      - story: 5-2-1-miniaudio-bgm
+        unblocks: "5-3-1-audio-format-validation, 5-4-1-volume-controls (with 5-2-2)"
+      - story: 5-2-2-miniaudio-sfx
+        unblocks: "5-3-1-audio-format-validation, 5-4-1-volume-controls (with 5-2-1)"
 
   blocking_dependencies:
-    - from: 4-1-1-ground-truth-capture
-      to: 4-2-1-murenderer-core-api
+    - from: 5-1-1-muaudio-abstraction-layer
+      to: 5-2-1-miniaudio-bgm
       type: sequential
-    - from: 4-2-1-murenderer-core-api
-      to: 4-2-2-migrate-renderbitmap-quad2d
+    - from: 5-1-1-muaudio-abstraction-layer
+      to: 5-2-2-miniaudio-sfx
       type: sequential
-    - from: 4-2-1-murenderer-core-api
-      to: 4-2-3-migrate-skeletal-mesh
+    - from: 5-2-1-miniaudio-bgm
+      to: 5-3-1-audio-format-validation
       type: sequential
-    - from: 4-2-1-murenderer-core-api
-      to: 4-2-4-migrate-trail-effects
+    - from: 5-2-2-miniaudio-sfx
+      to: 5-3-1-audio-format-validation
       type: sequential
-    - from: 4-2-1-murenderer-core-api
-      to: 4-2-5-migrate-blend-pipeline-state
+    - from: 5-2-1-miniaudio-bgm
+      to: 5-4-1-volume-controls
       type: sequential
-    - from: 4-2-2-migrate-renderbitmap-quad2d
-      to: 4-3-1-sdlgpu-backend
-      type: sequential
-    - from: 4-2-3-migrate-skeletal-mesh
-      to: 4-3-1-sdlgpu-backend
-      type: sequential
-    - from: 4-2-4-migrate-trail-effects
-      to: 4-3-1-sdlgpu-backend
-      type: sequential
-    - from: 4-2-5-migrate-blend-pipeline-state
-      to: 4-3-1-sdlgpu-backend
-      type: sequential
-    - from: 4-3-1-sdlgpu-backend
-      to: 4-3-2-shader-programs
-      type: sequential
-    - from: 4-3-1-sdlgpu-backend
-      to: 4-4-1-texture-system-migration
+    - from: 5-2-2-miniaudio-sfx
+      to: 5-4-1-volume-controls
       type: sequential
 
   risk_items:
-    - id: R10
-      description: "SDL_gpu API still evolving — shader format and pipeline creation may change between SDL3 releases"
-      affected_stories: [4-3-1-sdlgpu-backend, 4-3-2-shader-programs]
-      mitigation: "Pin SDL3 version via FetchContent; abstract shader loading behind MuRenderer"
-    - id: R11
-      description: "Ground truth capture requires functional OpenGL rendering on Windows — regression risk during migration"
-      affected_stories: [4-1-1-ground-truth-capture, 4-2-2-migrate-renderbitmap-quad2d]
-      mitigation: "Capture baselines BEFORE any OpenGL removal; SSIM comparison validates each migration step"
-    - id: R12
-      description: "~30,000 texture assets may expose format-specific loading issues across Metal/Vulkan/D3D backends"
-      affected_stories: [4-4-1-texture-system-migration]
-      mitigation: "Batch texture validation test; format conversion at load time if needed"
-    - id: R13
-      description: "MuRenderer abstraction scope — too thin risks leaking backend details, too thick risks performance overhead"
-      affected_stories: [4-2-1-murenderer-core-api]
-      mitigation: "Follow Architecture Decision 1: ~5 core functions; profile after integration"
+    - id: R14
+      description: "miniaudio library selection — must support WAV, OGG, MP3 decoding and low-latency mixing on all 3 platforms"
+      affected_stories: [5-2-1-miniaudio-bgm, 5-2-2-miniaudio-sfx, 5-3-1-audio-format-validation]
+      mitigation: "miniaudio is header-only, cross-platform, and supports all required formats; evaluate during 5-1-1 abstraction design"
+    - id: R15
+      description: "wzAudio removal may break undocumented audio behavior — legacy audio system has minimal documentation"
+      affected_stories: [5-1-1-muaudio-abstraction-layer, 5-2-1-miniaudio-bgm]
+      mitigation: "Capture audio behavior baseline before migration; test all BGM/SFX triggers against game event catalog"
+    - id: R16
+      description: "Native CI runner provisioning — macOS/Linux runners may require custom hardware or cloud instances"
+      affected_stories: [7-4-1-native-ci-runners]
+      mitigation: "GitHub Actions supports macOS and Ubuntu runners natively; start with hosted runners, evaluate self-hosted if build times exceed 10 min"
 
 # =====================
 # SCHEMA ALIGNMENT
