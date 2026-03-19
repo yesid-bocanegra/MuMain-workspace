@@ -122,6 +122,14 @@ Runs: workspace-configure → guidelines-init → tracker-init → design-system
 
 Re-run `workspace-configure` after adding/removing components in `.pcc-config.yaml`.
 
+```bash
+# 4. Generate project-specific Claude Code skills from config
+#    (backend/frontend patterns, testing guidelines, design rules — based on components)
+./paw generate-skills
+```
+
+Re-run `generate-skills` after changing components or enabling/disabling Pencil.
+
 ---
 
 ## Sprint Lifecycle
