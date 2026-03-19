@@ -66,146 +66,146 @@ All items start as `[ ]` (PENDING — RED phase). Items become `[x]` as implemen
 
 ### File Creation
 
-- [ ] `MuMain/src/source/Platform/IPlatformAudio.h` created with `#pragma once`, `mu::` namespace, pure virtual class, `extern mu::IPlatformAudio* g_platformAudio;`
-- [ ] `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h` created — declares `mu::MiniAudioBackend : public IPlatformAudio`
-- [ ] `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` created — implements all methods, defines `g_platformAudio = nullptr`
-- [ ] `MuMain/src/source/Platform/MiniAudio/MiniAudioImpl.cpp` created — contains `MINIAUDIO_IMPLEMENTATION` TU only
-- [ ] `MuMain/src/dependencies/miniaudio/miniaudio.h` vendored (v0.11.x)
-- [ ] `MuMain/src/dependencies/miniaudio/stb_vorbis.c` vendored
-- [ ] `MuMain/tests/audio/test_muaudio_abstraction.cpp` created (this file — already complete)
+- [x] `MuMain/src/source/Platform/IPlatformAudio.h` created with `#pragma once`, `mu::` namespace, pure virtual class, `extern mu::IPlatformAudio* g_platformAudio;`
+- [x] `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h` created — declares `mu::MiniAudioBackend : public IPlatformAudio`
+- [x] `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` created — implements all methods, defines `g_platformAudio = nullptr`
+- [x] `MuMain/src/source/Platform/MiniAudio/MiniAudioImpl.cpp` created — contains `MINIAUDIO_IMPLEMENTATION` TU only
+- [x] `MuMain/src/dependencies/miniaudio/miniaudio.h` vendored (v0.11.x)
+- [x] `MuMain/src/dependencies/miniaudio/stb_vorbis.c` vendored
+- [x] `MuMain/tests/audio/test_muaudio_abstraction.cpp` created (this file — already complete)
 
 ### AC-1: Interface Definition
 
-- [ ] `IPlatformAudio.h` declares `Initialize()` as `[[nodiscard]] virtual bool Initialize() = 0`
-- [ ] `IPlatformAudio.h` declares `Shutdown()` as `virtual void Shutdown() = 0`
-- [ ] `IPlatformAudio.h` declares `LoadSound(ESound, const wchar_t*, int channels, bool enable3D)` as pure virtual
-- [ ] `IPlatformAudio.h` declares `PlaySound(ESound, OBJECT*, BOOL looped)` as pure virtual (returns `HRESULT` to match `PlayBuffer()` signature)
-- [ ] `IPlatformAudio.h` declares `StopSound(ESound, BOOL resetPosition)` as pure virtual
-- [ ] `IPlatformAudio.h` declares `AllStopSound()` as pure virtual
-- [ ] `IPlatformAudio.h` declares `Set3DSoundPosition()` as pure virtual
-- [ ] `IPlatformAudio.h` declares `SetVolume(ESound, long)` as pure virtual
-- [ ] `IPlatformAudio.h` declares `SetMasterVolume(long)` as pure virtual
-- [ ] `IPlatformAudio.h` declares `PlayMusic(const char*, BOOL enforce)` as pure virtual
-- [ ] `IPlatformAudio.h` declares `StopMusic(const char*, BOOL enforce)` as pure virtual
-- [ ] `IPlatformAudio.h` declares `[[nodiscard]] virtual bool IsEndMusic()` as pure virtual
-- [ ] `IPlatformAudio.h` declares `[[nodiscard]] virtual int GetMusicPosition()` as pure virtual
-- [ ] Signatures exactly match `DSPlaySound.h` public API + `Winmain.cpp` wzAudio wrappers
+- [x] `IPlatformAudio.h` declares `Initialize()` as `[[nodiscard]] virtual bool Initialize() = 0`
+- [x] `IPlatformAudio.h` declares `Shutdown()` as `virtual void Shutdown() = 0`
+- [x] `IPlatformAudio.h` declares `LoadSound(ESound, const wchar_t*, int channels, bool enable3D)` as pure virtual
+- [x] `IPlatformAudio.h` declares `PlaySound(ESound, OBJECT*, BOOL looped)` as pure virtual (returns `HRESULT` to match `PlayBuffer()` signature)
+- [x] `IPlatformAudio.h` declares `StopSound(ESound, BOOL resetPosition)` as pure virtual
+- [x] `IPlatformAudio.h` declares `AllStopSound()` as pure virtual
+- [x] `IPlatformAudio.h` declares `Set3DSoundPosition()` as pure virtual
+- [x] `IPlatformAudio.h` declares `SetVolume(ESound, long)` as pure virtual
+- [x] `IPlatformAudio.h` declares `SetMasterVolume(long)` as pure virtual
+- [x] `IPlatformAudio.h` declares `PlayMusic(const char*, BOOL enforce)` as pure virtual
+- [x] `IPlatformAudio.h` declares `StopMusic(const char*, BOOL enforce)` as pure virtual
+- [x] `IPlatformAudio.h` declares `[[nodiscard]] virtual bool IsEndMusic()` as pure virtual
+- [x] `IPlatformAudio.h` declares `[[nodiscard]] virtual int GetMusicPosition()` as pure virtual
+- [x] Signatures exactly match `DSPlaySound.h` public API + `Winmain.cpp` wzAudio wrappers
 
 ### AC-2: MiniAudioBackend Implementation
 
-- [ ] `MiniAudioBackend` declares all methods from AC-1 with `override`
-- [ ] `MiniAudioBackend` has private `ma_engine m_engine{}`
-- [ ] `MiniAudioBackend` has private sound slot array (`m_sounds`, `m_soundLoaded`, `m_activeChannel`, `m_sound3DEnabled`)
-- [ ] `MiniAudioBackend` has private `ma_sound m_musicSound{}`, `bool m_musicLoaded`, `std::string m_currentMusicName`
-- [ ] `MiniAudioBackend` has private `bool m_initialized = false`
-- [ ] `DbToLinear(long dsVol)` static helper converts DirectSound dB*100 to 0.0–1.0
+- [x] `MiniAudioBackend` declares all methods from AC-1 with `override`
+- [x] `MiniAudioBackend` has private `ma_engine m_engine{}`
+- [x] `MiniAudioBackend` has private sound slot array (`m_sounds`, `m_soundLoaded`, `m_activeChannel`, `m_sound3DEnabled`)
+- [x] `MiniAudioBackend` has private `ma_sound m_musicSound{}`, `bool m_musicLoaded`, `std::string m_currentMusicName`
+- [x] `MiniAudioBackend` has private `bool m_initialized = false`
+- [x] `DbToLinear(long dsVol)` static helper converts DirectSound dB*100 to 0.0–1.0
 
 ### AC-3: Vendored Libraries
 
-- [ ] `miniaudio.h` present at `MuMain/src/dependencies/miniaudio/miniaudio.h`
-- [ ] `stb_vorbis.c` present at `MuMain/src/dependencies/miniaudio/stb_vorbis.c`
-- [ ] Both files have license comment header at top
-- [ ] `MiniAudioImpl.cpp` contains `#define MINIAUDIO_IMPLEMENTATION` before `#include "miniaudio.h"`
-- [ ] `MiniAudioImpl.cpp` contains `#define STB_VORBIS_HEADER_ONLY` before `#include "stb_vorbis.c"`
+- [x] `miniaudio.h` present at `MuMain/src/dependencies/miniaudio/miniaudio.h`
+- [x] `stb_vorbis.c` present at `MuMain/src/dependencies/miniaudio/stb_vorbis.c`
+- [x] Both files have license comment header at top
+- [x] `MiniAudioImpl.cpp` contains `#define MINIAUDIO_IMPLEMENTATION` before `#include "miniaudio.h"`
+- [x] `MiniAudioImpl.cpp` contains `#define STB_VORBIS_HEADER_ONLY` before `#include "stb_vorbis.c"`
 
 ### AC-4: g_platformAudio Global
 
-- [ ] `extern mu::IPlatformAudio* g_platformAudio;` declared in `IPlatformAudio.h` at namespace scope (outside `mu::` namespace)
-- [ ] `mu::IPlatformAudio* g_platformAudio = nullptr;` defined in `MiniAudioBackend.cpp`
-- [ ] NOT wired into the game loop in this story (no changes to `Winmain.cpp`)
+- [x] `extern mu::IPlatformAudio* g_platformAudio;` declared in `IPlatformAudio.h` at namespace scope (outside `mu::` namespace)
+- [x] `mu::IPlatformAudio* g_platformAudio = nullptr;` defined in `MiniAudioBackend.cpp`
+- [x] NOT wired into the game loop in this story (no changes to `Winmain.cpp`)
 
 ### AC-5: Polyphonic Sound Slots
 
-- [ ] `LoadSound()` initializes `MAX_CHANNEL` (4) duplicate `ma_sound` instances per `ESound` slot
-- [ ] Sound effects use `ma_sound_init_from_file()` with `MA_SOUND_FLAG_DECODE`
-- [ ] Music streams use `MA_SOUND_FLAG_STREAM`
-- [ ] 3D sounds call `ma_sound_set_spatialization_enabled(MA_TRUE)` per slot
+- [x] `LoadSound()` initializes `MAX_CHANNEL` (4) duplicate `ma_sound` instances per `ESound` slot
+- [x] Sound effects use `ma_sound_init_from_file()` with `MA_SOUND_FLAG_DECODE`
+- [x] Music streams use `MA_SOUND_FLAG_STREAM`
+- [x] 3D sounds call `ma_sound_set_spatialization_enabled(MA_TRUE)` per slot
 
 ### AC-6: Initialize / Shutdown
 
-- [ ] `Initialize()` calls `ma_engine_init(NULL, &m_engine)` and returns `true` on `MA_SUCCESS`
-- [ ] `Initialize()` calls `g_ErrorReport.Write(L"AUDIO: MiniAudioBackend::Initialize -- ma_engine_init failed (%d)\r\n", result)` on failure and returns `false`
-- [ ] `Shutdown()` calls `ma_sound_uninit` on all loaded sounds
-- [ ] `Shutdown()` calls `ma_engine_uninit(&m_engine)`
-- [ ] `Shutdown()` sets `m_initialized = false`
-- [ ] `Shutdown()` is safe to call when never initialized (no-op guard)
-- [ ] `IsEndMusic()` returns `true` when backend is not initialized (default state)
-- [ ] `GetMusicPosition()` returns `0` when backend is not initialized
+- [x] `Initialize()` calls `ma_engine_init(NULL, &m_engine)` and returns `true` on `MA_SUCCESS`
+- [x] `Initialize()` calls `g_ErrorReport.Write(L"AUDIO: MiniAudioBackend::Initialize -- ma_engine_init failed (%d)\r\n", result)` on failure and returns `false`
+- [x] `Shutdown()` calls `ma_sound_uninit` on all loaded sounds
+- [x] `Shutdown()` calls `ma_engine_uninit(&m_engine)`
+- [x] `Shutdown()` sets `m_initialized = false`
+- [x] `Shutdown()` is safe to call when never initialized (no-op guard)
+- [x] `IsEndMusic()` returns `true` when backend is not initialized (default state)
+- [x] `GetMusicPosition()` returns `0` when backend is not initialized
 
 ### AC-7: No Existing Files Modified
 
-- [ ] `git diff --name-only` shows ONLY new files + `src/CMakeLists.txt` + `tests/CMakeLists.txt`
-- [ ] `DSplaysound.cpp` is NOT modified
-- [ ] `DSPlaySound.h` is NOT modified
-- [ ] `Winmain.cpp` is NOT modified
-- [ ] No other existing call sites are modified
+- [x] `git diff --name-only` shows ONLY new files + `src/CMakeLists.txt` + `tests/CMakeLists.txt`
+- [x] `DSplaysound.cpp` is NOT modified
+- [x] `DSPlaySound.h` is NOT modified
+- [x] `Winmain.cpp` is NOT modified
+- [x] No other existing call sites are modified
 
 ### AC-8: CMake Updates
 
-- [ ] `src/CMakeLists.txt` adds `${CMAKE_CURRENT_SOURCE_DIR}/dependencies/miniaudio` to `MUAudio` include directories
-- [ ] `src/CMakeLists.txt` adds `Platform/MiniAudio` to `MUAudio` include directories
-- [ ] `MiniAudioBackend.cpp` and `MiniAudioImpl.cpp` explicitly added to `MUAudio` sources (not discovered by Audio glob)
-- [ ] `set_source_files_properties(MiniAudioImpl.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)` applied
-- [ ] `find_package(Threads REQUIRED)` + `target_link_libraries(MUAudio PRIVATE Threads::Threads)` added
-- [ ] Linux `dl` library linked: `target_link_libraries(MUAudio PRIVATE dl)` (conditional on `UNIX AND NOT APPLE`)
-- [ ] `tests/CMakeLists.txt` adds `target_sources(MuTests PRIVATE audio/test_muaudio_abstraction.cpp)` with story comment
+- [x] `src/CMakeLists.txt` adds `${CMAKE_CURRENT_SOURCE_DIR}/dependencies/miniaudio` to `MUAudio` include directories
+- [x] `src/CMakeLists.txt` adds `Platform/MiniAudio` to `MUAudio` include directories
+- [x] `MiniAudioBackend.cpp` and `MiniAudioImpl.cpp` explicitly added to `MUAudio` sources (not discovered by Audio glob)
+- [x] `set_source_files_properties(MiniAudioImpl.cpp PROPERTIES SKIP_PRECOMPILE_HEADERS ON)` applied
+- [x] `find_package(Threads REQUIRED)` + `target_link_libraries(MUAudio PRIVATE Threads::Threads)` added
+- [x] Linux `dl` library linked: `target_link_libraries(MUAudio PRIVATE dl)` (conditional on `UNIX AND NOT APPLE`)
+- [x] `tests/CMakeLists.txt` adds `target_sources(MuTests PRIVATE audio/test_muaudio_abstraction.cpp)` with story comment
 
 ### AC-STD-1: Code Standards Compliance
 
-- [ ] `mu::` namespace used for `IPlatformAudio` and `MiniAudioBackend`
-- [ ] PascalCase functions throughout
-- [ ] `m_` prefix + Hungarian hints on all members (`m_byState`, `m_initialized`, etc.)
-- [ ] `#pragma once` in all new headers (no `#ifndef` guards)
-- [ ] No raw `new`/`delete` — `std::array`, `std::unique_ptr` where heap needed
-- [ ] `[[nodiscard]]` on `Initialize()`, `IsEndMusic()`, `GetMusicPosition()`
-- [ ] No `NULL` — `nullptr` only
-- [ ] No `wprintf` — `g_ErrorReport.Write()` for all failure paths
-- [ ] No `#ifdef _WIN32` in `MiniAudioBackend.cpp` — miniaudio handles platform abstraction internally
+- [x] `mu::` namespace used for `IPlatformAudio` and `MiniAudioBackend`
+- [x] PascalCase functions throughout
+- [x] `m_` prefix + Hungarian hints on all members (`m_byState`, `m_initialized`, etc.)
+- [x] `#pragma once` in all new headers (no `#ifndef` guards)
+- [x] No raw `new`/`delete` — `std::array`, `std::unique_ptr` where heap needed
+- [x] `[[nodiscard]]` on `Initialize()`, `IsEndMusic()`, `GetMusicPosition()`
+- [x] No `NULL` — `nullptr` only
+- [x] No `wprintf` — `g_ErrorReport.Write()` for all failure paths
+- [x] No `#ifdef _WIN32` in `MiniAudioBackend.cpp` — miniaudio handles platform abstraction internally
 
 ### AC-STD-2: Test Infrastructure
 
-- [ ] Test file at `MuMain/tests/audio/test_muaudio_abstraction.cpp` (EXISTS — created in RED phase)
-- [ ] `target_sources(MuTests PRIVATE audio/test_muaudio_abstraction.cpp)` in `tests/CMakeLists.txt`
-- [ ] Uses Catch2 v3.7.1 macros (`TEST_CASE`, `SECTION`, `REQUIRE`, `CHECK`, `REQUIRE_NOTHROW`)
-- [ ] `MuTests` target used (not a new test executable)
-- [ ] No Win32 or DirectSound API called in any test
-- [ ] No mocking framework used
+- [x] Test file at `MuMain/tests/audio/test_muaudio_abstraction.cpp` (EXISTS — created in RED phase)
+- [x] `target_sources(MuTests PRIVATE audio/test_muaudio_abstraction.cpp)` in `tests/CMakeLists.txt`
+- [x] Uses Catch2 v3.7.1 macros (`TEST_CASE`, `SECTION`, `REQUIRE`, `CHECK`, `REQUIRE_NOTHROW`)
+- [x] `MuTests` target used (not a new test executable)
+- [x] No Win32 or DirectSound API called in any test
+- [x] No mocking framework used
 
 ### AC-STD-13: Quality Gate
 
-- [ ] `./ctl check` passes with 0 errors (clang-format check + cppcheck)
-- [ ] cppcheck vendor suppression verified — `dependencies/` directory excluded from cppcheck scan
-- [ ] If `dependencies/` not excluded by default, `--suppress=*:*dependencies/*` added to `./ctl` cppcheck invocation
+- [x] `./ctl check` passes with 0 errors (clang-format check + cppcheck)
+- [x] cppcheck vendor suppression verified — `dependencies/` directory excluded from cppcheck scan
+- [x] If `dependencies/` not excluded by default, `--suppress=*:*dependencies/*` added to `./ctl` cppcheck invocation
 
 ### AC-STD-15: Git Safety
 
-- [ ] No incomplete rebase in git history
-- [ ] No force push to main branch
+- [x] No incomplete rebase in git history
+- [x] No force push to main branch
 
 ### AC-STD-16: Test Infrastructure Correctness
 
-- [ ] Catch2 3.7.1 (FetchContent, pinned `GIT_TAG v3.7.1`)
-- [ ] `MuTests` target — no separate test executable created
-- [ ] `tests/audio/` directory pattern follows `tests/{module}/` convention
-- [ ] Explicit `target_sources` in `tests/CMakeLists.txt`
+- [x] Catch2 3.7.1 (FetchContent, pinned `GIT_TAG v3.7.1`)
+- [x] `MuTests` target — no separate test executable created
+- [x] `tests/audio/` directory pattern follows `tests/{module}/` convention
+- [x] Explicit `target_sources` in `tests/CMakeLists.txt`
 
 ### AC-VAL-1: Catch2 Tests Pass
 
-- [ ] `TEST_CASE("AC-1: IPlatformAudio interface is pure virtual")` — 3 sections pass
-- [ ] `TEST_CASE("AC-4: g_platformAudio is nullptr at startup")` — passes
-- [ ] `TEST_CASE("AC-2: MiniAudioBackend default-constructs cleanly")` — 3 sections pass
-- [ ] `TEST_CASE("AC-6: MiniAudioBackend Initialize fails gracefully without audio device")` — 2 sections pass
-- [ ] `TEST_CASE("AC-6: MiniAudioBackend Shutdown is safe without prior Initialize")` — passes
-- [ ] `TEST_CASE("AC-STD-1: mu namespace compliance")` — 2 sections pass
+- [x] `TEST_CASE("AC-1: IPlatformAudio interface is pure virtual")` — 3 sections pass
+- [x] `TEST_CASE("AC-4: g_platformAudio is nullptr at startup")` — passes
+- [x] `TEST_CASE("AC-2: MiniAudioBackend default-constructs cleanly")` — 3 sections pass
+- [x] `TEST_CASE("AC-6: MiniAudioBackend Initialize fails gracefully without audio device")` — 2 sections pass
+- [x] `TEST_CASE("AC-6: MiniAudioBackend Shutdown is safe without prior Initialize")` — passes
+- [x] `TEST_CASE("AC-STD-1: mu namespace compliance")` — 2 sections pass
 
 ### AC-VAL-2: Quality Gate Passes
 
-- [ ] `./ctl check` runs clean — 0 clang-format violations, 0 cppcheck errors
-- [ ] File count increases from ~728 to ~734 (7 new files: 2 headers, 3 .cpp sources, 1 test, + 1 vendored set)
+- [x] `./ctl check` runs clean — 0 clang-format violations, 0 cppcheck errors
+- [x] File count increases from ~728 to ~734 (7 new files: 2 headers, 3 .cpp sources, 1 test, + 1 vendored set)
 
 ### AC-VAL-3: No Existing Files Modified
 
-- [ ] Verified: only new files + `src/CMakeLists.txt` + `tests/CMakeLists.txt` in `git diff --name-only`
+- [x] Verified: only new files + `src/CMakeLists.txt` + `tests/CMakeLists.txt` in `git diff --name-only`
 
 ---
 
