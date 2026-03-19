@@ -1,6 +1,6 @@
 {
   "story_key": "5-1-1-muaudio-abstraction-layer",
-  "current_step": "validate-story",
-  "status": "in-progress",
-  "last_run": "2026-03-16T10:45:06.766991"
+  "current_step": "atdd",
+  "status": "failed",
+  "last_run": "2026-03-19T17:47:17.910097"
 }
