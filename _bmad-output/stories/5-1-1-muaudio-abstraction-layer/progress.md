@@ -3,7 +3,7 @@
 **Story:** MuAudio Abstraction Layer
 **Story File:** `_bmad-output/stories/5-1-1-muaudio-abstraction-layer/story.md`
 **ATDD Checklist:** `_bmad-output/stories/5-1-1-muaudio-abstraction-layer/atdd.md`
-**Status:** review
+**Status:** complete
 **Started:** 2026-03-19
 **Last Updated:** 2026-03-19
 
