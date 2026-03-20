@@ -82,7 +82,7 @@
 | Item | Status |
 |------|--------|
 | No prohibited libraries (NULL, wprintf, Win32 APIs) in test file | `[x]` Verified |
-| Required test patterns used (Catch2 REQUIRE/CHECK, TEST_CASE/SECTION) | `[x]` Verified — test file uses REQUIRE, REQUIRE_NOTHROW, TEST_CASE |
+| Required test patterns used (Catch2 REQUIRE/CHECK, TEST_CASE/SECTION) | `[x]` Verified — test file uses REQUIRE, CHECK, TEST_CASE |
 | Correct test profiles (no test profiles needed — pure logic tests) | `[x]` N/A |
 | No Playwright (infrastructure story, no frontend E2E) | `[x]` N/A |
 | No Bruno collection (no REST endpoints) | `[x]` N/A |
@@ -98,7 +98,7 @@
 | Category | Status |
 |----------|--------|
 | Prohibited libraries | None detected — test file uses only Catch2 + MiniAudioBackend.h |
-| Required testing patterns | Catch2 REQUIRE/REQUIRE_NOTHROW macros, TEST_CASE structure with GIVEN/WHEN/THEN comments |
+| Required testing patterns | Catch2 REQUIRE/CHECK macros, TEST_CASE structure with GIVEN/WHEN/THEN comments |
 | Test profiles | N/A — infrastructure/unit tests, no server profile needed |
 | E2E (Playwright) | N/A — infrastructure story, no frontend |
 | API collection (Bruno) | N/A — no REST endpoints |

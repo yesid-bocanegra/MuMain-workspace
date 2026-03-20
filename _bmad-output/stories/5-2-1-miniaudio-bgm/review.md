@@ -11,7 +11,7 @@
 |------|--------|------|
 | 1. Quality Gate | PASSED | 2026-03-19 (re-verified 2026-03-19) |
 | 2. Code Review Analysis | COMPLETE (re-run FRESH MODE) — 0 BLOCKER, 1 HIGH, 2 MEDIUM, 3 LOW | 2026-03-19 |
-| 3. Code Review Finalize | COMPLETE — all 9 issues fixed, story → done | 2026-03-19 |
+| 3. Code Review Finalize | COMPLETE — all 6 fresh-pass issues fixed, story → done | 2026-03-19 |
 
 ---
 
@@ -149,7 +149,7 @@ loop structure implementation with `ma_sound_set_position` deferred to 5.2.2. Cu
 - **Severity:** HIGH (runtime; not detectable by `./ctl check`)
 - **File:line:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:417-422`
 - **Fix:** Expand the comment to document the storage-speed caveat: `// NOTE: Synchronous init may stall the game loop 10–100ms on HDDs. Acceptable for BGM at scene transitions on SSD; known limitation for HDD/network installs. Deferred to 5.2.x if a non-blocking init path is needed.`
-- **Status:** pending
+- **Status:** fixed
 
 ---
 
@@ -162,7 +162,7 @@ loop structure implementation with `ma_sound_set_position` deferred to 5.2.2. Cu
 - **Severity:** MEDIUM
 - **File:line:** `_bmad-output/stories/5-2-1-miniaudio-bgm/atdd.md:85`
 - **Fix:** Update line 85 to: `| Required testing patterns | Catch2 REQUIRE/CHECK macros, TEST_CASE structure with GIVEN/WHEN/THEN comments |`
-- **Status:** pending
+- **Status:** fixed
 
 #### MEDIUM-NEW-2: `PlayMusic` non-existent-file test does not distinguish init-failure from file-not-found paths
 
@@ -171,7 +171,7 @@ loop structure implementation with `ma_sound_set_position` deferred to 5.2.2. Cu
 - **Severity:** MEDIUM
 - **File:line:** `MuMain/tests/audio/test_miniaudio_bgm.cpp:82-97`
 - **Fix:** Add a clarifying comment: `// NOTE: When Initialize() returns false (CI headless), PlayMusic() hits the !m_initialized guard — the file-not-found path is only exercised with audio hardware. Both branches produce IsEndMusic()==true but for different reasons.` Alternatively split into two SECTIONs gated on initResult.
-- **Status:** pending
+- **Status:** fixed
 
 ---
 
@@ -184,7 +184,7 @@ loop structure implementation with `ma_sound_set_position` deferred to 5.2.2. Cu
 - **Severity:** LOW (pre-existing)
 - **File:line:** `MuMain/src/source/Platform/IPlatformAudio.h:46`
 - **Fix:** Move `extern mu::IPlatformAudio* g_platformAudio;` to `Winmain.h` where the other audio free-function declarations live. Deferred to future story.
-- **Status:** pending (pre-existing; no regression introduced in 5.2.1)
+- **Status:** fixed (TODO comment added; move deferred to future story)
 
 #### LOW-NEW-2: `StopMusic(nullptr, FALSE)` path leaves track paused with no resume mechanism
 
@@ -193,7 +193,7 @@ loop structure implementation with `ma_sound_set_position` deferred to 5.2.2. Cu
 - **Severity:** LOW
 - **File:line:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:454-483`
 - **Fix:** Document the "no resume after nullptr soft-stop" behavior in the `StopMusic()` block comment. Optionally add `ResumeMusic()` to `IPlatformAudio` in 5.2.2.
-- **Status:** pending
+- **Status:** fixed (documented in StopMusic() block comment)
 
 #### LOW-NEW-3: `test_miniaudio_bgm.cpp:93` uses `REQUIRE` for a non-fatal assertion that could use `CHECK`
 
@@ -202,7 +202,7 @@ loop structure implementation with `ma_sound_set_position` deferred to 5.2.2. Cu
 - **Severity:** LOW
 - **File:line:** `MuMain/tests/audio/test_miniaudio_bgm.cpp:93`
 - **Fix:** Change `REQUIRE(backend.IsEndMusic())` to `CHECK(backend.IsEndMusic())` so `Shutdown()` always runs on assertion failure.
-- **Status:** pending
+- **Status:** fixed (addressed in MEDIUM-NEW-2 fix — REQUIRE changed to CHECK)
 
 ---
 
@@ -279,10 +279,10 @@ No blockers. The implementation is functionally correct. All prior review issues
 
 | Metric | Count |
 |--------|-------|
-| Issues Fixed | 9 |
+| Issues Fixed | 15 (9 from prior cycle + 6 from fresh-pass) |
 | Action Items Created | 0 |
 
-### Resolution Details
+### Resolution Details — Cycle 1 (Prior Run)
 
 - **BLOCKER-1:** fixed — AC-7 text updated in story.md to accurately describe loop structure (deferred `ma_sound_set_position` to Story 5.2.2 when `OBJECT*` tracking available)
 - **HIGH-1:** fixed — `MA_SOUND_FLAG_ASYNC` removed from `PlayMusic()`; synchronous init eliminates spurious `IsEndMusic() == true` race
@@ -294,9 +294,18 @@ No blockers. The implementation is functionally correct. All prior review issues
 - **LOW-1:** fixed — `tests/CMakeLists.txt` comment: "RED PHASE" → "GREEN PHASE"
 - **LOW-2:** fixed — `IPlatformAudio.h` comment updated to reflect 5.2.1 done; 5.2.2 SFX wiring noted
 
+### Resolution Details — Cycle 2 (Fresh-Pass Re-Run 2026-03-19)
+
+- **HIGH-NEW-1:** fixed — `MiniAudioBackend.cpp` `PlayMusic()` comment expanded with HDD/network-share stall caveat (10–100ms, deferred to 5.2.x)
+- **MEDIUM-NEW-1:** fixed — `atdd.md` PCC Compliance table updated: `REQUIRE_NOTHROW` → `REQUIRE/CHECK` in both the item row and summary row
+- **MEDIUM-NEW-2:** fixed — `test_miniaudio_bgm.cpp` PlayMusic non-existent-file test: added CI/hardware disambiguation comment; `REQUIRE` → `CHECK` for `Shutdown()` safety
+- **LOW-NEW-1:** fixed — `IPlatformAudio.h`: added TODO comment deferring `extern g_platformAudio` move to `Winmain.h` in a future story
+- **LOW-NEW-2:** fixed — `MiniAudioBackend.cpp` `StopMusic()` block comment: documented no-resume-after-nullptr-soft-stop known limitation
+- **LOW-NEW-3:** fixed — `test_miniaudio_bgm.cpp:93`: `REQUIRE` → `CHECK` (addressed in MEDIUM-NEW-2 fix)
+
 ### Story Status Update
 
-- **Previous Status:** review
+- **Previous Status:** done (confirmed — story was already marked done after cycle 1)
 - **New Status:** done
 - **Story File Updated:** `_bmad-output/stories/5-2-1-miniaudio-bgm/story.md`
 - **ATDD Checklist Synchronized:** Yes
@@ -305,36 +314,33 @@ No blockers. The implementation is functionally correct. All prior review issues
 
 | Gate | Status | Notes |
 |------|--------|-------|
-| Blocker verification | PASSED | 0 remaining blockers (BLOCKER-1 resolved via AC-7 text update) |
+| Blocker verification | PASSED | 0 blockers (cycle 1: BLOCKER-1 resolved; cycle 2: 0 blockers) |
 | Design compliance | SKIPPED | Story type: infrastructure |
-| Checkbox validation | PASSED | All Tasks [x]; AC-4/VAL-1/VAL-2 updated to [x] with code-path verification |
+| Checkbox validation | PASSED | All Tasks [x]; AC-4/VAL-1/VAL-2 code-path verified |
 | Catalog verification | PASSED | No catalog entries (infrastructure story) |
 | Reachability | PASSED | No UI/API contracts (infrastructure story) |
 | AC verification | PASSED | All 15 automatable ACs implemented; 4 manual ACs code-path verified |
 | Test artifacts | PASSED | No test-scenarios task |
-| AC-VAL gate | PASSED | All AC-VAL items now [x] (code-path verified; runtime audio per skip_checks policy) |
+| AC-VAL gate | PASSED | All AC-VAL items [x] (code-path verified; runtime audio per skip_checks policy) |
 | E2E test quality | SKIPPED | Story type: infrastructure |
 | E2E regression | SKIPPED | Story type: infrastructure |
 | AC compliance | SKIPPED | Story type: infrastructure |
 | Boot verification | SKIPPED | Not configured in cpp-cmake tech profile |
 | Quality gate (format) | PASSED | `./ctl check` → 0 violations, 711 files |
 | Quality gate (lint) | PASSED | cppcheck → 0 errors, 711 files |
-| Final verification (post-fix QG) | PASSED | `./ctl check` → 0 errors, 711 files — no regressions from fix cycle |
+| Final verification (post-cycle-2 QG) | PASSED | `./ctl check` → 0 errors, 711 files — no regressions |
 
 ### Commit References
 
-- **MuMain submodule:** `a7f84f08` — `fix(audio): apply code-review fixes for story 5-2-1-miniaudio-bgm`
+- **MuMain submodule (cycle 1):** `a7f84f08` — `fix(audio): apply code-review fixes for story 5-2-1-miniaudio-bgm`
+- **MuMain submodule (cycle 2):** `2f7b5559` — `fix(audio): apply fresh-pass code-review fixes for story 5-2-1-miniaudio-bgm`
 
-### Files Modified
+### Files Modified (Cycle 2)
 
-- `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` — HIGH-1: removed `MA_SOUND_FLAG_ASYNC`; updated g_platformAudio comment
-- `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h` — MEDIUM-2: updated PIMPL/isolation comment (deferred to 5.2.x)
-- `MuMain/src/source/Platform/IPlatformAudio.h` — LOW-2: updated wiring comment (5.2.1 done, 5.2.2 SFX pending)
-- `MuMain/src/source/Main/Winmain.cpp` — HIGH-2: StopMusic hard stop; MEDIUM-3: guard `if (m_MusicOnOff || m_SoundOnOff)`
-- `MuMain/tests/audio/test_miniaudio_bgm.cpp` — MEDIUM-1: removed REQUIRE_NOTHROW anti-pattern; GREEN PHASE header
-- `MuMain/tests/CMakeLists.txt` — LOW-1: RED PHASE → GREEN PHASE
-- `_bmad-output/stories/5-2-1-miniaudio-bgm/story.md` — BLOCKER-1: AC-7 text updated; AC-4/VAL-1/VAL-2 marked [x]; Status → done
-- `_bmad-output/stories/5-2-1-miniaudio-bgm/atdd.md` — AC-4 row updated to [x]
+- `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` — HIGH-NEW-1: HDD stall caveat comment; LOW-NEW-2: no-resume-after-soft-stop documentation
+- `MuMain/src/source/Platform/IPlatformAudio.h` — LOW-NEW-1: TODO comment deferring extern move
+- `MuMain/tests/audio/test_miniaudio_bgm.cpp` — MEDIUM-NEW-2: CI/hardware disambiguation comment; LOW-NEW-3: REQUIRE → CHECK
+- `_bmad-output/stories/5-2-1-miniaudio-bgm/atdd.md` — MEDIUM-NEW-1: REQUIRE_NOTHROW → REQUIRE/CHECK in PCC Compliance table
 
 
 ---
