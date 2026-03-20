@@ -3,3 +3,5 @@
 {"timestamp":"2026-03-20T17:33:17.783789+00:00","event_type":"step_started","story_key":"5-4-1-volume-controls","step":"create-story","sprint":null,"epic":"5","data":{}}
 {"timestamp":"2026-03-20T17:40:57.726648+00:00","event_type":"step_passed","story_key":"5-4-1-volume-controls","step":"create-story","sprint":null,"epic":"5","data":{"duration_seconds":459.9,"input_tokens":11,"output_tokens":189,"cache_creation_tokens":148200,"cache_read_tokens":97888,"num_turns":3,"num_tool_calls":1}}
 {"timestamp":"2026-03-20T17:40:58.733503+00:00","event_type":"step_started","story_key":"5-4-1-volume-controls","step":"validate-story","sprint":null,"epic":"5","data":{}}
+{"timestamp":"2026-03-20T17:42:56.313338+00:00","event_type":"step_passed","story_key":"5-4-1-volume-controls","step":"validate-story","sprint":null,"epic":"5","data":{"duration_seconds":117.6,"input_tokens":64,"output_tokens":762,"cache_creation_tokens":312659,"cache_read_tokens":229668,"num_turns":5,"num_tool_calls":1}}
+{"timestamp":"2026-03-20T17:42:57.317618+00:00","event_type":"step_started","story_key":"5-4-1-volume-controls","step":"atdd","sprint":null,"epic":"5","data":{}}
