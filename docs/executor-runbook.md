@@ -574,6 +574,29 @@ Profiles exist for `opus` and `o46`. Models without a profile keep per-step defa
 ./paw remediate --quick --dry-run       # preview remediation plan
 ```
 
+### Pipeline Validation & Diagnostics
+
+```bash
+# Check deployed version
+./paw version
+
+# Clear stale feedback/state for a stuck story (does NOT delete artifacts)
+./paw clean {key}
+./paw clean {key} --include-summary     # also remove session summary
+
+# Dry-run: validate pipeline flow without model calls (air-gapped)
+./paw run {key} --dry-run
+./paw run {key} --dry-run --fail-at completeness-gate  # test regression paths
+
+# Smoke test: real Haiku calls with minimal turns (low cost)
+./paw run {key} --smoke
+./paw run {key} --smoke --from DEV_STORY --to CODE_REVIEW_QG
+```
+
+Both modes print an assertion-based test report showing pass/fail per step and per assertion. Use dry-run after deploying paw_runner changes to verify flow logic. Use smoke to verify Claude CLI integration end-to-end.
+
+**Smoke mode safety:** Commits are auto-disabled (`--no-commit`) to prevent test runs from modifying the repo. Smoke also validates post-step processing (quality gate verification, memory saves) that dry-run cannot reach. Use `--parallel --smoke` to exercise the full fan-out worktree path.
+
 ---
 
 ## Get Help
