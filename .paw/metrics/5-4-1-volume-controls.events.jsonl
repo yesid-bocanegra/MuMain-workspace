@@ -1,3 +1,5 @@
 {"timestamp":"2026-03-20T17:33:17.767733+00:00","event_type":"batch_started","story_key":"5-4-1-volume-controls","step":null,"sprint":null,"epic":"5","data":{"story_count":2,"story_keys":["5-4-1-volume-controls","7-4-1-native-ci-runners"]}}
 {"timestamp":"2026-03-20T17:33:17.783644+00:00","event_type":"story_started","story_key":"5-4-1-volume-controls","step":null,"sprint":null,"epic":"5","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-20T17:33:17.783789+00:00","event_type":"step_started","story_key":"5-4-1-volume-controls","step":"create-story","sprint":null,"epic":"5","data":{}}
+{"timestamp":"2026-03-20T17:40:57.726648+00:00","event_type":"step_passed","story_key":"5-4-1-volume-controls","step":"create-story","sprint":null,"epic":"5","data":{"duration_seconds":459.9,"input_tokens":11,"output_tokens":189,"cache_creation_tokens":148200,"cache_read_tokens":97888,"num_turns":3,"num_tool_calls":1}}
+{"timestamp":"2026-03-20T17:40:58.733503+00:00","event_type":"step_started","story_key":"5-4-1-volume-controls","step":"validate-story","sprint":null,"epic":"5","data":{}}
