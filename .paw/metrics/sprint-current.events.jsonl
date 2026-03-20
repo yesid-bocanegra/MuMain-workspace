@@ -486,3 +486,5 @@
 {"timestamp":"2026-03-20T04:52:26.905853+00:00","event_type":"step_retried","story_key":"5-2-2-miniaudio-sfx","step":"dev-story","sprint":null,"epic":"5","data":{"attempt":2}}
 {"timestamp":"2026-03-20T04:52:26.907462+00:00","event_type":"feedback_saved","story_key":"5-2-2-miniaudio-sfx","step":"dev-story","sprint":null,"epic":"5","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-03-20T04:52:28.918454+00:00","event_type":"step_started","story_key":"5-2-2-miniaudio-sfx","step":"dev-story","sprint":null,"epic":"5","data":{}}
+{"timestamp":"2026-03-20T05:08:33.416759+00:00","event_type":"step_passed","story_key":"5-2-2-miniaudio-sfx","step":"dev-story","sprint":null,"epic":"5","data":{"duration_seconds":964.5,"input_tokens":28,"output_tokens":1029,"cache_creation_tokens":228615,"cache_read_tokens":625132,"num_turns":10,"num_tool_calls":4}}
+{"timestamp":"2026-03-20T05:08:34.427865+00:00","event_type":"step_started","story_key":"5-2-2-miniaudio-sfx","step":"completeness-gate","sprint":null,"epic":"5","data":{}}
