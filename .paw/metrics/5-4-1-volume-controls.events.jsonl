@@ -22,3 +22,5 @@
 {"timestamp":"2026-03-20T19:02:42.441480+00:00","event_type":"feedback_saved","story_key":"5-4-1-volume-controls","step":"code-review","sprint":null,"epic":"5","data":{"regression_target":"code-review"}}
 {"timestamp":"2026-03-20T19:02:44.446826+00:00","event_type":"step_started","story_key":"5-4-1-volume-controls","step":"code-review","sprint":null,"epic":"5","data":{}}
 {"timestamp":"2026-03-20T00:00:00Z","event_type":"workflow_metric:code_review_completed","story_key":"5-4-1-volume-controls","step":"code-review-finalize","sprint":"sprint-5","epic":"5","data":{"final_status":"done","issues_fixed":7,"action_items":0,"blocker_count":0,"gate_result":"PASSED"}}
+{"timestamp":"2026-03-20T19:27:39.419483+00:00","event_type":"step_passed","story_key":"5-4-1-volume-controls","step":"code-review","sprint":null,"epic":"5","data":{"duration_seconds":1495.0,"input_tokens":9896,"output_tokens":6132,"cache_creation_tokens":448944,"cache_read_tokens":3880124,"num_turns":41,"num_tool_calls":24}}
+{"timestamp":"2026-03-20T19:27:40.425807+00:00","event_type":"step_started","story_key":"5-4-1-volume-controls","step":"code-review-qg","sprint":null,"epic":"5","data":{}}
