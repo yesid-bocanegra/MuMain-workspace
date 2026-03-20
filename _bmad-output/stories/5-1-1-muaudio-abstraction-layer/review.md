@@ -10,13 +10,24 @@
 
 | Step | Workflow | Status | Date |
 |------|----------|--------|------|
-| Step 1 | code-review-quality-gate | PASSED (evidence: progress.md + completeness-gate commit; `./ctl check` 711 files, 0 errors) | 2026-03-19 |
+| Step 1 | code-review-quality-gate | PASSED (`./ctl check` 711 files, 0 errors — re-verified 2026-03-19 via fresh run) | 2026-03-19 |
 | Step 2 | code-review-analysis | COMPLETE | 2026-03-19 |
 | Step 3 | code-review-finalize | COMPLETE | 2026-03-19 |
 
-> **Note:** No separate `review.md` trace was created by the quality-gate workflow step. Quality gate pass is evidenced by:
-> - `progress.md`: "All tasks complete. Implementation verified and quality gate passed." + "Task 7: ./ctl check PASSED — 711 files, 0 errors"
-> - completeness-gate commit `ea21332`: "CHECK 1: 92/92 items marked [x] in Implementation Checklist, 0 unchecked — 100%"
+> **Quality Gate Evidence:**
+> - Fresh run 2026-03-19: `make -C MuMain format-check` EXIT:0 + `make -C MuMain lint` EXIT:0 (711 files, 0 errors)
+> - SonarCloud: SKIPPED (no SONAR_TOKEN; cpp-cmake profile has no sonar_cmd)
+> - Frontend: N/A (no frontend components — infrastructure story)
+> - AC compliance / E2E gates: SKIPPED (story type: infrastructure)
+
+## Quality Gate Progress
+
+| Phase | Component | Status | Details |
+|-------|-----------|--------|---------|
+| Backend Local | mumain (./MuMain) | PASSED | format-check + lint — 711 files, 0 errors |
+| Backend SonarCloud | mumain | SKIPPED | No SONAR_TOKEN; cpp-cmake profile |
+| Frontend Local | N/A | SKIPPED | No frontend components |
+| Frontend SonarCloud | N/A | SKIPPED | No frontend components |
 
 ---
 
