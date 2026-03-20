@@ -1,6 +1,6 @@
 # Story 5.2.2: miniaudio SFX Implementation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,49 +42,49 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** `LoadWaveFile(ESound, const wchar_t*, int, bool)` free function in `DSplaysound.cpp` delegates to `g_platformAudio->LoadSound(buffer, filename, channels, enable3D)` when `g_platformAudio != nullptr`; falls through to the legacy `Manager().LoadWaveFile()` path only as a dead-code fallback (or is fully replaced — see Dev Notes). All existing call sites in `ZzzOpenData.cpp`, `Scenes/`, `World/Maps/`, `Gameplay/`, `RenderFX/` remain unchanged (zero call-site changes outside `DSplaysound.cpp`).
-- [ ] **AC-2:** `PlayBuffer(ESound, OBJECT*, BOOL)` free function delegates to `g_platformAudio->PlaySound(buffer, object, looped)` and returns its result when `g_platformAudio != nullptr`. The `OBJECT*` parameter (world-position source for 3D SFX) is passed directly to `PlaySound()` — `MiniAudioBackend::PlaySound()` already handles the 3D position set-before-start pattern (from Story 5.2.1 HIGH-1 fix).
-- [ ] **AC-3:** `StopBuffer(ESound, BOOL)` free function delegates to `g_platformAudio->StopSound(buffer, resetPosition)` when `g_platformAudio != nullptr`.
-- [ ] **AC-4:** `AllStopSound()` free function delegates to `g_platformAudio->AllStopSound()` when `g_platformAudio != nullptr`.
-- [ ] **AC-5:** `SetMasterVolume(long)` free function delegates to `g_platformAudio->SetMasterVolume(vol)` when `g_platformAudio != nullptr`. `SetEffectVolumeLevel()` in `SceneCommon.cpp` calls `SetMasterVolume()` — this delegation chain requires no change at the `SetEffectVolumeLevel` call site.
-- [ ] **AC-6:** `SetVolume(int buffer, long vol)` free function delegates to `g_platformAudio->SetVolume(static_cast<ESound>(buffer), vol)` when `g_platformAudio != nullptr`. Existing callers cast `int buffer` to `ESound` already — the cast in the delegation is safe for values in `[0, MAX_BUFFER)`.
-- [ ] **AC-7:** `InitDirectSound(g_hWnd)` call in `Winmain.cpp` (line ~1312) is removed from the `if (m_SoundOnOff)` block; `FreeDirectSound()` call in `DestroySound()` (line ~446) is removed. The `g_platformAudio` backend (already initialized in Story 5.2.1) handles all audio. The `SetEnableSound(bool)` call and `ReleaseBuffer(i)` loop in `DestroySound()` can also be removed — or left as no-ops if the legacy path is kept for safety (see Dev Notes).
-- [ ] **AC-8:** `MiniAudioBackend` gains per-slot `OBJECT*` tracking: add `std::array<const OBJECT*, MAX_BUFFER> m_soundObjects{}` (nullptr-initialized) to `MiniAudioBackend.h`. `PlaySound(ESound, OBJECT*, BOOL)` stores `pObject` in `m_soundObjects[bufIdx]` after the 3D position set (existing before-start position logic from 5.2.1 already correct; the per-slot pointer enables per-frame update). `Set3DSoundPosition()` is upgraded from the loop-structure stub (5.2.1) to call `ma_sound_set_position()` for active 3D-enabled slots using the stored `m_soundObjects[bufIdx]->Position`.
-- [ ] **AC-9:** SFX plays on macOS, Linux, and Windows — `MiniAudioBackend::LoadSound()` uses `ma_sound_init_from_file` with `MA_SOUND_FLAG_DECODE` (pre-decode, already implemented in 5.1.1); no `#ifdef _WIN32` in `MiniAudioBackend.cpp`. Path normalization: `LoadSound()` receives `wchar_t*` filenames; `mu_wchar_to_utf8()` converts them (already implemented in 5.1.1 `LoadSound`). Backslash-to-forward-slash normalization in the UTF-8 result is needed for Linux/macOS — apply `std::replace` after conversion (same pattern as `PlayMusic()` from 5.2.1).
-- [ ] **AC-10:** `DirectSoundManager` singleton in `DSplaysound.cpp` is made dormant (never initialized): `InitDirectSound` is no longer called, so `Manager().Initialize()` is never called, so all legacy DS paths are inactive. The legacy code is retained as-is in `DSplaysound.cpp` (not deleted) — removal is EPIC-5 final cleanup. Verify by code inspection: no `Manager().Initialize()` call path remains active.
+- [x] **AC-1:** `LoadWaveFile(ESound, const wchar_t*, int, bool)` free function in `DSplaysound.cpp` delegates to `g_platformAudio->LoadSound(buffer, filename, channels, enable3D)` when `g_platformAudio != nullptr`; falls through to the legacy `Manager().LoadWaveFile()` path only as a dead-code fallback (or is fully replaced — see Dev Notes). All existing call sites in `ZzzOpenData.cpp`, `Scenes/`, `World/Maps/`, `Gameplay/`, `RenderFX/` remain unchanged (zero call-site changes outside `DSplaysound.cpp`).
+- [x] **AC-2:** `PlayBuffer(ESound, OBJECT*, BOOL)` free function delegates to `g_platformAudio->PlaySound(buffer, object, looped)` and returns its result when `g_platformAudio != nullptr`. The `OBJECT*` parameter (world-position source for 3D SFX) is passed directly to `PlaySound()` — `MiniAudioBackend::PlaySound()` already handles the 3D position set-before-start pattern (from Story 5.2.1 HIGH-1 fix).
+- [x] **AC-3:** `StopBuffer(ESound, BOOL)` free function delegates to `g_platformAudio->StopSound(buffer, resetPosition)` when `g_platformAudio != nullptr`.
+- [x] **AC-4:** `AllStopSound()` free function delegates to `g_platformAudio->AllStopSound()` when `g_platformAudio != nullptr`.
+- [x] **AC-5:** `SetMasterVolume(long)` free function delegates to `g_platformAudio->SetMasterVolume(vol)` when `g_platformAudio != nullptr`. `SetEffectVolumeLevel()` in `SceneCommon.cpp` calls `SetMasterVolume()` — this delegation chain requires no change at the `SetEffectVolumeLevel` call site.
+- [x] **AC-6:** `SetVolume(int buffer, long vol)` free function delegates to `g_platformAudio->SetVolume(static_cast<ESound>(buffer), vol)` when `g_platformAudio != nullptr`. Existing callers cast `int buffer` to `ESound` already — the cast in the delegation is safe for values in `[0, MAX_BUFFER)`.
+- [x] **AC-7:** `InitDirectSound(g_hWnd)` call in `Winmain.cpp` (line ~1312) is removed from the `if (m_SoundOnOff)` block; `FreeDirectSound()` call in `DestroySound()` (line ~446) is removed. The `g_platformAudio` backend (already initialized in Story 5.2.1) handles all audio. The `SetEnableSound(bool)` call and `ReleaseBuffer(i)` loop in `DestroySound()` can also be removed — or left as no-ops if the legacy path is kept for safety (see Dev Notes).
+- [x] **AC-8:** `MiniAudioBackend` gains per-slot `OBJECT*` tracking: add `std::array<const OBJECT*, MAX_BUFFER> m_soundObjects{}` (nullptr-initialized) to `MiniAudioBackend.h`. `PlaySound(ESound, OBJECT*, BOOL)` stores `pObject` in `m_soundObjects[bufIdx]` after the 3D position set (existing before-start position logic from 5.2.1 already correct; the per-slot pointer enables per-frame update). `Set3DSoundPosition()` is upgraded from the loop-structure stub (5.2.1) to call `ma_sound_set_position()` for active 3D-enabled slots using the stored `m_soundObjects[bufIdx]->Position`.
+- [x] **AC-9:** SFX plays on macOS, Linux, and Windows — `MiniAudioBackend::LoadSound()` uses `ma_sound_init_from_file` with `MA_SOUND_FLAG_DECODE` (pre-decode, already implemented in 5.1.1); no `#ifdef _WIN32` in `MiniAudioBackend.cpp`. Path normalization: `LoadSound()` receives `wchar_t*` filenames; `mu_wchar_to_utf8()` converts them (already implemented in 5.1.1 `LoadSound`). Backslash-to-forward-slash normalization in the UTF-8 result is needed for Linux/macOS — apply `std::replace` after conversion (same pattern as `PlayMusic()` from 5.2.1).
+- [x] **AC-10:** `DirectSoundManager` singleton in `DSplaysound.cpp` is made dormant (never initialized): `InitDirectSound` is no longer called, so `Manager().Initialize()` is never called, so all legacy DS paths are inactive. The legacy code is retained as-is in `DSplaysound.cpp` (not deleted) — removal is EPIC-5 final cleanup. Verify by code inspection: no `Manager().Initialize()` call path remains active.
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance — `mu::` namespace for all new/modified code in `Platform/`, `m_` member prefix, `#pragma once`, no raw `new`/`delete`, no `NULL` (use `nullptr`), no `wprintf`; `g_ErrorReport.Write()` for all failure paths; no `#ifdef _WIN32` in `MiniAudioBackend.cpp`
-- [ ] **AC-STD-2:** Catch2 test in `tests/audio/test_miniaudio_sfx.cpp`: SFX load (non-existent file graceful), PlaySound before Initialize does not crash, StopSound on unloaded slot is safe, AllStopSound on empty backend is safe, Set3DSoundPosition with nullptr object does not crash; all tests headless (no audio device required)
-- [ ] **AC-STD-4:** CI quality gate passes (`./ctl check` — clang-format check + cppcheck 0 errors)
-- [ ] **AC-STD-5:** Error logging: `AUDIO: MiniAudioBackend::LoadSound -- ma_sound_init_from_file failed for '%ls' channel %d (%d)` already implemented from 5.1.1; verify the pattern is emitted correctly after path normalization
-- [ ] **AC-STD-6:** Conventional commit: `feat(audio): implement SFX playback via miniaudio`
+- [x] **AC-STD-1:** Code Standards Compliance — `mu::` namespace for all new/modified code in `Platform/`, `m_` member prefix, `#pragma once`, no raw `new`/`delete`, no `NULL` (use `nullptr`), no `wprintf`; `g_ErrorReport.Write()` for all failure paths; no `#ifdef _WIN32` in `MiniAudioBackend.cpp`
+- [x] **AC-STD-2:** Catch2 test in `tests/audio/test_miniaudio_sfx.cpp`: SFX load (non-existent file graceful), PlaySound before Initialize does not crash, StopSound on unloaded slot is safe, AllStopSound on empty backend is safe, Set3DSoundPosition with nullptr object does not crash; all tests headless (no audio device required)
+- [x] **AC-STD-4:** CI quality gate passes (`./ctl check` — clang-format check + cppcheck 0 errors)
+- [x] **AC-STD-5:** Error logging: `AUDIO: MiniAudioBackend::LoadSound -- ma_sound_init_from_file failed for '%ls' channel %d (%d)` already implemented from 5.1.1; verify the pattern is emitted correctly after path normalization
+- [x] **AC-STD-6:** Conventional commit: `feat(audio): implement SFX playback via miniaudio`
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/audio/` directory pattern, explicit `target_sources` in `tests/CMakeLists.txt`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/audio/` directory pattern, explicit `target_sources` in `tests/CMakeLists.txt`)
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** SFX plays on game events (UI click, combat hit) — code path verified by inspection: `PlayBuffer(SOUND_CLICK01)` → `g_platformAudio->PlaySound()` → `ma_sound_start()`. Full runtime validation deferred to QA — skip_checks: [build, test] per .pcc-config.yaml
-- [ ] **AC-VAL-2:** `Set3DSoundPosition()` per-frame update exercises the stored `m_soundObjects` pointers — code verified by inspection (loop body calls `ma_sound_set_position` for active 3D slots with non-null `m_soundObjects[buf]`)
-- [ ] **AC-VAL-3:** `./ctl check` passes with 0 errors after changes
-- [ ] **AC-VAL-4:** `git diff --name-only` shows only expected files (no unintended regressions to non-audio systems)
+- [x] **AC-VAL-1:** SFX plays on game events (UI click, combat hit) — code path verified by inspection: `PlayBuffer(SOUND_CLICK01)` → `g_platformAudio->PlaySound()` → `ma_sound_start()`. Full runtime validation deferred to QA — skip_checks: [build, test] per .pcc-config.yaml
+- [x] **AC-VAL-2:** `Set3DSoundPosition()` per-frame update exercises the stored `m_soundObjects` pointers — code verified by inspection (loop body calls `ma_sound_set_position` for active 3D slots with non-null `m_soundObjects[buf]`)
+- [x] **AC-VAL-3:** `./ctl check` passes with 0 errors after changes
+- [x] **AC-VAL-4:** `git diff --name-only` shows only expected files (no unintended regressions to non-audio systems)
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Add per-slot `OBJECT*` tracking to `MiniAudioBackend` (AC: 8)
-  - [ ] Subtask 1.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h`, add to the private section:
+- [x] Task 1: Add per-slot `OBJECT*` tracking to `MiniAudioBackend` (AC: 8)
+  - [x] Subtask 1.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h`, add to the private section:
     ```cpp
     // Per-slot OBJECT* for per-frame 3D position updates (Story 5.2.2)
     // Stores the most recent pObject passed to PlaySound() for each 3D-enabled buffer slot.
@@ -92,7 +92,7 @@ Status: ready-for-dev
     std::array<const OBJECT*, MAX_BUFFER> m_soundObjects{};
     ```
     Note: `OBJECT` is forward-declared via `DSPlaySound.h` include chain. `const OBJECT*` is safe since we only read `Position` fields.
-  - [ ] Subtask 1.2: In `MiniAudioBackend.cpp`, in `PlaySound()`, after the `ma_sound_set_position()` call (lines ~224–227), add:
+  - [x] Subtask 1.2: In `MiniAudioBackend.cpp`, in `PlaySound()`, after the `ma_sound_set_position()` call (lines ~224–227), add:
     ```cpp
     // Store the object pointer for per-frame updates in Set3DSoundPosition().
     // Only update per-slot tracking if this is a 3D-enabled sound with an object.
@@ -101,10 +101,10 @@ Status: ready-for-dev
         m_soundObjects[bufIdx] = pObject; // may be nullptr — checked in Set3DSoundPosition
     }
     ```
-  - [ ] Subtask 1.3: In `MiniAudioBackend.cpp`, in `Shutdown()`, reset the object tracking array: after clearing `m_soundLoaded[buf]` in the loop, add `m_soundObjects[buf] = nullptr;` (or use `m_soundObjects.fill(nullptr)` after the loop). This prevents dangling pointers if the backend is restarted.
+  - [x] Subtask 1.3: In `MiniAudioBackend.cpp`, in `Shutdown()`, reset the object tracking array: after clearing `m_soundLoaded[buf]` in the loop, add `m_soundObjects[buf] = nullptr;` (or use `m_soundObjects.fill(nullptr)` after the loop). This prevents dangling pointers if the backend is restarted.
 
-- [ ] Task 2: Upgrade `Set3DSoundPosition()` stub to full implementation (AC: 8)
-  - [ ] Subtask 2.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp`, replace the inner body of the `Set3DSoundPosition()` loop (currently an empty comment-only block, lines ~327–332) with:
+- [x] Task 2: Upgrade `Set3DSoundPosition()` stub to full implementation (AC: 8)
+  - [x] Subtask 2.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp`, replace the inner body of the `Set3DSoundPosition()` loop (currently an empty comment-only block, lines ~327–332) with:
     ```cpp
     // Update 3D position for this slot from the stored OBJECT*.
     // m_soundObjects[buf] is set in PlaySound() for 3D-enabled buffers.
@@ -119,15 +119,15 @@ Status: ready-for-dev
                           m_soundObjects[buf]->Position[2]);
     ```
     The `OBJECT::Position` field is `vec3_t` (float[3]): [0]=X, [1]=Y, [2]=Z — matches `ma_sound_set_position(ma_sound*, float x, float y, float z)` exactly.
-  - [ ] Subtask 2.2: Update the comment block above `Set3DSoundPosition()` to remove the "Story 5.2.2: Add per-slot OBJECT* storage" placeholder and document the full implementation.
+  - [x] Subtask 2.2: Update the comment block above `Set3DSoundPosition()` to remove the "Story 5.2.2: Add per-slot OBJECT* storage" placeholder and document the full implementation.
 
-- [ ] Task 3: Redirect SFX free functions in `DSplaysound.cpp` to `g_platformAudio` (AC: 1, 2, 3, 4, 5, 6, 10)
-  - [ ] Subtask 3.1: In `MuMain/src/source/Audio/DSplaysound.cpp`, add at the top (after existing includes, before the free function definitions at lines ~736+):
+- [x] Task 3: Redirect SFX free functions in `DSplaysound.cpp` to `g_platformAudio` (AC: 1, 2, 3, 4, 5, 6, 10)
+  - [x] Subtask 3.1: In `MuMain/src/source/Audio/DSplaysound.cpp`, add at the top (after existing includes, before the free function definitions at lines ~736+):
     ```cpp
     #include "IPlatformAudio.h"
     ```
     This gives access to `g_platformAudio` and the `mu::IPlatformAudio` interface.
-  - [ ] Subtask 3.2: Replace the body of `LoadWaveFile(ESound bufferId, const wchar_t* filename, int maxChannel, bool enable3D)` (line ~736–739) with:
+  - [x] Subtask 3.2: Replace the body of `LoadWaveFile(ESound bufferId, const wchar_t* filename, int maxChannel, bool enable3D)` (line ~736–739) with:
     ```cpp
     void LoadWaveFile(ESound bufferId, const wchar_t* filename, int maxChannel, bool enable3D)
     {
@@ -141,7 +141,7 @@ Status: ready-for-dev
     }
     ```
     Note: The fallback to `Manager()` is dead code since `InitDirectSound` is no longer called (AC-10), but retaining it avoids a crash if somehow called before `g_platformAudio` init.
-  - [ ] Subtask 3.3: Replace the body of `PlayBuffer(ESound bufferId, OBJECT* object, BOOL looped)` (line ~751–754) with:
+  - [x] Subtask 3.3: Replace the body of `PlayBuffer(ESound bufferId, OBJECT* object, BOOL looped)` (line ~751–754) with:
     ```cpp
     HRESULT PlayBuffer(ESound bufferId, OBJECT* object, BOOL looped)
     {
@@ -152,7 +152,7 @@ Status: ready-for-dev
         return Manager().PlayBuffer(bufferId, object, looped != FALSE);
     }
     ```
-  - [ ] Subtask 3.4: Replace the body of `StopBuffer(ESound bufferId, BOOL resetPosition)` (line ~756–759) with:
+  - [x] Subtask 3.4: Replace the body of `StopBuffer(ESound bufferId, BOOL resetPosition)` (line ~756–759) with:
     ```cpp
     VOID StopBuffer(ESound bufferId, BOOL resetPosition)
     {
@@ -164,7 +164,7 @@ Status: ready-for-dev
         Manager().StopBuffer(bufferId, resetPosition != FALSE);
     }
     ```
-  - [ ] Subtask 3.5: Replace the body of `AllStopSound()` (line ~761–768) with:
+  - [x] Subtask 3.5: Replace the body of `AllStopSound()` (line ~761–768) with:
     ```cpp
     void AllStopSound()
     {
@@ -176,7 +176,7 @@ Status: ready-for-dev
         Manager().StopAll();
     }
     ```
-  - [ ] Subtask 3.6: Replace the body of `SetMasterVolume(long volume)` (line ~771–774) with:
+  - [x] Subtask 3.6: Replace the body of `SetMasterVolume(long volume)` (line ~771–774) with:
     ```cpp
     void SetMasterVolume(long volume)
     {
@@ -188,7 +188,7 @@ Status: ready-for-dev
         Manager().SetMasterVolume(volume);
     }
     ```
-  - [ ] Subtask 3.7: Replace the body of `SetVolume(int buffer, long vol)` (search for `void SetVolume` in DSplaysound.cpp) with:
+  - [x] Subtask 3.7: Replace the body of `SetVolume(int buffer, long vol)` (search for `void SetVolume` in DSplaysound.cpp) with:
     ```cpp
     void SetVolume(int buffer, long vol)
     {
@@ -201,7 +201,7 @@ Status: ready-for-dev
     }
     ```
     Note: Check the exact private method name in `DirectSoundManager` — it may be `SetVolume(ESound, long)`. Search for the public `SetVolume` wrapper in the Manager and use it.
-  - [ ] Subtask 3.8: Replace the body of `Set3DSoundPosition()` (line ~776–779) with:
+  - [x] Subtask 3.8: Replace the body of `Set3DSoundPosition()` (line ~776–779) with:
     ```cpp
     void Set3DSoundPosition()
     {
@@ -214,8 +214,8 @@ Status: ready-for-dev
     }
     ```
 
-- [ ] Task 4: Remove `InitDirectSound` / `FreeDirectSound` from `Winmain.cpp` (AC: 7)
-  - [ ] Subtask 4.1: In `MuMain/src/source/Main/Winmain.cpp`, find the `if (m_SoundOnOff)` block (lines ~1310–1321). Remove the `InitDirectSound(g_hWnd)` call. The volume level setup (`g_pOption->SetVolumeLevel(value)` + `SetEffectVolumeLevel()`) can remain — it calls `SetMasterVolume()` which now routes to `g_platformAudio`. The resulting block after edit:
+- [x] Task 4: Remove `InitDirectSound` / `FreeDirectSound` from `Winmain.cpp` (AC: 7)
+  - [x] Subtask 4.1: In `MuMain/src/source/Main/Winmain.cpp`, find the `if (m_SoundOnOff)` block (lines ~1310–1321). Remove the `InitDirectSound(g_hWnd)` call. The volume level setup (`g_pOption->SetVolumeLevel(value)` + `SetEffectVolumeLevel()`) can remain — it calls `SetMasterVolume()` which now routes to `g_platformAudio`. The resulting block after edit:
     ```cpp
     if (m_SoundOnOff)
     {
@@ -228,41 +228,41 @@ Status: ready-for-dev
         SetEffectVolumeLevel(g_pOption->GetVolumeLevel());
     }
     ```
-  - [ ] Subtask 4.2: In `DestroySound()` (around lines ~443–446), remove the `FreeDirectSound()` call. The `for (int i = 0; i < MAX_BUFFER; i++) ReleaseBuffer(i);` loop calls `ReleaseBuffer()` which calls `Manager().ReleaseBuffer()` on the uninitialized DirectSoundManager — this is a no-op since the Manager was never initialized, but remove it too for cleanliness if easy; otherwise leave it (it will be a safe no-op). Add a story annotation comment:
+  - [x] Subtask 4.2: In `DestroySound()` (around lines ~443–446), remove the `FreeDirectSound()` call. The `for (int i = 0; i < MAX_BUFFER; i++) ReleaseBuffer(i);` loop calls `ReleaseBuffer()` which calls `Manager().ReleaseBuffer()` on the uninitialized DirectSoundManager — this is a no-op since the Manager was never initialized, but remove it too for cleanliness if easy; otherwise leave it (it will be a safe no-op). Add a story annotation comment:
     ```cpp
     // Story 5.2.2: InitDirectSound / FreeDirectSound removed — g_platformAudio (MiniAudioBackend)
     // handles all audio lifecycle. DirectSoundManager is dormant (never initialized).
     ```
-  - [ ] Subtask 4.3: Verify that `#include "DSPlaySound.h"` remains in `Winmain.cpp` — the file still declares the `PlayBuffer`, `LoadWaveFile` etc. free functions used by the codebase. Do NOT remove the include. The `#include <dsound.h>` in `DSplaysound.cpp` is untouched — it's inside the cpp, not in the header.
+  - [x] Subtask 4.3: Verify that `#include "DSPlaySound.h"` remains in `Winmain.cpp` — the file still declares the `PlayBuffer`, `LoadWaveFile` etc. free functions used by the codebase. Do NOT remove the include. The `#include <dsound.h>` in `DSplaysound.cpp` is untouched — it's inside the cpp, not in the header.
 
-- [ ] Task 5: Path normalization in `MiniAudioBackend::LoadSound()` (AC: 9)
-  - [ ] Subtask 5.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp`, in `LoadSound()`, after `std::string utf8Path = mu_wchar_to_utf8(filename);` (line ~131), add backslash normalization:
+- [x] Task 5: Path normalization in `MiniAudioBackend::LoadSound()` (AC: 9)
+  - [x] Subtask 5.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp`, in `LoadSound()`, after `std::string utf8Path = mu_wchar_to_utf8(filename);` (line ~131), add backslash normalization:
     ```cpp
     // Normalize path separators for Linux/macOS — sound file paths use Windows backslashes
     // (e.g., L"Data\\Sound\\nBlackSmith.wav"). mu_wchar_to_utf8 preserves them.
     std::replace(utf8Path.begin(), utf8Path.end(), '\\', '/');
     ```
     This mirrors the `PlayMusic()` pattern from Story 5.2.1. On Windows, forward slashes work the same as backslashes for file paths.
-  - [ ] Subtask 5.2: Verify the normalization is applied before the `ma_sound_init_from_file()` call in the channel loop (line ~139). The `utf8Path.c_str()` argument to `ma_sound_init_from_file()` will already be normalized.
+  - [x] Subtask 5.2: Verify the normalization is applied before the `ma_sound_init_from_file()` call in the channel loop (line ~139). The `utf8Path.c_str()` argument to `ma_sound_init_from_file()` will already be normalized.
 
-- [ ] Task 6: Catch2 SFX lifecycle tests (AC: AC-STD-2)
-  - [ ] Subtask 6.1: Create `MuMain/tests/audio/test_miniaudio_sfx.cpp`
-  - [ ] Subtask 6.2: In `MuMain/tests/CMakeLists.txt`, add:
+- [x] Task 6: Catch2 SFX lifecycle tests (AC: AC-STD-2)
+  - [x] Subtask 6.1: Create `MuMain/tests/audio/test_miniaudio_sfx.cpp`
+  - [x] Subtask 6.2: In `MuMain/tests/CMakeLists.txt`, add:
     ```cmake
     # Story 5.2.2: miniaudio SFX Implementation [VS1-AUDIO-MINIAUDIO-SFX]
     target_sources(MuTests PRIVATE audio/test_miniaudio_sfx.cpp)
     ```
-  - [ ] Subtask 6.3: Write `TEST_CASE("MiniAudioBackend SFX — LoadSound non-existent file does not crash")`: construct `mu::MiniAudioBackend`, do NOT call `Initialize()`, call `LoadSound(SOUND_CLICK01, L"nonexistent.wav", 1, false)` — must not crash (early-return guard on `!m_initialized`). Assert `g_platformAudio == nullptr` (not the test instance).
-  - [ ] Subtask 6.4: Write `TEST_CASE("MiniAudioBackend SFX — PlaySound before Initialize returns S_FALSE")`: construct, do NOT initialize, call `PlaySound(SOUND_CLICK01, nullptr, FALSE)` — must return `S_FALSE` without crashing (existing guard from 5.2.1).
-  - [ ] Subtask 6.5: Write `TEST_CASE("MiniAudioBackend SFX — StopSound on unloaded slot is safe")`: construct, optionally initialize (REQUIRE_NOTHROW), call `StopSound(SOUND_CLICK01, FALSE)` — must not crash (guard: `!m_soundLoaded[bufIdx]`).
-  - [ ] Subtask 6.6: Write `TEST_CASE("MiniAudioBackend SFX — AllStopSound on empty backend is safe")`: construct, call `Initialize()` (may return false on CI), call `AllStopSound()` — must not crash.
-  - [ ] Subtask 6.7: Write `TEST_CASE("MiniAudioBackend SFX — Set3DSoundPosition with no loaded sounds is safe")`: construct, call `Initialize()` (may fail), call `Set3DSoundPosition()` — must not crash (all slots have `m_soundLoaded[buf] == false`, loop skips them).
-  - [ ] Subtask 6.8: Write `TEST_CASE("MiniAudioBackend SFX — Set3DSoundPosition skips nullptr m_soundObjects")`: construct, simulate a 3D-enabled loaded slot by calling `LoadSound()` with a non-existent file (will fail gracefully, `m_soundLoaded[buf]` remains false) — confirm no crash. Alternatively: test the guard logic directly by verifying the method does not dereference nullptr when `m_soundObjects[buf] == nullptr`.
-  - [ ] Subtask 6.9: All tests must NOT call any Win32 or DirectSound API — pure interface and safety checks only. `REQUIRE_NOTHROW` wraps calls that may log errors; `Initialize()` may fail on CI (no audio device) — use `CHECK` not `REQUIRE`.
+  - [x] Subtask 6.3: Write `TEST_CASE("MiniAudioBackend SFX — LoadSound non-existent file does not crash")`: construct `mu::MiniAudioBackend`, do NOT call `Initialize()`, call `LoadSound(SOUND_CLICK01, L"nonexistent.wav", 1, false)` — must not crash (early-return guard on `!m_initialized`). Assert `g_platformAudio == nullptr` (not the test instance).
+  - [x] Subtask 6.4: Write `TEST_CASE("MiniAudioBackend SFX — PlaySound before Initialize returns S_FALSE")`: construct, do NOT initialize, call `PlaySound(SOUND_CLICK01, nullptr, FALSE)` — must return `S_FALSE` without crashing (existing guard from 5.2.1).
+  - [x] Subtask 6.5: Write `TEST_CASE("MiniAudioBackend SFX — StopSound on unloaded slot is safe")`: construct, optionally initialize (REQUIRE_NOTHROW), call `StopSound(SOUND_CLICK01, FALSE)` — must not crash (guard: `!m_soundLoaded[bufIdx]`).
+  - [x] Subtask 6.6: Write `TEST_CASE("MiniAudioBackend SFX — AllStopSound on empty backend is safe")`: construct, call `Initialize()` (may return false on CI), call `AllStopSound()` — must not crash.
+  - [x] Subtask 6.7: Write `TEST_CASE("MiniAudioBackend SFX — Set3DSoundPosition with no loaded sounds is safe")`: construct, call `Initialize()` (may fail), call `Set3DSoundPosition()` — must not crash (all slots have `m_soundLoaded[buf] == false`, loop skips them).
+  - [x] Subtask 6.8: Write `TEST_CASE("MiniAudioBackend SFX — Set3DSoundPosition skips nullptr m_soundObjects")`: construct, simulate a 3D-enabled loaded slot by calling `LoadSound()` with a non-existent file (will fail gracefully, `m_soundLoaded[buf]` remains false) — confirm no crash. Alternatively: test the guard logic directly by verifying the method does not dereference nullptr when `m_soundObjects[buf] == nullptr`.
+  - [x] Subtask 6.9: All tests must NOT call any Win32 or DirectSound API — pure interface and safety checks only. `REQUIRE_NOTHROW` wraps calls that may log errors; `Initialize()` may fail on CI (no audio device) — use `CHECK` not `REQUIRE`.
 
-- [ ] Task 7: Quality gate + commit (AC: AC-STD-4, AC-STD-6)
-  - [ ] Subtask 7.1: Run `./ctl check` — 0 errors. File count will increase by 1 (test file). The `DSplaysound.cpp` edits are within the checked files — verify no new cppcheck warnings.
-  - [ ] Subtask 7.2: Commit: `feat(audio): implement SFX playback via miniaudio`
+- [x] Task 7: Quality gate + commit (AC: AC-STD-4, AC-STD-6)
+  - [x] Subtask 7.1: Run `./ctl check` — 0 errors. File count will increase by 1 (test file). The `DSplaysound.cpp` edits are within the checked files — verify no new cppcheck warnings.
+  - [x] Subtask 7.2: Commit: `feat(audio): implement SFX playback via miniaudio`
 
 ---
 
@@ -496,7 +496,30 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+(none — implementation was already complete from prior session; this session verified, checked ATDD, ran quality gate, and updated all artifacts)
+
 ### Completion Notes List
 
+- All 7 tasks fully implemented prior to this session (verified by reading source files)
+- Task 1 (m_soundObjects tracking): `MiniAudioBackend.h` already has `std::array<const OBJECT*, MAX_BUFFER> m_soundObjects{}` private member; `PlaySound()` stores pointer; `Shutdown()` clears array
+- Task 2 (Set3DSoundPosition upgrade): Full loop implementation with `ma_sound_set_position()` + nullptr guard already in `MiniAudioBackend.cpp`
+- Task 3 (DSplaysound.cpp redirections): All 8 free functions (`LoadWaveFile`, `PlayBuffer`, `StopBuffer`, `AllStopSound`, `SetMasterVolume`, `SetVolume`, `Set3DSoundPosition`) delegate to `g_platformAudio` when non-null; `#include "IPlatformAudio.h"` added
+- Task 4 (Winmain.cpp cleanup): `InitDirectSound(g_hWnd)` and `FreeDirectSound()` calls removed; story annotation comments present; `#include "DSPlaySound.h"` retained
+- Task 5 (path normalization): `std::replace(utf8Path.begin(), utf8Path.end(), '\\\\', '/')` added in `LoadSound()` after `mu_wchar_to_utf8()`, before `ma_sound_init_from_file()`
+- Task 6 (Catch2 tests): `MuMain/tests/audio/test_miniaudio_sfx.cpp` exists with 7 TEST_CASEs; registered in `tests/CMakeLists.txt`
+- Task 7 (quality gate): `./ctl check` passed with 0 errors on 711 files
+- ATDD checklist: Implementation Checklist 39/39 checked [x]; AC-to-test mapping 15/15 checked [x]
+- Code inspection ACs satisfied: no `Manager().Initialize()` call path active (AC-10); no `#ifdef _WIN32` in `MiniAudioBackend.cpp` (AC-9); `git diff --name-only` shows only 6 expected files (AC-VAL-4)
+
 ### File List
+
+**Modified:**
+- `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h` — added `m_soundObjects` array member (Task 1.1)
+- `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` — `PlaySound()` stores object pointer (Task 1.2); `Shutdown()` clears array (Task 1.3); `Set3DSoundPosition()` full implementation (Task 2.1/2.2); `LoadSound()` path normalization (Task 5.1/5.2)
+- `MuMain/src/source/Audio/DSplaysound.cpp` — added `#include "IPlatformAudio.h"`; redirected 8 SFX free functions to `g_platformAudio` (Task 3.1–3.8)
+- `MuMain/src/source/Main/Winmain.cpp` — removed `InitDirectSound(g_hWnd)` and `FreeDirectSound()` calls; added story annotation comments (Task 4.1–4.3)
+- `MuMain/tests/CMakeLists.txt` — added `target_sources(MuTests PRIVATE audio/test_miniaudio_sfx.cpp)` (Task 6.2)
+
+**Created:**
+- `MuMain/tests/audio/test_miniaudio_sfx.cpp` — 7 Catch2 TEST_CASEs for SFX lifecycle safety (Task 6.1–6.9)
 
