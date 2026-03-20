@@ -442,7 +442,7 @@ development_status:
   epic-5: in-progress
   5-1-1-muaudio-abstraction-layer: done                 # 3 pts | Flow:F | No deps | code-review-finalize completed 2026-03-19
   5-2-1-miniaudio-bgm: done                       # 5 pts | Flow:F | Deps: 5.1.1 | code-review-finalize completed 2026-03-19
-  5-2-2-miniaudio-sfx: review                   # 5 pts | Flow:F | Deps: 5.1.1 | dev-story completed 2026-03-20
+  5-2-2-miniaudio-sfx: done                      # 5 pts | Flow:F | Deps: 5.1.1 | code-review-finalize completed 2026-03-20
   5-3-1-audio-format-validation: backlog        # 3 pts | Flow:F | Deps: 5.2.1, 5.2.2
   5-4-1-volume-controls: backlog                # 2 pts | Flow:F | Deps: 5.2.1, 5.2.2
   epic-5-retrospective: optional

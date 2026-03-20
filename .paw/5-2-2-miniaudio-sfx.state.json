@@ -1,6 +1,6 @@
 {
   "story_key": "5-2-2-miniaudio-sfx",
-  "current_step": "completeness-gate",
-  "status": "completed",
-  "last_run": "2026-03-20T00:10:06.151834"
+  "current_step": "code-review",
+  "status": "failed",
+  "last_run": "2026-03-20T00:56:19.403034"
 }
