@@ -1,23 +1,25 @@
-# Sprint Health Audit — 2026-03-20
+# Sprint Health Audit — 2026-03-20 (Updated)
 
 **Generated:** 2026-03-20
 **Workflow:** sprint-health-audit v1.1.0
 **Sprint:** Sprint 5
 **Milestone(s):** M4, M1
 **Sprint Window:** 2026-03-16 → 2026-03-30
-**Scope:** active (default: in-progress + review); expanded to all sprint stories (0 active)
+**Scope:** active (in-progress + review); 0 active stories — all sprint-5 stories are done or backlog
 **Epic Filter:** none
-**Stories Scanned:** 6
-**Stories with Gaps:** 1
-**Stories Gap-Free:** 5
+**Stories Scanned:** 0 (active scope); 6 (all sprint stories for reference)
+**Stories with Gaps:** 0 (active scope); 1 (backlog story, informational)
+**Stories Gap-Free:** 0 (active scope); 5 clean done stories
+
+> **Note:** This report supersedes the earlier 2026-03-20 audit. The CRITICAL FEEDBACK gap on 5-2-2-miniaudio-sfx was resolved between audits (feedback.md and state.json deleted after successful pipeline completion). Three additional stories also completed today: 5-4-1-volume-controls (14:51), 7-4-1-native-ci-runners (16:13), and the 5-2-2 finalization.
 
 ---
 
 ## Overall Health
 
-**AT RISK** — 1 CRITICAL gap detected (FEEDBACK regression on 5-2-2-miniaudio-sfx)
+**HEALTHY** — 0 CRITICAL gaps, 0 HIGH gaps.
 
-> Classification: AT RISK = 1+ CRITICAL or 3+ HIGH gaps
+> Classification: HEALTHY = 0 CRITICAL and ≤2 HIGH gaps
 
 ---
 
@@ -32,7 +34,7 @@
 | IN_PROGRESS | 0 | 0 | 0 | 0 | 0 |
 | STALLED | 0 | 0 | 0 | 0 | 0 |
 | STRUCT_MISS | 0 | 0 | 0 | 1 | 1 |
-| FEEDBACK | 1 | 0 | 0 | 0 | 1 |
+| FEEDBACK | 0 | 0 | 0 | 0 | 0 |
 | PHANTOM | 0 | 0 | 0 | 0 | 0 |
 | PLACEHOLDER | 0 | 0 | 0 | 0 | 0 |
 | REACH_ORPHAN | 0 | 0 | 0 | 0 | 0 |
@@ -40,22 +42,26 @@
 | TEST_ANTIPATTERN | 0 | 0 | 0 | 0 | 0 |
 | CONTRACT_BREAK | 0 | 0 | 0 | 0 | 0 |
 | PEN_DRIFT | 0 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **1** | **0** | **0** | **1** | **2** |
+| **TOTAL** | **0** | **0** | **0** | **1** | **1** |
+
+> The single LOW gap is 5-3-1-audio-format-validation (backlog, no artifacts yet). This is expected — its prerequisites (5-2-1, 5-2-2) completed today. No remediation required before starting the story.
 
 ---
 
-## Artifact Inventory (6 stories)
+## Artifact Inventory (6 sprint stories)
 
 | Story | Story | ATDD | Session | Progress | Review | AC-FE | AC-BE | Pen | State | Feedback |
 |-------|-------|------|---------|----------|--------|-------|-------|-----|-------|----------|
-| 5-1-1-muaudio-abstraction-layer | yes | yes | yes | yes | yes | -- | -- | -- | yes (completed) | -- |
-| 5-2-1-miniaudio-bgm | yes | yes | yes | yes | yes | -- | -- | -- | yes (completed) | -- |
-| 5-2-2-miniaudio-sfx | yes | yes | yes | yes | yes | -- | -- | -- | yes (**failed**) | **YES** |
+| 5-1-1-muaudio-abstraction-layer | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 5-2-1-miniaudio-bgm | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 5-2-2-miniaudio-sfx | yes | yes | yes | yes | yes | -- | -- | -- | -- (deleted) | -- (deleted) |
 | 5-3-1-audio-format-validation | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| 5-4-1-volume-controls | yes | yes | yes | yes | yes | -- | -- | -- | yes (completed) | -- |
-| 7-4-1-native-ci-runners | yes | yes | yes | yes | yes | -- | -- | -- | yes (completed) | -- |
+| 5-4-1-volume-controls | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 7-4-1-native-ci-runners | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
 
-> Note: AC compliance YAML files not applicable for backend-only cpp-cmake stories. Pen sidecars not required for backend-only infrastructure stories (no frontend components).
+> AC compliance YAML not applicable — backend-only cpp-cmake stories.
+> Pen sidecars not required — no frontend components.
+> 5-2-2 state and feedback files deleted on disk (git staged deletion) after successful pipeline completion.
 
 ---
 
@@ -63,37 +69,19 @@
 
 ### CRITICAL Gaps
 
-#### GAP-001: 5-2-2-miniaudio-sfx — FEEDBACK (CRITICAL)
+None.
 
-| Field | Value |
-|-------|-------|
-| Story | 5-2-2-miniaudio-sfx |
-| Gap Type | FEEDBACK |
-| Severity | CRITICAL |
-| Artifact | `.paw/5-2-2-miniaudio-sfx.feedback.md` |
-| Failed Step | `code-review` (retry-2, exit-code 143 / SIGTERM during code-review-finalize) |
-| State | `.paw` state: `status: failed`, `current_step: code-review`, `last_run: 2026-03-20T00:56:19` |
+### HIGH Gaps
 
-**Finding:** The feedback file `.paw/5-2-2-miniaudio-sfx.feedback.md` exists, signaling a pipeline regression. Log `5-2-2-miniaudio-sfx_code-review_20260320_004102.log` shows `code-review-finalize` invoked on retry-2 terminated with exit-code 143 (SIGTERM) after 916s (2 turns, 1 tool call). The `.paw` state records `status: failed`.
+None.
 
-**Context (mitigating):** Artifact inspection shows the code review was functionally completed in the prior run:
-- `review.md` Step 3: **COMPLETE** — all 9 findings resolved, 19/19 ACs implemented, all validation gates passed
-- `story.md` status: **done**
-- `session-summary.md` Unresolved Blockers: **None** (all 9 issues fixed and verified)
-- ATDD: 54/54 scenarios GREEN
-- Quality gate: 711/711 files, 0 errors
+### MEDIUM Gaps
 
-The SIGTERM interrupted a second code-review-finalize attempt after an already-complete review. Implementation quality is sound; the gap is an unclean pipeline exit requiring formal resolution.
-
-**Action:** Run `./paw 5-2-2-miniaudio-sfx` — pipeline will consume the feedback file, retry from `code-review`, detect the complete review artifacts, and clear the failure state.
-
-**Suggested Workflow:** `./paw 5-2-2-miniaudio-sfx` (PIPELINE_RESUME — consumes feedback and retries)
-
----
+None.
 
 ### LOW Gaps
 
-#### GAP-002: 5-3-1-audio-format-validation — STRUCT_MISS (LOW)
+#### GAP-001: 5-3-1-audio-format-validation — STRUCT_MISS (LOW)
 
 | Field | Value |
 |-------|-------|
@@ -103,7 +91,7 @@ The SIGTERM interrupted a second code-review-finalize attempt after an already-c
 | Artifact | `_bmad-output/stories/5-3-1-audio-format-validation/` (directory missing) |
 | Story Status | backlog |
 
-**Finding:** Story 5-3-1 is `backlog` with no artifacts. This is expected — its prerequisites (5-2-1 done 2026-03-19, 5-2-2 done 2026-03-20) were only just completed. The story is now unblocked and ready to start.
+**Finding:** Story 5-3-1 is `backlog` with no artifacts. This is expected — its prerequisites (5-2-1 done 2026-03-19, 5-2-2 done 2026-03-20) were completed today. The story is now fully unblocked and ready to start.
 
 **Action:** Run `./paw 5-3-1-audio-format-validation` to begin the pipeline from create-story.
 
@@ -115,15 +103,6 @@ The SIGTERM interrupted a second code-review-finalize attempt after an already-c
 
 ```
 gap_registry = {
-  "5-2-2-miniaudio-sfx": [
-    {
-      type: "FEEDBACK",
-      severity: "CRITICAL",
-      detail: "Pipeline regressed from code-review (retry-2, exit-code 143 SIGTERM during code-review-finalize at 2026-03-20T00:56:19); review artifacts are functionally complete",
-      artifact_path: ".paw/5-2-2-miniaudio-sfx.feedback.md",
-      suggested_workflow: "./paw 5-2-2-miniaudio-sfx"
-    }
-  ],
   "5-3-1-audio-format-validation": [
     {
       type: "STRUCT_MISS",
@@ -142,10 +121,11 @@ gap_registry = {
 
 | Metric | Value |
 |--------|-------|
-| Stories scanned | 6 |
-| Stories with gaps | 1 (5-2-2 CRITICAL FEEDBACK) |
+| Stories scanned (active scope) | 0 |
+| Stories scanned (all sprint stories) | 6 |
+| Stories with gaps | 1 (5-3-1 LOW STRUCT_MISS) |
 | Stories gap-free | 5 |
-| CRITICAL gaps | 1 |
+| CRITICAL gaps | 0 |
 | HIGH gaps | 0 |
 | MEDIUM gaps | 0 |
 | LOW gaps | 1 |
@@ -154,7 +134,6 @@ gap_registry = {
 
 | Gap Type | Count | Story |
 |----------|-------|-------|
-| FEEDBACK | 1 | 5-2-2-miniaudio-sfx |
 | STRUCT_MISS | 1 | 5-3-1-audio-format-validation |
 
 ---
@@ -163,15 +142,27 @@ gap_registry = {
 
 | Story | Points | Status | Gap | Notes |
 |-------|--------|--------|-----|-------|
-| 5-1-1-muaudio-abstraction-layer | 3 | done | — | Clean |
-| 5-2-1-miniaudio-bgm | 5 | done | — | Clean |
-| 5-2-2-miniaudio-sfx | 5 | done* | CRITICAL (FEEDBACK) | Artifacts complete; pipeline state unclean |
-| 5-3-1-audio-format-validation | 3 | backlog | LOW (STRUCT_MISS) | Prerequisites unblocked 2026-03-20 |
-| 5-4-1-volume-controls | 2 | done | — | Clean |
-| 7-4-1-native-ci-runners | 5 | done | — | Clean |
-| **Total** | **23** | **5/6 done** | | 20 pts clean; 3 pts remaining (5-3-1) |
+| 5-1-1-muaudio-abstraction-layer | 3 | done | — | Clean. Completed 2026-03-19 |
+| 5-2-1-miniaudio-bgm | 5 | done | — | Clean. Completed 2026-03-19 |
+| 5-2-2-miniaudio-sfx | 5 | done | — | Clean. Completed 2026-03-20 (FEEDBACK gap resolved) |
+| 5-3-1-audio-format-validation | 3 | backlog | LOW (STRUCT_MISS) | Prerequisites unblocked 2026-03-20. Ready to start. |
+| 5-4-1-volume-controls | 2 | done | — | Clean. Completed 2026-03-20 |
+| 7-4-1-native-ci-runners | 5 | done | — | Clean. Completed 2026-03-20 |
+| **Total** | **23** | **5/6 done** | | 20 pts delivered clean; 3 pts remaining (5-3-1) |
 
-> *5-2-2: sprint-status.yaml marks `done`, but `.paw` state shows `failed`. One `./paw` run should resolve.
+**Velocity progress:** 20/23 pts delivered (87%). One story (5-3-1, 3 pts) blocked until today; now unblocked.
+
+---
+
+## Session Summaries — Unresolved Blockers Check (Last Session)
+
+| Story | Unresolved Blockers | User Action Required |
+|-------|---------------------|----------------------|
+| 5-1-1 | None | None |
+| 5-2-1 | None | None |
+| 5-2-2 | None (all 9 issues fixed) | None |
+| 5-4-1 | None (all 7 issues fixed) | None |
+| 7-4-1 | None (all issues fixed, MEDIUM-2 and LOW-1 deferred by design) | None |
 
 ---
 
@@ -179,7 +170,6 @@ gap_registry = {
 
 | Gap Type | Suggested Workflow |
 |----------|--------------------|
-| FEEDBACK | `./paw {story-key}` — pipeline consumes feedback and retries |
 | STRUCT_MISS | `./paw {story-key}` — auto-detect from create-story |
 
 Full taxonomy: `_bmad/pcc/partials/gap-taxonomy.md`
@@ -188,25 +178,21 @@ Full taxonomy: `_bmad/pcc/partials/gap-taxonomy.md`
 
 ## Step 10: Next Steps
 
-**Recommended remediation order:**
+**Sprint is HEALTHY. Recommended next action:**
 
-1. **CRITICAL — Resolve 5-2-2 feedback regression (est. ~5 min):**
-   ```
-   ./paw 5-2-2-miniaudio-sfx
-   ```
-   Expected: pipeline retries code-review, detects complete artifacts, clears feedback file, sets state to `completed`.
+Start the final remaining sprint-5 story:
 
-2. **LOW — Start 5-3-1 pipeline (prerequisites unblocked):**
-   ```
-   ./paw 5-3-1-audio-format-validation
-   ```
-   Prerequisites: 5-2-1 ✓ (done 2026-03-19), 5-2-2 ✓ (done 2026-03-20)
+```
+./paw 5-3-1-audio-format-validation
+```
 
-After remediation, re-run this audit (`/bmad:pcc:workflows:sprint-health-audit`). Target state: HEALTHY (0 CRITICAL, 0 HIGH).
+Prerequisites: 5-2-1 ✓ (done 2026-03-19), 5-2-2 ✓ (done 2026-03-20)
 
-To complete Sprint 5:
-- Resolve 5-2-2 feedback → confirms all 20 committed points are clean
-- Complete 5-3-1 pipeline → delivers final 3 points
-- Run `sprint-complete` when all 6 stories are done
+After completing 5-3-1, run `sprint-complete` to finalize Sprint 5:
+```
+/bmad:pcc:workflows:sprint-complete
+```
+
+All stories on track. Sprint 5 end date: 2026-03-30 (10 days remaining).
 
 *Generated by sprint-health-audit v1.1.0 — PCC workflow*
