@@ -548,3 +548,5 @@
 {"timestamp":"2026-03-20T20:07:41.074912+00:00","event_type":"step_started","story_key":"7-4-1-native-ci-runners","step":"dev-story","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-20T20:17:09.095418+00:00","event_type":"step_passed","story_key":"7-4-1-native-ci-runners","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":568.0,"input_tokens":12,"output_tokens":348,"cache_creation_tokens":147672,"cache_read_tokens":145032,"num_turns":4,"num_tool_calls":1}}
 {"timestamp":"2026-03-20T20:17:10.106315+00:00","event_type":"step_started","story_key":"7-4-1-native-ci-runners","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-20T20:19:18.756960+00:00","event_type":"step_passed","story_key":"7-4-1-native-ci-runners","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":128.7,"input_tokens":1512,"output_tokens":7702,"cache_creation_tokens":398216,"cache_read_tokens":7126541,"num_turns":58,"num_tool_calls":26}}
+{"timestamp":"2026-03-20T20:19:19.768043+00:00","event_type":"step_started","story_key":"7-4-1-native-ci-runners","step":"code-review","sprint":null,"epic":"7","data":{}}
