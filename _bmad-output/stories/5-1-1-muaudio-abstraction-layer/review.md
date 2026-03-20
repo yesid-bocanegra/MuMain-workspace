@@ -11,8 +11,8 @@
 | Step | Workflow | Status | Date |
 |------|----------|--------|------|
 | Step 1 | code-review-quality-gate | PASSED (`./ctl check` 711 files, 0 errors — re-verified 2026-03-19 via fresh run) | 2026-03-19 |
-| Step 2 | code-review-analysis | COMPLETE | 2026-03-19 |
-| Step 3 | code-review-finalize | COMPLETE | 2026-03-19 |
+| Step 2 | code-review-analysis | COMPLETE (re-run 2026-03-19 FRESH MODE — 3 new issues found) | 2026-03-19 |
+| Step 3 | code-review-finalize | PENDING re-run | 2026-03-19 |
 
 > **Quality Gate Evidence:**
 > - Fresh run 2026-03-19: `make -C MuMain format-check` EXIT:0 + `make -C MuMain lint` EXIT:0 (711 files, 0 errors)
@@ -33,19 +33,19 @@
 
 ## Step 2: Analysis Results
 
-**Completed:** 2026-03-19
-**Status:** COMPLETE — Issues found, no BLOCKERs
+**Completed:** 2026-03-19 (FRESH MODE re-run)
+**Status:** COMPLETE — Prior issues all fixed; 3 NEW issues found in fresh adversarial pass
 
-### Severity Summary
+### Severity Summary (Fresh Pass)
 
-| Severity | Count |
-|----------|-------|
-| BLOCKER  | 0 |
-| CRITICAL | 0 |
-| HIGH     | 3 |
-| MEDIUM   | 4 |
-| LOW      | 3 |
-| **Total** | **10** |
+| Severity | Count | Prior Run | Net New |
+|----------|-------|-----------|---------|
+| BLOCKER  | 0 | 0 | 0 |
+| CRITICAL | 0 | 0 | 0 |
+| HIGH     | 1 | 3 (all fixed) | +1 new |
+| MEDIUM   | 1 | 4 (all fixed) | +1 new |
+| LOW      | 1 | 3 (all fixed) | +1 new |
+| **Total new** | **3** | **10 (fixed)** | |
 
 ---
 
@@ -64,13 +64,13 @@ All ACs are met at the contract level. No AC is fully absent. One partial implem
 
 ### Task Audit
 
-All 7 tasks and subtasks are marked `[x]`. Evidence for each was verified:
+All 7 tasks and subtasks are marked `[x]`. Evidence for each was verified in the actual files:
 - Task 1 (IPlatformAudio.h): File exists, 13 pure virtual methods, `extern g_platformAudio` declaration ✓
 - Task 2 (vendor miniaudio): `src/dependencies/miniaudio/miniaudio.h` (v0.11.25) and `stb_vorbis.c` (v1.22) present ✓
 - Task 3 (MiniAudioImpl.cpp): File exists with correct `#define MINIAUDIO_IMPLEMENTATION` pattern ✓
-- Task 4 (MiniAudioBackend): All 15 subtasks implemented; see HIGH findings for partial impl issues ✓
+- Task 4 (MiniAudioBackend): All 15 subtasks verified in source; see NEW-HIGH-1 for ordering issue ✓
 - Task 5 (CMake): All 5 subtasks present in `src/CMakeLists.txt` ✓
-- Task 6 (Catch2 tests): 6 TEST_CASEs in `tests/audio/test_muaudio_abstraction.cpp`, CMakeLists updated ✓
+- Task 6 (Catch2 tests): 7 TEST_CASEs (6 original + 1 added by LOW-2 fix) in `tests/audio/test_muaudio_abstraction.cpp`, CMakeLists updated ✓
 - Task 7 (Quality gate): `./ctl check` PASSED 711 files, 0 errors ✓
 
 ---
@@ -83,116 +83,71 @@ All 7 tasks and subtasks are marked `[x]`. Evidence for each was verified:
 **Coverage:** 100%
 
 **ATDD Truth Verification:**
-- All 6 TEST_CASEs exist in `tests/audio/test_muaudio_abstraction.cpp` ✓
+- All 7 TEST_CASEs exist in `tests/audio/test_muaudio_abstraction.cpp` ✓
 - Tests compile on macOS/Linux without Win32 dependencies ✓
 - `AC-3`, `AC-7`, `AC-8` correctly classified as build/git-only validations (no Catch2 runtime test) ✓
-- `AC-5` (polyphonic slots) indirectly covered via construction tests — no direct `LoadSound` test (see LOW finding)
+- `AC-5` (polyphonic slots) indirectly covered via construction tests — no direct `LoadSound` test (acceptable)
 
 **ATDD-Story Sync:** In sync. All story [x] tasks have corresponding ATDD entries.
 
 ---
 
-### Issues Found
+### Prior Issues (All Fixed — Verified in Source)
+
+Prior analysis found 10 issues (3 HIGH, 4 MEDIUM, 3 LOW) — all marked fixed and verified present in actual code:
+
+#### HIGH-1 (prior): `PlaySound()` silently drops 3D position update — **FIXED (verified line 206-208)**
+#### HIGH-2 (prior): `GetMusicPosition()` always returns 0 for streaming — **FIXED (verified lines 448-466, uses seconds API)**
+#### HIGH-3 (prior): `MiniAudioBackend.h` includes `miniaudio.h` — **DOCUMENTED (lines 7-14, PIMPL deferred to 5.2.1)**
+#### MEDIUM-1 (prior): `Set3DSoundPosition()` stub — **BY DESIGN (lines 272-277, documented)**
+#### MEDIUM-2 (prior): `PlaySound()` returns `S_OK` when uninitialized — **FIXED (verified line 178: `return S_FALSE`)**
+#### MEDIUM-3 (prior): `StopMusic(enforce=false)` resource documentation — **FIXED (lines 367-408, documented)**
+#### MEDIUM-4 (prior): `LoadSound()` partial load leaves stale state — **FIXED (verified lines 115-116: unconditional reset)**
+#### LOW-1 (prior): `[[nodiscard]]` on `.cpp` definitions — **FIXED (verified: not present in `.cpp` definitions)**
+#### LOW-2 (prior): No uninitialized backend safety test — **FIXED (verified: TEST_CASE added at lines 179-235 of test file)**
+#### LOW-3 (prior): `StopMusic()` nullptr name semantics undocumented — **FIXED (verified lines 378-381: documented)**
 
 ---
 
-#### HIGH-1: `PlaySound()` silently drops 3D position update from `pObject`
-- **Category:** CODE-QUALITY / AC-IMPL
-- **Severity:** HIGH
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:163-193`
-- **Description:** Subtask 4.5 explicitly requires: "if `enable3D` and `pObject != nullptr`, call `ma_sound_set_position` from `pObject`'s world position". The implementation selects the round-robin channel and starts the sound, but never reads `pObject` or calls `ma_sound_set_position`. The `pObject` parameter is accepted but silently unused. For 3D-enabled sounds, playback starts at position (0,0,0) regardless of where the OBJECT is in the world.
-- **Fix:** In `PlaySound()`, after `ma_sound_start(pSound)`, add a check: `if (m_sound3DEnabled[bufIdx] && pObject != nullptr)` → call `ma_sound_set_position` with the object's world X/Y/Z coordinates (matching `Set3DSoundPosition()` OBJECT field access pattern from `DSplaysound.cpp`).
-- **Status:** fixed — Added `ma_sound_set_position(pSound, pObject->Position[0], pObject->Position[1], pObject->Position[2])` after `ma_sound_start()` guarded by `m_sound3DEnabled[bufIdx] && pObject != nullptr`.
+### NEW Issues Found (Fresh Adversarial Pass)
 
 ---
 
-#### HIGH-2: `GetMusicPosition()` returns 0 for all async-streamed music
+#### NEW-HIGH-1: `ma_sound_set_position()` called AFTER `ma_sound_start()` — race condition on audio thread
 - **Category:** CODE-QUALITY / LOGIC-BUG
 - **Severity:** HIGH
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:399-429`
-- **Description:** Music is loaded with `MA_SOUND_FLAG_STREAM | MA_SOUND_FLAG_ASYNC` (line 331). For streaming/async sounds, `ma_sound_get_length_in_pcm_frames()` returns `MA_RESULT` indicating the length is unavailable until fully read — `totalFrames` will be 0 for most of the song duration. The guard `if (totalFrames == 0) return 0;` means `GetMusicPosition()` returns 0 for the entire duration of any streaming music track. The return value is always 0 instead of a 0–100 percentage. AC-VAL-1 does not catch this because the test only checks `GetMusicPosition() == 0` for an uninitialized backend, which trivially passes.
-- **Fix:** Use `ma_sound_get_cursor_in_seconds()` to get current position in seconds, then use a known or estimated track duration. Alternatively, remove `MA_SOUND_FLAG_ASYNC` for the length query path, or use `ma_data_source_get_length_in_pcm_frames()` on the underlying data source after the stream is fully opened.
-- **Status:** fixed — Replaced PCM frames approach with `ma_sound_get_cursor_in_seconds()` / `ma_sound_get_length_in_seconds()` pair which works correctly for streaming audio. Result clamped to 0–100.
+- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:199-208`
+- **Description:** `PlaySound()` calls `ma_sound_start(pSound)` at line 201, then calls `ma_sound_set_position()` at line 208. Once `ma_sound_start()` is called, the miniaudio engine's audio thread begins mixing the sound immediately. If the audio thread processes its first mix tick before `ma_sound_set_position()` executes on the main thread, the first audio frame(s) are rendered at position (0,0,0). This is a data race: the audio thread reads position while the main thread is writing it. The correct pattern per miniaudio documentation is to configure all sound properties (volume, looping, position) BEFORE calling `ma_sound_start()`. This supersedes the HIGH-1 fix which correctly added the position call but placed it in the wrong order.
+- **Fix:** Move the `ma_sound_set_position()` call to BEFORE `ma_sound_start()`:
+  ```cpp
+  ma_sound_set_looping(pSound, looped ? MA_TRUE : MA_FALSE);
+  if (m_sound3DEnabled[bufIdx] && pObject != nullptr)
+  {
+      ma_sound_set_position(pSound, pObject->Position[0], pObject->Position[1], pObject->Position[2]);
+  }
+  ma_sound_start(pSound);
+  ```
+- **Status:** pending
 
 ---
 
-#### HIGH-3: `MiniAudioBackend.h` directly includes `miniaudio.h` — breaks include isolation
-- **Category:** CODE-QUALITY / ARCHITECTURE
-- **Severity:** HIGH
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h:8`
-- **Description:** `MiniAudioBackend.h` has `#include "miniaudio.h"` at line 8. This means every TU that `#include "MiniAudioBackend.h"` will transitively include the entire 95,868-line miniaudio header. The separation into `MiniAudioImpl.cpp` with `SKIP_PRECOMPILE_HEADERS ON` was designed precisely to isolate the miniaudio header. However, anyone including `MiniAudioBackend.h` (including `MiniAudioBackend.cpp` and `test_muaudio_abstraction.cpp`) pulls in miniaudio.h unconditionally. This bloats compile times significantly and may cause PCH pollution in TUs that don't call `SKIP_PRECOMPILE_HEADERS ON`.
-- **Fix:** Use a [PIMPL/forward-declare pattern](https://en.cppreference.com/w/cpp/language/pimpl): forward-declare `struct ma_engine; struct ma_sound;` in `MiniAudioBackend.h` and move the `#include "miniaudio.h"` into `MiniAudioBackend.cpp`. The private members `ma_engine m_engine{}` and `std::array<..., ma_sound, ...> m_sounds{}` require the full type for stack allocation, so a `std::unique_ptr<Impl>` pimpl would be required for true isolation. Alternatively, add an opaque handle approach: store miniaudio pointers as `void*` in the header and cast in the `.cpp`. For this story's scope, adding a comment documenting the known issue and tracking it as a future improvement is acceptable.
-- **Status:** fixed — Added comprehensive include isolation documentation comment in `MiniAudioBackend.h` explaining the known limitation (PIMPL refactor deferred to 5.2.1), the reason the include is required (stack-allocated full types), and warning callers not to add this include elsewhere. The architectural constraint is documented and tracked.
-
----
-
-#### MEDIUM-1: `Set3DSoundPosition()` is a no-op stub
-- **Category:** CODE-QUALITY / PARTIAL-IMPL
+#### NEW-MEDIUM-1: `DbToLinear()` lacks input range clamping — positive `dsVol` produces gain > 1.0
+- **Category:** CODE-QUALITY / ROBUSTNESS
 - **Severity:** MEDIUM
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:253-258`
-- **Description:** The method body is empty with a comment noting full implementation is deferred to Story 5.2.1. While the Dev Notes explicitly acknowledge this ("Stub satisfies the interface contract"), calls to `Set3DSoundPosition()` during the game loop in Stories 5.2.x will have no effect until 5.2.1 is complete. This is an intentional design decision, not a defect, but it means 3D audio positioning is non-functional in this story.
-- **Fix:** No change required for this story — document in story completion notes that 3D position update is deferred to 5.2.1. Ensure 5.2.1 story explicitly lists `Set3DSoundPosition()` implementation as a required task.
-- **Status:** fixed (by design — acknowledged design decision, documented in Dev Notes and story completion notes; 5.2.1 must implement full `Set3DSoundPosition()` behaviour)
+- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:474-476`
+- **Description:** `DbToLinear(long dsVol)` computes `std::pow(10.0f, static_cast<float>(dsVol) / 2000.0f)`. DirectSound documents the valid range as `DSBVOLUME_MIN (-10000)` to `0`. If any legacy call site (when Stories 5.2.1/5.2.2 delegate to `g_platformAudio`) passes a positive value (e.g., misreading percentage vs dB scale), the result is gain > 1.0. miniaudio does not hard-clamp the volume, so this would produce distorted over-amplified audio. There is no input validation.
+- **Fix:** Add clamping: `return std::pow(10.0f, std::min(static_cast<float>(dsVol), 0.0f) / 2000.0f);` or document the precondition with `assert(dsVol <= 0)`.
+- **Status:** pending
 
 ---
 
-#### MEDIUM-2: `PlaySound()` returns `S_OK` silently when not initialized
-- **Category:** CODE-QUALITY / ERROR-HANDLING
-- **Severity:** MEDIUM
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:165-168`
-- **Description:** When `!m_initialized`, `PlaySound()` returns `S_OK` (success). This is a silent failure — the caller believes playback succeeded, but no audio is produced. `S_FALSE` or a custom error code would be more appropriate. This also differs from the `StopSound`, `AllStopSound`, `SetVolume`, `SetMasterVolume` functions that use a `return;` void pattern.
-- **Fix:** Return `S_FALSE` when `!m_initialized` to signal that the call was a no-op, consistent with the `!m_soundLoaded[bufIdx]` path which also returns `S_FALSE`.
-- **Status:** fixed — Changed `return S_OK` to `return S_FALSE` in the `!m_initialized` guard of `PlaySound()`.
-
----
-
-#### MEDIUM-3: `StopMusic(enforce=false)` leaves stopped stream consuming resources
-- **Category:** CODE-QUALITY / RESOURCE-MANAGEMENT
-- **Severity:** MEDIUM
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:353-377`
-- **Description:** When `enforce=false` and the name matches (or name is `nullptr`), `ma_sound_stop()` is called but NOT `ma_sound_uninit()`. The streaming decoder/buffer remains open. For `MA_SOUND_FLAG_STREAM`, this means the file handle and decoder state remain allocated. The original `wzAudioStop()` call (Winmain.cpp line 118/130) is a hard stop. The `enforce=false` path semantics here are "pause" rather than "stop-and-release". This is undocumented and inconsistent with callers' expectations.
-- **Fix:** Document the pause vs stop semantics in the function comment. Add `m_musicPaused` flag if the distinction is intentional. If unintentional, call `ma_sound_uninit` in the non-enforce path too.
-- **Status:** fixed — Added comprehensive documentation comment distinguishing `enforce=true` (hard stop, `ma_sound_uninit`, releases file handle and decoder) vs `enforce=false` (soft pause, stream stays open). Documented that `enforce=false` is a pause operation and callers should use `enforce=true` when done with a track to avoid resource leaks.
-
----
-
-#### MEDIUM-4: `LoadSound` `channels` parameter ignored when load fails mid-loop — state not fully cleaned
-- **Category:** CODE-QUALITY / ERROR-HANDLING
-- **Severity:** MEDIUM
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:128-156`
-- **Description:** When `ma_sound_init_from_file()` fails at channel `ch`, the code correctly uninits channels `0..ch-1`. However, `m_sound3DEnabled[bufIdx]` and `m_activeChannel[bufIdx]` are left at their previous/default values and are NOT explicitly reset to clean state. `m_soundLoaded[bufIdx]` remains `false`, so a retry of `LoadSound` for the same slot will not call `uninit` on the already-cleaned channels (correct). But `m_activeChannel[bufIdx]` could still hold a stale value from a previous successful load of the same slot that was then overwritten with a failed load.
-- **Fix:** At the beginning of `LoadSound`, after the `bufIdx` bounds check, reset `m_activeChannel[bufIdx] = 0` and `m_sound3DEnabled[bufIdx] = false` unconditionally (before the unload block). This ensures clean state regardless of load success or failure.
-- **Status:** fixed — Added unconditional `m_activeChannel[bufIdx] = 0; m_sound3DEnabled[bufIdx] = false;` reset before the unload block in `LoadSound()`, ensuring clean state on both successful and failed loads.
-
----
-
-#### LOW-1: `[[nodiscard]]` repeated on function definition in `.cpp`
-- **Category:** CODE-STYLE
+#### NEW-LOW-1: `PlaySound()` seeks to PCM frame 0 on a potentially-playing channel — audible glitch for looped sounds
+- **Category:** CODE-QUALITY / AUDIO-BEHAVIOR
 - **Severity:** LOW
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:39, 384, 399`
-- **Description:** `[[nodiscard]]` appears on both the declaration (header) and the definition (`.cpp`) for `Initialize()`, `IsEndMusic()`, and `GetMusicPosition()`. The C++ standard only requires the attribute on the declaration for the nodiscard diagnostic to fire. Repeating it on the definition is compiler-tolerated but stylistically redundant and not consistent with how the rest of the codebase handles `[[nodiscard]]` definitions (the other Platform files only put it on declarations).
-- **Fix:** Remove `[[nodiscard]]` from the `.cpp` definitions, keeping it only in the header declarations.
-- **Status:** fixed — Removed `[[nodiscard]]` from all three `.cpp` definitions (`Initialize()`, `IsEndMusic()`, `GetMusicPosition()`). Attributes remain in the header declarations where they are effective.
-
----
-
-#### LOW-2: No direct test for `PlaySound`/`StopSound`/`SetVolume` no-op path
-- **Category:** TEST-QUALITY
-- **Severity:** LOW
-- **File:** `MuMain/tests/audio/test_muaudio_abstraction.cpp`
-- **Description:** The test file has 6 TEST_CASEs covering interface purity, `g_platformAudio` default, construction, `Initialize()` graceful failure, `Shutdown()` no-op, and namespace compliance. However, none test the `!m_initialized` guard paths of `PlaySound`, `StopSound`, `AllStopSound`, `SetVolume`, or `SetMasterVolume`. These paths are trivially testable without an audio device (call method on uninitialized backend, verify no crash). The test from Subtask 6.5 only calls `IsEndMusic()`, not the full set of methods.
-- **Fix:** Add a `TEST_CASE("AC-2: All IPlatformAudio methods are safe to call on uninitialized backend")` that creates an uninitialized `MiniAudioBackend` and calls all 13 methods with `REQUIRE_NOTHROW`. This would also catch the HIGH-1 regression if `pObject` were ever dereferenced.
-- **Status:** fixed — Added `TEST_CASE("AC-2: All IPlatformAudio methods are safe to call on uninitialized backend")` to `test_muaudio_abstraction.cpp` covering all 13 methods via `REQUIRE_NOTHROW`. Includes `PlaySound(nullptr)` to guard against HIGH-1 null-deref regression.
-
----
-
-#### LOW-3: `StopMusic(const char* name, ...)` — `name` can be `nullptr` in non-enforce path without explicit guard
-- **Category:** CODE-QUALITY / NULL-SAFETY
-- **Severity:** LOW
-- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:353-377`
-- **Description:** The non-enforce path checks `if (!enforce && name != nullptr && ...)` — the `nullptr` check is a guard that SHORT-CIRCUITS, skipping the name match if `name == nullptr`. The result is: `StopMusic(nullptr, false)` calls `ma_sound_stop()` unconditionally (it falls through to line 369). This seems intentional (null name = stop whatever is playing) but is not documented. The `PlayMusic(name, enforce)` has an explicit `if (name == nullptr) return;` guard, making the null-handling asymmetric.
-- **Fix:** Document the `nullptr` name semantics in the `StopMusic` comment block: "pass `nullptr` to stop the current track regardless of name".
-- **Status:** fixed — Added explicit documentation of `nullptr` name semantics in `StopMusic()` comment block (combined with MEDIUM-3 documentation fix): "nullptr = stop current track regardless of name (unconditional soft stop)".
+- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp:199-201`
+- **Description:** The round-robin channel selection wraps after `MAX_CHANNEL` (4) slots. If all 4 channels are busy with looping sounds (e.g., environment loops), the 5th `PlaySound()` call reuses the oldest channel. `ma_sound_seek_to_pcm_frame(pSound, 0)` is called unconditionally before `ma_sound_start()`, which resets the playhead of the channel — including an active looping sound — causing an audible discontinuity. For short SFX this is inaudible; for sustained loops it produces a pop/click artifact.
+- **Fix:** For this infrastructure story, document the known behavior in `PlaySound()` comments. A full polyphonic manager (priority-based eviction) is 5.2.x scope. Alternatively, call `ma_sound_stop(pSound)` before `ma_sound_seek_to_pcm_frame()` to at least prevent the seek-during-play race.
+- **Status:** pending
 
 ---
 
@@ -205,17 +160,21 @@ All 7 tasks and subtasks are marked `[x]`. Evidence for each was verified:
 | RED (incomplete) | 0 |
 | Coverage | 100% |
 | Sync issues | 0 |
-| Quality issues | 1 (LOW-2: missing no-op path tests) |
+| Quality issues | 0 (LOW-2 fix verified in test file) |
 
 ---
 
-## Overall Verdict
+## Overall Verdict (Fresh Pass 2026-03-19)
 
 **Story 5.1.1 PASSES code review analysis with no BLOCKERs.**
 
-The implementation delivers a clean abstraction layer foundation. The three HIGH findings are real code defects (3D position drop in `PlaySound`, `GetMusicPosition` always returning 0, header include isolation) that need to be addressed before this story is finalized.
+All 10 prior issues have been verified fixed in the actual source code. The fresh adversarial pass found 3 new issues:
 
-The Set3DSoundPosition stub (MEDIUM-1) is an acknowledged design decision per Dev Notes.
+- **NEW-HIGH-1** (pending): `ma_sound_set_position()` called AFTER `ma_sound_start()` — audio thread race condition; position should be set before starting the sound
+- **NEW-MEDIUM-1** (pending): `DbToLinear()` lacks positive-value clamping — passing `dsVol > 0` produces gain > 1.0
+- **NEW-LOW-1** (pending): Round-robin channel reuse seeks-to-0 on potentially-playing looped sounds — pop/click artifact risk
+
+These 3 new issues must be addressed in code-review-finalize before the story can be closed.
 
 **Next:** `/bmad:pcc:workflows:code-review-finalize 5-1-1-muaudio-abstraction-layer`
 
@@ -223,8 +182,15 @@ The Set3DSoundPosition stub (MEDIUM-1) is an acknowledged design decision per De
 
 ## Step 3: Resolution
 
-**Completed:** 2026-03-19
-**Final Status:** done
+**Status:** PENDING re-run — 3 new issues found in fresh code-review-analysis pass (2026-03-19)
+**New issues:** NEW-HIGH-1 (position ordering), NEW-MEDIUM-1 (DbToLinear clamping), NEW-LOW-1 (channel reuse seek)
+**Action required:** Run `/bmad:pcc:workflows:code-review-finalize 5-1-1-muaudio-abstraction-layer` to fix and finalize.
+
+---
+
+### Prior Resolution (2026-03-19)
+
+**Previous Status:** done (prior run)
 
 ### Summary
 
@@ -285,3 +251,45 @@ The Set3DSoundPosition stub (MEDIUM-1) is an acknowledged design decision per De
 - `MuMain/tests/audio/test_muaudio_abstraction.cpp` — added uninitialized backend safety test case (LOW-2)
 - `_bmad-output/stories/5-1-1-muaudio-abstraction-layer/story.md` — status updated to done
 - `_bmad-output/stories/5-1-1-muaudio-abstraction-layer/review.md` — this file
+
+
+---
+
+## Code Review Analysis (Step 2)
+
+**Date:** 2026-03-19 19:13
+**Reviewer:** Claude (Adversarial Analysis)
+
+⚡ Skill: bmad-pcc-code-review-analysis
+💬 ## Code Review Analysis Complete — Story 5-1-1
+
+**Quality gate:** 711 files, 0 errors (PASS)
+**ATDD checklist:** 92/92 items complete (100%) — no blocker
+**Prior issues:** All 10 previously found issues confirmed fixed
+
+**3 New Issues Found:**
+
+| Severity | Location | Issue |
+|----------|----------|-------|
+| **HIGH** | `MiniAudioBackend.cpp:199-208` | Race condition: `ma_sound_set_position()` called after `ma_sound_start()` — first mix tick renders at (0,0,0) |
+| **MEDIUM** | `MiniAudioBackend.cpp:474-476` | `DbToLinear()` missing input clamp — positive `dsVol` produces gain >1.0, causing distortion |
+| **LOW** | `MiniAudioBackend.cpp:199-201` | `ma_sound_seek_to_pcm_frame(0)` on possibly-playing channel causes pop/click artifact |
+
+**Next step:** Run `/bmad:pcc:workflows:code-review-finalize 5-1-1-muaudio-abstraction-layer` to fix these 3 issues and finalize the story.
+
+📋 Result:
+## Code Review Analysis Complete — Story 5-1-1
+
+**Quality gate:** 711 files, 0 errors (PASS)
+**ATDD checklist:** 92/92 items complete (100%) — no blocker
+**Prior issues:** All 10 previously found issues confirmed fixed
+
+**3 New Issues Found:**
+
+| Severity | Location | Issue |
+|----------|----------|-------|
+| **HIGH** | `MiniAudioBackend.cpp:199-208` | Race condition: `ma_sound_set_position()` called after `ma_sound_start()` — first mix tick renders at (0,0,0) |
+| **MEDIUM** | `MiniAudioBackend.cpp:474-476` | `DbToLinear()` missing input clamp — positive `dsVol` produces gain >1.0, causing distortion |
+| **LOW** | `MiniAudioBackend.cpp:199-201` | `ma_sound_seek_to_pcm_frame(0)` on possibly-playing channel causes pop/click artifact |
+
+**Next step:** Run `/bmad:pcc:workflows:code-review-finalize 5-1-1-muaudio-abstraction-layer` to fix these 3 issues and finalize the story.
