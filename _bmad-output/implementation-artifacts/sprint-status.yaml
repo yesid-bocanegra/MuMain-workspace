@@ -444,7 +444,7 @@ development_status:
   5-2-1-miniaudio-bgm: done                       # 5 pts | Flow:F | Deps: 5.1.1 | code-review-finalize completed 2026-03-19
   5-2-2-miniaudio-sfx: done                      # 5 pts | Flow:F | Deps: 5.1.1 | code-review-finalize completed 2026-03-20
   5-3-1-audio-format-validation: backlog        # 3 pts | Flow:F | Deps: 5.2.1, 5.2.2
-  5-4-1-volume-controls: review                    # 2 pts | Flow:F | Deps: 5.2.1, 5.2.2
+  5-4-1-volume-controls: done                      # 2 pts | Flow:F | Deps: 5.2.1, 5.2.2 | code-review-finalize completed 2026-03-20
   epic-5-retrospective: optional
 
   # EPIC-6: Cross-Platform Gameplay Validation [VS-1] [Feature] (23 pts)
