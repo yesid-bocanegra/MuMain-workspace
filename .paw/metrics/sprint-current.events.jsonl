@@ -480,3 +480,5 @@
 {"timestamp":"2026-03-20T04:15:40.577907+00:00","event_type":"step_started","story_key":"5-2-2-miniaudio-sfx","step":"create-story","sprint":null,"epic":"5","data":{}}
 {"timestamp":"2026-03-20T04:24:28.904744+00:00","event_type":"step_passed","story_key":"5-2-2-miniaudio-sfx","step":"create-story","sprint":null,"epic":"5","data":{"duration_seconds":528.3,"input_tokens":11,"output_tokens":338,"cache_creation_tokens":145730,"cache_read_tokens":96248,"num_turns":3,"num_tool_calls":1}}
 {"timestamp":"2026-03-20T04:24:29.915787+00:00","event_type":"step_started","story_key":"5-2-2-miniaudio-sfx","step":"validate-story","sprint":null,"epic":"5","data":{}}
+{"timestamp":"2026-03-20T04:27:57.399670+00:00","event_type":"step_passed","story_key":"5-2-2-miniaudio-sfx","step":"validate-story","sprint":null,"epic":"5","data":{"duration_seconds":207.5,"input_tokens":11,"output_tokens":410,"cache_creation_tokens":121370,"cache_read_tokens":140621,"num_turns":3,"num_tool_calls":1}}
+{"timestamp":"2026-03-20T04:27:58.403537+00:00","event_type":"step_started","story_key":"5-2-2-miniaudio-sfx","step":"atdd","sprint":null,"epic":"5","data":{}}
