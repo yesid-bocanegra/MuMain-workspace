@@ -1,6 +1,6 @@
 # Story 7.4.1: Native Platform CI Runners
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 

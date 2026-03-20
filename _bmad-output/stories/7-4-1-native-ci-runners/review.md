@@ -11,7 +11,7 @@
 |------|--------|------|
 | 1. Quality Gate | PASSED | 2026-03-20 |
 | 2. Code Review Analysis | COMPLETED | 2026-03-20 |
-| 3. Code Review Fixes | COMPLETED | 2026-03-20 |
+| 3. Code Review Finalize | COMPLETED | 2026-03-20 |
 
 ## Quality Gate Progress
 
@@ -210,41 +210,37 @@ All ATDD items are marked [x]. All test files exist and follow the CMake script 
 - Code generation: N/A
 - Quality gate: PASSED (complete run, 711 files)
 
-## Step 3: Code Review Fixes
+## Step 3: Resolution
 
-**Date:** 2026-03-20
-**Iterations:** 1
-**Quality Gate After Fixes:** PASSED (711 files, 0 issues)
+**Completed:** 2026-03-20
+**Final Status:** done
 
-### Fix Summary
+### Summary
 
 | Metric | Count |
 |--------|-------|
-| Total Issues | 6 |
-| Fixed | 4 |
-| Deferred (informational) | 2 |
-| Remaining | 0 |
-| Iterations Used | 1 |
+| Issues Fixed | 4 |
+| Issues Deferred (informational) | 2 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **HIGH-1:** fixed — `MU_ENABLE_DOTNET=OFF` added to native base presets in `CMakePresets.json`
+- **HIGH-2:** fixed — ATDD test `test_ac8_dotnet_disabled_native_runners.cmake` rewritten to validate `CMakePresets.json` directly
+- **MEDIUM-1:** fixed — `BUILD_TESTING=ON` added to native base presets + `--no-tests=error` on ctest invocations
+- **MEDIUM-2:** deferred (informational) — Per-job concurrency groups; follows existing AC-STD-1 pattern
+- **MEDIUM-3:** fixed — Cache key hash narrowed to FetchContent source files (`CMakeLists.txt` + `src/CMakeLists.txt`)
+- **LOW-1:** deferred (informational) — Homebrew version pinning; low probability risk
+
+### Story Status Update
+
+- **Previous Status:** review
+- **New Status:** done
+- **Story File Updated:** _bmad-output/stories/7-4-1-native-ci-runners/story.md
+- **ATDD Checklist Synchronized:** Yes
 
 ### Files Modified
 
-| File | Changes |
-|------|---------|
-| `MuMain/CMakePresets.json` | Added `MU_ENABLE_DOTNET=OFF` and `BUILD_TESTING=ON` to `linux-base` and `macos-base` cacheVariables |
-| `MuMain/.github/workflows/ci.yml` | Added `--no-tests=error` to ctest steps; narrowed SDL3 cache key hash to `CMakeLists.txt` + `src/CMakeLists.txt` |
-| `MuMain/tests/build/test_ac8_dotnet_disabled_native_runners.cmake` | Rewrote Check 2 to validate presets file instead of ci.yml global search; removed false "implicit" claim |
-
-### Issue Resolution Detail
-
-| Issue | Severity | Resolution |
-|-------|----------|------------|
-| HIGH-1 | HIGH | **Fixed** — `MU_ENABLE_DOTNET=OFF` added to native base presets |
-| HIGH-2 | HIGH | **Fixed** — ATDD test now validates CMakePresets.json directly |
-| MEDIUM-1 | MEDIUM | **Fixed** — `BUILD_TESTING=ON` added to native base presets + `--no-tests=error` on ctest |
-| MEDIUM-2 | MEDIUM | **Deferred** — Informational; follows existing AC-STD-1 pattern |
-| MEDIUM-3 | MEDIUM | **Fixed** — Cache key hash narrowed to FetchContent source files |
-| LOW-1 | LOW | **Deferred** — Informational; low probability risk |
-
-**Status: ✅ ALL ACTIONABLE ISSUES FIXED**
-
-**Next:** `/bmad:pcc:workflows:code-review-finalize 7-4-1-native-ci-runners`
+- `MuMain/CMakePresets.json` - Added `MU_ENABLE_DOTNET=OFF` and `BUILD_TESTING=ON` to `linux-base` and `macos-base` cacheVariables
+- `MuMain/.github/workflows/ci.yml` - Added `--no-tests=error` to ctest steps; narrowed SDL3 cache key hash
+- `MuMain/tests/build/test_ac8_dotnet_disabled_native_runners.cmake` - Rewrote Check 2 to validate presets file instead of ci.yml global search
