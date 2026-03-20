@@ -1,8 +1,9 @@
 # Progress: Story 7.4.1 Native Platform CI Runners
 
-**Status:** in-progress
+**Status:** complete
 **Started:** 2026-03-20
-**Session Count:** 1
+**Completed:** 2026-03-20
+**Session Count:** 2
 
 ---
 
@@ -12,9 +13,9 @@
 |-------|-------|
 | Current Task | ALL TASKS COMPLETE |
 | Task Progress | 100% |
-| Next Action | Ready for code review quality gate |
+| Next Action | code-review-quality-gate |
 | Blocker | None |
-| Active Files | MuMain/.github/workflows/ci.yml |
+| Active Files | N/A (complete) |
 
 ---
 
@@ -31,12 +32,12 @@
 
 | Task | Status | Subtasks | Notes |
 |------|--------|----------|-------|
-| Task 1: macOS native build job | [ ] | 6 subtasks | Configure, build, test for macos-latest |
-| Task 2: Linux native build job | [ ] | 6 subtasks | Configure, build, test for ubuntu-latest |
-| Task 3: Preserve MinGW job | [ ] | 2 subtasks | Verify existing job unchanged |
-| Task 4: Update release dependencies | [ ] | 2 subtasks | Update release.needs array |
-| Task 5: Handle CMake preset conditions | [ ] | 3 subtasks | Manage host-OS conditions |
-| Task 6: Validate all jobs pass | [ ] | 2 subtasks | Test coverage |
+| Task 1: macOS native build job | [x] | 6 subtasks | Configure, build, test for macos-latest |
+| Task 2: Linux native build job | [x] | 6 subtasks | Configure, build, test for ubuntu-latest |
+| Task 3: Preserve MinGW job | [x] | 2 subtasks | Verify existing job unchanged |
+| Task 4: Update release dependencies | [x] | 2 subtasks | Update release.needs array |
+| Task 5: Handle CMake preset conditions | [x] | 3 subtasks | Manage host-OS conditions |
+| Task 6: Validate all jobs pass | [x] | 2 subtasks | Test coverage |
 
 ---
 
@@ -97,3 +98,13 @@ None
 - Acceptance criteria: 11/11 met
 - Standard criteria: 3/3 met
 - Ready for code review quality gate
+
+**Session 2 (2026-03-20) — Completion Phase**
+- Executed Step 9 (completion validation) and Step 10 (finalize)
+- Pre-status gate PASSED: All 6 tasks, 16 subtasks verified as [x]
+- Ran all 8 ATDD CTest tests locally: 8/8 PASS
+- Quality gate PASSED: `./ctl check` — 0 violations (711 files)
+- ATDD checklist: 45/45 items checked (100%), 0 deferred
+- Verified all AC checkboxes in story file
+- Updated story status: completeness-gate -> review
+- Updated sprint-status.yaml: ready-for-dev -> review

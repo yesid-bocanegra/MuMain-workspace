@@ -28,30 +28,30 @@
 
 ### Functional ACs
 
-- [ ] AC-1: `build-macos` job exists in ci.yml with `runs-on: macos-latest` and `cmake --preset macos-arm64`
-- [ ] AC-2: `build-linux` job exists in ci.yml with `runs-on: ubuntu-latest`, `cmake --preset linux-x64`, and `gcc g++` packages installed
-- [ ] AC-3: Both native jobs execute `cmake --build` and `ctest --test-dir ... --output-on-failure` steps
-- [ ] AC-4: Quality gates (`./ctl check`) run on all three platforms — existing `quality` job covers Ubuntu; native jobs validate via same CI run
-- [ ] AC-5: Existing MinGW `build` job is structurally unchanged — `mingw-w64-i686.cmake` toolchain, `Main.exe` artifact upload intact
-- [ ] AC-6: `release.needs` array includes `build-macos` and `build-linux` alongside existing `quality` and `build`
-- [ ] AC-7: Both native jobs include `actions/cache@v4` for SDL3 FetchContent `_deps/` path with `hashFiles`-based keys (`sdl3-macos-*` / `sdl3-linux-*`)
-- [ ] AC-8: No `dotnet/setup-dotnet` action in native runner jobs; `MU_ENABLE_DOTNET=OFF` present in ci.yml (MinGW job); no `run: dotnet` in native jobs
+- [x] AC-1: `build-macos` job exists in ci.yml with `runs-on: macos-latest` and `cmake --preset macos-arm64`
+- [x] AC-2: `build-linux` job exists in ci.yml with `runs-on: ubuntu-latest`, `cmake --preset linux-x64`, and `gcc g++` packages installed
+- [x] AC-3: Both native jobs execute `cmake --build` and `ctest --test-dir ... --output-on-failure` steps
+- [x] AC-4: Quality gates (`./ctl check`) run on all three platforms — existing `quality` job covers Ubuntu; native jobs validate via same CI run
+- [x] AC-5: Existing MinGW `build` job is structurally unchanged — `mingw-w64-i686.cmake` toolchain, `Main.exe` artifact upload intact
+- [x] AC-6: `release.needs` array includes `build-macos` and `build-linux` alongside existing `quality` and `build`
+- [x] AC-7: Both native jobs include `actions/cache@v4` for SDL3 FetchContent `_deps/` path with `hashFiles`-based keys (`sdl3-macos-*` / `sdl3-linux-*`)
+- [x] AC-8: No `dotnet/setup-dotnet` action in native runner jobs; `MU_ENABLE_DOTNET=OFF` present in ci.yml (MinGW job); no `run: dotnet` in native jobs
 
 ### Standard ACs
 
-- [ ] AC-STD-1: ci.yml follows existing patterns — `concurrency:` group with `cancel-in-progress:`, consistent `name:` labels (`macOS Native Build`, `Linux Native Build`)
-- [ ] AC-STD-13: `./ctl check` passes — 0 clang-format violations, 0 cppcheck violations (no new C++ source files added in this story)
-- [ ] AC-STD-15: Git safety — no incomplete rebase, no force push to main
-- [ ] AC-STD-11: Flow code `VS0-QUAL-CI-NATIVE` present in test file headers; story tag `[7-4-1]` in test names
+- [x] AC-STD-1: ci.yml follows existing patterns — `concurrency:` group with `cancel-in-progress:`, consistent `name:` labels (`macOS Native Build`, `Linux Native Build`)
+- [x] AC-STD-13: `./ctl check` passes — 0 clang-format violations, 0 cppcheck violations (no new C++ source files added in this story)
+- [x] AC-STD-15: Git safety — no incomplete rebase, no force push to main
+- [x] AC-STD-11: Flow code `VS0-QUAL-CI-NATIVE` present in test file headers; story tag `[7-4-1]` in test names
 
 ### PCC Compliance
 
-- [ ] PCC-1: No prohibited libraries — YAML/shell scripts only, no new C++ code
-- [ ] PCC-2: Required test patterns — CMake script mode (`cmake -P`) following existing `tests/build/` convention
-- [ ] PCC-3: AC-N: prefix used in all CTest `NAME` entries (`7.4.1-AC-N:...`)
-- [ ] PCC-4: Flow code `VS0-QUAL-CI-NATIVE` present in all new test file headers
-- [ ] PCC-5: Story tag `[7-4-1]` present in all new test file headers
-- [ ] PCC-6: No deferred items — all ACs testable via ci.yml structure validation
+- [x] PCC-1: No prohibited libraries — YAML/shell scripts only, no new C++ code
+- [x] PCC-2: Required test patterns — CMake script mode (`cmake -P`) following existing `tests/build/` convention
+- [x] PCC-3: AC-N: prefix used in all CTest `NAME` entries (`7.4.1-AC-N:...`)
+- [x] PCC-4: Flow code `VS0-QUAL-CI-NATIVE` present in all new test file headers
+- [x] PCC-5: Story tag `[7-4-1]` present in all new test file headers
+- [x] PCC-6: No deferred items — all ACs testable via ci.yml structure validation
 
 ### Bruno Quality Checklist
 
@@ -59,33 +59,33 @@ _Skipped — story type is `infrastructure` (no REST API endpoints)._
 
 ### Tasks
 
-- [ ] Task 1: Add macOS native build job to `ci.yml` (AC: 1, 3, 7, 8)
-  - [ ] 1.1: `build-macos` job with `runs-on: macos-latest`
-  - [ ] 1.2: `brew install cmake ninja` step
-  - [ ] 1.3: `actions/cache@v4` for `out/build/macos-arm64/_deps` with `sdl3-macos-${{ hashFiles(...) }}` key
-  - [ ] 1.4: `cmake --preset macos-arm64` configure step
-  - [ ] 1.5: `cmake --build out/build/macos-arm64 --config Debug` build step
-  - [ ] 1.6: `ctest --test-dir out/build/macos-arm64 --build-config Debug --output-on-failure` test step
-- [ ] Task 2: Add Linux native build job to `ci.yml` (AC: 2, 3, 7, 8)
-  - [ ] 2.1: `build-linux` job with `runs-on: ubuntu-latest`
-  - [ ] 2.2: `sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev` step
-  - [ ] 2.3: `actions/cache@v4` for `out/build/linux-x64/_deps` with `sdl3-linux-${{ hashFiles(...) }}` key
-  - [ ] 2.4: `cmake --preset linux-x64` configure step
-  - [ ] 2.5: `cmake --build out/build/linux-x64 --config Debug` build step
-  - [ ] 2.6: `ctest --test-dir out/build/linux-x64 --build-config Debug --output-on-failure` test step
-- [ ] Task 3: Preserve existing MinGW build job (AC: 5)
-  - [ ] 3.1: Verify `build` job unchanged — no modifications to existing steps
-  - [ ] 3.2: Verify MinGW artifact upload still produces `main-exe-mingw-*` on push events
-- [ ] Task 4: Update release job dependencies (AC: 6)
-  - [ ] 4.1: Update `release.needs` to `[quality, build, build-macos, build-linux]`
-  - [ ] 4.2: Verify all four jobs must pass before semantic-release runs
-- [ ] Task 5: Handle CMake preset host-OS conditions (AC: 1, 2)
-  - [ ] 5.1: Confirm `macos-arm64` preset condition (`hostSystemName == "Darwin"`) satisfied on `macos-latest` runner
-  - [ ] 5.2: Confirm `linux-x64` preset condition (`hostSystemName == "Linux"`) satisfied on `ubuntu-latest` runner
-  - [ ] 5.3: Confirm `-DMU_ENABLE_DOTNET=OFF` implied by presets (no explicit flag needed if preset handles it)
-- [ ] Task 6: Register ATDD CTest entries in `tests/build/CMakeLists.txt` (AC-VAL)
-  - [ ] 6.1: 8 new `add_test()` entries for ACs 1, 2, 3, 5, 6, 7, 8, STD-11
-  - [ ] 6.2: Run `ctest` locally (macOS/Linux) to verify all 8 new tests PASS with current ci.yml
+- [x] Task 1: Add macOS native build job to `ci.yml` (AC: 1, 3, 7, 8)
+  - [x] 1.1: `build-macos` job with `runs-on: macos-latest`
+  - [x] 1.2: `brew install cmake ninja` step
+  - [x] 1.3: `actions/cache@v4` for `out/build/macos-arm64/_deps` with `sdl3-macos-${{ hashFiles(...) }}` key
+  - [x] 1.4: `cmake --preset macos-arm64` configure step
+  - [x] 1.5: `cmake --build out/build/macos-arm64 --config Debug` build step
+  - [x] 1.6: `ctest --test-dir out/build/macos-arm64 --build-config Debug --output-on-failure` test step
+- [x] Task 2: Add Linux native build job to `ci.yml` (AC: 2, 3, 7, 8)
+  - [x] 2.1: `build-linux` job with `runs-on: ubuntu-latest`
+  - [x] 2.2: `sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev` step
+  - [x] 2.3: `actions/cache@v4` for `out/build/linux-x64/_deps` with `sdl3-linux-${{ hashFiles(...) }}` key
+  - [x] 2.4: `cmake --preset linux-x64` configure step
+  - [x] 2.5: `cmake --build out/build/linux-x64 --config Debug` build step
+  - [x] 2.6: `ctest --test-dir out/build/linux-x64 --build-config Debug --output-on-failure` test step
+- [x] Task 3: Preserve existing MinGW build job (AC: 5)
+  - [x] 3.1: Verify `build` job unchanged — no modifications to existing steps
+  - [x] 3.2: Verify MinGW artifact upload still produces `main-exe-mingw-*` on push events
+- [x] Task 4: Update release job dependencies (AC: 6)
+  - [x] 4.1: Update `release.needs` to `[quality, build, build-macos, build-linux]`
+  - [x] 4.2: Verify all four jobs must pass before semantic-release runs
+- [x] Task 5: Handle CMake preset host-OS conditions (AC: 1, 2)
+  - [x] 5.1: Confirm `macos-arm64` preset condition (`hostSystemName == "Darwin"`) satisfied on `macos-latest` runner
+  - [x] 5.2: Confirm `linux-x64` preset condition (`hostSystemName == "Linux"`) satisfied on `ubuntu-latest` runner
+  - [x] 5.3: Confirm `-DMU_ENABLE_DOTNET=OFF` implied by presets (no explicit flag needed if preset handles it)
+- [x] Task 6: Register ATDD CTest entries in `tests/build/CMakeLists.txt` (AC-VAL)
+  - [x] 6.1: 8 new `add_test()` entries for ACs 1, 2, 3, 5, 6, 7, 8, STD-11
+  - [x] 6.2: Run `ctest` locally (macOS/Linux) to verify all 8 new tests PASS with current ci.yml
 
 ---
 

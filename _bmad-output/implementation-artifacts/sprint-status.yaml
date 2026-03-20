@@ -465,5 +465,5 @@ development_status:
   7-2-1-frame-time-instrumentation: done           # 3 pts | Flow:E | No deps | Sprint-2
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
-  7-4-1-native-ci-runners: ready-for-dev         # 5 pts | Flow:E | Deps: EPIC-4 ✓
+  7-4-1-native-ci-runners: review                 # 5 pts | Flow:E | Deps: EPIC-4 ✓
   epic-7-retrospective: optional
