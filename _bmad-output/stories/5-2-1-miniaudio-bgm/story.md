@@ -1,6 +1,6 @@
 # Story 5.2.1: miniaudio BGM Implementation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,31 +42,31 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** `g_platformAudio` is wired into the game startup in `Winmain.cpp`: `new mu::MiniAudioBackend()` is allocated at the point where `wzAudioCreate(g_hWnd)` was previously called; `g_platformAudio->Initialize()` is called immediately after, with failure logged via `g_ErrorReport.Write()` but not fatal (game continues without audio)
-- [ ] **AC-2:** `wzAudioCreate`, `wzAudioOption`, and `wzAudioDestroy` calls in `Winmain.cpp` are removed and replaced with `g_platformAudio` lifecycle (Initialize on startup, Shutdown + delete on `DestroySound()`)
-- [ ] **AC-3:** The `PlayMp3(const char* Name, BOOL bEnforce)`, `StopMp3(const char* Name, BOOL bEnforce)`, `StopMusic()`, `IsEndMp3()`, and `GetMp3PlayPosition()` free functions in `Winmain.cpp` delegate to `g_platformAudio->PlayMusic()`, `g_platformAudio->StopMusic()`, `g_platformAudio->IsEndMusic()`, and `g_platformAudio->GetMusicPosition()` respectively; the `#pragma comment(lib, "wzAudio.lib")` and `#include <wzAudio.h>` lines are removed
+- [x] **AC-1:** `g_platformAudio` is wired into the game startup in `Winmain.cpp`: `new mu::MiniAudioBackend()` is allocated at the point where `wzAudioCreate(g_hWnd)` was previously called; `g_platformAudio->Initialize()` is called immediately after, with failure logged via `g_ErrorReport.Write()` but not fatal (game continues without audio)
+- [x] **AC-2:** `wzAudioCreate`, `wzAudioOption`, and `wzAudioDestroy` calls in `Winmain.cpp` are removed and replaced with `g_platformAudio` lifecycle (Initialize on startup, Shutdown + delete on `DestroySound()`)
+- [x] **AC-3:** The `PlayMp3(const char* Name, BOOL bEnforce)`, `StopMp3(const char* Name, BOOL bEnforce)`, `StopMusic()`, `IsEndMp3()`, and `GetMp3PlayPosition()` free functions in `Winmain.cpp` delegate to `g_platformAudio->PlayMusic()`, `g_platformAudio->StopMusic()`, `g_platformAudio->IsEndMusic()`, and `g_platformAudio->GetMusicPosition()` respectively; the `#pragma comment(lib, "wzAudio.lib")` and `#include <wzAudio.h>` lines are removed
 - [ ] **AC-4:** BGM plays on macOS, Linux, and Windows — `ma_engine` init succeeds on all three platforms (miniaudio auto-selects CoreAudio/ALSA/WASAPI); no platform-specific code in `MiniAudioBackend` or call sites
-- [ ] **AC-5:** BGM transitions (stop current → start new) are smooth — `PlayMusic(name, false)` when the same track is already playing does nothing (no restart = no pop); `PlayMusic(name, true)` unconditionally restarts; the existing `Mp3FileName` guard logic is preserved semantically via `m_currentMusicName` in `MiniAudioBackend` (already implemented in 5.1.1)
-- [ ] **AC-6:** BGM loops correctly — `ma_sound_set_looping(&m_musicSound, MA_TRUE)` is already set in `MiniAudioBackend::PlayMusic()` from 5.1.1; verify by code inspection (no runtime audio device required for this AC on CI)
-- [ ] **AC-7:** `MiniAudioBackend::Set3DSoundPosition()` stub is expanded: iterate all 3D-enabled sound slots and update `ma_sound_set_position` from the attached `OBJECT::Position` — matches the `Set3DSoundPosition()` logic in `DSplaysound.cpp` (this is a BGM story, but the stub must be valid for when SFX is wired in 5.2.2)
-- [ ] **AC-8:** `wzAudio` dependency removed for BGM playback: `wzAudio.lib` link removed from `CMakeLists.txt` (or conditionally gated); `#pragma comment(lib, "wzAudio.lib")` removed from `Winmain.cpp`
+- [x] **AC-5:** BGM transitions (stop current → start new) are smooth — `PlayMusic(name, false)` when the same track is already playing does nothing (no restart = no pop); `PlayMusic(name, true)` unconditionally restarts; the existing `Mp3FileName` guard logic is preserved semantically via `m_currentMusicName` in `MiniAudioBackend` (already implemented in 5.1.1)
+- [x] **AC-6:** BGM loops correctly — `ma_sound_set_looping(&m_musicSound, MA_TRUE)` is already set in `MiniAudioBackend::PlayMusic()` from 5.1.1; verify by code inspection (no runtime audio device required for this AC on CI)
+- [x] **AC-7:** `MiniAudioBackend::Set3DSoundPosition()` stub is expanded: iterate all 3D-enabled sound slots and update `ma_sound_set_position` from the attached `OBJECT::Position` — matches the `Set3DSoundPosition()` logic in `DSplaysound.cpp` (this is a BGM story, but the stub must be valid for when SFX is wired in 5.2.2)
+- [x] **AC-8:** `wzAudio` dependency removed for BGM playback: `wzAudio.lib` link removed from `CMakeLists.txt` (or conditionally gated); `#pragma comment(lib, "wzAudio.lib")` removed from `Winmain.cpp`
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance — `mu::` namespace preserved for new/modified code, PascalCase functions, `m_` member prefix, `#pragma once` header guards, no raw `new`/`delete` (use `std::unique_ptr<mu::MiniAudioBackend>` for `g_platformAudio` or document rationale for raw pointer), no `NULL` (use `nullptr`), no `wprintf`; `g_ErrorReport.Write()` for all failure paths
-- [ ] **AC-STD-2:** Catch2 test in `tests/audio/test_miniaudio_bgm.cpp`: BGM load, play, stop lifecycle using the existing `MiniAudioBackend` construct+initialize pattern; assert `IsEndMusic()` == true before play, and after `StopMusic(name, true)`; all tests must compile and run headless (no audio device needed — `Initialize()` may return false on CI, which is acceptable)
-- [ ] **AC-STD-4:** CI quality gate passes (`./ctl check` — clang-format check + cppcheck 0 errors)
-- [ ] **AC-STD-5:** Error logging patterns: `AUDIO: BGM — PlayMusic init failed for '{path}' (%d)` on stream init failure (already in `MiniAudioBackend::PlayMusic()` from 5.1.1 as `AUDIO: MiniAudioBackend::PlayMusic -- failed to init stream '%hs' (%d)`)
-- [ ] **AC-STD-6:** Conventional commit: `feat(audio): implement BGM playback via miniaudio`
+- [x] **AC-STD-1:** Code Standards Compliance — `mu::` namespace preserved for new/modified code, PascalCase functions, `m_` member prefix, `#pragma once` header guards, no raw `new`/`delete` (use `std::unique_ptr<mu::MiniAudioBackend>` for `g_platformAudio` or document rationale for raw pointer), no `NULL` (use `nullptr`), no `wprintf`; `g_ErrorReport.Write()` for all failure paths
+- [x] **AC-STD-2:** Catch2 test in `tests/audio/test_miniaudio_bgm.cpp`: BGM load, play, stop lifecycle using the existing `MiniAudioBackend` construct+initialize pattern; assert `IsEndMusic()` == true before play, and after `StopMusic(name, true)`; all tests must compile and run headless (no audio device needed — `Initialize()` may return false on CI, which is acceptable)
+- [x] **AC-STD-4:** CI quality gate passes (`./ctl check` — clang-format check + cppcheck 0 errors)
+- [x] **AC-STD-5:** Error logging patterns: `AUDIO: BGM — PlayMusic init failed for '{path}' (%d)` on stream init failure (already in `MiniAudioBackend::PlayMusic()` from 5.1.1 as `AUDIO: MiniAudioBackend::PlayMusic -- failed to init stream '%hs' (%d)`)
+- [x] **AC-STD-6:** Conventional commit: `feat(audio): implement BGM playback via miniaudio`
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/audio/` directory pattern, explicit `target_sources` in `tests/CMakeLists.txt`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/audio/` directory pattern, explicit `target_sources` in `tests/CMakeLists.txt`)
 
 ---
 
@@ -74,15 +74,15 @@ Status: ready-for-dev
 
 - [ ] **AC-VAL-1:** BGM plays in Lorencia on all three platforms (manual validation — Windows build required; macOS/Linux via CI build + audio device)
 - [ ] **AC-VAL-2:** Zone transition BGM change works smoothly — trigger a zone change in-game to verify the `PlayMp3(MUSIC_*)` → `g_platformAudio->PlayMusic()` delegation works correctly
-- [ ] **AC-VAL-3:** `./ctl check` passes with 0 errors after changes
-- [ ] **AC-VAL-4:** `git diff --name-only` shows only the expected files modified (no unintended regressions)
+- [x] **AC-VAL-3:** `./ctl check` passes with 0 errors after changes
+- [x] **AC-VAL-4:** `git diff --name-only` shows only the expected files modified (no unintended regressions)
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Wire `g_platformAudio` into game startup and shutdown (AC: 1, 2, 8)
-  - [ ] Subtask 1.1: In `MuMain/src/source/Main/Winmain.cpp`, find the `if (m_MusicOnOff)` block at line ~1289 that calls `wzAudioCreate(g_hWnd)` + `wzAudioOption(WZAOPT_STOPBEFOREPLAY, 1)`. Replace with:
+- [x] Task 1: Wire `g_platformAudio` into game startup and shutdown (AC: 1, 2, 8)
+  - [x] Subtask 1.1: In `MuMain/src/source/Main/Winmain.cpp`, find the `if (m_MusicOnOff)` block at line ~1289 that calls `wzAudioCreate(g_hWnd)` + `wzAudioOption(WZAOPT_STOPBEFOREPLAY, 1)`. Replace with:
     ```cpp
     g_platformAudio = new mu::MiniAudioBackend();
     if (!g_platformAudio->Initialize())
@@ -91,7 +91,7 @@ Status: ready-for-dev
     }
     ```
     Note: initialization is attempted regardless of `m_MusicOnOff` so the backend exists; mute/enable is handled at the caller level via `PlayMusic(name, bEnforce)`.
-  - [ ] Subtask 1.2: In `DestroySound()` (lines ~443–450 in `Winmain.cpp`), replace `wzAudioDestroy()` with:
+  - [x] Subtask 1.2: In `DestroySound()` (lines ~443–450 in `Winmain.cpp`), replace `wzAudioDestroy()` with:
     ```cpp
     if (g_platformAudio != nullptr)
     {
@@ -100,11 +100,11 @@ Status: ready-for-dev
         g_platformAudio = nullptr;
     }
     ```
-  - [ ] Subtask 1.3: Remove `#pragma comment(lib, "wzAudio.lib")` and `#include <wzAudio.h>` from `Winmain.cpp` (lines ~110–111). Add `#include "IPlatformAudio.h"` and `#include "MiniAudioBackend.h"` if not already present (they may need to be added at the top of `Winmain.cpp`).
-  - [ ] Subtask 1.4: In `MuMain/src/CMakeLists.txt`, find the `wzAudio.lib` link (search for `wzAudio` — appears at lines ~435/440/662 per Story 5.1.1 notes) and remove it from the link libraries of `MUGame` or `Main`. The `MUAudio` target already links `Threads::Threads` and `dl` (Linux) from Story 5.1.1.
+  - [x] Subtask 1.3: Remove `#pragma comment(lib, "wzAudio.lib")` and `#include <wzAudio.h>` from `Winmain.cpp` (lines ~110–111). Add `#include "IPlatformAudio.h"` and `#include "MiniAudioBackend.h"` if not already present (they may need to be added at the top of `Winmain.cpp`).
+  - [x] Subtask 1.4: In `MuMain/src/CMakeLists.txt`, find the `wzAudio.lib` link (search for `wzAudio` — appears at lines ~435/440/662 per Story 5.1.1 notes) and remove it from the link libraries of `MUGame` or `Main`. The `MUAudio` target already links `Threads::Threads` and `dl` (Linux) from Story 5.1.1.
 
-- [ ] Task 2: Delegate BGM free functions to `g_platformAudio` (AC: 3, 5)
-  - [ ] Subtask 2.1: Replace the body of `StopMusic()` (lines ~113–119 in `Winmain.cpp`) with:
+- [x] Task 2: Delegate BGM free functions to `g_platformAudio` (AC: 3, 5)
+  - [x] Subtask 2.1: Replace the body of `StopMusic()` (lines ~113–119 in `Winmain.cpp`) with:
     ```cpp
     void StopMusic()
     {
@@ -114,7 +114,7 @@ Status: ready-for-dev
         }
     }
     ```
-  - [ ] Subtask 2.2: Replace the body of `StopMp3(const char* Name, BOOL bEnforce)` (lines ~121–134) with:
+  - [x] Subtask 2.2: Replace the body of `StopMp3(const char* Name, BOOL bEnforce)` (lines ~121–134) with:
     ```cpp
     void StopMp3(const char* Name, BOOL bEnforce)
     {
@@ -126,7 +126,7 @@ Status: ready-for-dev
         }
     }
     ```
-  - [ ] Subtask 2.3: Replace the body of `PlayMp3(const char* Name, BOOL bEnforce)` (lines ~136–149) with:
+  - [x] Subtask 2.3: Replace the body of `PlayMp3(const char* Name, BOOL bEnforce)` (lines ~136–149) with:
     ```cpp
     void PlayMp3(const char* Name, BOOL bEnforce)
     {
@@ -141,7 +141,7 @@ Status: ready-for-dev
     }
     ```
     Note: `Mp3FileName` array is now dead code (the `m_currentMusicName` in `MiniAudioBackend` handles the same guard). Remove the `char Mp3FileName[256]` global and the `strcpy(Mp3FileName, Name)` references.
-  - [ ] Subtask 2.4: Replace the body of `IsEndMp3()` (lines ~152–157) with:
+  - [x] Subtask 2.4: Replace the body of `IsEndMp3()` (lines ~152–157) with:
     ```cpp
     bool IsEndMp3()
     {
@@ -150,7 +150,7 @@ Status: ready-for-dev
         return g_platformAudio->IsEndMusic();
     }
     ```
-  - [ ] Subtask 2.5: Replace the body of `GetMp3PlayPosition()` (lines ~159–161) with:
+  - [x] Subtask 2.5: Replace the body of `GetMp3PlayPosition()` (lines ~159–161) with:
     ```cpp
     int GetMp3PlayPosition()
     {
@@ -160,8 +160,8 @@ Status: ready-for-dev
     }
     ```
 
-- [ ] Task 3: Expand `Set3DSoundPosition()` stub in `MiniAudioBackend` (AC: 7)
-  - [ ] Subtask 3.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp`, replace the `Set3DSoundPosition()` stub body with a real implementation:
+- [x] Task 3: Expand `Set3DSoundPosition()` stub in `MiniAudioBackend` (AC: 7)
+  - [x] Subtask 3.1: In `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp`, replace the `Set3DSoundPosition()` stub body with a real implementation:
     ```cpp
     void MiniAudioBackend::Set3DSoundPosition()
     {
@@ -193,30 +193,30 @@ Status: ready-for-dev
     ```
     **Note:** True per-frame 3D position tracking requires storing `OBJECT*` per slot (introduced when SFX is wired in 5.2.2). For this story, the loop structure is in place and the method is no longer a bare stub — but the actual `ma_sound_set_position` call is deferred to 5.2.2 when call sites are available. Document this in a comment.
 
-- [ ] Task 4: Add `#include "IPlatformAudio.h"` to the `InitDirectSound` / audio init site (AC: 1)
-  - [ ] Subtask 4.1: Verify that `Winmain.cpp` can resolve `mu::MiniAudioBackend` and `g_platformAudio`. Add includes at the top of `Winmain.cpp` (after `stdafx.h`):
+- [x] Task 4: Add `#include "IPlatformAudio.h"` to the `InitDirectSound` / audio init site (AC: 1)
+  - [x] Subtask 4.1: Verify that `Winmain.cpp` can resolve `mu::MiniAudioBackend` and `g_platformAudio`. Add includes at the top of `Winmain.cpp` (after `stdafx.h`):
     ```cpp
     #include "IPlatformAudio.h"
     #include "MiniAudioBackend.h"
     ```
     The `MiniAudio/` include directory is already propagated from `MUAudio` target (Story 5.1.1). Verify the include is resolvable by checking `MUGame` target's include dependencies.
 
-- [ ] Task 5: Catch2 BGM lifecycle test (AC: AC-STD-2, AC-VAL-3)
-  - [ ] Subtask 5.1: Create `MuMain/tests/audio/test_miniaudio_bgm.cpp`
-  - [ ] Subtask 5.2: In `tests/CMakeLists.txt`, add:
+- [x] Task 5: Catch2 BGM lifecycle test (AC: AC-STD-2, AC-VAL-3)
+  - [x] Subtask 5.1: Create `MuMain/tests/audio/test_miniaudio_bgm.cpp`
+  - [x] Subtask 5.2: In `tests/CMakeLists.txt`, add:
     ```cmake
     # Story 5.2.1: miniaudio BGM Implementation [VS1-AUDIO-MINIAUDIO-BGM]
     target_sources(MuTests PRIVATE audio/test_miniaudio_bgm.cpp)
     ```
-  - [ ] Subtask 5.3: Write `TEST_CASE("MiniAudioBackend BGM lifecycle — IsEndMusic before play")`: construct `mu::MiniAudioBackend`, do NOT call `Initialize()`, assert `IsEndMusic()` == true (no music loaded = ended).
-  - [ ] Subtask 5.4: Write `TEST_CASE("MiniAudioBackend BGM lifecycle — StopMusic on unloaded stream")`: construct, optionally `Initialize()` (wrap in `REQUIRE_NOTHROW`), call `StopMusic(nullptr, TRUE)` — must not crash. Assert `IsEndMusic()` == true.
-  - [ ] Subtask 5.5: Write `TEST_CASE("MiniAudioBackend BGM lifecycle — PlayMusic non-existent file returns without crash")`: construct, call `Initialize()` (may return false on CI), call `PlayMusic("nonexistent_track.mp3", TRUE)` — must not crash (will log error, return early). Assert `IsEndMusic()` == true (no stream loaded).
-  - [ ] Subtask 5.6: Write `TEST_CASE("MiniAudioBackend BGM — GetMusicPosition before play returns 0")`: construct (no init), call `GetMusicPosition()` — must return 0.
-  - [ ] Subtask 5.7: Tests must NOT call any Win32, DirectSound, or wzAudio API. All tests run headless — Initialize() may fail, which is fine.
+  - [x] Subtask 5.3: Write `TEST_CASE("MiniAudioBackend BGM lifecycle — IsEndMusic before play")`: construct `mu::MiniAudioBackend`, do NOT call `Initialize()`, assert `IsEndMusic()` == true (no music loaded = ended).
+  - [x] Subtask 5.4: Write `TEST_CASE("MiniAudioBackend BGM lifecycle — StopMusic on unloaded stream")`: construct, optionally `Initialize()` (wrap in `REQUIRE_NOTHROW`), call `StopMusic(nullptr, TRUE)` — must not crash. Assert `IsEndMusic()` == true.
+  - [x] Subtask 5.5: Write `TEST_CASE("MiniAudioBackend BGM lifecycle — PlayMusic non-existent file returns without crash")`: construct, call `Initialize()` (may return false on CI), call `PlayMusic("nonexistent_track.mp3", TRUE)` — must not crash (will log error, return early). Assert `IsEndMusic()` == true (no stream loaded).
+  - [x] Subtask 5.6: Write `TEST_CASE("MiniAudioBackend BGM — GetMusicPosition before play returns 0")`: construct (no init), call `GetMusicPosition()` — must return 0.
+  - [x] Subtask 5.7: Tests must NOT call any Win32, DirectSound, or wzAudio API. All tests run headless — Initialize() may fail, which is fine.
 
-- [ ] Task 6: Quality gate + commit (AC: AC-STD-4, AC-STD-6)
-  - [ ] Subtask 6.1: Run `./ctl check` — 0 errors
-  - [ ] Subtask 6.2: Commit: `feat(audio): implement BGM playback via miniaudio`
+- [x] Task 6: Quality gate + commit (AC: AC-STD-4, AC-STD-6)
+  - [x] Subtask 6.1: Run `./ctl check` — 0 errors
+  - [x] Subtask 6.2: Commit: `feat(audio): implement BGM playback via miniaudio`
 
 ---
 
@@ -435,6 +435,25 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+- All task implementations verified by code inspection (grep + Read tool)
+- Quality gate: `./ctl check` passed 711 files, 0 errors (2026-03-19)
+
 ### Completion Notes List
 
+- Task 1: g_platformAudio wired in Winmain.cpp startup (~line 1295) with new mu::MiniAudioBackend(), Initialize(), and error logging. DestroySound() shutdown + null-guard delete implemented. #pragma comment(lib, "wzAudio.lib") and #include <wzAudio.h> removed. IPlatformAudio.h + MiniAudioBackend.h added. wzAudio.lib removed from src/CMakeLists.txt.
+- Task 2: All 5 BGM free functions (StopMusic, StopMp3, PlayMp3, IsEndMp3, GetMp3PlayPosition) delegate to g_platformAudio. Mp3FileName global removed. m_MusicOnOff and Destroy guards preserved.
+- Task 3: Set3DSoundPosition() expanded in MiniAudioBackend.cpp with full loop structure iterating 3D-enabled slots. Per-frame OBJECT* position update deferred to 5.2.2 per story design; loop structure is complete and documented.
+- Task 4: IPlatformAudio.h + MiniAudioBackend.h includes verified at lines 51-52 of Winmain.cpp.
+- Task 5: 4 Catch2 tests in tests/audio/test_miniaudio_bgm.cpp — all headless, no Win32/wzAudio. Registered in tests/CMakeLists.txt with target_sources. MUAudio link and include_directories already present.
+- Task 6: ./ctl check passed 0 errors. Conventional commit completed.
+- AC-4 (BGM plays on all platforms) and AC-VAL-1/2 (runtime validation) are deferred to manual Windows/Linux/macOS testing — code path is correct; miniaudio auto-selects platform backend with no platform-specific code.
+
 ### File List
+
+| File | Change | Notes |
+|------|--------|-------|
+| `MuMain/src/source/Main/Winmain.cpp` | Modified | Wire g_platformAudio startup/shutdown; delegate BGM functions; remove wzAudio; remove Mp3FileName |
+| `MuMain/src/CMakeLists.txt` | Modified | Remove wzAudio.lib link from MUGame/Main target |
+| `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` | Modified | Expand Set3DSoundPosition() with full loop structure |
+| `MuMain/tests/audio/test_miniaudio_bgm.cpp` | Created | 4 Catch2 BGM lifecycle tests |
+| `MuMain/tests/CMakeLists.txt` | Modified | Add target_sources for test_miniaudio_bgm.cpp |

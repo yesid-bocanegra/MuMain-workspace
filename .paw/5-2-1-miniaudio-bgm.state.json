@@ -1,6 +1,6 @@
 {
   "story_key": "5-2-1-miniaudio-bgm",
-  "current_step": "atdd",
-  "status": "completed",
-  "last_run": "2026-03-19T19:46:40.489250"
+  "current_step": "dev-story",
+  "status": "failed",
+  "last_run": "2026-03-19T20:17:10.633037"
 }
