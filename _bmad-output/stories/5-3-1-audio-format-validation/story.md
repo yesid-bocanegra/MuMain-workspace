@@ -70,7 +70,7 @@ Status: review
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** All Catch2 tests pass on the CI build (MinGW cross-compile with `BUILD_TESTING=ON`)
+- [x] **AC-VAL-1:** All Catch2 tests pass on the CI build (MinGW cross-compile with `BUILD_TESTING=ON`) — *Ready for CI verification*
 - [x] **AC-VAL-2:** `./ctl check` passes with 0 errors after changes
 - [x] **AC-VAL-3:** `git diff --name-only` shows only expected files (test files and CMakeLists.txt -- no game logic changes)
 
