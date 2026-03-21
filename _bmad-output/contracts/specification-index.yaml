@@ -79,7 +79,7 @@ epics:
     flow_type: Feature
     phase: "6"
     priority: P0
-    status: backlog
+    status: done
     total_points: 18
     stories: 5
     features:
@@ -87,7 +87,7 @@ epics:
       - "5.2 Implementation"
       - "5.3 Format Support"
       - "5.4 Volume Controls"
-    completion_pct: 0
+    completion_pct: 100
 
   EPIC-6:
     name: "Cross-Platform Gameplay Validation"
@@ -659,13 +659,13 @@ stories:
     atdd_checklist: "_bmad-output/stories/4-4-1-texture-system-migration/atdd.md"
     review_file: "_bmad-output/stories/4-4-1-texture-system-migration/review.md"
 
-  # ----- EPIC-5: Audio System Migration (backlog) -----
+  # ----- EPIC-5: Audio System Migration (done) -----
 
   5-1-1-muaudio-abstraction-layer:
     name: "MuAudio Abstraction Layer"
     epic: EPIC-5
     feature: "5.1"
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-1"
 
@@ -681,7 +681,7 @@ stories:
     name: "miniaudio SFX"
     epic: EPIC-5
     feature: "5.2"
-    status: backlog
+    status: done
     points: 5
     value_stream: "VS-1"
 
@@ -689,15 +689,19 @@ stories:
     name: "Audio Format Validation"
     epic: EPIC-5
     feature: "5.3"
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-1"
+    flow_code: VS1-AUDIO-FORMAT-VALIDATE
+    story_file: "_bmad-output/stories/5-3-1-audio-format-validation/story.md"
+    atdd_checklist: "_bmad-output/stories/5-3-1-audio-format-validation/atdd.md"
+    review_file: "_bmad-output/stories/5-3-1-audio-format-validation/review.md"
 
   5-4-1-volume-controls:
     name: "Volume Controls"
     epic: EPIC-5
     feature: "5.4"
-    status: backlog
+    status: done
     points: 2
     value_stream: "VS-1"
 
@@ -957,9 +961,9 @@ statistics:
   total_test_scenarios: 13  # epic-1 (1 epic-level), epic-2 (5 story + 1 epic), epic-3 (2 story), epic-4 (1 story + 1 epic-level + 1 test-scenarios)
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 32           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5-2-1=1) + EPIC-7(7-1-1,7-1-2,7-2-1,7-4-1=4)
-  stories_backlog: 13        # EPIC-5(4 remaining) + EPIC-6(7) + EPIC-7-backlog(2)
-  completion_rate: 71.1      # 32/45 stories done
-  points_done: 126           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5-done(5)+EPIC-7-done(14)
-  points_remaining: 46       # EPIC-5(13 remaining)+EPIC-6(23)+EPIC-7-backlog(10)
-  points_completion_rate: 73.3  # 126/172
+  stories_done: 36           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5) + EPIC-7(7-1-1,7-1-2,7-2-1,7-4-1=4)
+  stories_backlog: 9         # EPIC-6(7) + EPIC-7-backlog(2)
+  completion_rate: 80.0      # 36/45 stories done
+  points_done: 139           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5(18)+EPIC-7-done(14)
+  points_remaining: 33       # EPIC-6(23)+EPIC-7-backlog(10)
+  points_completion_rate: 80.8  # 139/172

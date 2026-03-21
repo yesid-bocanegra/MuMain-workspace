@@ -401,7 +401,16 @@ epic_completion_gates:
       - directsound_wzaudio_removed
       - no_audio_latency_degradation
       - volume_controls_functional
-    status: pending
+    status: done
+    completed_date: "2026-03-20"
+    epic_validation:
+      status: pending
+      validated_at: null
+      report: null
+      automated_checks: pending
+      catalog_registration: N/A
+      bruno_tests: N/A
+      manual_scenarios: pending
   epic_6:
     name: "Cross-Platform Gameplay Validation"
     criteria:
@@ -473,11 +482,11 @@ development_status:
   epic-4-retrospective: retrospective-done        # completed 2026-03-11
 
   # EPIC-5: Audio System Migration [VS-1] [Feature] (18 pts)
-  epic-5: in-progress
+  epic-5: done
   5-1-1-muaudio-abstraction-layer: done                 # 3 pts | Flow:F | No deps | code-review-finalize completed 2026-03-19
   5-2-1-miniaudio-bgm: done                       # 5 pts | Flow:F | Deps: 5.1.1 | code-review-finalize completed 2026-03-19
   5-2-2-miniaudio-sfx: done                      # 5 pts | Flow:F | Deps: 5.1.1 | code-review-finalize completed 2026-03-20
-  5-3-1-audio-format-validation: review             # 3 pts | Flow:F | Deps: 5.2.1, 5.2.2
+  5-3-1-audio-format-validation: done               # 3 pts | Flow:F | Deps: 5.2.1, 5.2.2 | code-review-finalize completed 2026-03-20
   5-4-1-volume-controls: done                      # 2 pts | Flow:F | Deps: 5.2.1, 5.2.2 | code-review-finalize completed 2026-03-20
   epic-5-retrospective: optional
 
