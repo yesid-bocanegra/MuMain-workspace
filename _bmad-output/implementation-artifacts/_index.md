@@ -1,6 +1,6 @@
 # Implementation Artifacts Index
 
-*Auto-generated 2026-03-20 19:56 by `paw index`*
+*Auto-generated 2026-03-20 20:06 by `paw index`*
 
 ## Operational (living files) (2)
 
@@ -25,6 +25,12 @@
 - [atdd-checklist-2-1-2-sdl3-window-focus-display.md](atdd-checklist-2-1-2-sdl3-window-focus-display.md)
 - [code-review-2-1-1.md](code-review-2-1-1.md)
 - [code-review-2-1-2-sdl3-window-focus-display.md](code-review-2-1-2-sdl3-window-focus-display.md)
+
+## Other (3)
+
+- [sprint-5-completion.md](sprint-5-completion.md)
+- [sprint-5-metrics-2026-03-20.html](sprint-5-metrics-2026-03-20.html)
+- [sprint-5-metrics-2026-03-20.md](sprint-5-metrics-2026-03-20.md)
 
 ---
 
