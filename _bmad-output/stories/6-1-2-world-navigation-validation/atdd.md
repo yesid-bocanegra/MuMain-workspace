@@ -50,23 +50,23 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 
 | AC | Test Method(s) | Test File | Status |
 |----|---------------|-----------|--------|
-| AC-1 | `PATH CheckXYPos enforces map grid boundaries` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-1 | `PATH GetIndex maps 2D coordinates to flat array index` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-1 | `PATH EstimateCostToGoal heuristic properties` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-1 | `MovePoint maps all 8 EPathDirection values to correct coordinate deltas` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-1 | `PATH FindPath A* navigation` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-2 | `MOVEINFODATA index equality operator matches gate by index` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-2 | `MOVEINFODATA _bCanMove flag controls gate passability` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-2 | `TW_* terrain attribute flags are distinct non-overlapping bitmasks` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-2 | `CMapManager map range queries` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-2 | `CPortalMgr portal state save/restore` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
+| AC-1 | `PATH CheckXYPos enforces map grid boundaries` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-1 | `PATH GetIndex maps 2D coordinates to flat array index` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-1 | `PATH EstimateCostToGoal heuristic properties` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-1 | `MovePoint maps all 8 EPathDirection values to correct coordinate deltas` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-1 | `PATH FindPath A* navigation` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-2 | `MOVEINFODATA index equality operator matches gate by index` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-2 | `MOVEINFODATA _bCanMove flag controls gate passability` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-2 | `TW_* terrain attribute flags are distinct non-overlapping bitmasks` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-2 | `CMapManager map range queries` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-2 | `CPortalMgr portal state save/restore` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
 | AC-3 | Manual rendering validation | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | `[ ]` |
 | AC-4 | Manual minimap validation | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | `[ ]` |
-| AC-5 | `ENUM_WORLD defines correct IDs for the 6 key game maps` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-5 | `ENUM_WORLD covers 82+ game world map slots` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-5 | `ENUM_WORLD event map ranges use correct base IDs` | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-STD-2 | All Catch2 tests in test file | `tests/world/test_world_navigation_validation.cpp` | `[ ]` |
-| AC-VAL-6 | Test scenarios document created | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | `[ ]` |
+| AC-5 | `ENUM_WORLD defines correct IDs for the 6 key game maps` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-5 | `ENUM_WORLD covers 82+ game world map slots` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-5 | `ENUM_WORLD event map ranges use correct base IDs` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-STD-2 | All Catch2 tests in test file | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-VAL-6 | Test scenarios document created | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | `[x]` |
 
 ---
 
@@ -158,7 +158,7 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 | Test profiles | N/A | No database/server required for automated tests |
 | Coverage target | Baseline | Coverage threshold = 0 (growing incrementally per project-context.md) |
 | Platform compatibility | PASS | #ifdef _WIN32 / PlatformTypes.h pattern used |
-| Quality gate | PENDING | `./ctl check` to be run in dev-story phase |
+| Quality gate | PASS | `./ctl check` passed — 0 clang-format violations, 0 cppcheck errors |
 
 ---
 

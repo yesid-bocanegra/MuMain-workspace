@@ -73,3 +73,4 @@
 {"timestamp":"2026-03-21T06:19:49.607725+00:00","event_type":"step_retried","story_key":"6-1-2-world-navigation-validation","step":"atdd","sprint":null,"epic":"6","data":{"attempt":2}}
 {"timestamp":"2026-03-21T06:19:49.608298+00:00","event_type":"feedback_saved","story_key":"6-1-2-world-navigation-validation","step":"atdd","sprint":null,"epic":"6","data":{"regression_target":"atdd"}}
 {"timestamp":"2026-03-21T06:19:51.618858+00:00","event_type":"step_started","story_key":"6-1-2-world-navigation-validation","step":"atdd","sprint":null,"epic":"6","data":{}}
+{"timestamp":"2026-03-21T06:30:32.559943+00:00","event_type":"step_passed","story_key":"6-1-2-world-navigation-validation","step":"atdd","sprint":null,"epic":"6","data":{"duration_seconds":120.0,"retry_attempt":2}}
