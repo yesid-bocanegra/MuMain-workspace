@@ -137,21 +137,36 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 - [x] `AC-6 [6-2-1]: SOUND_MONSTER_BULL1 is the first monster enum entry matching SOUND_MONSTER`
 - [x] `AC-6 [6-2-1]: Combat sound ranges are mutually non-overlapping` — 2 checks (SWORD < HIT1, HIT5 < MONSTER)
 
-### Phase 8: SKIP Stubs (MUGame-linked tests)
+### Phase 8: Catch2 Tests — Task 2.4 (Buff System)
+
+- [x] `Task-2.4 [6-2-1]: eBuffState sentinel and combat-relevant buff values` — 5 SECTION blocks (eBuffNone==0, eBuff_Attack==1, eBuff_Defense==2, eBuff_Berserker==81, eBuff_Count==206)
+- [x] `Task-2.4 [6-2-1]: eBuffState debuff sentinel values for combat effects` — 4 SECTION blocks (eDeBuff_Poison ordering, eDeBuff_Freeze consecutive, eDeBuff_Stun range, eDeBuff_Sleep==72)
+- [x] `Task-2.4 [6-2-1]: eBuffClass categorises buffs and debuffs` — 3 SECTION blocks (eBuffClass_Buff==0, eBuffClass_DeBuff==1, eBuffClass_Count==2)
+
+### Phase 8b: Catch2 Tests — Task 2.5 (Item Combat Attributes)
+
+- [x] `Task-2.5 [6-2-1]: Item set system constants define correct capacities` — 5 SECTION blocks (MAX_SET_OPTION==64, MASTERY_OPTION==24, MAX_EQUIPPED_SETS==5, MAX_EQUIPMENT_INDEX==12, MAX_ITEM==8192)
+- [x] `Task-2.5 [6-2-1]: ITEM_SET_TYPE struct has correct array dimensions` — 3 SECTION blocks (byOption size, byMixItemLevel size, zero-init)
+- [x] `Task-2.5 [6-2-1]: ITEM_SET_OPTION struct has correct nested array dimensions` — 5 SECTION blocks (byStandardOption rows/cols, byFullOption, byRequireClass, bySetItemCount)
+- [x] `Task-2.5 [6-2-1]: SET_OPTION struct fields are independently addressable` — 4 SECTION blocks (IsActive, IsFullOption, OptionNumber, Value)
+
+### Phase 9: SKIP Stubs (MUGame-linked tests)
 
 - [x] SKIP stub: `AC-1 [6-2-1]: CSkillManager::GetSkillInformation runtime lookup` — documents g_SkillAttribute/MUGame requirement
 - [x] SKIP stub: `AC-2 [6-2-1]: CSkillManager::CheckSkillDelay activation gating` — documents CHARACTER::SkillDelay/MUGame requirement
 - [x] SKIP stub: `AC-3 [6-2-1]: Script_Skill array capacity` — documents mu_struct.h/MUGame dependency
 - [x] SKIP stub: `AC-1 [6-2-1]: SetPlayerAttack and AttackStage state transitions` — documents ZzzCharacter.cpp/MUGame requirement
+- [x] SKIP stub: `Task-2.4 [6-2-1]: w_BuffStateSystem RegisterBuff/UnRegisterBuff runtime` — documents WindowMessageHandler/SmartPointer/MUGame requirement
+- [x] SKIP stub: `Task-2.5 [6-2-1]: GetAttackDamage min/max calculation` — documents CHARACTER equipment state/MUGame requirement
 
-### Phase 9: Quality Gate
+### Phase 10: Quality Gate
 
 - [x] `./ctl check` passes with 0 clang-format violations on `test_combat_system_validation.cpp`
 - [x] `./ctl check` passes with 0 cppcheck errors on `test_combat_system_validation.cpp`
 - [x] No prohibited libraries used (no Win32 API calls, no mocking frameworks)
 - [x] All new code follows PCC naming conventions (Allman braces, 4-space indent, 120-col limit)
 
-### Phase 10: PCC Compliance
+### Phase 11: PCC Compliance
 
 - [x] No prohibited libraries from project-context.md
 - [x] Required testing patterns used: Catch2 v3.7.1, `TEST_CASE`/`SECTION`/`REQUIRE`
@@ -160,7 +175,7 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 - [x] No Win32 API calls in test logic
 - [x] Test organization follows `tests/{module}/test_{name}.cpp` pattern (`tests/gameplay/`)
 
-### Phase 11: Manual Validation Documentation
+### Phase 12: Manual Validation Documentation
 
 - [x] AC-VAL-6: Test scenarios documented in `_bmad-output/test-scenarios/epic-6/combat-system-validation.md`
 - [x] 6 manual scenarios covering all ACs (melee, skills, monster death, player death, health/mana, audio)
@@ -212,7 +227,7 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 | Story ID | 6-2-1-combat-system-validation |
 | Story Type | infrastructure |
 | Primary test level | Unit (Catch2) |
-| Automated tests created | 25 TEST_CASEs (21 always-compiled, 4 SKIP stubs) |
+| Automated tests created | 34 TEST_CASEs (28 always-compiled, 6 SKIP stubs) |
 | Manual test scenarios | 6 scenarios in test-scenarios doc |
 | Bruno API tests | N/A (not an API story) |
 | E2E tests | N/A (not a frontend_feature story) |

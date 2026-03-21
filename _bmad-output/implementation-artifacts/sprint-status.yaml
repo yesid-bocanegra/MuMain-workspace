@@ -207,10 +207,10 @@ flow_metrics:
     Defect: 0
     Debt: 0
   flow_load:
-    total_wip: 0               # Sprint 6 not yet started
+    total_wip: 1               # Sprint 6 active
     by_status:
       in_progress: 0
-      review: 0
+      review: 1
 
 # =====================
 # CRITICAL PATH ANALYSIS
@@ -494,7 +494,7 @@ development_status:
   epic-6: in-progress
   6-1-1-auth-character-validation: done                  # 3 pts | Flow:F | Deps: EPIC-2,3,4
   6-1-2-world-navigation-validation: done      # 3 pts | Flow:F | Deps: 6.1.1 | code-review-finalize completed 2026-03-21
-  6-2-1-combat-system-validation: ready-for-dev  # 3 pts | Flow:F | Deps: 6.1.2
+  6-2-1-combat-system-validation: review  # 3 pts | Flow:F | Deps: 6.1.2
   6-2-2-inventory-trading-validation: backlog   # 3 pts | Flow:F | Deps: 6.1.1
   6-3-1-social-systems-validation: backlog      # 3 pts | Flow:F | Deps: 6.1.1
   6-3-2-advanced-systems-validation: backlog    # 3 pts | Flow:F | Deps: 6.2.1
