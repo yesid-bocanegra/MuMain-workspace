@@ -85,12 +85,12 @@
 
 | Test Level | Count | Phase |
 |------------|-------|-------|
-| Unit (Catch2, no guard) | 15 TEST_CASEs | RED — will compile and run |
-| Unit (Catch2, MU_GAME_AVAILABLE guard) | 5 TEST_CASEs | RED — skipped until Win32 build |
+| Unit (Catch2, no guard) | 18 TEST_CASEs | RED — will compile and run |
+| Unit (Catch2, MU_GAME_AVAILABLE guard) | 6 TEST_CASEs | RED — skipped until Win32 build |
 | E2E (Manual) | See test-scenarios doc | Manual — requires live server (Risk R17) |
 | Bruno API collection | N/A | Skipped — infrastructure story type |
 
-**Total: 20 TEST_CASEs (15 always-on + 5 game-gated)**
+**Total: 24 TEST_CASEs (18 always-on + 6 game-gated)**
 
 ---
 

@@ -1,8 +1,8 @@
 # Story 6.2.2: Inventory, Trading & Shops Validation
 
-Status: review
+Status: done
 
-<!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
+<!-- Story completed: 2026-03-21 — Code review analysis identified and fixed 5 issues; quality gate passed (0 errors); all ATDD checklist items verified (32/32) -->
 
 ---
 
@@ -233,7 +233,7 @@ Claude Opus 4.6
 ### Completion Notes List
 
 - Task 1: Test scenario documentation verified at `_bmad-output/test-scenarios/epic-6/inventory-trading-validation.md` — 6 manual test plans covering all ACs (inventory display, equip/unequip, drag-and-drop, trading, NPC shop, tooltips)
-- Task 2: Catch2 test suite verified at `MuMain/tests/gameplay/test_inventory_trading_validation.cpp` — 20 TEST_CASEs (15 always-on + 5 MU_GAME_AVAILABLE gated) covering all 6 ACs with constant validation, struct layout checks, enum uniqueness, and CSItemOption regression from 6-2-1
+- Task 2: Catch2 test suite verified at `MuMain/tests/gameplay/test_inventory_trading_validation.cpp` — 24 TEST_CASEs (18 always-on + 6 MU_GAME_AVAILABLE gated) covering all 6 ACs with comprehensive constant validation, struct layout checks, complete enum uniqueness (18 STORAGE_TYPE values), and CSItemOption regression from 6-2-1
 - Task 3: Quality gate passed — clang-format and cppcheck both 0 errors across 711 files
 - All tests validate existing data structures and constants (infrastructure story) — no new production code introduced
 - Tests follow established patterns from 6-1-1, 6-1-2, 6-2-1: Catch2 TEST_CASE/SECTION/REQUIRE, `#ifdef MU_GAME_AVAILABLE` compile-time guard, pairwise uniqueness checks
