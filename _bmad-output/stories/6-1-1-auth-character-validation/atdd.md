@@ -26,17 +26,17 @@
 
 | AC | Description | Test Method | Test File | Status |
 |----|-------------|-------------|-----------|--------|
-| AC-1 | Login screen displays correctly (scene init state) | `AC-1 [6-1-1]: SceneInitializationState starts with all flags false` | `tests/scenes/test_auth_character_validation.cpp` | SKIP (needs MUGame) |
-| AC-1 | ResetAll clears all flags | `AC-1 [6-1-1]: SceneInitializationState ResetAll clears all flags` | `tests/scenes/test_auth_character_validation.cpp` | SKIP (needs MUGame) |
+| AC-1 | Login screen displays correctly (scene init state) | `AC-1 [6-1-1]: SceneInitializationState starts with all flags false` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-1 | ResetAll clears all flags | `AC-1 [6-1-1]: SceneInitializationState ResetAll clears all flags` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
 | AC-2 | SDL3 text input works | Covered by `test_platform_text_input.cpp` | `tests/platform/test_platform_text_input.cpp` | GREEN (existing) |
-| AC-3 | Character list: 5 slots | `AC-3 [6-1-1]: Character account supports exactly 5 character slots` | `tests/scenes/test_auth_character_validation.cpp` | VERIFIED |
-| AC-3 | CharacterSelectionState initial state | `AC-3 [6-1-1]: CharacterSelectionState has no selection on construction` | `tests/scenes/test_auth_character_validation.cpp` | SKIP (needs MUGame) |
-| AC-4 | 5 character classes (class enum values) | `AC-4 [6-1-1]: 5 base character classes defined in CLASS_TYPE enum` | `tests/scenes/test_auth_character_validation.cpp` | VERIFIED |
-| AC-5 | Character selection bounds validation | `AC-5 [6-1-1]: CharacterSelectionState accepts valid character slots` | `tests/scenes/test_auth_character_validation.cpp` | SKIP (needs MUGame) |
-| AC-5 | Scene loop timing for world entry | `AC-5 [6-1-1]: FrameTimingState ShouldRenderNextFrame controls scene loop` | `tests/scenes/test_auth_character_validation.cpp` | SKIP (needs MUGame) |
-| AC-6 | ClearSelection returns to NO_SELECTION | `AC-6 [6-1-1]: CharacterSelectionState ClearSelection returns to NO_SELECTION` | `tests/scenes/test_auth_character_validation.cpp` | SKIP (needs MUGame) |
-| AC-6 | ResetForDisconnect preserves loading | `AC-6 [6-1-1]: SceneInitializationState ResetForDisconnect preserves loading flag` | `tests/scenes/test_auth_character_validation.cpp` | SKIP (needs MUGame) |
-| AC-STD-2 | Catch2 test suite validates logic | All tests above | `tests/scenes/test_auth_character_validation.cpp` | RED/SKIP |
+| AC-3 | Character list: 5 slots | `AC-3 [6-1-1]: Character account supports exactly 5 character slots` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-3 | CharacterSelectionState initial state | `AC-3 [6-1-1]: CharacterSelectionState has no selection on construction` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-4 | 5 character classes (class enum values) | `AC-4 [6-1-1]: 5 base character classes defined in CLASS_TYPE enum` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-5 | Character selection bounds validation | `AC-5 [6-1-1]: CharacterSelectionState accepts valid character slots` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-5 | Scene loop timing for world entry | `AC-5 [6-1-1]: FrameTimingState ShouldRenderNextFrame controls scene loop` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-6 | ClearSelection returns to NO_SELECTION | `AC-6 [6-1-1]: CharacterSelectionState ClearSelection returns to NO_SELECTION` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-6 | ResetForDisconnect preserves loading | `AC-6 [6-1-1]: SceneInitializationState ResetForDisconnect preserves loading flag` | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
+| AC-STD-2 | Catch2 test suite validates logic | All tests above | `tests/scenes/test_auth_character_validation.cpp` | ✅ GREEN |
 | AC-VAL-6 | Test scenarios documented | Manual test plan | `_bmad-output/test-scenarios/epic-6/auth-character-validation.md` | ✓ DONE |
 
 ---
@@ -54,20 +54,28 @@
 - [x] `AC-4`: 5 base classes in contiguous range [0, 4]
 - [x] `AC-3`: MAX_CHARACTERS_PER_ACCOUNT == 5
 
-### Catch2 Unit Tests — MUGame-Linked (MU_SCENE_TESTS_ENABLED)
+### Catch2 Unit Tests — Scene-Linked (MU_SCENE_TESTS_ENABLED)
 
-- [x] `AC-1`: SceneInitializationState starts with all flags false
-- [x] `AC-1`: SceneInitializationState::ResetAll() clears all flags
-- [x] `AC-6`: SceneInitializationState::ResetForDisconnect() preserves loading flag
-- [x] `AC-3`: CharacterSelectionState starts with NO_SELECTION (-1)
-- [x] `AC-5`: CharacterSelectionState::SelectCharacter(0) sets slot 0
-- [x] `AC-5`: CharacterSelectionState::SelectCharacter(4) sets last slot
-- [x] `AC-5`: SelectCharacter(-1) rejected (HasSelection() stays false)
-- [x] `AC-5`: SelectCharacter(5) rejected (out of bounds)
-- [x] `AC-6`: CharacterSelectionState::ClearSelection() returns to NO_SELECTION
-- [x] `AC-5`: FrameTimingState uncapped mode always renders
-- [x] `AC-5`: FrameTimingState capped mode renders when elapsed >= msPerFrame
-- [x] `AC-5`: FrameTimingState capped mode does NOT render before frame time
+✓ **NOTE: Code Review Fix Applied (2026-03-21)**
+- SceneCommon.h changed from `#include "ZzzInfomation.h"` to `#include "mu_define.h"` (resolves Finding 5 root cause)
+- CMakeLists.txt: Added `-DMU_SCENE_TESTS_ENABLED` compile definition and Scenes include path
+- All 12 tests now EXECUTE (no longer SKIP'd)
+- Improved out-of-bounds tests to verify state preservation (Finding 2)
+- Made FrameTimingState members private with accessors (Finding 3)
+- Removed unnecessary PlatformCompat.h include (Finding 7)
+
+- [x] `AC-1`: SceneInitializationState starts with all flags false ✅ NOW EXECUTES
+- [x] `AC-1`: SceneInitializationState::ResetAll() clears all flags ✅ NOW EXECUTES
+- [x] `AC-6`: SceneInitializationState::ResetForDisconnect() preserves loading flag ✅ NOW EXECUTES
+- [x] `AC-3`: CharacterSelectionState starts with NO_SELECTION (-1) ✅ NOW EXECUTES
+- [x] `AC-5`: CharacterSelectionState::SelectCharacter(0) sets slot 0 ✅ NOW EXECUTES
+- [x] `AC-5`: CharacterSelectionState::SelectCharacter(4) sets last slot ✅ NOW EXECUTES
+- [x] `AC-5`: SelectCharacter(-1) rejected + state preserved ✅ NOW EXECUTES (IMPROVED)
+- [x] `AC-5`: SelectCharacter(5) rejected + state preserved ✅ NOW EXECUTES (IMPROVED)
+- [x] `AC-6`: CharacterSelectionState::ClearSelection() returns to NO_SELECTION ✅ NOW EXECUTES
+- [x] `AC-5`: FrameTimingState uncapped mode always renders ✅ NOW EXECUTES
+- [x] `AC-5`: FrameTimingState capped mode renders when elapsed >= msPerFrame ✅ NOW EXECUTES
+- [x] `AC-5`: FrameTimingState capped mode does NOT render before frame time ✅ NOW EXECUTES
 
 ### Task 1: Manual Test Scenario Documentation
 
