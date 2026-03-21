@@ -1,2 +1,4 @@
 {"timestamp":"2026-03-21T04:27:02.364659+00:00","event_type":"story_started","story_key":"6-1-1-auth-character-validation","step":null,"sprint":null,"epic":"6","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-21T04:27:02.365467+00:00","event_type":"step_started","story_key":"6-1-1-auth-character-validation","step":"create-story","sprint":null,"epic":"6","data":{}}
+{"timestamp":"2026-03-21T04:30:45.819341+00:00","event_type":"step_passed","story_key":"6-1-1-auth-character-validation","step":"create-story","sprint":null,"epic":"6","data":{"duration_seconds":223.5,"input_tokens":83,"output_tokens":6629,"cache_creation_tokens":406174,"cache_read_tokens":4095308,"num_turns":43,"num_tool_calls":24}}
+{"timestamp":"2026-03-21T04:30:46.823982+00:00","event_type":"step_started","story_key":"6-1-1-auth-character-validation","step":"validate-story","sprint":null,"epic":"6","data":{}}
