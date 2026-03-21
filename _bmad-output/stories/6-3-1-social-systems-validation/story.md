@@ -1,6 +1,6 @@
 # Story 6.3.1: Social Systems Validation
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -50,53 +50,53 @@ Status: ready-for-dev
      ACs are marked with component-level automated coverage status below.
      Full validation deferred to manual execution per Risk R17 (server dependency). -->
 
-- [ ] **AC-1:** Chat messages send and receive (normal, party, guild, whisper channels) — *Component tests: `MESSAGE_TYPE` enum completeness and uniqueness, `INPUT_MESSAGE_TYPE` enum values, `MAX_CHAT_SIZE` constant (90), chat buffer sizes (`MAX_CHAT_BUFFER_SIZE`=60, `MAX_NUMBER_OF_LINES`=200), `PCHATING`/`PCHATING_KEY` packet struct layout. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-2:** Party creation, invitation, and member display work — *Component tests: `MAX_PARTYS` constant (5), `PARTY_t` struct layout (Name, Number, Map, x, y, currHP, maxHP, stepHP, index), party window dimension constants, `CPartyManager` singleton accessibility pattern. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-3:** Guild information panel displays correctly — *Component tests: `GuildConstants::GUILD_NAME_LENGTH` (8), `GuildConstants::GUILD_MARK_SIZE` (64), `GuildConstants::MAX_CAPACITY` (80), `GuildTab` enum (INFO/MEMBERS/UNION), `GuildInfoButton` enum (6 values), `RelationshipType` enum values, `GUILD_LIST_t` struct layout, `MARK_t` struct layout. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-4:** Player names and guild tags render above characters — *Component tests: CHARACTER guild-related fields (GuildStatus, GuildType, GuildRelationShip, GuildMarkIndex), guild color constants (`GuildConstants::Colors::YELLOW`, `WHITE`, `GRAY`), `MAX_MARKS` constant (2000). Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-5:** Chat encoding: Korean and Latin characters display correctly (char16_t validation) — *Component tests: `char16_t` parameter types in `SendPublicChatMessage`/`SendWhisperMessage` packet bindings, `MAX_CHAT_SIZE` alignment with packet field sizes, `MAX_USERNAME_SIZE` constant used in guild/party name buffers. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-1:** Chat messages send and receive (normal, party, guild, whisper channels) — *Component tests: `MESSAGE_TYPE` enum completeness and uniqueness, `INPUT_MESSAGE_TYPE` enum values, `MAX_CHAT_SIZE` constant (90), chat buffer sizes (`MAX_CHAT_BUFFER_SIZE`=60, `MAX_NUMBER_OF_LINES`=200), `PCHATING`/`PCHATING_KEY` packet struct layout. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-2:** Party creation, invitation, and member display work — *Component tests: `MAX_PARTYS` constant (5), `PARTY_t` struct layout (Name, Number, Map, x, y, currHP, maxHP, stepHP, index), party window dimension constants, `CPartyManager` singleton accessibility pattern. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-3:** Guild information panel displays correctly — *Component tests: `GuildConstants::GUILD_NAME_LENGTH` (8), `GuildConstants::GUILD_MARK_SIZE` (64), `GuildConstants::MAX_CAPACITY` (80), `GuildTab` enum (INFO/MEMBERS/UNION), `GuildInfoButton` enum (6 values), `RelationshipType` enum values, `GUILD_LIST_t` struct layout, `MARK_t` struct layout. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-4:** Player names and guild tags render above characters — *Component tests: CHARACTER guild-related fields (GuildStatus, GuildType, GuildRelationShip, GuildMarkIndex), guild color constants (`GuildConstants::Colors::YELLOW`, `WHITE`, `GRAY`), `MAX_MARKS` constant (2000). Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-5:** Chat encoding: Korean and Latin characters display correctly (char16_t validation) — *Component tests: `char16_t` parameter types in `SendPublicChatMessage`/`SendWhisperMessage` packet bindings, `MAX_CHAT_SIZE` alignment with packet field sizes, `MAX_USERNAME_SIZE` constant used in guild/party name buffers. Full end-to-end: deferred to manual validation (Risk R17)*
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
-- [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite validates chat/party/guild logic where testable without live server
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
+- [x] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
+- [x] **AC-STD-2:** Testing Requirements — Catch2 test suite validates chat/party/guild logic where testable without live server
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Chat messages displayed correctly on macOS (screenshot or manual verification)
-- [ ] **AC-VAL-2:** Korean character rendering verified (char16_t path through chat system)
-- [ ] **AC-VAL-3:** Party member display verified on macOS/Linux
-- [ ] **AC-VAL-4:** Guild info panel verified on macOS/Linux
+- [ ] **AC-VAL-1:** Chat messages displayed correctly on macOS (screenshot or manual verification) — *Deferred to manual validation when server + platform builds available*
+- [ ] **AC-VAL-2:** Korean character rendering verified (char16_t path through chat system) — *Deferred to manual validation when server + platform builds available*
+- [ ] **AC-VAL-3:** Party member display verified on macOS/Linux — *Deferred to manual validation when server + platform builds available*
+- [ ] **AC-VAL-4:** Guild info panel verified on macOS/Linux — *Deferred to manual validation when server + platform builds available*
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create manual test scenario documentation (AC: 1-5)
-  - [ ] Subtask 1.1: Document chat channel test scenarios (normal, party, guild, whisper)
-  - [ ] Subtask 1.2: Document party lifecycle test scenarios (create, invite, display members)
-  - [ ] Subtask 1.3: Document guild panel test scenarios (info tab, members tab, union tab)
-  - [ ] Subtask 1.4: Document player name/guild tag rendering test scenarios
-  - [ ] Subtask 1.5: Document Korean/Latin chat encoding test scenarios
-- [ ] Task 2: Create Catch2 component test suite (AC: 1-5)
-  - [ ] Subtask 2.1: Chat system constants and enum validation tests
-  - [ ] Subtask 2.2: Party system constants and struct validation tests
-  - [ ] Subtask 2.3: Guild system constants, enums, and struct validation tests
-  - [ ] Subtask 2.4: Character guild field and rendering constant tests
-  - [ ] Subtask 2.5: Chat encoding and packet struct validation tests
-- [ ] Task 3: Run quality gate (`./ctl check`) and verify 0 errors (AC: STD-13)
+- [x] Task 1: Create manual test scenario documentation (AC: 1-5)
+  - [x] Subtask 1.1: Document chat channel test scenarios (normal, party, guild, whisper)
+  - [x] Subtask 1.2: Document party lifecycle test scenarios (create, invite, display members)
+  - [x] Subtask 1.3: Document guild panel test scenarios (info tab, members tab, union tab)
+  - [x] Subtask 1.4: Document player name/guild tag rendering test scenarios
+  - [x] Subtask 1.5: Document Korean/Latin chat encoding test scenarios
+- [x] Task 2: Create Catch2 component test suite (AC: 1-5)
+  - [x] Subtask 2.1: Chat system constants and enum validation tests
+  - [x] Subtask 2.2: Party system constants and struct validation tests
+  - [x] Subtask 2.3: Guild system constants, enums, and struct validation tests
+  - [x] Subtask 2.4: Character guild field and rendering constant tests
+  - [x] Subtask 2.5: Chat encoding and packet struct validation tests
+- [x] Task 3: Run quality gate (`./ctl check`) and verify 0 errors (AC: STD-13)
 
 ---
 
@@ -190,8 +190,32 @@ From 6-2-2 code review learnings:
 
 ### Agent Model Used
 
+Claude Opus 4.6 (claude-opus-4-6)
+
 ### Debug Log References
+
+- Quality gate (`./ctl check`): PASS — 711 files checked, 0 errors (clang-format + cppcheck)
+- Test file from ATDD RED phase: 17 TEST_CASEs (12 standalone + 5 MU_GAME_AVAILABLE), 564 lines
+- Test file formatting verified: clang-format clean, cppcheck clean
 
 ### Completion Notes List
 
+- Test file `test_social_systems_validation.cpp` was created during ATDD phase (create-story workflow) and verified during dev-story
+- Manual test scenario documentation created at `_bmad-output/test-scenarios/epic-6/social-systems-validation.md` covering all 5 ACs across 3 platforms (macOS, Linux, Windows)
+- Two-tier validation strategy (consistent with 6-2-1/6-2-2): automated Catch2 component tests (no server) + manual test scenarios (server required per Risk R17)
+- 17 TEST_CASEs covering: chat constants/enums (AC-1, 5 tests), party struct layout (AC-2, 1 test), guild constants/enums/structs (AC-3, 6 tests), guild marks/colors (AC-4, 3 tests), encoding consistency (AC-5, 2 tests)
+- All guild relationship type flags verified as power-of-two bit flags with zero overlap (6 pairs)
+- AC-VAL-1..4 (validation artifacts) deferred to manual execution when server + platform builds available
+
 ### File List
+
+| Action | File |
+|--------|------|
+| EXISTING | `MuMain/tests/gameplay/test_social_systems_validation.cpp` |
+| NEW | `_bmad-output/test-scenarios/epic-6/social-systems-validation.md` |
+
+### Change Log
+
+| Date | Change |
+|------|--------|
+| 2026-03-21 | Story implementation complete: manual test scenarios created, Catch2 test suite verified (17 TEST_CASEs), quality gate passed |
