@@ -44,7 +44,7 @@ are manual-only.
 | `AC-1 [6-1-2]: PATH EstimateCostToGoal heuristic properties` | AC-1 | RED→GREEN |
 | `AC-1 [6-1-2]: MovePoint maps all 8 EPathDirection values to correct coordinate deltas` | AC-1 | RED→GREEN |
 | `AC-2 [6-1-2]: MOVEINFODATA index equality operator matches gate by index` | AC-2 | RED→GREEN |
-| `AC-2 [6-1-2]: MOVEINFODATA _bCanMove flag controls gate passability` | AC-2 | RED→GREEN |
+| `AC-2 [6-1-2]: MOVEINFODATA _bCanMove flag is default-constructible and distinguishes gate states` | AC-2 | RED→GREEN |
 | `AC-2 [6-1-2]: TW_* terrain attribute flags are distinct non-overlapping bitmasks` | AC-2 | RED→GREEN |
 | `AC-2 [6-1-2]: CMapManager map range queries` | AC-2 | SKIP (needs MUGame) |
 | `AC-2 [6-1-2]: CPortalMgr portal state save/restore` | AC-2 | SKIP (needs MUGame) |

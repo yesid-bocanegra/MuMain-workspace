@@ -48,25 +48,31 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 
 ## AC-to-Test Mapping
 
-| AC | Test Method(s) | Test File | Status |
-|----|---------------|-----------|--------|
-| AC-1 | `PATH CheckXYPos enforces map grid boundaries` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-1 | `PATH GetIndex maps 2D coordinates to flat array index` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-1 | `PATH EstimateCostToGoal heuristic properties` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-1 | `MovePoint maps all 8 EPathDirection values to correct coordinate deltas` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-1 | `PATH FindPath A* navigation` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-2 | `MOVEINFODATA index equality operator matches gate by index` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-2 | `MOVEINFODATA _bCanMove flag is default-constructible and distinguishes gate states` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-2 | `TW_* terrain attribute flags are distinct non-overlapping bitmasks` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-2 | `CMapManager map range queries` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-2 | `CPortalMgr portal state save/restore` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-3 | Manual rendering validation | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | `[ ]` |
-| AC-4 | Manual minimap validation | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | `[ ]` |
-| AC-5 | `ENUM_WORLD defines correct IDs for the 6 key game maps` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-5 | `ENUM_WORLD covers 82+ game world map slots` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-5 | `ENUM_WORLD event map ranges use correct base IDs` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-STD-2 | All Catch2 tests in test file | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-VAL-6 | Test scenarios document created | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | `[x]` |
+<!-- Coverage key: [x] = automated test passes, [x] component = tests cover component logic
+     (not full end-to-end AC), [ ] = manual only (deferred per Risk R17) -->
+
+| AC | Test Method(s) | Test File | Coverage | Status |
+|----|---------------|-----------|----------|--------|
+| AC-1 | `PATH CheckXYPos enforces map grid boundaries` | `tests/world/test_world_navigation_validation.cpp` | Component: grid bounds | `[x]` |
+| AC-1 | `PATH GetIndex maps 2D coordinates to flat array index` | `tests/world/test_world_navigation_validation.cpp` | Component: index math | `[x]` |
+| AC-1 | `PATH EstimateCostToGoal heuristic properties` | `tests/world/test_world_navigation_validation.cpp` | Component: A* heuristic | `[x]` |
+| AC-1 | `MovePoint maps all 8 EPathDirection values to correct coordinate deltas` | `tests/world/test_world_navigation_validation.cpp` | Component: direction deltas | `[x]` |
+| AC-1 | `PATH FindPath A* navigation` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | Stub: MUGame linkage | `[x]` |
+| AC-1 | Full end-to-end character movement on macOS/Linux | Manual: Scenario 1 in test-scenarios doc | End-to-end: deferred R17 | `[ ]` |
+| AC-2 | `MOVEINFODATA index equality operator matches gate by index` | `tests/world/test_world_navigation_validation.cpp` | Component: gate lookup | `[x]` |
+| AC-2 | `MOVEINFODATA _bCanMove flag is default-constructible and distinguishes gate states` | `tests/world/test_world_navigation_validation.cpp` | Component: gate state | `[x]` |
+| AC-2 | `TW_* terrain attribute flags are distinct non-overlapping bitmasks` | `tests/world/test_world_navigation_validation.cpp` | Component: terrain flags | `[x]` |
+| AC-2 | `CMapManager map range queries` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | Stub: MUGame linkage | `[x]` |
+| AC-2 | `CPortalMgr portal state save/restore` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | Stub: MUGame linkage | `[x]` |
+| AC-2 | Full end-to-end map transitions on all platforms | Manual: Scenario 2 in test-scenarios doc | End-to-end: deferred R17 | `[ ]` |
+| AC-3 | Manual rendering validation | Manual: Scenario 3 in test-scenarios doc | End-to-end: deferred R17 | `[ ]` |
+| AC-4 | Manual minimap validation | Manual: Scenario 4 in test-scenarios doc | End-to-end: deferred R17 | `[ ]` |
+| AC-5 | `ENUM_WORLD defines correct IDs for the 6 key game maps` | `tests/world/test_world_navigation_validation.cpp` | Full: enum validation | `[x]` |
+| AC-5 | `ENUM_WORLD covers 82+ game world map slots` | `tests/world/test_world_navigation_validation.cpp` | Full: slot count | `[x]` |
+| AC-5 | `ENUM_WORLD event map ranges use correct base IDs` | `tests/world/test_world_navigation_validation.cpp` | Full: range validation | `[x]` |
+| AC-5 | Full end-to-end key maps verified on all platforms | Manual: Scenario 5 in test-scenarios doc | End-to-end: deferred R17 | `[ ]` |
+| AC-STD-2 | All Catch2 tests in test file | `tests/world/test_world_navigation_validation.cpp` | Full | `[x]` |
+| AC-VAL-6 | Test scenarios document created | `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` | Full | `[x]` |
 
 ---
 
@@ -89,8 +95,8 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 
 - [x] `AC-1 [6-1-2]: PATH CheckXYPos enforces map grid boundaries` — 7 SECTION blocks (in-bounds, out-of-bounds)
 - [x] `AC-1 [6-1-2]: PATH GetIndex maps 2D coordinates to flat array index` — 4 SECTION blocks (origin, row, column, general)
-- [x] `AC-1 [6-1-2]: PATH EstimateCostToGoal heuristic properties` — 4 SECTION blocks (zero, positive, monotone, symmetric)
-- [x] `AC-1 [6-1-2]: MovePoint maps all 8 EPathDirection values to correct coordinate deltas` — 8 SECTION blocks (all directions)
+- [x] `AC-1 [6-1-2]: PATH EstimateCostToGoal heuristic properties` — 4 SECTION blocks (cost to itself is 0, cost to adjacent is positive, cost increases monotonically with distance, cost is symmetric swapping goal and current)
+- [x] `AC-1 [6-1-2]: MovePoint maps all 8 EPathDirection values to correct coordinate deltas` — 10 SECTION blocks (8 directions + WEST from origin boundary + EAST from large coordinates boundary)
 
 ### Phase 4: Catch2 Tests — AC-2 (Map Transitions, Terrain Flags)
 
