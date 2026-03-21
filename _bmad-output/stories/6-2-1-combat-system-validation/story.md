@@ -1,6 +1,6 @@
 # Story 6.2.1: Combat System Validation
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -249,7 +249,7 @@ Claude Opus 4.6
 
 | File | Status | Notes |
 |------|--------|-------|
-| `MuMain/tests/gameplay/test_combat_system_validation.cpp` | Modified | 34 TEST_CASEs (28 component + 6 SKIP stubs) |
+| `MuMain/tests/gameplay/test_combat_system_validation.cpp` | Created | 34 TEST_CASEs (28 component + 6 SKIP stubs) |
 | `MuMain/tests/CMakeLists.txt` | Modified | Registered test file via target_sources |
 | `_bmad-output/test-scenarios/epic-6/combat-system-validation.md` | Created | 6 manual test scenarios for all ACs |
 | `_bmad-output/stories/6-2-1-combat-system-validation/atdd.md` | Modified | Updated with Task-2.4/2.5 test coverage, output summary |
