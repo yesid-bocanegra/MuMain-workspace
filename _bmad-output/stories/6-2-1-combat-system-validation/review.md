@@ -7,18 +7,35 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status | Date |
+|------|--------|------|
+| 1. Quality Gate | PASSED | 2026-03-21 |
+| 2. Code Review Analysis | COMPLETE | 2026-03-21 |
+| 3. Code Review Finalize | COMPLETE | 2026-03-21 |
+
 ## Quality Gate
 
 **Status:** PASSED
 **Run Date:** 2026-03-21
-**Pipeline Step:** code-review (adversarial review)
+**Pipeline Step:** 1 of 3 — code-review-quality-gate
+
+### Quality Gate Progress
+
+| Phase | Status |
+|-------|--------|
+| Backend Local (mumain) | PASSED |
+| Backend SonarCloud | N/A (no SONAR_TOKEN) |
+| Frontend Local | N/A (no frontend components) |
+| Frontend SonarCloud | N/A (no frontend components) |
 
 ### Backend: mumain (cpp-cmake)
 
 | Check | Result | Notes |
 |-------|--------|-------|
-| format-check (clang-format) | PASS | Pre-run verified — 0 violations |
-| lint (cppcheck) | PASS | Pre-run verified — 0 violations |
+| format-check (clang-format) | PASS | 0 violations (711 files) |
+| lint (cppcheck) | PASS | 0 violations (711 files checked) |
 | build | SKIPPED | macOS cannot compile Win32/DirectX (skip_checks config) |
 | test | SKIPPED | macOS cannot compile Win32/DirectX (skip_checks config) |
 | coverage | PASS | No coverage configured yet |
@@ -26,6 +43,14 @@
 ### Frontend
 
 No frontend components affected (project-docs is documentation only).
+
+### AC Compliance
+
+Infrastructure story — AC test enforcement skipped (no Playwright or integration test suite applicable).
+
+### App Startup
+
+Not applicable — C++ Win32 game client cannot boot on macOS (no server binary).
 
 ---
 
