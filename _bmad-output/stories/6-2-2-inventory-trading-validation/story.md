@@ -1,6 +1,6 @@
 # Story 6.2.2: Inventory, Trading & Shops Validation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -53,33 +53,33 @@ Status: ready-for-dev
      ACs are marked with component-level automated coverage status below.
      Full validation deferred to manual execution per Risk R17 (server dependency). -->
 
-- [ ] **AC-1:** Inventory opens, displays items correctly (all 120 slots) — *Component tests: `ITEM` struct layout validation, `ITEM_ATTRIBUTE` field sizes, inventory grid constants (`MAX_ITEM_SPECIAL`, `MAX_SOCKETS`), equipment slot count. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-2:** Equip/unequip items to character model — *Component tests: equipment slot enum values, `EQUIPMENT_LENGTH_EXTENDED` constant, equipment item packet struct layout. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-3:** Drag-and-drop item movement within inventory — *Component tests: `CNewUIPickedItem` event states (`EVENT_PICKING`), tooltip type enums (`TOOLTIP_TYPE_INVENTORY`, etc.), inventory control storage types. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-4:** Player-to-player trade window works — *Component tests: trade inventory dimensions (8×4=32 slots), `MAX_TRADE_INVEN` constant, trade packet structs. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-5:** NPC shop buy/sell works — *Component tests: shop state enums (`SHOP_STATE_BUYNSELL`, `SHOP_STATE_REPAIR`), tooltip type for NPC shop, tax rate handling. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-6:** Item tooltips display correctly — *Component tests: tooltip type enum completeness and uniqueness, `ITEM_ATTRIBUTE` struct field validation, item special/option data structures. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-1:** Inventory opens, displays items correctly (all 120 slots) — *Component tests: `ITEM` struct layout validation, `ITEM_ATTRIBUTE` field sizes, inventory grid constants (`MAX_ITEM_SPECIAL`, `MAX_SOCKETS`), equipment slot count. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-2:** Equip/unequip items to character model — *Component tests: equipment slot enum values, `EQUIPMENT_LENGTH_EXTENDED` constant, equipment item packet struct layout. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-3:** Drag-and-drop item movement within inventory — *Component tests: `CNewUIPickedItem` event states (`EVENT_PICKING`), tooltip type enums (`TOOLTIP_TYPE_INVENTORY`, etc.), inventory control storage types. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-4:** Player-to-player trade window works — *Component tests: trade inventory dimensions (8×4=32 slots), `MAX_TRADE_INVEN` constant, trade packet structs. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-5:** NPC shop buy/sell works — *Component tests: shop state enums (`SHOP_STATE_BUYNSELL`, `SHOP_STATE_REPAIR`), tooltip type for NPC shop, tax rate handling. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-6:** Item tooltips display correctly — *Component tests: tooltip type enum completeness and uniqueness, `ITEM_ATTRIBUTE` struct field validation, item special/option data structures. Full end-to-end: deferred to manual validation (Risk R17)*
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
-- [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite validates inventory/trading/shop logic where testable without live server
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
+- [x] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
+- [x] **AC-STD-2:** Testing Requirements — Catch2 test suite validates inventory/trading/shop logic where testable without live server
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-6:** Test scenarios documented in `_bmad-output/test-scenarios/epic-6/`
+- [x] **AC-VAL-6:** Test scenarios documented in `_bmad-output/test-scenarios/epic-6/`
 
 <!-- AC-VAL-1..2 removed: require running test server + multiple platforms (macOS/Linux/Windows).
      Manual validation is tracked separately outside PCC automation scope.
@@ -89,24 +89,24 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create test scenario documentation for inventory, trading, and shop validation (AC: VAL-6)
-  - [ ] Subtask 1.1: Document manual test plan for inventory display (open inventory, verify 120 slots, item icons)
-  - [ ] Subtask 1.2: Document manual test plan for equip/unequip (drag item to equipment slot, verify character model update)
-  - [ ] Subtask 1.3: Document manual test plan for drag-and-drop item movement (move items between slots, verify positioning)
-  - [ ] Subtask 1.4: Document manual test plan for player-to-player trading (open trade, add items, confirm/cancel)
-  - [ ] Subtask 1.5: Document manual test plan for NPC shop buy/sell (open shop, buy item, sell item, verify zen deduction)
-  - [ ] Subtask 1.6: Document manual test plan for item tooltips (hover items, verify stats, set bonuses, socket info)
-- [ ] Task 2: Create Catch2 test suite for inventory/trading/shop data structure validation (AC: 1-6, STD-2)
-  - [ ] Subtask 2.1: Test `ITEM` struct layout — field sizes, `MAX_ITEM_SPECIAL`, `MAX_SOCKETS`, socket array dimensions
-  - [ ] Subtask 2.2: Test `ITEM_ATTRIBUTE` struct — field validation, `ITEM_ATTRIBUTE_FILE` vs `ITEM_ATTRIBUTE_FILE_LEGACY` layout compatibility
-  - [ ] Subtask 2.3: Test inventory control enums — `EVENT_PICKING` states, `TOOLTIP_TYPE_*` enum completeness and uniqueness
-  - [ ] Subtask 2.4: Test trade system constants — `MAX_TRADE_INVEN` capacity, trade inventory grid dimensions (8 cols × 4 rows)
-  - [ ] Subtask 2.5: Test NPC shop enums — `SHOP_STATE_BUYNSELL`/`SHOP_STATE_REPAIR` values, shop mode validation
-  - [ ] Subtask 2.6: Test equipment slot constants — slot count, `EQUIPMENT_LENGTH_EXTENDED`, personal shop packet structs
-  - [ ] Subtask 2.7: Test item option data structures — `CSItemOption` constants reuse from 6-2-1 (verify no regression), `ItemAddOption` types
-- [ ] Task 3: Run quality gate and fix any violations (AC: STD-1, STD-13)
-  - [ ] Subtask 3.1: Run `./ctl check` — fix clang-format violations
-  - [ ] Subtask 3.2: Run `./ctl check` — fix cppcheck warnings
+- [x] Task 1: Create test scenario documentation for inventory, trading, and shop validation (AC: VAL-6)
+  - [x] Subtask 1.1: Document manual test plan for inventory display (open inventory, verify 120 slots, item icons)
+  - [x] Subtask 1.2: Document manual test plan for equip/unequip (drag item to equipment slot, verify character model update)
+  - [x] Subtask 1.3: Document manual test plan for drag-and-drop item movement (move items between slots, verify positioning)
+  - [x] Subtask 1.4: Document manual test plan for player-to-player trading (open trade, add items, confirm/cancel)
+  - [x] Subtask 1.5: Document manual test plan for NPC shop buy/sell (open shop, buy item, sell item, verify zen deduction)
+  - [x] Subtask 1.6: Document manual test plan for item tooltips (hover items, verify stats, set bonuses, socket info)
+- [x] Task 2: Create Catch2 test suite for inventory/trading/shop data structure validation (AC: 1-6, STD-2)
+  - [x] Subtask 2.1: Test `ITEM` struct layout — field sizes, `MAX_ITEM_SPECIAL`, `MAX_SOCKETS`, socket array dimensions
+  - [x] Subtask 2.2: Test `ITEM_ATTRIBUTE` struct — field validation, `ITEM_ATTRIBUTE_FILE` vs `ITEM_ATTRIBUTE_FILE_LEGACY` layout compatibility
+  - [x] Subtask 2.3: Test inventory control enums — `EVENT_PICKING` states, `TOOLTIP_TYPE_*` enum completeness and uniqueness
+  - [x] Subtask 2.4: Test trade system constants — `MAX_TRADE_INVEN` capacity, trade inventory grid dimensions (8 cols × 4 rows)
+  - [x] Subtask 2.5: Test NPC shop enums — `SHOP_STATE_BUYNSELL`/`SHOP_STATE_REPAIR` values, shop mode validation
+  - [x] Subtask 2.6: Test equipment slot constants — slot count, `EQUIPMENT_LENGTH_EXTENDED`, personal shop packet structs
+  - [x] Subtask 2.7: Test item option data structures — `CSItemOption` constants reuse from 6-2-1 (verify no regression), `ItemAddOption` types
+- [x] Task 3: Run quality gate and fix any violations (AC: STD-1, STD-13)
+  - [x] Subtask 3.1: Run `./ctl check` — fix clang-format violations
+  - [x] Subtask 3.2: Run `./ctl check` — fix cppcheck warnings
 <!-- Tasks 4+ removed: manual platform validation requires running test server + multiple platforms.
      Tracked separately outside PCC automation scope. See Risk R17 in Dev Notes. -->
 
@@ -224,10 +224,28 @@ From 6-2-1 code review learnings:
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.6
 
 ### Debug Log References
 
+- Quality gate `./ctl check` passed: 711/711 files, 0 errors (2026-03-21)
+
 ### Completion Notes List
 
+- Task 1: Test scenario documentation verified at `_bmad-output/test-scenarios/epic-6/inventory-trading-validation.md` — 6 manual test plans covering all ACs (inventory display, equip/unequip, drag-and-drop, trading, NPC shop, tooltips)
+- Task 2: Catch2 test suite verified at `MuMain/tests/gameplay/test_inventory_trading_validation.cpp` — 20 TEST_CASEs (15 always-on + 5 MU_GAME_AVAILABLE gated) covering all 6 ACs with constant validation, struct layout checks, enum uniqueness, and CSItemOption regression from 6-2-1
+- Task 3: Quality gate passed — clang-format and cppcheck both 0 errors across 711 files
+- All tests validate existing data structures and constants (infrastructure story) — no new production code introduced
+- Tests follow established patterns from 6-1-1, 6-1-2, 6-2-1: Catch2 TEST_CASE/SECTION/REQUIRE, `#ifdef MU_GAME_AVAILABLE` compile-time guard, pairwise uniqueness checks
+
 ### File List
+
+| File | Action | Description |
+|------|--------|-------------|
+| `MuMain/tests/gameplay/test_inventory_trading_validation.cpp` | NEW | Catch2 test suite — 20 TEST_CASEs for inventory/trading/shop validation |
+| `_bmad-output/test-scenarios/epic-6/inventory-trading-validation.md` | NEW | Manual test scenarios — 6 end-to-end test plans for AC-1..6 |
+| `_bmad-output/stories/6-2-2-inventory-trading-validation/atdd.md` | NEW | ATDD checklist — 32 implementation items mapped to ACs |
+
+### Change Log
+
+- 2026-03-21: Story implementation complete — all 3 tasks, 16 subtasks checked. Quality gate passed. Status → review.
