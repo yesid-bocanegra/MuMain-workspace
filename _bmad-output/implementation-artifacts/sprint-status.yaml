@@ -138,10 +138,11 @@ sprints:
 
   sprint-5:
     name: "Sprint 5"
-    status: active
+    status: complete
     milestones: [M4, M1]
     start_date: "2026-03-16"
     end_date: "2026-03-30"
+    completed_date: "2026-03-20"
     planned_points: 20
     stories:
       # EPIC-5 — Audio System Migration (M4)
@@ -151,9 +152,9 @@ sprints:
       - 5-4-1-volume-controls                    # 2 pts | Deps: 5.2.1, 5.2.2
       # EPIC-7 — Native CI (M1 contribution)
       - 7-4-1-native-ci-runners                  # 5 pts | Deps: EPIC-4 ✓
-    velocity: null
-    delivered_points: null
-    commitment_reliability: null
+    velocity: 20
+    delivered_points: 20
+    commitment_reliability: 1.0
     scope_changes:
       added: []
       removed:
@@ -190,12 +191,12 @@ sprints:
 flow_metrics:
   velocity:
     current_sprint: null       # Sprint 6: planned, not yet started
-    previous_sprint: null      # Sprint 5: still active (20 pts assigned after scope change)
-    rolling_average: 29.0      # 4-sprint average: (18+28+22+48)/4
-    trend: stable              # Sprint 5 delivery pending; Sprint 6 at 26 pts (within avg range)
-  flow_time_avg_hours: 26.6    # Carried from Sprint 4: avg ~1.11d per story
-  flow_efficiency_pct: 12.0    # Carried from Sprint 4: includes overnight scheduling gaps
-  commitment_reliability_pct: 100.0  # 4/4 completed sprints at 100%
+    previous_sprint: 20        # Sprint 5: complete (20 pts delivered)
+    rolling_average: 27.2      # 5-sprint average: (18+28+22+48+20)/5
+    trend: stable              # Sprint 5 at 20 pts (conservative replan); Sprint 6 at 26 pts
+  flow_time_avg_hours: 20.9    # Sprint 5 avg: 0.87 days (20.9 hrs) per story — improved from 26.6
+  flow_efficiency_pct: 18.0    # Sprint 5 est. 18% (batch-sequential stories avg ~56% exc. outlier)
+  commitment_reliability_pct: 100.0  # 5/5 completed sprints at 100%
   wip_limits:
     in_progress: 2
     review: 3
