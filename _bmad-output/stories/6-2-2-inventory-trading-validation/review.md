@@ -7,15 +7,38 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status |
+|------|--------|
+| 1. Quality Gate | PASSED |
+| 2. Code Review Analysis | COMPLETE |
+| 3. Code Review Finalize | Pending |
+
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASSED
+**Date:** 2026-03-21
+**Component:** mumain (cpp-cmake)
 
-| Check | Result |
-|-------|--------|
-| lint (`./ctl check`) | Pending |
-| build | Pending |
-| coverage | N/A (infrastructure story) |
+| Check | Result | Notes |
+|-------|--------|-------|
+| format-check (`make -C MuMain format-check`) | PASSED | 0 violations |
+| lint (`make -C MuMain lint`) | PASSED | 0 violations |
+| build | SKIPPED | macOS cannot compile Win32/DirectX (skip_checks config) |
+| test | SKIPPED | macOS cannot compile Win32/DirectX (skip_checks config) |
+| coverage | N/A | Infrastructure story, no coverage threshold |
+| SonarCloud | N/A | No sonar command configured for cpp-cmake profile |
+| Schema Alignment | N/A | No frontend component |
+| AC Tests | SKIPPED | Infrastructure story — no AC tests required |
+| E2E Test Quality | N/A | No frontend component |
+| App Startup | N/A | Game client (Win32), not a server application |
+
+**Quality Gate Progress:**
+- Backend Local: PASSED (0 iterations, 0 issues fixed)
+- Backend SonarCloud: N/A
+- Frontend Local: N/A (no frontend components)
+- Frontend SonarCloud: N/A
 
 ---
 
