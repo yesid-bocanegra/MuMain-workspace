@@ -1,7 +1,6 @@
 {
   "story_key": "6-2-2-inventory-trading-validation",
-  "current_step": "dev-story",
-  "status": "ready",
-  "last_run": "2026-03-21T12:20:00.000000",
-  "steps_completed": ["create-story", "validate-story", "atdd"]
+  "current_step": "atdd",
+  "status": "completed",
+  "last_run": "2026-03-21T07:17:53.145409"
 }
