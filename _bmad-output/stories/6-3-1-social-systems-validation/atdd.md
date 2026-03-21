@@ -123,7 +123,7 @@
 
 | File | Path | Phase | TEST_CASEs |
 |------|------|-------|-----------|
-| test_social_systems_validation.cpp | `MuMain/tests/gameplay/test_social_systems_validation.cpp` | RED | 16 (11 standalone + 5 MU_GAME_AVAILABLE) |
+| test_social_systems_validation.cpp | `MuMain/tests/gameplay/test_social_systems_validation.cpp` | GREEN | 17 (12 standalone + 5 MU_GAME_AVAILABLE) |
 
 ### TEST_CASE Count by AC
 

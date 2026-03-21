@@ -30,23 +30,23 @@
 
 ### Task 1: Create manual test scenario documentation
 
-**Status:** not-started
-**Progress:** 0%
+**Status:** complete
+**Progress:** 100%
 
 **Subtasks:**
-- [ ] Subtask 1.1: Document chat channel test scenarios
-- [ ] Subtask 1.2: Document party lifecycle test scenarios
-- [ ] Subtask 1.3: Document guild panel test scenarios
-- [ ] Subtask 1.4: Document player name/guild tag rendering test scenarios
-- [ ] Subtask 1.5: Document Korean/Latin chat encoding test scenarios
+- [x] Subtask 1.1: Document chat channel test scenarios
+- [x] Subtask 1.2: Document party lifecycle test scenarios
+- [x] Subtask 1.3: Document guild panel test scenarios
+- [x] Subtask 1.4: Document player name/guild tag rendering test scenarios
+- [x] Subtask 1.5: Document Korean/Latin chat encoding test scenarios
 
 **Current Work:**
-Starting implementation...
+Complete — see `_bmad-output/test-scenarios/epic-6/social-systems-validation.md`
 
 **Files Being Modified:**
 | File | Status | Notes |
 |------|--------|-------|
-| (none yet) | - | - |
+| `_bmad-output/test-scenarios/epic-6/social-systems-validation.md` | NEW | 17 manual test scenarios across 3 platforms |
 
 ---
 
