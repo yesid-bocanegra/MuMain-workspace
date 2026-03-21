@@ -7,9 +7,32 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status | Date |
+|------|--------|------|
+| 1. Quality Gate | PASSED | 2026-03-21 |
+| 2. Code Review Analysis | COMPLETE | 2026-03-21 |
+| 3. Code Review Finalize | PENDING | — |
+
 ## Quality Gate
 
-**Status:** PASS — `./ctl check` passed (lint + format-check, 0 errors)
+**Status:** PASSED — `./ctl check` passed (lint + format-check, 0 errors)
+
+| Check | Component | Status | Notes |
+|-------|-----------|--------|-------|
+| format-check | mumain | PASSED | clang-format, 0 violations |
+| lint (cppcheck) | mumain | PASSED | 0 errors |
+| build | mumain | SKIPPED | macOS cannot compile Win32/DirectX (skip_checks config) |
+| test | mumain | SKIPPED | macOS cannot compile Win32/DirectX (skip_checks config) |
+| SonarCloud | mumain | SKIPPED | No SONAR_TOKEN configured |
+| Frontend | — | N/A | No frontend components affected |
+| Schema Alignment | — | N/A | No frontend component |
+| AC Compliance | — | SKIPPED | Infrastructure story type |
+| E2E Test Quality | — | SKIPPED | Infrastructure story type |
+| App Startup | — | N/A | C++ Win32 client, cannot boot on macOS |
+
+**Iterations:** 0 | **Issues Fixed:** 0
 
 ---
 
