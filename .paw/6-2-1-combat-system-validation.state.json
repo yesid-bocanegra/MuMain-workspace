@@ -1,6 +1,6 @@
 {
   "story_key": "6-2-1-combat-system-validation",
-  "current_step": "dev-story",
-  "status": "ready",
-  "last_run": "2026-03-21T08:36:45.588129"
+  "current_step": "atdd",
+  "status": "completed",
+  "last_run": "2026-03-21T03:38:39.003628"
 }
