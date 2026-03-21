@@ -13,7 +13,7 @@
 |------|--------|------|
 | 1. Quality Gate | PASSED | 2026-03-21 |
 | 2. Code Review Analysis | COMPLETE | 2026-03-21 |
-| 3. Code Review Finalize | COMPLETE | 2026-03-21 |
+| 3. Code Review Finalize | COMPLETE | 2026-03-21 06:35 UTC |
 
 ## Quality Gate
 
@@ -249,3 +249,42 @@ Key strengths:
 - All prior findings properly fixed (Pass 1: 7 findings, Pass 2: 4 findings)
 
 **RECOMMENDATION:** Story 6-2-1 is READY FOR CLOSURE — all AC violations resolved, all findings fixed, quality gate passing.
+
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-21 06:35 UTC
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 4 |
+| BLOCKER Issues | 0 |
+| Critical Issues | 0 |
+| Test Coverage | 34/34 (100%) |
+
+### Resolution Details
+
+- **Finding 8 (MEDIUM):** Fixed — Added 4 new boundary test sections for DemendConditionInfo operator<= (Level, Dexterity, Vitality, Charisma individual failure cases)
+- **Finding 9 (LOW):** Fixed — Added 2 SECTION blocks to verify IsExtOption and FulfillsClassRequirement fields
+- **Finding 10 (LOW):** Fixed — Updated test scenarios doc to reference SOUND_BRANDISH_SWORD01..04 range
+- **Finding 11 (LOW):** Fixed — Added 9 missing test cases to Test Coverage table (Task-2.4, Task-2.5 tests, remaining SKIP stubs)
+
+### Story Status Update
+
+- **Previous Status:** in-review
+- **New Status:** done
+- **Story File Updated:** story.md (status field)
+- **ATDD Checklist Synchronized:** Yes (52/52 items [x])
+
+### Files Modified
+
+- `MuMain/tests/gameplay/test_combat_system_validation.cpp` - Added 4 boundary test sections + 2 field verification sections
+- `_bmad-output/test-scenarios/epic-6/combat-system-validation.md` - Fixed SOUND range documentation + added 9 missing test rows to coverage table
+- `_bmad-output/stories/6-2-1-combat-system-validation/review.md` - Code review trace updated with all findings resolved
+- `_bmad-output/stories/6-2-1-combat-system-validation/story.md` - Status updated to done
+
+**✅ CODE REVIEW COMPLETE** — Story is done and ready for the next work!

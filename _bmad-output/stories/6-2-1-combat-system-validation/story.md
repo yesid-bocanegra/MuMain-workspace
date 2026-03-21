@@ -1,6 +1,7 @@
 # Story 6.2.1: Combat System Validation
 
 Status: done
+Last Updated: 2026-03-21 06:35 UTC (Code Review Finalized)
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
