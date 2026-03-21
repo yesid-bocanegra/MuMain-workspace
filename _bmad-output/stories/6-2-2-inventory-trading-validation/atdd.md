@@ -58,7 +58,7 @@
 
 - [ ] AC-STD-1: Code Standards Compliance — Allman braces, 4-space indent, `nullptr`, no raw `new`/`delete`
 - [ ] AC-STD-2: Catch2 test suite implemented with TEST_CASE/SECTION/REQUIRE structure
-- [ ] AC-STD-13: Quality Gate passes — `./ctl check` (clang-format + cppcheck 0 errors)
+- [x] AC-STD-13: Quality Gate passes — `./ctl check` (clang-format + cppcheck 0 errors)
 - [ ] AC-STD-15: Git Safety — no incomplete rebase, no force push
 - [ ] AC-STD-16: Correct test infrastructure — Catch2 v3.7.1, `tests/gameplay/` directory
 
