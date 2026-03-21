@@ -1,119 +1,137 @@
-# Sprint Health Audit — 2026-03-20 (Updated)
+# Sprint Health Audit — 2026-03-20
 
 **Generated:** 2026-03-20
 **Workflow:** sprint-health-audit v1.1.0
 **Sprint:** Sprint 5
 **Milestone(s):** M4, M1
 **Sprint Window:** 2026-03-16 → 2026-03-30
-**Scope:** active (in-progress + review); 0 active stories — all sprint-5 stories are done or backlog
+**Scope:** active (in-progress + review stories only)
 **Epic Filter:** none
-**Stories Scanned:** 0 (active scope); 6 (all sprint stories for reference)
-**Stories with Gaps:** 0 (active scope); 1 (backlog story, informational)
-**Stories Gap-Free:** 0 (active scope); 5 clean done stories
+**Stories in Active Scope:** 0 (all Sprint 5 committed stories are `done`)
 
-> **Note:** This report supersedes the earlier 2026-03-20 audit. The CRITICAL FEEDBACK gap on 5-2-2-miniaudio-sfx was resolved between audits (feedback.md and state.json deleted after successful pipeline completion). Three additional stories also completed today: 5-4-1-volume-controls (14:51), 7-4-1-native-ci-runners (16:13), and the 5-2-2 finalization.
+---
+
+## Scope Resolution
+
+**Sprint Scoping Algorithm:** Resolved current sprint = `sprint-5` (status: `active`)
+
+**Sprint 5 stories evaluated against scope filter `active` (in-progress | review):**
+
+| Story Key | Status | In Active Scope? |
+|-----------|--------|-----------------|
+| 5-1-1-muaudio-abstraction-layer | done | No |
+| 5-2-1-miniaudio-bgm | done | No |
+| 5-2-2-miniaudio-sfx | done | No |
+| 5-4-1-volume-controls | done | No |
+| 7-4-1-native-ci-runners | done | No |
+
+> `5-3-1-audio-format-validation` was removed from Sprint 5 scope (2026-03-20, moved to Sprint 6). Status: `backlog` — also excluded by the active filter.
+
+**Result:** 0 stories qualify under the `active` scope filter.
 
 ---
 
 ## Overall Health
 
-**HEALTHY** — 0 CRITICAL gaps, 0 HIGH gaps.
+**HEALTHY** — 0 CRITICAL gaps, 0 HIGH gaps across all Sprint 5 stories (active scope).
 
 > Classification: HEALTHY = 0 CRITICAL and ≤2 HIGH gaps
 
 ---
 
-## Executive Summary
+## Executive Summary (active scope)
 
 | Gap Type | CRITICAL | HIGH | MEDIUM | LOW | Total |
 |----------|----------|------|--------|-----|-------|
-| BLOCKER | 0 | 0 | 0 | 0 | 0 |
-| USER_ACTION | 0 | 0 | 0 | 0 | 0 |
-| AC_FAIL | 0 | 0 | 0 | 0 | 0 |
-| ATDD_GAP | 0 | 0 | 0 | 0 | 0 |
-| IN_PROGRESS | 0 | 0 | 0 | 0 | 0 |
-| STALLED | 0 | 0 | 0 | 0 | 0 |
-| STRUCT_MISS | 0 | 0 | 0 | 1 | 1 |
-| FEEDBACK | 0 | 0 | 0 | 0 | 0 |
-| PHANTOM | 0 | 0 | 0 | 0 | 0 |
-| PLACEHOLDER | 0 | 0 | 0 | 0 | 0 |
-| REACH_ORPHAN | 0 | 0 | 0 | 0 | 0 |
-| BOOT_FAIL | 0 | 0 | 0 | 0 | 0 |
-| TEST_ANTIPATTERN | 0 | 0 | 0 | 0 | 0 |
-| CONTRACT_BREAK | 0 | 0 | 0 | 0 | 0 |
-| PEN_DRIFT | 0 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **0** | **0** | **0** | **1** | **1** |
-
-> The single LOW gap is 5-3-1-audio-format-validation (backlog, no artifacts yet). This is expected — its prerequisites (5-2-1, 5-2-2) completed today. No remediation required before starting the story.
+| BLOCKER | 0 | — | — | — | 0 |
+| USER_ACTION | — | 0 | — | — | 0 |
+| AC_FAIL | 0 | 0 | — | — | 0 |
+| ATDD_GAP | — | 0 | 0 | — | 0 |
+| IN_PROGRESS | — | — | 0 | 0 | 0 |
+| STALLED | — | — | 0 | — | 0 |
+| STRUCT_MISS | 0 | 0 | 0 | 0 | 0 |
+| FEEDBACK | 0 | — | — | — | 0 |
+| PHANTOM | 0 | — | — | — | 0 |
+| PLACEHOLDER | — | 0 | — | — | 0 |
+| REACH_ORPHAN | 0 | — | — | — | 0 |
+| BOOT_FAIL | 0 | — | — | — | 0 |
+| TEST_ANTIPATTERN | 0 | — | — | — | 0 |
+| CONTRACT_BREAK | 0 | — | — | — | 0 |
+| PEN_DRIFT | — | 0 | — | — | 0 |
+| **TOTAL** | **0** | **0** | **0** | **0** | **0** |
 
 ---
 
-## Artifact Inventory (6 sprint stories)
+## Artifact Inventory (Sprint 5 — informational reference)
+
+All done stories included for completeness even though outside active scope.
 
 | Story | Story | ATDD | Session | Progress | Review | AC-FE | AC-BE | Pen | State | Feedback |
 |-------|-------|------|---------|----------|--------|-------|-------|-----|-------|----------|
-| 5-1-1-muaudio-abstraction-layer | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
-| 5-2-1-miniaudio-bgm | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
-| 5-2-2-miniaudio-sfx | yes | yes | yes | yes | yes | -- | -- | -- | -- (deleted) | -- (deleted) |
-| 5-3-1-audio-format-validation | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| 5-4-1-volume-controls | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
-| 7-4-1-native-ci-runners | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 5-1-1 | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 5-2-1 | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 5-2-2 | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 5-4-1 | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
+| 7-4-1 | yes | yes | yes | yes | yes | -- | -- | -- | completed | -- |
 
-> AC compliance YAML not applicable — backend-only cpp-cmake stories.
-> Pen sidecars not required — no frontend components.
-> 5-2-2 state and feedback files deleted on disk (git staged deletion) after successful pipeline completion.
-
----
-
-## Remediation Plan
-
-### CRITICAL Gaps
-
-None.
-
-### HIGH Gaps
-
-None.
-
-### MEDIUM Gaps
-
-None.
-
-### LOW Gaps
-
-#### GAP-001: 5-3-1-audio-format-validation — STRUCT_MISS (LOW)
-
-| Field | Value |
-|-------|-------|
-| Story | 5-3-1-audio-format-validation |
-| Gap Type | STRUCT_MISS |
-| Severity | LOW |
-| Artifact | `_bmad-output/stories/5-3-1-audio-format-validation/` (directory missing) |
-| Story Status | backlog |
-
-**Finding:** Story 5-3-1 is `backlog` with no artifacts. This is expected — its prerequisites (5-2-1 done 2026-03-19, 5-2-2 done 2026-03-20) were completed today. The story is now fully unblocked and ready to start.
-
-**Action:** Run `./paw 5-3-1-audio-format-validation` to begin the pipeline from create-story.
-
-**Suggested Workflow:** `./paw 5-3-1-audio-format-validation` (auto-detect: starts at create-story)
+> AC compliance YAML not applicable — backend-only cpp-cmake stories with no REST API.
+> Pen sidecars not required — no frontend/UI components.
+> 5-2-2 state.json was absent from disk; story confirmed done via sprint-status.yaml and progress.md.
 
 ---
 
-## Gap Registry
+## Scan Results (done stories — informational)
 
-```
-gap_registry = {
-  "5-3-1-audio-format-validation": [
-    {
-      type: "STRUCT_MISS",
-      severity: "LOW",
-      detail: "No story directory — backlog story, prerequisites satisfied (5-2-1 done 2026-03-19, 5-2-2 done 2026-03-20)",
-      artifact_path: "_bmad-output/stories/5-3-1-audio-format-validation/",
-      suggested_workflow: "./paw 5-3-1-audio-format-validation (create-story)"
-    }
-  ]
-}
-```
+Steps 3–6.5 executed against all Sprint 5 done stories to detect any lingering deferred gaps.
+
+### Step 3: Session Summaries — Last Block Scan
+
+| Story | Unresolved Blockers (last session) | User Action Required |
+|-------|------------------------------------|----------------------|
+| 5-1-1 | None | None |
+| 5-2-1 | None (all 9 issues resolved at code-review-finalize 2026-03-19) | None |
+| 5-2-2 | None (all 9 issues resolved at code-review-finalize 2026-03-20) | None |
+| 5-4-1 | None (all 7 issues resolved at code-review-finalize 2026-03-20) | None |
+| 7-4-1 | None (MEDIUM-2 and LOW-1 deferred by design — informational only) | None |
+
+No BLOCKER or USER_ACTION gaps detected.
+
+### Step 4: AC Compliance
+
+Not applicable — no AC compliance YAML files exist for these stories (cpp-cmake backend, no service endpoints to validate).
+
+### Step 5: ATDD Checklists
+
+| Story | Total Items | Unchecked | Gap? |
+|-------|-------------|-----------|------|
+| 5-1-1 | 93 | 0 (template text only) | None |
+| 5-2-1 | 48 | 0 | None |
+| 5-2-2 | 54 | 0 (template text only) | None |
+| 5-4-1 | 64 | 0 | None |
+| 7-4-1 | 45 | 0 | None |
+
+No ATDD_GAP detected.
+
+### Step 6: Progress Files + State Files + Feedback Files
+
+All progress files show `Status: complete`, `Blocker: none`. All state files show `status: completed`. No feedback files exist.
+
+No IN_PROGRESS, STALLED, or FEEDBACK gaps detected.
+
+### Step 6.5: Pipeline Log Files (5-2-2 only — only story with log files)
+
+Most recent completeness gate log `5-2-2-miniaudio-sfx_completeness-gate_20260320_000834.log`:
+
+| Check | Result |
+|-------|--------|
+| CHECK 3 — Task Completion | PASS (7/7 tasks, 0 phantoms) |
+| CHECK 5 — Placeholder Scan | PASS (0 placeholders found) |
+| CHECK 6 — Contract Reachability | PASS (not applicable) |
+| CHECK 7 — Boot Verification | PASS (not applicable) |
+
+Most recent code-review log `5-2-2-miniaudio-sfx_code-review_20260320_004102.log`: No CRITICAL e2e anti-patterns, no CONTRACT_BREAK, no PEN_DRIFT, no BOOT_FAIL signals found.
+
+No pipeline log gaps detected.
 
 ---
 
@@ -122,77 +140,55 @@ gap_registry = {
 | Metric | Value |
 |--------|-------|
 | Stories scanned (active scope) | 0 |
-| Stories scanned (all sprint stories) | 6 |
-| Stories with gaps | 1 (5-3-1 LOW STRUCT_MISS) |
+| Stories scanned (all sprint, informational) | 5 |
+| Stories with gaps | 0 |
 | Stories gap-free | 5 |
 | CRITICAL gaps | 0 |
 | HIGH gaps | 0 |
 | MEDIUM gaps | 0 |
-| LOW gaps | 1 |
+| LOW gaps | 0 |
 
-**Per Gap Type:**
+---
 
-| Gap Type | Count | Story |
-|----------|-------|-------|
-| STRUCT_MISS | 1 | 5-3-1-audio-format-validation |
+## Remediation Plan
+
+**No gaps found. No remediation items.**
 
 ---
 
 ## Sprint 5 Status Overview
 
-| Story | Points | Status | Gap | Notes |
-|-------|--------|--------|-----|-------|
-| 5-1-1-muaudio-abstraction-layer | 3 | done | — | Clean. Completed 2026-03-19 |
-| 5-2-1-miniaudio-bgm | 5 | done | — | Clean. Completed 2026-03-19 |
-| 5-2-2-miniaudio-sfx | 5 | done | — | Clean. Completed 2026-03-20 (FEEDBACK gap resolved) |
-| 5-3-1-audio-format-validation | 3 | backlog | LOW (STRUCT_MISS) | Prerequisites unblocked 2026-03-20. Ready to start. |
-| 5-4-1-volume-controls | 2 | done | — | Clean. Completed 2026-03-20 |
-| 7-4-1-native-ci-runners | 5 | done | — | Clean. Completed 2026-03-20 |
-| **Total** | **23** | **5/6 done** | | 20 pts delivered clean; 3 pts remaining (5-3-1) |
+| Story | Points | Status | Completed | Gap |
+|-------|--------|--------|-----------|-----|
+| 5-1-1-muaudio-abstraction-layer | 3 | done | 2026-03-19 | — |
+| 5-2-1-miniaudio-bgm | 5 | done | 2026-03-19 | — |
+| 5-2-2-miniaudio-sfx | 5 | done | 2026-03-20 | — |
+| 5-4-1-volume-controls | 2 | done | 2026-03-20 | — |
+| 7-4-1-native-ci-runners | 5 | done | 2026-03-20 | — |
+| 5-3-1-audio-format-validation | 3 | backlog | — (Sprint 6) | — (not in scope) |
+| **Sprint 5 Committed (excl. 5-3-1)** | **20** | **5/5 done** | | |
 
-**Velocity progress:** 20/23 pts delivered (87%). One story (5-3-1, 3 pts) blocked until today; now unblocked.
-
----
-
-## Session Summaries — Unresolved Blockers Check (Last Session)
-
-| Story | Unresolved Blockers | User Action Required |
-|-------|---------------------|----------------------|
-| 5-1-1 | None | None |
-| 5-2-1 | None | None |
-| 5-2-2 | None (all 9 issues fixed) | None |
-| 5-4-1 | None (all 7 issues fixed) | None |
-| 7-4-1 | None (all issues fixed, MEDIUM-2 and LOW-1 deferred by design) | None |
+Sprint 5 committed stories fully delivered. 5-3-1 moved to Sprint 6 (scope change 2026-03-20).
 
 ---
 
 ## Workflow Quick Reference
 
-| Gap Type | Suggested Workflow |
-|----------|--------------------|
-| STRUCT_MISS | `./paw {story-key}` — auto-detect from create-story |
-
-Full taxonomy: `_bmad/pcc/partials/gap-taxonomy.md`
+No gaps — no remediation workflows needed. Full taxonomy reference: `_bmad/pcc/partials/gap-taxonomy.md`
 
 ---
 
-## Step 10: Next Steps
+## Next Steps
 
-**Sprint is HEALTHY. Recommended next action:**
+All Sprint 5 committed stories are done. Recommended actions:
 
-Start the final remaining sprint-5 story:
+1. **Start Sprint 6** — `5-3-1-audio-format-validation` is now Sprint 6's first candidate (deps: 5-2-1 ✓, 5-2-2 ✓). Begin with: `./paw 5-3-1-audio-format-validation`
 
-```
-./paw 5-3-1-audio-format-validation
-```
+2. **Run sprint-complete** to finalize Sprint 5 and record velocity:
+   ```
+   /bmad:pcc:workflows:sprint-complete
+   ```
 
-Prerequisites: 5-2-1 ✓ (done 2026-03-19), 5-2-2 ✓ (done 2026-03-20)
+Sprint 5 end date: 2026-03-30 (10 days remaining). All stories on track.
 
-After completing 5-3-1, run `sprint-complete` to finalize Sprint 5:
-```
-/bmad:pcc:workflows:sprint-complete
-```
-
-All stories on track. Sprint 5 end date: 2026-03-30 (10 days remaining).
-
-*Generated by sprint-health-audit v1.1.0 — PCC workflow*
+*Generated by sprint-health-audit v1.1.0 — PCC*
