@@ -59,10 +59,19 @@ are manual-only.
 | `AC-6 [6-2-1]: SOUND_MONSTER macro range covers IDs 210 to 450` | AC-6 | RED→GREEN |
 | `AC-6 [6-2-1]: SOUND_MONSTER_BULL1 is the first monster enum entry matching SOUND_MONSTER` | AC-6 | RED→GREEN |
 | `AC-6 [6-2-1]: Combat sound ranges are mutually non-overlapping` | AC-6 | RED→GREEN |
+| `Task-2.4 [6-2-1]: eBuffState sentinel and combat-relevant buff values` | Task-2.4 | RED→GREEN |
+| `Task-2.4 [6-2-1]: eBuffState debuff sentinel values for combat effects` | Task-2.4 | RED→GREEN |
+| `Task-2.4 [6-2-1]: eBuffClass categorises buffs and debuffs` | Task-2.4 | RED→GREEN |
+| `Task-2.5 [6-2-1]: Item set system constants define correct capacities` | Task-2.5 | RED→GREEN |
+| `Task-2.5 [6-2-1]: ITEM_SET_TYPE struct has correct array dimensions` | Task-2.5 | RED→GREEN |
+| `Task-2.5 [6-2-1]: ITEM_SET_OPTION struct has correct nested array dimensions` | Task-2.5 | RED→GREEN |
+| `Task-2.5 [6-2-1]: SET_OPTION struct fields are independently addressable` | Task-2.5 | RED→GREEN |
 | `AC-1 [6-2-1]: CSkillManager::GetSkillInformation runtime lookup` (SKIP — needs MUGame) | AC-1 | SKIP |
 | `AC-2 [6-2-1]: CSkillManager::CheckSkillDelay activation gating` (SKIP — needs MUGame) | AC-2 | SKIP |
 | `AC-3 [6-2-1]: Script_Skill array capacity` (SKIP — needs MUGame) | AC-3 | SKIP |
 | `AC-1 [6-2-1]: SetPlayerAttack and AttackStage state transitions` (SKIP — needs MUGame) | AC-1 | SKIP |
+| `Task-2.4 [6-2-1]: w_BuffStateSystem RegisterBuff/UnRegisterBuff runtime` (SKIP — needs MUGame) | Task-2.4 | SKIP |
+| `Task-2.5 [6-2-1]: GetAttackDamage min/max calculation` (SKIP — needs MUGame) | Task-2.5 | SKIP |
 
 ---
 
@@ -80,7 +89,7 @@ are manual-only.
 
 **Expected Results:**
 - Character plays attack animation (sword swing).
-- Combat sound plays (SOUND_BRANDISH_SWORD01/02/03 range).
+- Combat sound plays (SOUND_BRANDISH_SWORD01/02/03/04 range).
 - Damage number appears above monster's head.
 - Monster health bar decreases.
 
