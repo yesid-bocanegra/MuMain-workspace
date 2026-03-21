@@ -1,6 +1,6 @@
 # Story 6.1.1: Authentication & Character Management Validation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -58,16 +58,16 @@ Status: ready-for-dev
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
-- [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite validates auth/character flow logic where testable without live server
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
+- [x] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
+- [x] **AC-STD-2:** Testing Requirements — Catch2 test suite validates auth/character flow logic where testable without live server
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
 
 ---
 
@@ -78,25 +78,25 @@ Status: ready-for-dev
 - [ ] **AC-VAL-3:** Screenshots: character creation screen on macOS (at least 1 class)
 - [ ] **AC-VAL-4:** Same screenshots on Linux (login, character select, character creation)
 - [ ] **AC-VAL-5:** Windows regression: same flows still work (login, select, create)
-- [ ] **AC-VAL-6:** Test scenarios documented in `_bmad-output/test-scenarios/epic-6/`
+- [x] **AC-VAL-6:** Test scenarios documented in `_bmad-output/test-scenarios/epic-6/`
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create test scenario documentation for auth/character validation (AC: VAL-6)
-  - [ ] Subtask 1.1: Document manual test plan for login flow (macOS, Linux, Windows)
-  - [ ] Subtask 1.2: Document manual test plan for character creation (all 5 classes)
-  - [ ] Subtask 1.3: Document manual test plan for character selection and world entry
-  - [ ] Subtask 1.4: Document manual test plan for logout/character switch
-- [ ] Task 2: Create Catch2 test suite for auth/character validation logic (AC: 1-6, STD-2)
-  - [ ] Subtask 2.1: Test login screen scene state initialization (`CNewUIMessageBoxMng`, `CLoginScene`)
-  - [ ] Subtask 2.2: Test character list data parsing and display logic
-  - [ ] Subtask 2.3: Test character creation class selection validation (5 classes)
-  - [ ] Subtask 2.4: Test character switch / logout state transitions
-- [ ] Task 3: Run quality gate and fix any violations (AC: STD-1, STD-13)
-  - [ ] Subtask 3.1: Run `./ctl check` — fix clang-format violations
-  - [ ] Subtask 3.2: Run `./ctl check` — fix cppcheck warnings
+- [x] Task 1: Create test scenario documentation for auth/character validation (AC: VAL-6)
+  - [x] Subtask 1.1: Document manual test plan for login flow (macOS, Linux, Windows)
+  - [x] Subtask 1.2: Document manual test plan for character creation (all 5 classes)
+  - [x] Subtask 1.3: Document manual test plan for character selection and world entry
+  - [x] Subtask 1.4: Document manual test plan for logout/character switch
+- [x] Task 2: Create Catch2 test suite for auth/character validation logic (AC: 1-6, STD-2)
+  - [x] Subtask 2.1: Test login screen scene state initialization (`CNewUIMessageBoxMng`, `CLoginScene`)
+  - [x] Subtask 2.2: Test character list data parsing and display logic
+  - [x] Subtask 2.3: Test character creation class selection validation (5 classes)
+  - [x] Subtask 2.4: Test character switch / logout state transitions
+- [x] Task 3: Run quality gate and fix any violations (AC: STD-1, STD-13)
+  - [x] Subtask 3.1: Run `./ctl check` — fix clang-format violations
+  - [x] Subtask 3.2: Run `./ctl check` — fix cppcheck warnings
 - [ ] Task 4: Manual validation on macOS (AC: VAL-1, VAL-2, VAL-3)
   - [ ] Subtask 4.1: Connect to test server, verify login screen renders
   - [ ] Subtask 4.2: Enter credentials, verify authentication succeeds
@@ -212,9 +212,16 @@ Claude Opus 4.6
 - No API/event/navigation contracts (C++ game client, no REST endpoints)
 - Schema alignment: N/A (C++ game client)
 - Visual design specification: N/A (not a frontend_feature story)
+- Dev-story: Tasks 1-3 completed by agent (test docs, Catch2 suite, quality gate)
+- Dev-story: Test suite verified against source — CLASS_TYPE enum (mu_enum.h:3214-3221), MAX_CHARACTERS_PER_ACCOUNT (mu_define.h:481), SceneInitializationState (SceneCommon.h:70), CharacterSelectionState (SceneCommon.h:17), FrameTimingState (SceneManager.h:16) all match test expectations
+- Dev-story: Quality gate passed (711/711 files, 0 errors — clang-format + cppcheck)
+- Dev-story: Tasks 4-6 (manual validation) require human with live server and 3 platforms — documented in test scenarios, cannot be automated
+- Dev-story: ATDD checklist 26/31 items checked; remaining 5 items are screenshot/manual validation artifacts (AC-VAL-1..5)
 
 ### File List
 
-- [CREATE] `MuMain/tests/scenes/test_auth_character_validation.cpp` — Catch2 test suite
-- [CREATE] `_bmad-output/test-scenarios/epic-6/auth-character-validation.md` — Manual test scenarios
+- [CREATE] `MuMain/tests/scenes/test_auth_character_validation.cpp` — Catch2 test suite (ATDD RED phase)
+- [CREATE] `_bmad-output/test-scenarios/epic-6/auth-character-validation.md` — Manual test scenarios (7 scenarios, 3 platforms)
 - [CREATE] `_bmad-output/stories/6-1-1-auth-character-validation/story.md` — This story file
+- [CREATE] `_bmad-output/stories/6-1-1-auth-character-validation/atdd.md` — ATDD implementation checklist
+- [CREATE] `_bmad-output/stories/6-1-1-auth-character-validation/progress.md` — Progress tracking file
