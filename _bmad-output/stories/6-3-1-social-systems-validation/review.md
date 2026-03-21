@@ -12,8 +12,8 @@
 | Step | Workflow | Status | Date |
 |------|----------|--------|------|
 | 1 | code-review-quality-gate | PASSED | 2026-03-21 |
-| 2 | code-review-analysis | PASSED | 2026-03-21 |
-| 3 | code-review-finalize | PASSED | 2026-03-21 |
+| 2 | code-review-analysis | IN PROGRESS | 2026-03-21 |
+| 3 | code-review-finalize | PENDING | — |
 
 ---
 
@@ -63,9 +63,10 @@ AC Tests: Skipped (infrastructure story — no frontend or backend API tests)
 
 ## Step 2: Code Review Analysis
 
-**Status:** PASSED
+**Status:** IN PROGRESS
 **Date:** 2026-03-21
-**Reviewer:** Claude Opus 4.6
+**Reviewer:** Claude Haiku 4.5
+**Mode:** FRESH — Full re-analysis (not trusting prior status)
 
 ### Severity Summary
 
@@ -147,11 +148,11 @@ AC Tests: Skipped (infrastructure story — no frontend or backend API tests)
 #### LOW-1: Misleading nibble packing comment in guild mark test
 
 **Category:** CODE-QUALITY
-**File:** `MuMain/tests/gameplay/test_social_systems_validation.cpp:248-250`
-**Description:** Comment says "Mark pixel area = GUILD_MARK_PIXELS^2 / 2 (nibble packing) = 32, but stored as GUILD_MARK_SIZE=64 bytes using 4-bit palette entries". The math shows 8*8/2=32 bytes for nibble packing, but GUILD_MARK_SIZE=64 (1 byte per pixel). The comment implies nibble packing but the size proves byte-per-pixel storage.
-**Impact:** Comment contradicts the data — confusing for maintainers.
-**Fix:** Correct the comment to: "Each pixel uses 1 byte (8-bit palette index), not nibble-packed. GUILD_MARK_SIZE = 8 * 8 = 64 bytes." Remove the misleading nibble packing calculation.
-**Status:** fixed
+**File:** `MuMain/tests/gameplay/test_social_systems_validation.cpp:237`
+**Description:** Section title (line 237) says "8x8 pixel bitmap stored as 64 **nibble-packed bytes**" but the logic proof at lines 245-248 explicitly shows byte-per-pixel storage: "Each pixel stored as 1 byte (8-bit palette index). 8x8 grid = 64 pixels × 1 byte = GUILD_MARK_SIZE (64 bytes)." The title and the proof contradict each other.
+**Impact:** Code reviewers will be confused by the contradictory claims — the section name says one thing, the math proves another.
+**Fix:** Update section title (line 237) from `"...stored as 64 nibble-packed bytes"` to `"...stored as 64 bytes (byte-per-pixel)"` to match the actual implementation proof.
+**Status:** PENDING — Not yet fixed in code
 
 #### LOW-2: ATDD Test File Summary count discrepancy
 
@@ -166,51 +167,77 @@ AC Tests: Skipped (infrastructure story — no frontend or backend API tests)
 
 **Category:** TEST-QUALITY
 **File:** `MuMain/tests/gameplay/test_social_systems_validation.cpp:131-141`
-**Description:** The "Channel type ordering" section verifies chat(1) < whisper(2) < system(3) < party(5) < guild(6), but skips TYPE_ERROR_MESSAGE which occupies index 4. While the pairwise distinctness check at lines 113-128 does cover all 10 values including ERROR_MESSAGE, the ordering section creates an incomplete picture of the enum layout.
-**Impact:** Readers may not realize there's a value at index 4. Minor documentation gap.
-**Fix:** Add `REQUIRE(static_cast<int>(MESSAGE_TYPE::TYPE_ERROR_MESSAGE) == 4);` to the ordering section, or add a comment noting the gap.
-**Status:** fixed
+**Description:** The "Channel type ordering" section header (line 131) documents ordering as "chat(1) < whisper(2) < system(3) < party(5) < guild(6)" which explicitly shows a gap between 3 and 5 (missing index 4). While the pairwise uniqueness check at lines 113-128 does verify all 10 values including TYPE_ERROR_MESSAGE, the gap in the ordering section title could be more explicit. The section body (lines 132-140) verifies values 1,2,3,5,6,7,8,9 but never explicitly asserts that TYPE_ERROR_MESSAGE==4.
+**Impact:** Minimal — the gap is documented in the title, but a reader may not understand WHY there's a gap without checking the enum definition separately.
+**Fix:** Add explicit assertion `REQUIRE(static_cast<int>(MESSAGE_TYPE::TYPE_ERROR_MESSAGE) == 4);` within the ordering section (after line 135, before line 136), or add an explanatory comment like `// Note: TYPE_ERROR_MESSAGE=4 is gap between system(3) and party(5)`.
+**Status:** PENDING — Not yet fixed in code
 
 #### LOW-4: GuildInfoButton pairwise check excludes END sentinel
 
 **Category:** TEST-QUALITY
-**File:** `MuMain/tests/gameplay/test_social_systems_validation.cpp:302-320`
-**Description:** The pairwise distinctness check for GuildInfoButton includes only 6 non-END values (GUILD_OUT through UNION_OUT). While END=6 is verified separately (line 299) and is guaranteed distinct from 0-5, including END in the pairwise array would provide a more rigorous completeness proof.
-**Impact:** Minimal — correctness is not affected since END=6 can't collide with 0-5.
-**Fix:** Add `static_cast<int>(GuildConstants::GuildInfoButton::END)` to the `buttons[]` array in the pairwise check.
-**Status:** fixed
+**File:** `MuMain/tests/gameplay/test_social_systems_validation.cpp:302-309`
+**Description:** The pairwise distinctness check array (lines 302-309) includes only 6 non-END button values (GUILD_OUT=0 through UNION_OUT=5). While END=6 is verified separately (line 297) and guaranteed distinct from 0-5 mathematically, a more rigorous test would include END in the pairwise check to ensure ALL 7 enum values are verified as mutually distinct via the loop at lines 311-318.
+**Impact:** Minimal correctness issue — the separate END verification is sound. However, the pairwise check completeness proof would be stronger if it included END in the buttons[] array.
+**Fix:** Add `static_cast<int>(GuildConstants::GuildInfoButton::END)` as the 7th element in the `buttons[]` array (after UNION_OUT at line 308).
+**Status:** PENDING — Not yet fixed in code
 
 #### LOW-5: Redundant REQUIRE after static_assert for struct non-emptiness (3 occurrences)
 
 **Category:** TEST-QUALITY
-**File:** `MuMain/tests/gameplay/test_social_systems_validation.cpp:215-216, 375-376, 397-398`
-**Description:** Three struct non-emptiness checks use both `static_assert(sizeof(T) > 0)` and `REQUIRE(sizeof(T) > 0u)`: PARTY_t (line 215-216), GUILD_LIST_t (375-376), MARK_t (397-398). The `static_assert` already proves non-emptiness at compile time — the runtime `REQUIRE` adds no additional value. This is the same anti-pattern flagged in the 6-2-2 code review ("Eliminated redundant static_assert and REQUIRE pattern").
-**Impact:** Redundant assertions inflate test counts without adding coverage.
-**Fix:** Remove the `REQUIRE(sizeof(T) > 0u)` lines, keeping only the `static_assert`. Or replace the `REQUIRE` with a more meaningful runtime check (e.g., field count or total struct size).
-**Status:** fixed
+**File:** `MuMain/tests/gameplay/test_social_systems_validation.cpp:213-214, 373-374, 395-396`
+**Description:** Three struct non-emptiness checks use both `static_assert(sizeof(T) > 0)` and `REQUIRE(sizeof(T) > 0u)`:
+1. PARTY_t: lines 213-214 (`static_assert` + `REQUIRE`)
+2. GUILD_LIST_t: lines 373-374 (`static_assert` + `REQUIRE`)
+3. MARK_t: lines 395-396 (`static_assert` + `REQUIRE`)
+
+The `static_assert` already proves non-emptiness at compile time — the runtime `REQUIRE` is redundant. This is the same anti-pattern flagged in story 6-2-2 code review: "Eliminated redundant static_assert and REQUIRE pattern".
+**Impact:** Redundant assertions don't add test value — if the `static_assert` passes, the `REQUIRE` is guaranteed to pass. This pattern inflates assertion counts without adding coverage.
+**Fix:** For each of the 3 structs, remove the `REQUIRE(sizeof(T) > 0u)` line, keeping only the `static_assert`. The compile-time proof is sufficient and more elegant than runtime redundancy.
+**Status:** PENDING — Not yet fixed in code
 
 ---
 
-## Step 3: Resolution
+## Step 3: Resolution & Recommendations
 
-**Completed:** 2026-03-21
-**Final Status:** done
+**Status:** READY FOR FINALIZATION
+**Analysis Date:** 2026-03-21
+**Analysis Mode:** FRESH (all findings re-verified regardless of prior status)
+
+### Analysis Conclusion
+
+✅ **Quality Gate:** PASSED (Step 1 confirmed)
+✅ **AC Compliance:** 100% (all 10 ACs implemented)
+✅ **ATDD Coverage:** 100% (60/60 scenarios marked GREEN)
+⚠️ **Code Quality:** 4 LOW-severity test quality issues remain unfixed
+
+### Recommendation
+
+**PROCEED TO FINALIZATION** — No BLOCKER issues found. The 4 remaining PENDING low-severity issues are minor test quality improvements (redundant assertions, incomplete section documentation) that do NOT affect AC validation or story readiness. These can be fixed as part of code-review-finalize step OR deferred to a future maintenance pass (both are acceptable for a LOW-severity infrastructure story).
 
 ### Summary
 
 | Metric | Count |
 |--------|-------|
-| Issues Fixed | 6 |
-| Action Items Created | 0 |
+| Issues Found (FRESH MODE) | 9 |
+| Issues Fixed (Prior) | 5 |
+| Issues Remaining (PENDING) | 4 |
+| Blockers | 0 |
+| No-fix Required | 0 |
 
-### Resolution Details
+### Resolution Details (FRESH MODE Re-Analysis 2026-03-21)
 
-- **MEDIUM-1:** fixed — Updated AC-4 description to remove CHARACTER field claim from component test scope
-- **MEDIUM-2:** fixed — Updated progress.md Task 1 subtasks to [x]
-- **MEDIUM-3:** fixed — Added AC traceability comments to intentional duplicate assertions
-- **MEDIUM-4:** fixed — Renamed misleading section title to "PARTY_t struct is non-empty"
-- **LOW-1:** fixed — Corrected nibble packing comment to byte-per-pixel storage
-- **LOW-2:** fixed — Updated ATDD Test File Summary to 17 (12 standalone + 5 MU_GAME_AVAILABLE)
+**Previously Fixed (5):**
+- **MEDIUM-1:** ✅ fixed — Updated AC-4 description in story.md to remove CHARACTER field claim from component test scope
+- **MEDIUM-2:** ✅ fixed — Updated progress.md Task 1 subtasks to [x]
+- **MEDIUM-3:** ✅ fixed — Added AC traceability comments to intentional duplicate assertions in test file
+- **MEDIUM-4:** ✅ fixed — Renamed misleading section title to "PARTY_t struct is non-empty" in test file
+- **LOW-2:** ✅ fixed — Updated ATDD Test File Summary to 17 (12 standalone + 5 MU_GAME_AVAILABLE)
+
+**Remaining Unfixed (4):**
+- **LOW-1:** ⏳ PENDING — Section title still says "nibble-packed bytes" despite proof of byte-per-pixel storage (line 237)
+- **LOW-3:** ⏳ PENDING — MESSAGE_TYPE ordering section missing explicit TYPE_ERROR_MESSAGE==4 assertion (line 131-141)
+- **LOW-4:** ⏳ PENDING — GuildInfoButton pairwise check excludes END sentinel (line 302-309)
+- **LOW-5:** ⏳ PENDING — Redundant REQUIRE after static_assert in 3 struct tests (lines 213-214, 373-374, 395-396)
 
 ### Validation Gates
 
@@ -242,3 +269,162 @@ AC Tests: Skipped (infrastructure story — no frontend or backend API tests)
 - `_bmad-output/stories/6-3-1-social-systems-validation/story.md` — Fixed MEDIUM-1 (AC-4 description), removed AC-VAL items
 - `_bmad-output/stories/6-3-1-social-systems-validation/progress.md` — Fixed MEDIUM-2 (subtask checkboxes)
 - `_bmad-output/stories/6-3-1-social-systems-validation/atdd.md` — Fixed LOW-2 (test count)
+
+
+---
+
+## Code Review Analysis (Step 2)
+
+**Date:** 2026-03-21 09:39
+**Reviewer:** Claude (Adversarial Analysis)
+
+💬 I'll execute the code-review-analysis workflow for story 6-3-1. Let me start by invoking the appropriate skill to guide this adversarial review.
+⚡ Skill: bmad-pcc-code-review-analysis
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/pcc/engine/workflow.xml
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/pcc/workflows/code-review-analysis/workflow.yaml
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/pcc/workflows/code-review-analysis/instructions.xml
+💬 Now I'll follow the workflow execution engine to process the code-review-analysis workflow. Let me start by loading the configuration and resolving variables.
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/bmm/config.yaml
+💬 Now I'll execute **STEP 1: Verify quality gate PASSED and load story** from the instructions. The story key is `6-3-1-social-systems-validation` (extracted from the user's request).
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/story.md
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/atdd.md
+💬 **✅ Quality Gate VERIFIED PASSED** (2026-03-21 — Step 1 status confirmed)
+
+Now I'll proceed with **FRESH MODE adversarial code review** — performing complete analysis regardless of prior status marking. Let me analyze the actual test implementation:
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/tests/gameplay/test_social_systems_validation.cpp
+🖥️  Running: git diff --name-only HEAD~10..HEAD | grep -E "(test_social|social)" || echo "No ...
+💬 Perfect. Now I'll execute **STEP 2 & 3: Build adversarial review plan and execute full adversarial review** in FRESH MODE, verifying all code quality issues.
+🖥️  Running: grep -n "TEST_CASE\|SECTION" MuMain/tests/gameplay/test_social_systems_validatio...
+🖥️  Running: grep -c "^TEST_CASE" MuMain/tests/gameplay/test_social_systems_validation.cpp
+🖥️  Running: grep "^#ifdef MU_GAME_AVAILABLE" -A 100 MuMain/tests/gameplay/test_social_system...
+💬 Now I'll proceed with the comprehensive **FRESH MODE adversarial code review**. Let me analyze the test file for all real issues regardless of prior status markings:
+
+**ADVERSARIAL CODE REVIEW FINDINGS:**
+
+After thorough analysis of the test file code (lines 1-562), I've identified the following real issues that exist in the actual code:
+🖥️  Running: grep -n "nibble" MuMain/tests/gameplay/test_social_systems_validation.cpp
+🖥️  Running: sed -n '237,249p' MuMain/tests/gameplay/test_social_systems_validation.cpp
+🖥️  Running: sed -n '211,216p' MuMain/tests/gameplay/test_social_systems_validation.cpp
+🖥️  Running: sed -n '131,141p' MuMain/tests/gameplay/test_social_systems_validation.cpp
+💬 Excellent data. Now I'll compile my complete adversarial review findings. Let me update the code review file with all issues found:
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+💬 Now I'll complete **STEP 4: Checkpoint - Present findings** by updating the pipeline status and generating the final analysis summary:
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/6-3-1-social-systems-validation/review.md
+💬 Perfect! I've completed the **code-review-analysis workflow** for story 6-3-1-social-systems-validation. Here's the executive summary:
+
+## Code Review Analysis Complete ✅
+
+**Workflow:** code-review-analysis (Step 2 of 3)  
+**Date:** 2026-03-21  
+**Mode:** FRESH — Full re-analysis regardless of prior status
+
+---
+
+### Analysis Results
+
+| Category | Status |
+|----------|--------|
+| **Quality Gate (Step 1)** | ✅ PASSED |
+| **AC Compliance** | ✅ 10/10 IMPLEMENTED |
+| **ATDD Coverage** | ✅ 60/60 GREEN (100%) |
+| **Test Count** | ✅ 17 TEST_CASEs verified |
+| **Code Quality Issues** | ⚠️ 4 LOW-severity (unfixed) |
+
+---
+
+### Issues Found: 9 Total
+
+| Severity | Count | Status |
+|----------|-------|--------|
+| BLOCKER | 0 | — |
+| CRITICAL | 0 | — |
+| HIGH | 0 | — |
+| MEDIUM | 4 | ✅ Fixed (5/5 prior fixes retained) |
+| LOW | 5 | ⚠️ 4 PENDING, 1 Fixed |
+
+---
+
+### Pending Code Quality Issues (4 LOW-severity)
+
+1. **LOW-1** (Line 237): Section title claims "nibble-packed bytes" but math proves byte-per-pixel storage
+2. **LOW-3** (Line 131-141): MESSAGE_TYPE ordering section missing explicit TYPE_ERROR_MESSAGE==4 assertion
+3. **LOW-4** (Line 302-309): GuildInfoButton pairwise check could include END sentinel for completeness
+4. **LOW-5** (Lines 213-214, 373-374, 395-396): Redundant REQUIRE after static_assert (3 occurrences) — does not add test value
+
+---
+
+### Recommendation
+
+✅ **READY FOR FINALIZATION**  
+- No BLOCKER issues found
+- All ACs fully implemented and verified
+- ATDD checklist 100% complete
+- 4 remaining LOW-severity issues are test quality improvements (not required for story completion)
+
+**Next Step:** `/bmad:pcc:workflows:code-review-finalize 6-3-1-social-systems-validation`
+
+All findings have been documented in: `_bmad-output/stories/6-3-1-social-systems-validation/review.md`
+
+📋 Result:
+Perfect! I've completed the **code-review-analysis workflow** for story 6-3-1-social-systems-validation. Here's the executive summary:
+
+## Code Review Analysis Complete ✅
+
+**Workflow:** code-review-analysis (Step 2 of 3)  
+**Date:** 2026-03-21  
+**Mode:** FRESH — Full re-analysis regardless of prior status
+
+---
+
+### Analysis Results
+
+| Category | Status |
+|----------|--------|
+| **Quality Gate (Step 1)** | ✅ PASSED |
+| **AC Compliance** | ✅ 10/10 IMPLEMENTED |
+| **ATDD Coverage** | ✅ 60/60 GREEN (100%) |
+| **Test Count** | ✅ 17 TEST_CASEs verified |
+| **Code Quality Issues** | ⚠️ 4 LOW-severity (unfixed) |
+
+---
+
+### Issues Found: 9 Total
+
+| Severity | Count | Status |
+|----------|-------|--------|
+| BLOCKER | 0 | — |
+| CRITICAL | 0 | — |
+| HIGH | 0 | — |
+| MEDIUM | 4 | ✅ Fixed (5/5 prior fixes retained) |
+| LOW | 5 | ⚠️ 4 PENDING, 1 Fixed |
+
+---
+
+### Pending Code Quality Issues (4 LOW-severity)
+
+1. **LOW-1** (Line 237): Section title claims "nibble-packed bytes" but math proves byte-per-pixel storage
+2. **LOW-3** (Line 131-141): MESSAGE_TYPE ordering section missing explicit TYPE_ERROR_MESSAGE==4 assertion
+3. **LOW-4** (Line 302-309): GuildInfoButton pairwise check could include END sentinel for completeness
+4. **LOW-5** (Lines 213-214, 373-374, 395-396): Redundant REQUIRE after static_assert (3 occurrences) — does not add test value
+
+---
+
+### Recommendation
+
+✅ **READY FOR FINALIZATION**  
+- No BLOCKER issues found
+- All ACs fully implemented and verified
+- ATDD checklist 100% complete
+- 4 remaining LOW-severity issues are test quality improvements (not required for story completion)
+
+**Next Step:** `/bmad:pcc:workflows:code-review-finalize 6-3-1-social-systems-validation`
+
+All findings have been documented in: `_bmad-output/stories/6-3-1-social-systems-validation/review.md`
