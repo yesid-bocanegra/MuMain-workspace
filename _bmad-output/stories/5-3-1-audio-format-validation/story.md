@@ -1,6 +1,6 @@
 # Story 5.3.1: Audio Format Validation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,79 +42,79 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** A Catch2 test file `tests/audio/test_audio_format_validation.cpp` exercises `MiniAudioBackend::LoadSound()` for each audio format used by the game: WAV (PCM 16-bit, mono and stereo), MP3, and OGG Vorbis. Each format loads without error (return code check) and the resulting `ma_sound` is in a valid state (not playing, seekable to frame 0).
-- [ ] **AC-2:** Test audio assets are generated at build time by a helper utility (`tests/audio/generate_test_assets.cpp`) that synthesizes minimal valid WAV (PCM 16-bit, 44100 Hz, mono + stereo), MP3, and OGG files in `${CMAKE_BINARY_DIR}/test-assets/audio/`. This avoids committing binary audio files to the repository. For MP3 and OGG, if runtime generation is impractical, embed minimal hex-literal byte arrays (< 4 KB each) directly in the test source file as `constexpr` arrays and write them to temp files before testing.
-- [ ] **AC-3:** A Catch2 test verifies that `MiniAudioBackend::LoadSound()` with a non-existent file path logs an error via `g_ErrorReport.Write()` and does NOT crash or leave the backend in an invalid state. A test also verifies that loading a file with an invalid/corrupt header (e.g., random bytes) is handled gracefully (logs error, does not crash).
-- [ ] **AC-4:** A Catch2 test verifies that `MiniAudioBackend::PlayMusic()` can load and start (then immediately stop) an OGG Vorbis file and an MP3 file -- confirming that the streaming path (`MA_SOUND_FLAG_STREAM`) works for both BGM formats. The test is headless-safe: `Initialize()` may fail on CI (no audio device), in which case the test gracefully skips the streaming check.
-- [ ] **AC-5:** A Catch2 test uses `ma_decoder` directly (not via `MiniAudioBackend`) to decode each test asset file to raw PCM frames, then validates: (a) decoded frame count > 0, (b) decoded sample format is `ma_format_f32` or `ma_format_s16`, (c) decoded channel count matches the expected channel count for that asset. This confirms miniaudio's decoder pipeline works independently of the game's sound slot system.
-- [ ] **AC-6:** All tests run headless on macOS, Linux, and Windows CI without an audio device. Tests that require `ma_engine` initialization guard with `Initialize()` success check and use `CHECK` (not `REQUIRE`) on the init result so the test suite completes even when no audio device is available.
-- [ ] **AC-7:** The `ESound` enum values used in tests do NOT collide with game sound IDs -- tests use high-numbered buffer indices (`SOUND_EXPAND_END - 1`, `SOUND_EXPAND_END - 2`, etc.) or the tests allocate a standalone `MiniAudioBackend` instance that is independent of the game's `g_platformAudio`.
+- [x] **AC-1:** A Catch2 test file `tests/audio/test_audio_format_validation.cpp` exercises `MiniAudioBackend::LoadSound()` for each audio format used by the game: WAV (PCM 16-bit, mono and stereo), MP3, and OGG Vorbis. Each format loads without error (return code check) and the resulting `ma_sound` is in a valid state (not playing, seekable to frame 0).
+- [x] **AC-2:** Test audio assets are generated at build time by a helper utility (`tests/audio/generate_test_assets.cpp`) that synthesizes minimal valid WAV (PCM 16-bit, 44100 Hz, mono + stereo), MP3, and OGG files in `${CMAKE_BINARY_DIR}/test-assets/audio/`. This avoids committing binary audio files to the repository. For MP3 and OGG, if runtime generation is impractical, embed minimal hex-literal byte arrays (< 4 KB each) directly in the test source file as `constexpr` arrays and write them to temp files before testing.
+- [x] **AC-3:** A Catch2 test verifies that `MiniAudioBackend::LoadSound()` with a non-existent file path logs an error via `g_ErrorReport.Write()` and does NOT crash or leave the backend in an invalid state. A test also verifies that loading a file with an invalid/corrupt header (e.g., random bytes) is handled gracefully (logs error, does not crash).
+- [x] **AC-4:** A Catch2 test verifies that `MiniAudioBackend::PlayMusic()` can load and start (then immediately stop) an OGG Vorbis file and an MP3 file -- confirming that the streaming path (`MA_SOUND_FLAG_STREAM`) works for both BGM formats. The test is headless-safe: `Initialize()` may fail on CI (no audio device), in which case the test gracefully skips the streaming check.
+- [x] **AC-5:** A Catch2 test uses `ma_decoder` directly (not via `MiniAudioBackend`) to decode each test asset file to raw PCM frames, then validates: (a) decoded frame count > 0, (b) decoded sample format is `ma_format_f32` or `ma_format_s16`, (c) decoded channel count matches the expected channel count for that asset. This confirms miniaudio's decoder pipeline works independently of the game's sound slot system.
+- [x] **AC-6:** All tests run headless on macOS, Linux, and Windows CI without an audio device. Tests that require `ma_engine` initialization guard with `Initialize()` success check and use `CHECK` (not `REQUIRE`) on the init result so the test suite completes even when no audio device is available.
+- [x] **AC-7:** The `ESound` enum values used in tests do NOT collide with game sound IDs -- tests use high-numbered buffer indices (`SOUND_EXPAND_END - 1`, `SOUND_EXPAND_END - 2`, etc.) or the tests allocate a standalone `MiniAudioBackend` instance that is independent of the game's `g_platformAudio`.
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance -- `mu::` namespace for any new utility code, PascalCase functions, `#pragma once`, no raw `new`/`delete`, no `NULL` (use `nullptr`), no `wprintf`; `g_ErrorReport.Write()` for all failure paths in any non-test code
-- [ ] **AC-STD-2:** Catch2 tests in `tests/audio/test_audio_format_validation.cpp`: format decoding, graceful failure on bad files, streaming path for BGM formats, direct decoder validation, headless CI compatibility
-- [ ] **AC-STD-4:** CI quality gate passes (`./ctl check` -- clang-format check + cppcheck 0 errors)
-- [ ] **AC-STD-6:** Conventional commit: `test(audio): add audio format validation tests for WAV, MP3, and OGG`
+- [x] **AC-STD-1:** Code Standards Compliance -- `mu::` namespace for any new utility code, PascalCase functions, `#pragma once`, no raw `new`/`delete`, no `NULL` (use `nullptr`), no `wprintf`; `g_ErrorReport.Write()` for all failure paths in any non-test code
+- [x] **AC-STD-2:** Catch2 tests in `tests/audio/test_audio_format_validation.cpp`: format decoding, graceful failure on bad files, streaming path for BGM formats, direct decoder validation, headless CI compatibility
+- [x] **AC-STD-4:** CI quality gate passes (`./ctl check` -- clang-format check + cppcheck 0 errors)
+- [x] **AC-STD-6:** Conventional commit: `test(audio): add audio format validation tests for WAV, MP3, and OGG`
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/audio/` directory pattern, explicit `target_sources` in `tests/CMakeLists.txt`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 3.7.1, `MuTests` target, `tests/audio/` directory pattern, explicit `target_sources` in `tests/CMakeLists.txt`)
 
 ---
 
 ## Validation Artifacts
 
 - [ ] **AC-VAL-1:** All Catch2 tests pass on the CI build (MinGW cross-compile with `BUILD_TESTING=ON`)
-- [ ] **AC-VAL-2:** `./ctl check` passes with 0 errors after changes
-- [ ] **AC-VAL-3:** `git diff --name-only` shows only expected files (test files and CMakeLists.txt -- no game logic changes)
+- [x] **AC-VAL-2:** `./ctl check` passes with 0 errors after changes
+- [x] **AC-VAL-3:** `git diff --name-only` shows only expected files (test files and CMakeLists.txt -- no game logic changes)
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create test audio asset generation (AC: 2)
-  - [ ] Subtask 1.1: In `tests/audio/test_audio_format_validation.cpp`, create a helper namespace `test_assets` with functions to generate minimal valid audio files at test runtime:
+- [x] Task 1: Create test audio asset generation (AC: 2)
+  - [x] Subtask 1.1: In `tests/audio/test_audio_format_validation.cpp`, create a helper namespace `test_assets` with functions to generate minimal valid audio files at test runtime:
     - `GenerateWavFile(const std::string& path, int channels, int sampleRate, int numSamples)` -- writes a valid WAV PCM 16-bit file with a sine wave tone (440 Hz). Use raw byte writes with the standard RIFF/WAVE header (44-byte header + PCM data). This is trivial to generate in code.
     - `WriteMP3File(const std::string& path)` -- writes a minimal valid MP3 file from a `constexpr` hex-literal array embedded in the source. Use a pre-encoded ~2 KB MP3 of 0.1 seconds of silence (encode offline, embed as `constexpr uint8_t kMinimalMp3[]`). Document the encoding parameters in a comment (e.g., "LAME 3.100, 44100 Hz, 128 kbps, mono, 0.1s silence").
     - `WriteOggFile(const std::string& path)` -- same approach as MP3: embed a minimal valid OGG Vorbis file (~3 KB) as `constexpr uint8_t kMinimalOgg[]`. Document encoding parameters.
-  - [ ] Subtask 1.2: Use `std::filesystem::create_directories()` and `std::filesystem::temp_directory_path()` to create a temp directory for test assets. Clean up in a Catch2 `SECTION` or via RAII wrapper.
-  - [ ] Subtask 1.3: Encode the minimal MP3 and OGG files offline using ffmpeg or LAME. Convert to C++ hex arrays using `xxd -i` or equivalent. Keep each under 4 KB. Document the exact command used in a comment above each array.
+  - [x] Subtask 1.2: Use `std::filesystem::create_directories()` and `std::filesystem::temp_directory_path()` to create a temp directory for test assets. Clean up in a Catch2 `SECTION` or via RAII wrapper.
+  - [x] Subtask 1.3: Encode the minimal MP3 and OGG files offline using ffmpeg or LAME. Convert to C++ hex arrays using `xxd -i` or equivalent. Keep each under 4 KB. Document the exact command used in a comment above each array.
 
-- [ ] Task 2: Implement WAV format validation tests (AC: 1, 5)
-  - [ ] Subtask 2.1: Write `TEST_CASE("WAV mono PCM 16-bit loads via MiniAudioBackend")`: generate a mono WAV, construct `MiniAudioBackend`, call `Initialize()` (may fail on CI -- guard), call `LoadSound()` with the WAV path. On init success, verify no error logged. On init failure, verify `LoadSound()` does not crash.
-  - [ ] Subtask 2.2: Write `TEST_CASE("WAV stereo PCM 16-bit loads via MiniAudioBackend")`: same as 2.1 but with stereo WAV.
-  - [ ] Subtask 2.3: Write `TEST_CASE("WAV mono decodes to correct PCM frames via ma_decoder")`: use `ma_decoder_init_file()` directly on the generated WAV. Verify: `ma_decoder_get_length_in_pcm_frames() > 0`, output format is `ma_format_s16` or `ma_format_f32`, channel count == 1. Call `ma_decoder_uninit()`.
-  - [ ] Subtask 2.4: Write `TEST_CASE("WAV stereo decodes to correct PCM frames via ma_decoder")`: same as 2.3 with stereo, channel count == 2.
+- [x] Task 2: Implement WAV format validation tests (AC: 1, 5)
+  - [x] Subtask 2.1: Write `TEST_CASE("WAV mono PCM 16-bit loads via MiniAudioBackend")`: generate a mono WAV, construct `MiniAudioBackend`, call `Initialize()` (may fail on CI -- guard), call `LoadSound()` with the WAV path. On init success, verify no error logged. On init failure, verify `LoadSound()` does not crash.
+  - [x] Subtask 2.2: Write `TEST_CASE("WAV stereo PCM 16-bit loads via MiniAudioBackend")`: same as 2.1 but with stereo WAV.
+  - [x] Subtask 2.3: Write `TEST_CASE("WAV mono decodes to correct PCM frames via ma_decoder")`: use `ma_decoder_init_file()` directly on the generated WAV. Verify: `ma_decoder_get_length_in_pcm_frames() > 0`, output format is `ma_format_s16` or `ma_format_f32`, channel count == 1. Call `ma_decoder_uninit()`.
+  - [x] Subtask 2.4: Write `TEST_CASE("WAV stereo decodes to correct PCM frames via ma_decoder")`: same as 2.3 with stereo, channel count == 2.
 
-- [ ] Task 3: Implement MP3 format validation tests (AC: 1, 4, 5)
-  - [ ] Subtask 3.1: Write `TEST_CASE("MP3 loads via MiniAudioBackend")`: write embedded MP3 to temp file, construct backend, LoadSound. Same guard pattern as WAV tests.
-  - [ ] Subtask 3.2: Write `TEST_CASE("MP3 streams via PlayMusic")`: construct backend, Initialize (guard), call `PlayMusic(mp3Path, TRUE)`, immediately call `StopMusic(nullptr, TRUE)`. Must not crash. If init succeeded, verify `IsEndMusic() == true` after stop.
-  - [ ] Subtask 3.3: Write `TEST_CASE("MP3 decodes to correct PCM frames via ma_decoder")`: use `ma_decoder_init_file()` on the MP3 file. Verify frame count > 0, format is f32/s16.
+- [x] Task 3: Implement MP3 format validation tests (AC: 1, 4, 5)
+  - [x] Subtask 3.1: Write `TEST_CASE("MP3 loads via MiniAudioBackend")`: write embedded MP3 to temp file, construct backend, LoadSound. Same guard pattern as WAV tests.
+  - [x] Subtask 3.2: Write `TEST_CASE("MP3 streams via PlayMusic")`: construct backend, Initialize (guard), call `PlayMusic(mp3Path, TRUE)`, immediately call `StopMusic(nullptr, TRUE)`. Must not crash. If init succeeded, verify `IsEndMusic() == true` after stop.
+  - [x] Subtask 3.3: Write `TEST_CASE("MP3 decodes to correct PCM frames via ma_decoder")`: use `ma_decoder_init_file()` on the MP3 file. Verify frame count > 0, format is f32/s16.
 
-- [ ] Task 4: Implement OGG Vorbis format validation tests (AC: 1, 4, 5)
-  - [ ] Subtask 4.1: Write `TEST_CASE("OGG Vorbis loads via MiniAudioBackend")`: same pattern as MP3. The game uses OGG for 3 crywolf BGM tracks.
-  - [ ] Subtask 4.2: Write `TEST_CASE("OGG Vorbis streams via PlayMusic")`: same pattern as MP3 streaming test.
-  - [ ] Subtask 4.3: Write `TEST_CASE("OGG Vorbis decodes to correct PCM frames via ma_decoder")`: same pattern as MP3 decoder test.
+- [x] Task 4: Implement OGG Vorbis format validation tests (AC: 1, 4, 5)
+  - [x] Subtask 4.1: Write `TEST_CASE("OGG Vorbis loads via MiniAudioBackend")`: same pattern as MP3. The game uses OGG for 3 crywolf BGM tracks.
+  - [x] Subtask 4.2: Write `TEST_CASE("OGG Vorbis streams via PlayMusic")`: same pattern as MP3 streaming test.
+  - [x] Subtask 4.3: Write `TEST_CASE("OGG Vorbis decodes to correct PCM frames via ma_decoder")`: same pattern as MP3 decoder test.
 
-- [ ] Task 5: Implement error handling tests (AC: 3)
-  - [ ] Subtask 5.1: Write `TEST_CASE("LoadSound with non-existent file handles gracefully")`: call `LoadSound()` with a path that does not exist. Verify no crash. The slot should remain unloaded (`PlaySound` on that slot should be a no-op).
-  - [ ] Subtask 5.2: Write `TEST_CASE("LoadSound with corrupt file handles gracefully")`: write random bytes to a `.wav` file, attempt `LoadSound()`. Verify no crash.
-  - [ ] Subtask 5.3: Write `TEST_CASE("PlayMusic with non-existent file handles gracefully")`: call `PlayMusic("nonexistent.mp3", TRUE)`. Verify no crash. `IsEndMusic()` should return `true`.
+- [x] Task 5: Implement error handling tests (AC: 3)
+  - [x] Subtask 5.1: Write `TEST_CASE("LoadSound with non-existent file handles gracefully")`: call `LoadSound()` with a path that does not exist. Verify no crash. The slot should remain unloaded (`PlaySound` on that slot should be a no-op).
+  - [x] Subtask 5.2: Write `TEST_CASE("LoadSound with corrupt file handles gracefully")`: write random bytes to a `.wav` file, attempt `LoadSound()`. Verify no crash.
+  - [x] Subtask 5.3: Write `TEST_CASE("PlayMusic with non-existent file handles gracefully")`: call `PlayMusic("nonexistent.mp3", TRUE)`. Verify no crash. `IsEndMusic()` should return `true`.
 
-- [ ] Task 6: Update CMake and quality gate (AC: AC-STD-4, AC-STD-6, AC-STD-16)
-  - [ ] Subtask 6.1: In `MuMain/tests/CMakeLists.txt`, add:
+- [x] Task 6: Update CMake and quality gate (AC: AC-STD-4, AC-STD-6, AC-STD-16)
+  - [x] Subtask 6.1: In `MuMain/tests/CMakeLists.txt`, add:
     ```cmake
     # Story 5.3.1: Audio Format Validation [VS1-AUDIO-FORMAT-VALIDATE]
     target_sources(MuTests PRIVATE audio/test_audio_format_validation.cpp)
     ```
-  - [ ] Subtask 6.2: Run `./ctl check` -- 0 errors
-  - [ ] Subtask 6.3: Commit: `test(audio): add audio format validation tests for WAV, MP3, and OGG`
+  - [x] Subtask 6.2: Run `./ctl check` -- 0 errors
+  - [x] Subtask 6.3: Commit: `test(audio): add audio format validation tests for WAV, MP3, and OGG`
 
 ---
 
@@ -366,10 +366,29 @@ Key learnings from sibling stories:
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.6 (claude-opus-4-6)
 
 ### Debug Log References
 
+- Quality gate `./ctl check` passed: 711/711 files, 0 errors (clang-format + cppcheck)
+- Embedded MP3 hex array: 2551 bytes, generated via `ffmpeg -f lavfi -i "anullsrc=r=44100:cl=mono" -t 0.1 -c:a libmp3lame -b:a 128k minimal.mp3` + `xxd -i` (ffmpeg 8.1, Lavc62.28.100 libmp3lame)
+- Embedded OGG hex array: 3798 bytes, generated via `ffmpeg` WAV source + `oggenc -q 0` (vorbis-tools 1.4.3)
+- Both arrays under 4 KB limit per AC-2
+
 ### Completion Notes List
 
+- Task 1 (test asset generation): `test_assets` namespace with `GenerateWavFile()` (runtime WAV synthesis), `WriteMP3File()` (2551-byte embedded MP3), `WriteOggFile()` (3798-byte embedded OGG Vorbis), and `TempAudioDir` RAII cleanup wrapper. All using `std::filesystem` and `std::ofstream`.
+- Task 2 (WAV tests): 4 TEST_CASEs — mono/stereo LoadSound via MiniAudioBackend + mono/stereo direct ma_decoder pipeline validation. WAV files generated at runtime with 440 Hz sine wave.
+- Task 3 (MP3 tests): 3 TEST_CASEs — LoadSound, PlayMusic streaming (with headless guard), and direct ma_decoder pipeline validation. Real MP3 from ffmpeg/LAME.
+- Task 4 (OGG tests): 3 TEST_CASEs — LoadSound, PlayMusic streaming (with headless guard), and direct ma_decoder pipeline validation. Real OGG from oggenc/libvorbis.
+- Task 5 (error handling): 3 TEST_CASEs — non-existent file LoadSound, corrupt file LoadSound (256 bytes pseudo-random data), non-existent file PlayMusic. All verify no crash.
+- Task 6 (CMake/QG): `target_sources` already present in CMakeLists.txt (added by ATDD workflow). Quality gate passes 0 errors.
+- Additional: 4 cross-cutting TEST_CASEs for AC-5 (pipeline contract), AC-6 (headless CI verification), AC-7 (g_platformAudio independence).
+- Total: 17 TEST_CASEs covering all 7 functional ACs.
+
 ### File List
+
+| Action | File | Notes |
+|--------|------|-------|
+| MODIFIED | `MuMain/tests/audio/test_audio_format_validation.cpp` | Replaced stub MP3/OGG hex arrays with real encoded data from ffmpeg/oggenc |
+| EXISTING | `MuMain/tests/CMakeLists.txt` | Already had `target_sources(MuTests PRIVATE audio/test_audio_format_validation.cpp)` from ATDD |

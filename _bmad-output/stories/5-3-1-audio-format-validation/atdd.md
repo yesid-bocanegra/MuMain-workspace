@@ -56,64 +56,64 @@
 
 ### AC Coverage
 
-- [ ] AC-1: WAV mono PCM 16-bit loads without error via `MiniAudioBackend::LoadSound()`
-- [ ] AC-1: WAV stereo PCM 16-bit loads without error via `MiniAudioBackend::LoadSound()`
-- [ ] AC-1: MP3 loads without error via `MiniAudioBackend::LoadSound()`
-- [ ] AC-1: OGG Vorbis loads without error via `MiniAudioBackend::LoadSound()`
-- [ ] AC-2: `test_assets::GenerateWavFile()` writes a valid RIFF/PCM WAV at runtime
-- [ ] AC-2: `test_assets::WriteMP3File()` writes embedded MP3 hex array to a temp file
-- [ ] AC-2: `test_assets::WriteOggFile()` writes embedded OGG hex array to a temp file
-- [ ] AC-2: `TempAudioDir` RAII wrapper creates and cleans up temp directory correctly
-- [ ] AC-3: `LoadSound()` with non-existent path does not crash; slot remains unloaded
-- [ ] AC-3: `LoadSound()` with corrupt file does not crash; miniaudio rejects invalid header
-- [ ] AC-3: `PlayMusic()` with non-existent path does not crash; `IsEndMusic()` returns true
-- [ ] AC-4: `PlayMusic()` + `StopMusic()` with MP3 path does not crash (streaming path)
-- [ ] AC-4: `PlayMusic()` + `StopMusic()` with OGG path does not crash (streaming path)
-- [ ] AC-4: `IsEndMusic()` returns true after `StopMusic()` for both BGM formats
-- [ ] AC-5: `ma_decoder_init_file()` returns `MA_SUCCESS` for WAV mono
-- [ ] AC-5: `ma_decoder_get_length_in_pcm_frames()` returns > 0 for WAV mono
-- [ ] AC-5: `decoder.outputChannels == 1` for mono WAV
-- [ ] AC-5: `decoder.outputChannels == 2` for stereo WAV
-- [ ] AC-5: `ma_decoder_init_file()` returns `MA_SUCCESS` for MP3
-- [ ] AC-5: `ma_decoder_get_length_in_pcm_frames()` returns > 0 for MP3
-- [ ] AC-5: `decoder.outputFormat` is `ma_format_f32` or `ma_format_s16` for MP3
-- [ ] AC-5: `ma_decoder_init_file()` returns `MA_SUCCESS` for OGG Vorbis
-- [ ] AC-5: `ma_decoder_get_length_in_pcm_frames()` returns > 0 for OGG Vorbis
-- [ ] AC-5: `decoder.outputChannels == 1` for embedded OGG (mono)
-- [ ] AC-6: All `ma_decoder` tests pass on CI without audio device (no `ma_engine` required)
-- [ ] AC-6: Backend tests that require `Initialize()` guard with `bool initOk` check
-- [ ] AC-6: Tests using `CHECK` (not `REQUIRE`) on `Initialize()` result so suite completes headless
-- [ ] AC-7: Tests construct standalone `mu::MiniAudioBackend` instances on the stack
-- [ ] AC-7: No test assigns or modifies `g_platformAudio`
-- [ ] AC-7: `g_platformAudio == nullptr` after all audio format tests execute
+- [x] AC-1: WAV mono PCM 16-bit loads without error via `MiniAudioBackend::LoadSound()`
+- [x] AC-1: WAV stereo PCM 16-bit loads without error via `MiniAudioBackend::LoadSound()`
+- [x] AC-1: MP3 loads without error via `MiniAudioBackend::LoadSound()`
+- [x] AC-1: OGG Vorbis loads without error via `MiniAudioBackend::LoadSound()`
+- [x] AC-2: `test_assets::GenerateWavFile()` writes a valid RIFF/PCM WAV at runtime
+- [x] AC-2: `test_assets::WriteMP3File()` writes embedded MP3 hex array to a temp file
+- [x] AC-2: `test_assets::WriteOggFile()` writes embedded OGG hex array to a temp file
+- [x] AC-2: `TempAudioDir` RAII wrapper creates and cleans up temp directory correctly
+- [x] AC-3: `LoadSound()` with non-existent path does not crash; slot remains unloaded
+- [x] AC-3: `LoadSound()` with corrupt file does not crash; miniaudio rejects invalid header
+- [x] AC-3: `PlayMusic()` with non-existent path does not crash; `IsEndMusic()` returns true
+- [x] AC-4: `PlayMusic()` + `StopMusic()` with MP3 path does not crash (streaming path)
+- [x] AC-4: `PlayMusic()` + `StopMusic()` with OGG path does not crash (streaming path)
+- [x] AC-4: `IsEndMusic()` returns true after `StopMusic()` for both BGM formats
+- [x] AC-5: `ma_decoder_init_file()` returns `MA_SUCCESS` for WAV mono
+- [x] AC-5: `ma_decoder_get_length_in_pcm_frames()` returns > 0 for WAV mono
+- [x] AC-5: `decoder.outputChannels == 1` for mono WAV
+- [x] AC-5: `decoder.outputChannels == 2` for stereo WAV
+- [x] AC-5: `ma_decoder_init_file()` returns `MA_SUCCESS` for MP3
+- [x] AC-5: `ma_decoder_get_length_in_pcm_frames()` returns > 0 for MP3
+- [x] AC-5: `decoder.outputFormat` is `ma_format_f32` or `ma_format_s16` for MP3
+- [x] AC-5: `ma_decoder_init_file()` returns `MA_SUCCESS` for OGG Vorbis
+- [x] AC-5: `ma_decoder_get_length_in_pcm_frames()` returns > 0 for OGG Vorbis
+- [x] AC-5: `decoder.outputChannels == 1` for embedded OGG (mono)
+- [x] AC-6: All `ma_decoder` tests pass on CI without audio device (no `ma_engine` required)
+- [x] AC-6: Backend tests that require `Initialize()` guard with `bool initOk` check
+- [x] AC-6: Tests using `CHECK` (not `REQUIRE`) on `Initialize()` result so suite completes headless
+- [x] AC-7: Tests construct standalone `mu::MiniAudioBackend` instances on the stack
+- [x] AC-7: No test assigns or modifies `g_platformAudio`
+- [x] AC-7: `g_platformAudio == nullptr` after all audio format tests execute
 
 ### PCC Compliance
 
-- [ ] PCC: No prohibited libraries used (`new`/`delete`, `NULL`, `wprintf`, `#ifdef _WIN32` in test logic)
-- [ ] PCC: `mu::` namespace used for `MiniAudioBackend` access throughout
-- [ ] PCC: Allman brace style, 4-space indent, 120-column limit enforced
-- [ ] PCC: `std::filesystem::path` used for all file path construction
-- [ ] PCC: Forward slashes in all file paths (`.generic_string()` used)
-- [ ] PCC: `std::ofstream` used for file I/O (not `_wfopen`, `CreateFile`)
-- [ ] PCC: No binary audio files committed — WAV generated at runtime, MP3/OGG as `constexpr` hex arrays
-- [ ] PCC: `#pragma once` not needed (`.cpp` only — no header created)
+- [x] PCC: No prohibited libraries used (`new`/`delete`, `NULL`, `wprintf`, `#ifdef _WIN32` in test logic)
+- [x] PCC: `mu::` namespace used for `MiniAudioBackend` access throughout
+- [x] PCC: Allman brace style, 4-space indent, 120-column limit enforced
+- [x] PCC: `std::filesystem::path` used for all file path construction
+- [x] PCC: Forward slashes in all file paths (`.generic_string()` used)
+- [x] PCC: `std::ofstream` used for file I/O (not `_wfopen`, `CreateFile`)
+- [x] PCC: No binary audio files committed — WAV generated at runtime, MP3/OGG as `constexpr` hex arrays
+- [x] PCC: `#pragma once` not needed (`.cpp` only — no header created)
 
 ### CMake / Build
 
-- [ ] CMake: `target_sources(MuTests PRIVATE audio/test_audio_format_validation.cpp)` added to `tests/CMakeLists.txt`
+- [x] CMake: `target_sources(MuTests PRIVATE audio/test_audio_format_validation.cpp)` added to `tests/CMakeLists.txt`
 - [ ] CMake: New test file compiles with `BUILD_TESTING=ON` on MinGW cross-compile (CI)
-- [ ] CMake: `MuTests` already links `MUAudio` (provides `MiniAudioBackend` symbols) — no new `target_link_libraries` needed
-- [ ] CMake: `MuTests` already has `target_include_directories` for `src/dependencies/miniaudio` — `miniaudio.h` available
+- [x] CMake: `MuTests` already links `MUAudio` (provides `MiniAudioBackend` symbols) — no new `target_link_libraries` needed
+- [x] CMake: `MuTests` already has `target_include_directories` for `src/dependencies/miniaudio` — `miniaudio.h` available
 
 ### Quality Gate
 
-- [ ] QG: `./ctl check` passes with 0 errors (clang-format + cppcheck) after adding test file
-- [ ] QG: No cppcheck warnings in `test_audio_format_validation.cpp`
-- [ ] QG: `SOUND_EXPAND_END - N` indices used (not hard-coded game sound IDs) to avoid collision
+- [x] QG: `./ctl check` passes with 0 errors (clang-format + cppcheck) after adding test file
+- [x] QG: No cppcheck warnings in `test_audio_format_validation.cpp`
+- [x] QG: `SOUND_EXPAND_END - N` indices used (not hard-coded game sound IDs) to avoid collision
 
 ### Commit
 
-- [ ] Commit: `test(audio): add audio format validation tests for WAV, MP3, and OGG`
+- [x] Commit: `test(audio): add audio format validation tests for WAV, MP3, and OGG`
 
 ---
 
