@@ -56,7 +56,7 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 | AC-1 | `MovePoint maps all 8 EPathDirection values to correct coordinate deltas` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
 | AC-1 | `PATH FindPath A* navigation` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
 | AC-2 | `MOVEINFODATA index equality operator matches gate by index` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
-| AC-2 | `MOVEINFODATA _bCanMove flag controls gate passability` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
+| AC-2 | `MOVEINFODATA _bCanMove flag is default-constructible and distinguishes gate states` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
 | AC-2 | `TW_* terrain attribute flags are distinct non-overlapping bitmasks` | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
 | AC-2 | `CMapManager map range queries` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
 | AC-2 | `CPortalMgr portal state save/restore` (SKIP — needs MUGame) | `tests/world/test_world_navigation_validation.cpp` | `[x]` |
@@ -95,7 +95,7 @@ STATE_0_STORY_CREATED → [testarch-atdd] → STATE_1_ATDD_READY
 ### Phase 4: Catch2 Tests — AC-2 (Map Transitions, Terrain Flags)
 
 - [x] `AC-2 [6-1-2]: MOVEINFODATA index equality operator matches gate by index` — 3 SECTION blocks
-- [x] `AC-2 [6-1-2]: MOVEINFODATA _bCanMove flag controls gate passability` — 2 SECTION blocks
+- [x] `AC-2 [6-1-2]: MOVEINFODATA _bCanMove flag is default-constructible and distinguishes gate states` — 3 SECTION blocks (default false, distinguishable, independent of index)
 - [x] `AC-2 [6-1-2]: TW_* terrain attribute flags are distinct non-overlapping bitmasks` — 6 SECTION blocks
 
 ### Phase 5: SKIP Stubs (MUGame-linked tests)
