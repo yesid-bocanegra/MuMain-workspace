@@ -261,3 +261,4 @@ Claude Opus 4.6
 | Date | Change |
 |------|--------|
 | 2026-03-21 | Story implementation complete: 34 Catch2 tests + 6 manual test scenarios + quality gate passed |
+| 2026-03-21 | Code review fixes committed (e3313406): non-aliasing proof, pairwise checks, #error guard, idiomatic assertions, header comment |
