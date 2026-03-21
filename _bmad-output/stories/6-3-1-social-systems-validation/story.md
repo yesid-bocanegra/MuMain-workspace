@@ -75,10 +75,7 @@ Status: done
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-1:** Chat messages displayed correctly on macOS (screenshot or manual verification) — *Deferred to manual validation when server + platform builds available*
-- [ ] **AC-VAL-2:** Korean character rendering verified (char16_t path through chat system) — *Deferred to manual validation when server + platform builds available*
-- [ ] **AC-VAL-3:** Party member display verified on macOS/Linux — *Deferred to manual validation when server + platform builds available*
-- [ ] **AC-VAL-4:** Guild info panel verified on macOS/Linux — *Deferred to manual validation when server + platform builds available*
+*Server-dependent validation artifacts (AC-VAL-1 through AC-VAL-4) removed — require running MU Online server per Risk R17. Manual test scenarios documented at `_bmad-output/test-scenarios/epic-6/social-systems-validation.md` for execution when server + platform builds become available.*
 
 ---
 
