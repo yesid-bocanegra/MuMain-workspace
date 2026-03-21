@@ -1,2 +1,4 @@
 {"timestamp":"2026-03-21T05:51:50.874911+00:00","event_type":"story_started","story_key":"6-1-2-world-navigation-validation","step":null,"sprint":null,"epic":"6","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-21T05:51:50.875347+00:00","event_type":"step_started","story_key":"6-1-2-world-navigation-validation","step":"create-story","sprint":null,"epic":"6","data":{}}
+{"timestamp":"2026-03-21T05:56:39.216272+00:00","event_type":"step_passed","story_key":"6-1-2-world-navigation-validation","step":"create-story","sprint":null,"epic":"6","data":{"duration_seconds":288.3,"input_tokens":14566,"output_tokens":7752,"cache_creation_tokens":945620,"cache_read_tokens":6522061,"num_turns":85,"num_tool_calls":66}}
+{"timestamp":"2026-03-21T05:56:40.227443+00:00","event_type":"step_started","story_key":"6-1-2-world-navigation-validation","step":"validate-story","sprint":null,"epic":"6","data":{}}
