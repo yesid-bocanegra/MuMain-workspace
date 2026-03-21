@@ -493,7 +493,7 @@ development_status:
   # EPIC-6: Cross-Platform Gameplay Validation [VS-1] [Feature] (23 pts)
   epic-6: in-progress
   6-1-1-auth-character-validation: done                  # 3 pts | Flow:F | Deps: EPIC-2,3,4
-  6-1-2-world-navigation-validation: ready-for-dev    # 3 pts | Flow:F | Deps: 6.1.1
+  6-1-2-world-navigation-validation: review    # 3 pts | Flow:F | Deps: 6.1.1
   6-2-1-combat-system-validation: backlog       # 3 pts | Flow:F | Deps: 6.1.2
   6-2-2-inventory-trading-validation: backlog   # 3 pts | Flow:F | Deps: 6.1.1
   6-3-1-social-systems-validation: backlog      # 3 pts | Flow:F | Deps: 6.1.1

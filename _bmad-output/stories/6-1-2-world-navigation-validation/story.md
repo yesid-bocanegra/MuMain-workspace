@@ -1,6 +1,6 @@
 # Story 6.1.2: World Navigation Validation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -58,21 +58,21 @@ Status: ready-for-dev
 ## Standard Acceptance Criteria
 
 - [x] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
-- [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite validates navigation logic where testable without live server
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
+- [x] **AC-STD-2:** Testing Requirements — Catch2 test suite validates navigation logic where testable without live server
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-6:** Test scenarios documented in `_bmad-output/test-scenarios/epic-6/`
+- [x] **AC-VAL-6:** Test scenarios documented in `_bmad-output/test-scenarios/epic-6/`
 
 <!-- AC-VAL-1..2 removed: require running test server + multiple platforms (macOS/Linux/Windows).
      Manual validation is tracked separately outside PCC automation scope.
@@ -82,19 +82,19 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create test scenario documentation for world navigation validation (AC: VAL-6)
-  - [ ] Subtask 1.1: Document manual test plan for character movement (click-to-move, keyboard, pathfinding)
-  - [ ] Subtask 1.2: Document manual test plan for map transitions (portals, warps, gate system)
-  - [ ] Subtask 1.3: Document manual test plan for map rendering (terrain, objects, NPCs) across key maps
-  - [ ] Subtask 1.4: Document manual test plan for minimap functionality
-- [ ] Task 2: Create Catch2 test suite for world navigation validation logic (AC: 1-5, STD-2)
-  - [ ] Subtask 2.1: Test map loading and ENUM_WORLD constants validation
-  - [ ] Subtask 2.2: Test pathfinding (PATH class A* algorithm) with grid dimensions and wall detection
-  - [ ] Subtask 2.3: Test portal/warp gate data validation (CMoveCommandData level/zen requirements)
-  - [ ] Subtask 2.4: Test map transition state management (PortalMgr save/restore positions)
-- [ ] Task 3: Run quality gate and fix any violations (AC: STD-1, STD-13)
-  - [ ] Subtask 3.1: Run `./ctl check` — fix clang-format violations
-  - [ ] Subtask 3.2: Run `./ctl check` — fix cppcheck warnings
+- [x] Task 1: Create test scenario documentation for world navigation validation (AC: VAL-6)
+  - [x] Subtask 1.1: Document manual test plan for character movement (click-to-move, keyboard, pathfinding)
+  - [x] Subtask 1.2: Document manual test plan for map transitions (portals, warps, gate system)
+  - [x] Subtask 1.3: Document manual test plan for map rendering (terrain, objects, NPCs) across key maps
+  - [x] Subtask 1.4: Document manual test plan for minimap functionality
+- [x] Task 2: Create Catch2 test suite for world navigation validation logic (AC: 1-5, STD-2)
+  - [x] Subtask 2.1: Test map loading and ENUM_WORLD constants validation
+  - [x] Subtask 2.2: Test pathfinding (PATH class A* algorithm) with grid dimensions and wall detection
+  - [x] Subtask 2.3: Test portal/warp gate data validation (CMoveCommandData level/zen requirements)
+  - [x] Subtask 2.4: Test map transition state management (PortalMgr save/restore positions)
+- [x] Task 3: Run quality gate and fix any violations (AC: STD-1, STD-13)
+  - [x] Subtask 3.1: Run `./ctl check` — fix clang-format violations
+  - [x] Subtask 3.2: Run `./ctl check` — fix cppcheck warnings
 <!-- Tasks 4+ removed: manual platform validation requires running test server + multiple platforms.
      Tracked separately outside PCC automation scope. See Risk R17 in Dev Notes. -->
 
@@ -209,6 +209,8 @@ Claude Opus 4.6
 
 ### Debug Log References
 
+- Quality gate: `./ctl check` passed 711/711 files, 0 format violations, 0 cppcheck errors (2026-03-21)
+
 ### Completion Notes List
 
 - PCC create-story workflow completed — SAFe metadata and AC-STD sections included
@@ -219,9 +221,17 @@ Claude Opus 4.6
 - Key navigation systems identified: MapManager (82+ maps), PATH (A* pathfinding), PortalMgr (teleportation), CMoveCommandData (gate system), CNewUIMiniMap (minimap), MapProcess (rendering), 26+ GM*.cpp map implementations
 - Prerequisite story 6-1-1 done — patterns established for Catch2 test suites and quality gate workflow
 - Critical path story: unblocks 6-2-1-combat-system-validation
+- dev-story: All 3 tasks complete (10 subtasks). Test scenarios document covers 5 manual validation scenarios. Catch2 test suite has 13 TEST_CASEs (10 compiled, 3 SKIP stubs for MUGame-linked tests). ATDD checklist 100% (31/31 items). Quality gate passed 711 files with 0 violations.
+- Functional ACs 1-5 remain unchecked: require live server manual validation per Risk R17 (manual platform validation tasks explicitly removed from PCC automation scope)
+
+### Change Log
+
+- 2026-03-21: dev-story workflow — all 3 tasks (10 subtasks) completed. Test scenarios, Catch2 test suite (13 TEST_CASEs), and quality gate (711 files, 0 errors) verified. ATDD 31/31 items. Status → review.
 
 ### File List
 
-- [CREATE] `MuMain/tests/world/test_world_navigation_validation.cpp` — Catch2 test suite for world navigation logic
-- [CREATE] `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` — Manual test scenarios
+- [CREATE] `MuMain/tests/world/test_world_navigation_validation.cpp` — Catch2 test suite for world navigation logic (13 TEST_CASEs)
+- [CREATE] `_bmad-output/test-scenarios/epic-6/world-navigation-validation.md` — Manual test scenarios (5 scenarios)
 - [CREATE] `_bmad-output/stories/6-1-2-world-navigation-validation/story.md` — This story file
+- [CREATE] `_bmad-output/stories/6-1-2-world-navigation-validation/atdd.md` — ATDD checklist
+- [CREATE] `_bmad-output/stories/6-1-2-world-navigation-validation/progress.md` — Progress tracking file
