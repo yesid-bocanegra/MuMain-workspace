@@ -1,0 +1,1 @@
+{"timestamp":"2026-03-21T01:36:18Z","event_type":"workflow_metric:audit_summary","story_key":"sprint","step":"sprint-health-audit","sprint":"Sprint 6","epic":null,"data":{"stories_scanned":0,"stories_with_gaps":0,"stories_clean":0,"total_gaps":0,"critical":0,"high":0,"medium":0,"low":0,"health":"HEALTHY","gap_types":{}}}
