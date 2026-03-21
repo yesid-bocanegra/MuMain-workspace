@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-21T13:22:23.367159+00:00","event_type":"story_started","story_key":"6-3-1-social-systems-validation","step":null,"sprint":null,"epic":"6","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-21T13:22:23.367582+00:00","event_type":"step_started","story_key":"6-3-1-social-systems-validation","step":"create-story","sprint":null,"epic":"6","data":{}}
