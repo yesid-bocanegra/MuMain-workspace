@@ -735,7 +735,7 @@ stories:
     name: "Inventory & Trading Validation"
     epic: EPIC-6
     feature: "6.2"
-    status: backlog
+    status: done
     points: 3
     value_stream: "VS-1"
 
