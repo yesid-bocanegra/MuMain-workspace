@@ -1,6 +1,6 @@
 # Implementation Artifacts Index
 
-*Auto-generated 2026-03-21 10:12 by `paw index`*
+*Auto-generated 2026-03-23 10:42 by `paw index`*
 
 ## Operational (living files) (2)
 
