@@ -162,10 +162,11 @@ sprints:
 
   sprint-6:
     name: "Sprint 6"
-    status: active
+    status: complete
     milestones: [M4, M5]
     start_date: "2026-03-20"
     end_date: "2026-04-03"
+    completed_date: "2026-03-23"
     planned_points: 26
     stories:
       # EPIC-5 — Audio Format Validation (closes M4)
@@ -178,9 +179,9 @@ sprints:
       - 6-3-1-social-systems-validation          # 3 pts | Flow:F | Deps: 6.1.1
       - 6-3-2-advanced-systems-validation        # 3 pts | Flow:F | Deps: 6.2.1
       - 6-4-1-ui-windows-validation              # 5 pts | Flow:F | Deps: 6.1.1
-    velocity: null
-    delivered_points: null
-    commitment_reliability: null
+    velocity: 26
+    delivered_points: 26
+    commitment_reliability: 1.0
     scope_changes:
       added: []
       removed: []
@@ -190,13 +191,13 @@ sprints:
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: null       # Sprint 6: planned, not yet started
+    current_sprint: 26         # Sprint 6: complete (26 pts delivered)
     previous_sprint: 20        # Sprint 5: complete (20 pts delivered)
-    rolling_average: 27.2      # 5-sprint average: (18+28+22+48+20)/5
-    trend: stable              # Sprint 5 at 20 pts (conservative replan); Sprint 6 at 26 pts
-  flow_time_avg_hours: 20.9    # Sprint 5 avg: 0.87 days (20.9 hrs) per story — improved from 26.6
-  flow_efficiency_pct: 18.0    # Sprint 5 est. 18% (batch-sequential stories avg ~56% exc. outlier)
-  commitment_reliability_pct: 100.0  # 5/5 completed sprints at 100%
+    rolling_average: 27.0      # 6-sprint average: (18+28+22+48+20+26)/6
+    trend: stable              # Sprint 6 at 26 pts; consistent delivery pattern
+  flow_time_avg_hours: 42.3    # Sprint 6 avg: 42.3 hrs (sprint-start to done; tail inflated by sequential deps on 6-3-2/6-4-1)
+  flow_efficiency_pct: 19.0    # Sprint 6 est. 19% (consistent with Sprint 5 baseline)
+  commitment_reliability_pct: 100.0  # 6/6 completed sprints at 100%
   wip_limits:
     in_progress: 2
     review: 3
