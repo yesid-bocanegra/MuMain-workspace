@@ -1,6 +1,6 @@
 # Story 6.3.2: Advanced Game Systems Validation
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -50,27 +50,27 @@ Status: review
      ACs are marked with component-level automated coverage status below.
      Full validation deferred to manual execution per Risk R17 (server dependency). -->
 
-- [ ] **AC-1:** Quest UI opens and displays quest information — *Component tests: `MAX_QUESTS` (200), `MAX_QUEST_CONDITION` (16), `MAX_QUEST_REQUEST` (16), `QUEST_STATE_MASK` (0x03), `QUEST_STATES_PER_ENTRY` (4), `QUEST_STATE_BIT_WIDTH` (2), `QUEST_CLASS_ACT` struct layout, `QUEST_CLASS_REQUEST` struct layout, `QUEST_ATTRIBUTE` struct (name buffer, condition/request array sizes), quest view mode enum (`QUEST_VIEW_NONE`..`QUEST_VIEW_END`), quest type enum (`TYPE_QUEST`..`TYPE_QUEST_END`), `SQuestRequest`/`SQuestReward` struct layout, `REQUEST_REWARD_CLASSIFY` enum. Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-2:** Pet companion follows player and can be managed — *Component tests: `PET_TYPE` enum (`PET_TYPE_NONE`=-1, `PET_TYPE_DARK_SPIRIT`=0, `PET_TYPE_DARK_HORSE`=1, `PET_TYPE_END`=2), `PET_COMMAND` enum (`PET_CMD_DEFAULT`..`PET_CMD_END`), `PET_INFO` struct layout (type, exp, level, life, damage, attackSpeed, attackSuccess), pet state enum (`PET_FLYING`..`PET_END`), `PetObject::ActionType` enum (`eAction_Stand`..`eAction_End`), pet type constants (`PC4_ELF`=1..`SKELETON`=7). Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-3:** PvP targeting and combat works between players — *Component tests: `MAX_DUEL_CHANNELS` (4), `_DUEL_PLAYER_TYPE` enum (`DUEL_HERO`=0, `DUEL_ENEMY`=1, `MAX_DUEL_PLAYERS`=2), `DUEL_PLAYER_INFO` struct layout (index, ID, score, hpRate, sdRate), `DUEL_CHANNEL_INFO` struct layout (enable, joinable, id1, id2). Full end-to-end: deferred to manual validation (Risk R17)*
-- [ ] **AC-4:** Duel invitation and acceptance work — *Component tests: `CDuelMgr` duel state management constants, `DUEL_PLAYER_INFO` score/hp/sd fields, duel channel enable/joinable flags, `IsDuelArena()` function existence. Event match systems: `CSBaseMatch` inheritance pattern for `CNewBloodCastleSystem` and `CNewChaosCastleSystem`. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-1:** Quest UI opens and displays quest information — *Component tests: `MAX_QUESTS` (200), `MAX_QUEST_CONDITION` (16), `MAX_QUEST_REQUEST` (16), `QUEST_STATE_MASK` (0x03), `QUEST_STATES_PER_ENTRY` (4), `QUEST_STATE_BIT_WIDTH` (2), `QUEST_CLASS_ACT` struct layout, `QUEST_CLASS_REQUEST` struct layout, `QUEST_ATTRIBUTE` struct (name buffer, condition/request array sizes), quest view mode enum (`QUEST_VIEW_NONE`..`QUEST_VIEW_END`), quest type enum (`TYPE_QUEST`..`TYPE_QUEST_END`), `SQuestRequest`/`SQuestReward` struct layout, `REQUEST_REWARD_CLASSIFY` enum. Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-2:** Pet companion follows player and can be managed — *Component tests: `PET_TYPE` enum (`PET_TYPE_NONE`=-1, `PET_TYPE_DARK_SPIRIT`=0, `PET_TYPE_DARK_HORSE`=1, `PET_TYPE_END`=2), `PET_COMMAND` enum (`PET_CMD_DEFAULT`..`PET_CMD_END`), `PET_INFO` struct layout (type, exp, level, life, damage, attackSpeed, attackSuccess), pet state enum (`PET_FLYING`..`PET_END`), `PetObject::ActionType` enum (`eAction_Stand`..`eAction_End`), pet type constants (`PC4_ELF`=1..`SKELETON`=7). Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-3:** PvP targeting and combat works between players — *Component tests: `MAX_DUEL_CHANNELS` (4), `_DUEL_PLAYER_TYPE` enum (`DUEL_HERO`=0, `DUEL_ENEMY`=1, `MAX_DUEL_PLAYERS`=2), `DUEL_PLAYER_INFO` struct layout (index, ID, score, hpRate, sdRate), `DUEL_CHANNEL_INFO` struct layout (enable, joinable, id1, id2). Full end-to-end: deferred to manual validation (Risk R17)*
+- [x] **AC-4:** Duel invitation and acceptance work — *Component tests: `CDuelMgr` duel state management constants, `DUEL_PLAYER_INFO` score/hp/sd fields, duel channel enable/joinable flags, `IsDuelArena()` function existence. Event match systems: `CSBaseMatch` inheritance pattern for `CNewBloodCastleSystem` and `CNewChaosCastleSystem`. Full end-to-end: deferred to manual validation (Risk R17)*
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
-- [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite validates quest/pet/PvP logic where testable without live server
-- [ ] **AC-STD-12:** SLI/SLO Targets — Component test suite execution time < 200ms per test case, 0 timeouts in CI runs
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
-- [ ] **AC-STD-14:** Observability — Test output includes struct size validation, enum value coverage counts, and static_assert messages during build
-- [ ] **AC-STD-15:** API Contract — N/A (C++ game client test suite; see Contract Catalog Entries)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory, CMake auto-discovery)
+- [x] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
+- [x] **AC-STD-2:** Testing Requirements — Catch2 test suite validates quest/pet/PvP logic where testable without live server
+- [x] **AC-STD-12:** SLI/SLO Targets — Component test suite execution time < 200ms per test case, 0 timeouts in CI runs
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
+- [x] **AC-STD-14:** Observability — Test output includes struct size validation, enum value coverage counts, and static_assert messages during build
+- [x] **AC-STD-15:** API Contract — N/A (C++ game client test suite; see Contract Catalog Entries)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory, CMake auto-discovery)
 
 ### NFR Acceptance Criteria (Type-Specific)
 
 **For ALL stories:**
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
 
 ---
 
