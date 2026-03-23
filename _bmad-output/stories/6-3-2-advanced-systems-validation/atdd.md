@@ -33,11 +33,11 @@
 | AC | Description | Test Methods | Phase |
 |----|-------------|--------------|-------|
 | AC-1 | Quest UI opens and displays quest information | 8 TEST_CASEs (6 standalone + 2 MU_GAME_AVAILABLE) | RED |
-| AC-2 | Pet companion follows player and can be managed | 7 TEST_CASEs (3 standalone + 4 MU_GAME_AVAILABLE) | RED |
+| AC-2 | Pet companion follows player and can be managed | 6 TEST_CASEs (3 standalone + 3 MU_GAME_AVAILABLE) | RED |
 | AC-3 | PvP targeting and combat works between players | 4 TEST_CASEs (all standalone via DuelMgr.h) | RED |
 | AC-4 | Duel invitation and acceptance work | 2 TEST_CASEs (1 standalone + 1 MU_GAME_AVAILABLE) | RED |
 
-**Total TEST_CASEs generated:** 20 standalone-compilable + MU_GAME_AVAILABLE gated
+**Total TEST_CASEs generated:** 20 (14 standalone + 6 MU_GAME_AVAILABLE gated)
 **Existing tests mapped (Step 0.5):** 0 — no prior tests for this story
 **ACs needing new tests:** AC-1, AC-2, AC-3, AC-4 (all)
 

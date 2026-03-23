@@ -9,11 +9,11 @@
 
 ## Pipeline Status
 
-| Step | Status | Date |
-|------|--------|------|
-| 1. Quality Gate | PASSED | 2026-03-23 |
-| 2. Code Review Analysis | COMPLETE | 2026-03-23 |
-| 3. Code Review Finalize | Pending | — |
+| Step | Status | Date | Details |
+|------|--------|------|---------|
+| 1. Quality Gate | PASSED | 2026-03-23 | 711/711 files, 0 errors (clang-format 21.1.8 + cppcheck) |
+| 2. Code Review Analysis | COMPLETE + FIXES APPLIED | 2026-03-23 | 8 issues identified, 8 resolved (4 MEDIUM + 4 LOW), QG re-verified |
+| 3. Code Review Finalize | Pending | — | Ready to proceed |
 
 ## Quality Gate
 
@@ -210,14 +210,27 @@ This was a known pattern from 6-3-1 review learnings: "Eliminate redundant runti
 
 ## Summary
 
-| Severity | Count |
-|----------|:-----:|
-| BLOCKER | 0 |
-| HIGH | 0 |
-| MEDIUM | 4 |
-| LOW | 4 |
-| **Total** | **8** |
+| Severity | Count | Status |
+|----------|:-----:|--------|
+| BLOCKER | 0 | — |
+| HIGH | 0 | — |
+| MEDIUM | 4 | ✅ FIXED |
+| LOW | 4 | ✅ FIXED |
+| **Total** | **8** | **All Resolved** |
 
-No blockers or high-severity issues. The 4 MEDIUM findings are: misleading comment (F1), ATDD count discrepancy (F2), incomplete struct field coverage (F3), and fragile cross-constant assertion (F6). The 4 LOW findings are documentation/style issues that don't affect test correctness.
+### Fixes Applied
 
-**Recommendation:** Fix the 4 MEDIUM issues before merging. LOW issues are at the implementer's discretion.
+All 8 findings have been resolved:
+
+1. **F1 (comment "four" → "six")** — Line 493: Fixed misleading comment to match 6 unconditional constants
+2. **F2 (ATDD count AC-2: 7→6)** — atdd.md line 36: Corrected AC-2 to 6 TEST_CASEs (3 standalone + 3 MU_GAME_AVAILABLE)
+3. **F3 (QUEST_CLASS_ACT incomplete)** — Lines 166-193: Added section for 4 missing fields (byItemSubType, byItemLevel, byItemNum, byRequestType)
+4. **F4 (QUEST_CLASS_REQUEST incomplete)** — Lines 195-225: Added section for shErrorText field validation
+5. **F5 (QUEST_ATTRIBUTE header fields)** — Lines 226-254: Added section for 3 header fields (shQuestConditionNum, shQuestRequestNum, wNpcType)
+6. **F6 (MAX_DUEL_CHANNELS fragile)** — Lines 626-643: Replaced fragile relationship assertion with independent value checks
+7. **F7 (static_assert in SECTION)** — Multiple locations: Moved static_asserts outside SECTION blocks to file scope
+8. **F8 (pairwise check inconsistency)** — Lines 149-165: Converted manual REQUIRE pattern to nested loop pattern for consistency
+
+**Quality Gate:** ✅ PASSED (711/711 files, 0 errors)
+
+**Recommendation:** All MEDIUM and LOW issues resolved. Story ready for code-review-finalize.
