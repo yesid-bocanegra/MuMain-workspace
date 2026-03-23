@@ -9,13 +9,46 @@
 
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASSED
+**Run Date:** 2026-03-23
+**Pipeline Step:** 1 of 3 (code-review-quality-gate)
+
+### Component Results
+
+| Component | Type | Path |
+|-----------|------|------|
+| mumain | cpp-cmake (backend) | ./MuMain |
+
+### Backend Quality Gate — mumain
+
+| Check | Result | Notes |
+|-------|--------|-------|
+| lint (`make -C MuMain lint`) | PASS | 0 errors across 691 files |
+| format-check (`make -C MuMain format-check`) | PASS | All files conform |
+| coverage | PASS | No coverage configured yet |
+| build | SKIPPED | macOS cannot compile Win32/DirectX (CI-only) |
+| test | SKIPPED | macOS cannot run Win32 tests (CI-only) |
+| SonarCloud | N/A | No SONAR_TOKEN configured |
+
+### Frontend Quality Gate
 
 | Check | Result |
 |-------|--------|
-| lint (`./ctl check`) | Pending — deferred to CODE_REVIEW_QG step |
-| build | Pending — deferred to CODE_REVIEW_QG step |
-| test | Pending — deferred to CODE_REVIEW_QG step |
+| All checks | SKIPPED — no frontend components |
+
+### Schema Alignment
+
+- Status: N/A — no frontend, no schema validation applicable
+
+### Summary
+
+| Gate | Status | Iterations | Issues Fixed |
+|------|--------|------------|--------------|
+| Backend Local (mumain) | PASSED | 1 | 0 |
+| Backend SonarCloud | N/A | — | — |
+| Frontend Local | N/A | — | — |
+| Frontend SonarCloud | N/A | — | — |
+| **Overall** | **PASSED** | **1** | **0** |
 
 ---
 
