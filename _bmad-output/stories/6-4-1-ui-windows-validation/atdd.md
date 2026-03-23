@@ -170,7 +170,7 @@ All ACs require new tests — none pre-mapped.
 | Story ID | 6-4-1-ui-windows-validation |
 | Primary Test Level | Component (Catch2 v3.7.1) |
 | Test File | `MuMain/tests/gameplay/test_ui_windows_validation.cpp` |
-| Standalone Tests (AC-4, AC-5) | 19 TEST_CASEs (always compiled, no Win32 required) |
+| Standalone Tests (AC-4, AC-5) | 10 TEST_CASEs (always compiled, no Win32 required) |
 | MU_GAME_AVAILABLE Tests (AC-1..3) | 9 TEST_CASEs (require full game headers) |
 | Total TEST_CASEs | 19 |
 | Bruno Collection | N/A (infrastructure story, no API endpoints) |

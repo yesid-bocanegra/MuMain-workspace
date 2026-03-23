@@ -291,6 +291,44 @@ The finalize workflow will:
 
 📝 **Trace file updated:** `_bmad-output/stories/6-4-1-ui-windows-validation/review.md`
 
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-23
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 7 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **Finding 1 (MEDIUM):** fixed — ATDD Output Summary standalone count corrected from 19 to 10 in atdd.md line 173
+- **Finding 2 (MEDIUM):** fixed — Added patterned buffer SSIM test (horizontal gradient) to exercise variance-dependent code paths
+- **Finding 3 (MEDIUM):** fixed — Added supplementary pairwise distinctness test for 22 uncategorized INTERFACE_LIST IDs (MOVEMAP, COMMAND, PET, SERVERDIVISION, REFINERY, REFINERYINFO, ITEM_EXPLANATION, SETITEM_EXPLANATION, QUICK_COMMAND, SLIDEWINDOW, HERO_POSITION_INFO, MESSAGEBOX, ITEM_ENDURANCE_INFO, MASTER_LEVEL, GOLD_BOWMAN, GOLD_BOWMAN_LENA, INGAMESHOP, NPC_DIALOGUE, UNITEDMARKETPLACE_NPC_JULIA, HOTKEY, ITEM_TOOLTIP, SYSTEMLOGWINDOW)
+- **Finding 4 (LOW):** fixed — Removed redundant `using namespace SEASON3B;` at inner SECTION scope
+- **Finding 5 (LOW):** fixed — Moved `keyWindows[]` array above SECTION blocks, eliminating duplication
+- **Finding 6 (LOW):** fixed — Added inline comment noting "WDITH" is the upstream spelling in NewUIMiniMap.h
+- **Finding 7 (LOW):** fixed — Already resolved (INTERFACE_PETINFO not present in current story.md)
+
+### Story Status Update
+
+- **Previous Status:** review
+- **New Status:** done
+- **Story File Updated:** _bmad-output/stories/6-4-1-ui-windows-validation/story.md
+- **ATDD Checklist Synchronized:** Yes
+
+### Files Modified
+
+- `MuMain/tests/gameplay/test_ui_windows_validation.cpp` - Added patterned SSIM test, uncategorized enum test, deduplicated keyWindows[], removed redundant using namespace, added typo comment
+- `_bmad-output/stories/6-4-1-ui-windows-validation/atdd.md` - Fixed standalone test count (19→10)
+- `_bmad-output/stories/6-4-1-ui-windows-validation/story.md` - Status updated to done, dev agent record updated
+- `_bmad-output/stories/6-4-1-ui-windows-validation/review.md` - Step 3 Resolution added
+
 📋 Result:
 ## ✅ CODE REVIEW ANALYSIS WORKFLOW COMPLETE
 

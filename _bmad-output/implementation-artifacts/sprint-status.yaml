@@ -419,7 +419,8 @@ epic_completion_gates:
       - no_gameplay_regression_on_windows
       - all_84_ui_windows_function
       - chat_social_features_with_correct_encoding
-    status: pending
+    status: done
+    completed_date: "2026-03-23"
   epic_7:
     name: "Stability, Diagnostics & Quality Gates"
     criteria:
@@ -491,14 +492,14 @@ development_status:
   epic-5-retrospective: optional
 
   # EPIC-6: Cross-Platform Gameplay Validation [VS-1] [Feature] (23 pts)
-  epic-6: in-progress
+  epic-6: done
   6-1-1-auth-character-validation: done                  # 3 pts | Flow:F | Deps: EPIC-2,3,4
   6-1-2-world-navigation-validation: done      # 3 pts | Flow:F | Deps: 6.1.1 | code-review-finalize completed 2026-03-21
   6-2-1-combat-system-validation: done  # 3 pts | Flow:F | Deps: 6.1.2
   6-2-2-inventory-trading-validation: done   # 3 pts | Flow:F | Deps: 6.1.1 | code-review-finalize completed 2026-03-21
   6-3-1-social-systems-validation: done # 3 pts | Flow:F | Deps: 6.1.1 | code-review-finalize completed 2026-03-21
   6-3-2-advanced-systems-validation: done    # 3 pts | Flow:F | Deps: 6.2.1 | code-review-finalize completed 2026-03-23
-  6-4-1-ui-windows-validation: review             # 5 pts | Flow:F | Deps: 6.1.1 | dev-story completed 2026-03-23
+  6-4-1-ui-windows-validation: done               # 5 pts | Flow:F | Deps: 6.1.1 | code-review-finalize completed 2026-03-23
   epic-6-retrospective: optional
 
   # EPIC-7: Stability, Diagnostics & Quality Gates [VS-0] [Enabler] (24 pts)

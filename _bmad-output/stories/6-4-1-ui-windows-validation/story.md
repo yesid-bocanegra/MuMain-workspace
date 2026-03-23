@@ -1,6 +1,6 @@
 # Story 6.4.1: UI Windows Comprehensive Validation
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -247,6 +247,12 @@ Claude Opus 4.6
 - SSIM infrastructure validated: 190×429 inventory and 320×240 minimap buffer comparison with >= 0.99 threshold
 - INTERFACE_LIST enum coverage: 84+ window IDs validated for pairwise distinctness across 7 categories
 - Quality gate passed: `./ctl check` 0 errors on 711 files
+- Code review finalize (2026-03-23): Fixed all 7 findings (3 MEDIUM, 4 LOW)
+  - Added patterned buffer SSIM test (Finding 2) — exercises variance-dependent code paths
+  - Added supplementary pairwise test for 22 uncategorized INTERFACE_LIST IDs (Finding 3)
+  - Deduplicated keyWindows[] array, removed redundant using namespace (Findings 4+5)
+  - Added upstream typo comment for SKILL_ICON_DATA_WDITH (Finding 6)
+  - Fixed ATDD standalone test count: 19→10 (Finding 1)
 
 ### File List
 
