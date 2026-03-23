@@ -1,6 +1,6 @@
 {
   "story_key": "6-4-1-ui-windows-validation",
-  "current_step": "code-review-quality-gate",
-  "status": "review",
-  "last_run": "2026-03-23T11:19:00.000000"
+  "current_step": "dev-story",
+  "status": "completed",
+  "last_run": "2026-03-23T11:30:12.456516"
 }
