@@ -3,15 +3,52 @@
 **Story Key:** 6-3-2-advanced-systems-validation
 **Reviewer:** Claude Opus 4.6 (adversarial code review)
 **Date:** 2026-03-23
-**Status:** REVIEW_ANALYSIS_COMPLETE
+**Status:** QUALITY_GATE_PASSED
 
 ---
 
+## Pipeline Status
+
+| Step | Status | Date |
+|------|--------|------|
+| 1. Quality Gate | PASSED | 2026-03-23 |
+| 2. Code Review Analysis | COMPLETE | 2026-03-23 |
+| 3. Code Review Finalize | Pending | — |
+
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASSED
+**Date:** 2026-03-23
+**Story Type:** infrastructure
 
-Quality gate commands (`./ctl check`, clang-format, cppcheck) are executed by the separate CODE_REVIEW_QG pipeline step. Pre-run results indicate PASS (711/711 files, 0 errors).
+### Quality Gate Progress
+
+| Phase | Status | Details |
+|-------|--------|---------|
+| Backend Local (mumain) | PASSED | `./ctl check` — 711/711 files, 0 errors (clang-format 21.1.8 + cppcheck) |
+| Backend SonarCloud | N/A | No SonarCloud configured for cpp-cmake project |
+| Frontend Local | N/A | No frontend components affected |
+| Frontend SonarCloud | N/A | No frontend components affected |
+
+### Non-Deterministic Checks
+
+| Check | Status | Reason |
+|-------|--------|--------|
+| SonarCloud | N/A | No SONAR_TOKEN / not configured for this project |
+| Schema Alignment | N/A | No frontend, no API contracts |
+| AC Compliance | N/A | Infrastructure story — no AC tests |
+| E2E Test Quality | N/A | Infrastructure story — no E2E tests |
+| App Startup | N/A | C++ game client — macOS cannot compile Win32/DirectX binary |
+
+### Backend Component Results
+
+| Component | Path | Tech Profile | Local Gate | Iterations | Issues Fixed |
+|-----------|------|-------------|------------|------------|-------------|
+| mumain | ./MuMain | cpp-cmake | PASSED | 0 | 0 |
+
+**Quality gate checks:** `skip_checks: [build, test]` per `.pcc-config.yaml` — macOS cannot compile Win32/DirectX. Lint (cppcheck) and format-check (clang-format) are the active gates.
+
+**QUALITY GATE PASSED — Ready for code-review-analysis**
 
 ---
 
