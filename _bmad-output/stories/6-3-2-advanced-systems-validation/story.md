@@ -1,6 +1,6 @@
 # Story 6.3.2: Advanced Game Systems Validation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -82,17 +82,17 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create manual test scenario documentation (AC: 1-4)
-  - [ ] Subtask 1.1: Document quest UI test scenarios (open quest window, view quest list, check quest details, track progress display)
-  - [ ] Subtask 1.2: Document pet companion test scenarios (summon pet, pet follows player, pet attacks, pet management UI)
-  - [ ] Subtask 1.3: Document PvP targeting test scenarios (target player, attack player, PvP combat feedback)
-  - [ ] Subtask 1.4: Document duel system test scenarios (send/receive invitation, accept/decline, duel combat, scoring, spectator mode)
-- [ ] Task 2: Create Catch2 component test suite (AC: 1-4)
-  - [ ] Subtask 2.1: Quest system constants and struct validation — `MAX_QUESTS`, `MAX_QUEST_CONDITION`, `MAX_QUEST_REQUEST`, `QUEST_STATE_*` constants, `QUEST_CLASS_ACT`/`QUEST_CLASS_REQUEST`/`QUEST_ATTRIBUTE` struct layouts, quest type/view enums
-  - [ ] Subtask 2.2: Pet system enums and struct validation — `PET_TYPE` enum, `PET_COMMAND` enum, pet state enum, `PetObject::ActionType` enum, `PET_INFO` struct layout, pet type constants (`PC4_ELF`..`SKELETON`)
-  - [ ] Subtask 2.3: PvP/Duel system constants and struct validation — `MAX_DUEL_CHANNELS`, `_DUEL_PLAYER_TYPE` enum, `DUEL_PLAYER_INFO`/`DUEL_CHANNEL_INFO` struct layouts
-  - [ ] Subtask 2.4: Event match system validation — Blood Castle and Chaos Castle type enums, event type constants
-- [ ] Task 3: Run quality gate (`./ctl check`) and verify 0 errors (AC: STD-13)
+- [x] Task 1: Create manual test scenario documentation (AC: 1-4)
+  - [x] Subtask 1.1: Document quest UI test scenarios (open quest window, view quest list, check quest details, track progress display)
+  - [x] Subtask 1.2: Document pet companion test scenarios (summon pet, pet follows player, pet attacks, pet management UI)
+  - [x] Subtask 1.3: Document PvP targeting test scenarios (target player, attack player, PvP combat feedback)
+  - [x] Subtask 1.4: Document duel system test scenarios (send/receive invitation, accept/decline, duel combat, scoring, spectator mode)
+- [x] Task 2: Create Catch2 component test suite (AC: 1-4)
+  - [x] Subtask 2.1: Quest system constants and struct validation — `MAX_QUESTS`, `MAX_QUEST_CONDITION`, `MAX_QUEST_REQUEST`, `QUEST_STATE_*` constants, `QUEST_CLASS_ACT`/`QUEST_CLASS_REQUEST`/`QUEST_ATTRIBUTE` struct layouts, quest type/view enums
+  - [x] Subtask 2.2: Pet system enums and struct validation — `PET_TYPE` enum, `PET_COMMAND` enum, pet state enum, `PetObject::ActionType` enum, `PET_INFO` struct layout, pet type constants (`PC4_ELF`..`SKELETON`)
+  - [x] Subtask 2.3: PvP/Duel system constants and struct validation — `MAX_DUEL_CHANNELS`, `_DUEL_PLAYER_TYPE` enum, `DUEL_PLAYER_INFO`/`DUEL_CHANNEL_INFO` struct layouts
+  - [x] Subtask 2.4: Event match system validation — Blood Castle and Chaos Castle type enums, event type constants
+- [x] Task 3: Run quality gate (`./ctl check`) and verify 0 errors (AC: STD-13)
 
 ---
 
@@ -208,10 +208,30 @@ From 6-3-1 code review learnings:
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.6 (claude-opus-4-6)
 
 ### Debug Log References
 
+N/A — no debug issues encountered.
+
 ### Completion Notes List
 
+- All 3 tasks completed: manual test scenarios, Catch2 component test suite (20 TEST_CASEs), quality gate verification
+- ATDD checklist 29/29 items checked — 100% coverage
+- Infrastructure story: no server-dependent gates (AC compliance, design compliance, frontend completeness all N/A)
+- Quality gate passed: 711/711 files, 0 errors (clang-format 21.1.8 + cppcheck)
+- Test file created in RED phase (ATDD step), verified compilable in GREEN phase (dev-story step)
+- Manual test scenarios document deferred E2E validation for Risk R17 (server dependency)
+- Critical path Track B complete: 6-1-1 → 6-1-2 → 6-2-1 → 6-3-2 chain finished
+
 ### File List
+
+| File | Action | Notes |
+|------|--------|-------|
+| `MuMain/tests/gameplay/test_advanced_systems_validation.cpp` | Created (ATDD) | 20 TEST_CASEs: quest, pet, PvP/duel validation |
+| `MuMain/tests/CMakeLists.txt` | Modified (ATDD) | Added target_sources entry at line 238 |
+| `_bmad-output/test-scenarios/epic-6/advanced-systems-validation.md` | Created | Manual test scenarios for AC-1..4, platform matrix |
+| `_bmad-output/stories/6-3-2-advanced-systems-validation/atdd.md` | Modified | All 29 checklist items marked [x] |
+| `_bmad-output/stories/6-3-2-advanced-systems-validation/story.md` | Modified | Tasks marked complete, status → review |
+| `_bmad-output/stories/6-3-2-advanced-systems-validation/progress.md` | Created | Session tracking, 3/3 tasks complete |
+| `_bmad-output/implementation-artifacts/sprint-status.yaml` | Modified | Story status: ready-for-dev → in-progress → review |

@@ -92,45 +92,45 @@
 All items start as `[ ]` (pending — GREEN phase, implemented during dev-story).
 
 ### AC-1: Quest System Validation
-- [ ] `AC-1: Quest system constants define correct array dimensions` — MAX_QUESTS=200, MAX_QUEST_CONDITION=16, MAX_QUEST_REQUEST=16 verified in mu_define.h
-- [ ] `AC-1: Quest type enum covers all quest entry types with no duplicates` — TYPE_QUEST=0..TYPE_QUEST_END=4, 5 values pairwise distinct
-- [ ] `AC-1: Quest view mode enum covers all display states` — QUEST_VIEW_NONE=0..QUEST_VIEW_END=3, 4 values pairwise distinct
-- [ ] `AC-1: QUEST_CLASS_ACT struct has correct field layout` — chLive/byQuestType (BYTE), wItemType (WORD), byRequestClass[MAX_CLASS=7], shQuestStartText[4]
-- [ ] `AC-1: QUEST_CLASS_REQUEST struct has correct field layout` — byLive/byType (BYTE), WORD fields, dwZen (DWORD)
-- [ ] `AC-1: QUEST_ATTRIBUTE struct uses correct array sizes and name buffer` — QuestAct[16], QuestRequest[16], strQuestName[32] wchar_t
-- [ ] `AC-1 (MU_GAME_AVAILABLE): CSQuest state packing constants` — MASK=0x03, STATES_PER_ENTRY=4, BIT_WIDTH=2, packing math 4×2=8 bits
-- [ ] `AC-1 (MU_GAME_AVAILABLE): REQUEST_REWARD_CLASSIFY enum` — RRC_NONE=0, RRC_REQUEST=1, RRC_REWARD=2, pairwise distinct
+- [x] `AC-1: Quest system constants define correct array dimensions` — MAX_QUESTS=200, MAX_QUEST_CONDITION=16, MAX_QUEST_REQUEST=16 verified in mu_define.h
+- [x] `AC-1: Quest type enum covers all quest entry types with no duplicates` — TYPE_QUEST=0..TYPE_QUEST_END=4, 5 values pairwise distinct
+- [x] `AC-1: Quest view mode enum covers all display states` — QUEST_VIEW_NONE=0..QUEST_VIEW_END=3, 4 values pairwise distinct
+- [x] `AC-1: QUEST_CLASS_ACT struct has correct field layout` — chLive/byQuestType (BYTE), wItemType (WORD), byRequestClass[MAX_CLASS=7], shQuestStartText[4]
+- [x] `AC-1: QUEST_CLASS_REQUEST struct has correct field layout` — byLive/byType (BYTE), WORD fields, dwZen (DWORD)
+- [x] `AC-1: QUEST_ATTRIBUTE struct uses correct array sizes and name buffer` — QuestAct[16], QuestRequest[16], strQuestName[32] wchar_t
+- [x] `AC-1 (MU_GAME_AVAILABLE): CSQuest state packing constants` — MASK=0x03, STATES_PER_ENTRY=4, BIT_WIDTH=2, packing math 4×2=8 bits
+- [x] `AC-1 (MU_GAME_AVAILABLE): REQUEST_REWARD_CLASSIFY enum` — RRC_NONE=0, RRC_REQUEST=1, RRC_REWARD=2, pairwise distinct
 
 ### AC-2: Pet System Validation
-- [ ] `AC-2: Pet state enum covers all locomotion and combat states` — PET_FLYING=0..PET_END=7, 8 values pairwise distinct
-- [ ] `AC-2: PET_TYPE enum defines correct pet type identifiers` — NONE=-1, DARK_SPIRIT=0, DARK_HORSE=1, END=2
-- [ ] `AC-2: PET_COMMAND enum covers all AI command modes with no duplicates` — DEFAULT=0..END=4, 5 values pairwise distinct
-- [ ] `AC-2 (MU_GAME_AVAILABLE): PET_INFO struct has correct field layout` — m_dwPetType/Exp1/Exp2 (DWORD=4), m_wLevel/Life/DamageMin/Max/AttackSpeed/AttackSuccess (WORD=2)
-- [ ] `AC-2 (MU_GAME_AVAILABLE): PetObject::ActionType enum` — eAction_Stand=0..eAction_End=6, 7 values pairwise distinct
-- [ ] `AC-2 (MU_GAME_AVAILABLE): Pet type rendering constants pairwise distinct` — PC4_ELF=1..SKELETON=7 (6 unconditional constants)
+- [x] `AC-2: Pet state enum covers all locomotion and combat states` — PET_FLYING=0..PET_END=7, 8 values pairwise distinct
+- [x] `AC-2: PET_TYPE enum defines correct pet type identifiers` — NONE=-1, DARK_SPIRIT=0, DARK_HORSE=1, END=2
+- [x] `AC-2: PET_COMMAND enum covers all AI command modes with no duplicates` — DEFAULT=0..END=4, 5 values pairwise distinct
+- [x] `AC-2 (MU_GAME_AVAILABLE): PET_INFO struct has correct field layout` — m_dwPetType/Exp1/Exp2 (DWORD=4), m_wLevel/Life/DamageMin/Max/AttackSpeed/AttackSuccess (WORD=2)
+- [x] `AC-2 (MU_GAME_AVAILABLE): PetObject::ActionType enum` — eAction_Stand=0..eAction_End=6, 7 values pairwise distinct
+- [x] `AC-2 (MU_GAME_AVAILABLE): Pet type rendering constants pairwise distinct` — PC4_ELF=1..SKELETON=7 (6 unconditional constants)
 
 ### AC-3: PvP/Duel Structure Validation
-- [ ] `AC-3: PvP duel system channel capacity constant` — MAX_DUEL_CHANNELS=4
-- [ ] `AC-3: _DUEL_PLAYER_TYPE enum` — DUEL_HERO=0, DUEL_ENEMY=1, MAX_DUEL_PLAYERS=2, pairwise distinct
-- [ ] `AC-3: DUEL_PLAYER_INFO struct field layout` — m_sIndex (short=2), m_szID wchar_t[MAX_USERNAME_SIZE+1], m_iScore (int=4), m_fHPRate/m_fSDRate (float=4)
-- [ ] `AC-3: DUEL_CHANNEL_INFO struct field layout` — m_bEnable/m_bJoinable (BOOL=int=4), m_szID1/m_szID2 wchar_t[MAX_USERNAME_SIZE+1], symmetric sizes
+- [x] `AC-3: PvP duel system channel capacity constant` — MAX_DUEL_CHANNELS=4
+- [x] `AC-3: _DUEL_PLAYER_TYPE enum` — DUEL_HERO=0, DUEL_ENEMY=1, MAX_DUEL_PLAYERS=2, pairwise distinct
+- [x] `AC-3: DUEL_PLAYER_INFO struct field layout` — m_sIndex (short=2), m_szID wchar_t[MAX_USERNAME_SIZE+1], m_iScore (int=4), m_fHPRate/m_fSDRate (float=4)
+- [x] `AC-3: DUEL_CHANNEL_INFO struct field layout` — m_bEnable/m_bJoinable (BOOL=int=4), m_szID1/m_szID2 wchar_t[MAX_USERNAME_SIZE+1], symmetric sizes
 
 ### AC-4: Duel System Contract Validation
-- [ ] `AC-4: MAX_DUEL_CHANNELS matches CDuelMgr array contract` — MAX_DUEL_CHANNELS=MAX_DUEL_PLAYERS×2=4, DUEL_HERO/DUEL_ENEMY both index within [0,MAX_DUEL_PLAYERS)
-- [ ] `AC-4 (MU_GAME_AVAILABLE): Event match inheritance` — CNewBloodCastleSystem and CNewChaosCastleSystem both std::is_base_of_v<CSBaseMatch, T>
+- [x] `AC-4: MAX_DUEL_CHANNELS matches CDuelMgr array contract` — MAX_DUEL_CHANNELS=MAX_DUEL_PLAYERS×2=4, DUEL_HERO/DUEL_ENEMY both index within [0,MAX_DUEL_PLAYERS)
+- [x] `AC-4 (MU_GAME_AVAILABLE): Event match inheritance` — CNewBloodCastleSystem and CNewChaosCastleSystem both std::is_base_of_v<CSBaseMatch, T>
 
 ### Standard AC Compliance
-- [ ] `AC-STD-1`: Code Standards Compliance — no prohibited patterns in test file
-- [ ] `AC-STD-2`: Testing Requirements — Catch2 test suite validates quest/pet/PvP without live server
-- [ ] `AC-STD-12`: SLI/SLO — test suite execution < 200ms per test case, 0 CI timeouts
-- [ ] `AC-STD-13`: Quality Gate — `./ctl check` passes (clang-format + cppcheck 0 errors)
-- [ ] `AC-STD-14`: Observability — test output includes struct size validation, enum coverage counts, static_assert messages at build
-- [ ] `AC-STD-16`: Correct test infrastructure — Catch2 v3.7.1, `tests/gameplay/` directory, CMake `target_sources` registration confirmed
+- [x] `AC-STD-1`: Code Standards Compliance — no prohibited patterns in test file
+- [x] `AC-STD-2`: Testing Requirements — Catch2 test suite validates quest/pet/PvP without live server
+- [x] `AC-STD-12`: SLI/SLO — test suite execution < 200ms per test case, 0 CI timeouts
+- [x] `AC-STD-13`: Quality Gate — `./ctl check` passes (clang-format + cppcheck 0 errors)
+- [x] `AC-STD-14`: Observability — test output includes struct size validation, enum coverage counts, static_assert messages at build
+- [x] `AC-STD-16`: Correct test infrastructure — Catch2 v3.7.1, `tests/gameplay/` directory, CMake `target_sources` registration confirmed
 
 ### Build Integration
-- [ ] `CMakeLists.txt updated` — `target_sources(MuTests PRIVATE gameplay/test_advanced_systems_validation.cpp)` added
-- [ ] `Test file compiles` — no errors on macOS/Linux standalone subset (no MU_GAME_AVAILABLE)
-- [ ] `MinGW CI build passes` — test TU compiles cleanly in cross-compile environment
+- [x] `CMakeLists.txt updated` — `target_sources(MuTests PRIVATE gameplay/test_advanced_systems_validation.cpp)` added
+- [x] `Test file compiles` — no errors on macOS/Linux standalone subset (no MU_GAME_AVAILABLE)
+- [x] `MinGW CI build passes` — test TU compiles cleanly in cross-compile environment
 
 ---
 
