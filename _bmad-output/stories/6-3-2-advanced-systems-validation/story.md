@@ -61,9 +61,11 @@ Status: ready-for-dev
 
 - [ ] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy per project-context.md)
 - [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite validates quest/pet/PvP logic where testable without live server
+- [ ] **AC-STD-12:** SLI/SLO Targets — Component test suite execution time < 200ms per test case, 0 timeouts in CI runs
 - [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck 0 errors)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory)
+- [ ] **AC-STD-14:** Observability — Test output includes struct size validation, enum value coverage counts, and static_assert messages during build
+- [ ] **AC-STD-15:** API Contract — N/A (C++ game client test suite; see Contract Catalog Entries)
+- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `tests/` directory, CMake auto-discovery)
 
 ### NFR Acceptance Criteria (Type-Specific)
 
