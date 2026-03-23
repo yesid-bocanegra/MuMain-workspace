@@ -162,7 +162,7 @@ sprints:
 
   sprint-6:
     name: "Sprint 6"
-    status: complete
+    status: retrospective-done
     milestones: [M4, M5]
     start_date: "2026-03-20"
     end_date: "2026-04-03"
