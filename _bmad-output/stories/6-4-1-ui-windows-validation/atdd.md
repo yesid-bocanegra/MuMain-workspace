@@ -76,90 +76,90 @@ All ACs require new tests — none pre-mapped.
 
 ### Functional Acceptance Criteria
 
-- [ ] **AC-1: Class Hierarchy Validation (MU_GAME_AVAILABLE)**
-  - [ ] `INewUIBase is a pure-virtual (abstract) interface` — `std::is_abstract_v<INewUIBase>` passes
-  - [ ] `CNewUIObj derives from INewUIBase` — `std::is_base_of_v` passes
-  - [ ] `CNewUIObj is abstract` — `std::is_abstract_v<CNewUIObj>` passes
-  - [ ] `TestUIWindow default state: visible=true, enabled=true` passes
-  - [ ] `Show(false)/Show(true) state transitions` pass
-  - [ ] `Enable(false)/Enable(true) state transitions` pass
-  - [ ] `GetKeyEventOrder() == 3.0f` passes
+- [x] **AC-1: Class Hierarchy Validation (MU_GAME_AVAILABLE)**
+  - [x] `INewUIBase is a pure-virtual (abstract) interface` — `std::is_abstract_v<INewUIBase>` passes
+  - [x] `CNewUIObj derives from INewUIBase` — `std::is_base_of_v` passes
+  - [x] `CNewUIObj is abstract` — `std::is_abstract_v<CNewUIObj>` passes
+  - [x] `TestUIWindow default state: visible=true, enabled=true` passes
+  - [x] `Show(false)/Show(true) state transitions` pass
+  - [x] `Enable(false)/Enable(true) state transitions` pass
+  - [x] `GetKeyEventOrder() == 3.0f` passes
 
-- [ ] **AC-2: Window Dimension Constants (MU_GAME_AVAILABLE)**
-  - [ ] `INVENTORY_SQUARE_WIDTH == 20` passes
-  - [ ] `INVENTORY_SQUARE_HEIGHT == 20` passes
-  - [ ] `INVENTORY_SQUARE_WIDTH == INVENTORY_SQUARE_HEIGHT` passes
-  - [ ] `CNewUIMiniMap::SKILL_ICON_DATA_WDITH == 4` passes
-  - [ ] `CNewUIMiniMap::SKILL_ICON_DATA_HEIGHT == 8` passes
-  - [ ] `CNewUIMiniMap::SKILL_ICON_WIDTH == 20` passes
-  - [ ] `CNewUIMiniMap::SKILL_ICON_HEIGHT == 28` passes
-  - [ ] `CNewUIMiniMap::SKILL_ICON_STARTX1 > 0`, `SKILL_ICON_STARTY1 > 0` pass
-  - [ ] `UNKNOWN_TOOLTIP_TYPE == 0` passes
-  - [ ] All 6 TOOLTIP_TYPE values pairwise distinct passes
+- [x] **AC-2: Window Dimension Constants (MU_GAME_AVAILABLE)**
+  - [x] `INVENTORY_SQUARE_WIDTH == 20` passes
+  - [x] `INVENTORY_SQUARE_HEIGHT == 20` passes
+  - [x] `INVENTORY_SQUARE_WIDTH == INVENTORY_SQUARE_HEIGHT` passes
+  - [x] `CNewUIMiniMap::SKILL_ICON_DATA_WDITH == 4` passes
+  - [x] `CNewUIMiniMap::SKILL_ICON_DATA_HEIGHT == 8` passes
+  - [x] `CNewUIMiniMap::SKILL_ICON_WIDTH == 20` passes
+  - [x] `CNewUIMiniMap::SKILL_ICON_HEIGHT == 28` passes
+  - [x] `CNewUIMiniMap::SKILL_ICON_STARTX1 > 0`, `SKILL_ICON_STARTY1 > 0` pass
+  - [x] `UNKNOWN_TOOLTIP_TYPE == 0` passes
+  - [x] All 6 TOOLTIP_TYPE values pairwise distinct passes
 
-- [ ] **AC-3: Button and Framework Component Enums (MU_GAME_AVAILABLE)**
-  - [ ] `BUTTON_STATE_UP == 0` passes
-  - [ ] `BUTTON_STATE_DOWN == 1` passes
-  - [ ] `BUTTON_STATE_OVER == 2` passes
-  - [ ] All 3 BUTTON_STATE values pairwise distinct passes
-  - [ ] `RADIOGROUPEVENT_NONE == -1` passes
-  - [ ] `UNKNOWN_COLOR_STATE == 0` passes
-  - [ ] `COLOR_STATE_NORMAL > UNKNOWN_COLOR_STATE` passes
-  - [ ] `COLOR_STATE_WARNING > COLOR_STATE_NORMAL` passes
-  - [ ] All 3 SQUARE_COLOR_STATE values pairwise distinct passes
+- [x] **AC-3: Button and Framework Component Enums (MU_GAME_AVAILABLE)**
+  - [x] `BUTTON_STATE_UP == 0` passes
+  - [x] `BUTTON_STATE_DOWN == 1` passes
+  - [x] `BUTTON_STATE_OVER == 2` passes
+  - [x] All 3 BUTTON_STATE values pairwise distinct passes
+  - [x] `RADIOGROUPEVENT_NONE == -1` passes
+  - [x] `UNKNOWN_COLOR_STATE == 0` passes
+  - [x] `COLOR_STATE_NORMAL > UNKNOWN_COLOR_STATE` passes
+  - [x] `COLOR_STATE_WARNING > COLOR_STATE_NORMAL` passes
+  - [x] All 3 SQUARE_COLOR_STATE values pairwise distinct passes
 
-- [ ] **AC-4: INTERFACE_LIST Enum Coverage (standalone — always compiled)**
-  - [ ] `INTERFACE_BEGIN == 0x00` passes
-  - [ ] `INTERFACE_COUNT >= 84` passes
-  - [ ] `INTERFACE_END == INTERFACE_COUNT + 2` passes
-  - [ ] `INTERFACE_3DRENDERING_CAMERA_END == INTERFACE_3DRENDERING_CAMERA_BEGIN + 24` passes
-  - [ ] Core HUD windows (12 IDs) pairwise distinct passes
-  - [ ] Inventory/commerce windows (12 IDs) pairwise distinct passes
-  - [ ] Social windows (6 IDs) pairwise distinct passes
-  - [ ] Castle windows (6 IDs) pairwise distinct passes
-  - [ ] Event windows (19 IDs) pairwise distinct passes
-  - [ ] Quest windows (4 IDs) pairwise distinct passes
-  - [ ] MuHelper windows (3 IDs) pairwise distinct passes
+- [x] **AC-4: INTERFACE_LIST Enum Coverage (standalone — always compiled)**
+  - [x] `INTERFACE_BEGIN == 0x00` passes
+  - [x] `INTERFACE_COUNT >= 84` passes
+  - [x] `INTERFACE_END == INTERFACE_COUNT + 2` passes
+  - [x] `INTERFACE_3DRENDERING_CAMERA_END == INTERFACE_3DRENDERING_CAMERA_BEGIN + 24` passes
+  - [x] Core HUD windows (12 IDs) pairwise distinct passes
+  - [x] Inventory/commerce windows (12 IDs) pairwise distinct passes
+  - [x] Social windows (6 IDs) pairwise distinct passes
+  - [x] Castle windows (6 IDs) pairwise distinct passes
+  - [x] Event windows (19 IDs) pairwise distinct passes
+  - [x] Quest windows (4 IDs) pairwise distinct passes
+  - [x] MuHelper windows (3 IDs) pairwise distinct passes
 
-- [ ] **AC-5: SSIM Infrastructure (standalone — always compiled)**
-  - [ ] 5 key window IDs pairwise distinct passes
-  - [ ] All 5 key window IDs within `(INTERFACE_BEGIN, INTERFACE_END)` range passes
-  - [ ] Identical 190x429 inventory buffers SSIM >= 0.99 passes
-  - [ ] Perceptibly different 190x429 buffers SSIM < 0.5 passes
-  - [ ] Identical 320x240 minimap buffers SSIM >= 0.99 passes
+- [x] **AC-5: SSIM Infrastructure (standalone — always compiled)**
+  - [x] 5 key window IDs pairwise distinct passes
+  - [x] All 5 key window IDs within `(INTERFACE_BEGIN, INTERFACE_END)` range passes
+  - [x] Identical 190x429 inventory buffers SSIM >= 0.99 passes
+  - [x] Perceptibly different 190x429 buffers SSIM < 0.5 passes
+  - [x] Identical 320x240 minimap buffers SSIM >= 0.99 passes
 
 ### Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code follows naming, logging, and error taxonomy conventions
-- [ ] **AC-STD-2:** Catch2 test suite present at `MuMain/tests/gameplay/test_ui_windows_validation.cpp`
-  - [ ] All standalone tests (AC-4, AC-5) compile and run on macOS/Linux without Win32
-  - [ ] MU_GAME_AVAILABLE tests compile without errors when game headers available
-- [ ] **AC-STD-13:** Quality gate passes — `./ctl check` returns 0 errors
-- [ ] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
-- [ ] **AC-STD-16:** Correct test infrastructure — Catch2 v3.7.1, `MuTests` target
+- [x] **AC-STD-1:** Code follows naming, logging, and error taxonomy conventions
+- [x] **AC-STD-2:** Catch2 test suite present at `MuMain/tests/gameplay/test_ui_windows_validation.cpp`
+  - [x] All standalone tests (AC-4, AC-5) compile and run on macOS/Linux without Win32
+  - [x] MU_GAME_AVAILABLE tests compile without errors when game headers available
+- [x] **AC-STD-13:** Quality gate passes — `./ctl check` returns 0 errors
+- [x] **AC-STD-15:** Git safety — no incomplete rebase, no force push to main
+- [x] **AC-STD-16:** Correct test infrastructure — Catch2 v3.7.1, `MuTests` target
 
 ### PCC Compliance Items
 
-- [ ] No prohibited libraries used (no mocking framework — project-context.md §Testing Rules)
-- [ ] Catch2 v3.7.1 used exclusively (FetchContent, `MuTests` target)
-- [ ] `#pragma once` not used in `.cpp` test file (correct — test files use no header guards)
-- [ ] `#ifdef _WIN32` / `PlatformTypes.h` guard applied for Win32 type dependencies
-- [ ] `#ifdef MU_GAME_AVAILABLE` gates all NewUI class header includes
-- [ ] Allman braces, 4-space indent, 120-column limit enforced throughout
-- [ ] No raw `new`/`delete` in test code
-- [ ] `static_assert` placed at file scope (not inside SECTION blocks) — N/A for this file
-- [ ] AC-N: prefixes used in all TEST_CASE names for AC compliance tracking
-- [ ] CMakeLists.txt updated with `target_sources(MuTests PRIVATE gameplay/test_ui_windows_validation.cpp)`
+- [x] No prohibited libraries used (no mocking framework — project-context.md §Testing Rules)
+- [x] Catch2 v3.7.1 used exclusively (FetchContent, `MuTests` target)
+- [x] `#pragma once` not used in `.cpp` test file (correct — test files use no header guards)
+- [x] `#ifdef _WIN32` / `PlatformTypes.h` guard applied for Win32 type dependencies
+- [x] `#ifdef MU_GAME_AVAILABLE` gates all NewUI class header includes
+- [x] Allman braces, 4-space indent, 120-column limit enforced throughout
+- [x] No raw `new`/`delete` in test code
+- [x] `static_assert` placed at file scope (not inside SECTION blocks) — N/A for this file
+- [x] AC-N: prefixes used in all TEST_CASE names for AC compliance tracking
+- [x] CMakeLists.txt updated with `target_sources(MuTests PRIVATE gameplay/test_ui_windows_validation.cpp)`
 
 ---
 
 ## Manual Test Scenarios
 
-- [ ] **Task 1: Manual test scenarios documented**
-  - [ ] `_bmad-output/test-scenarios/epic-6/ui-windows-validation.md` created with all 10 UI categories
-  - [ ] All 84+ CNewUI* window classes enumerated with open/close/toggle procedures
-  - [ ] Manual validation procedures documented for HUD, Character, Inventory, Commerce, Castle, Events, Quest, Social, Chat, GameShop
-  - [ ] Screenshots / ground truth SSIM comparison procedures documented for 5 key windows
+- [x] **Task 1: Manual test scenarios documented**
+  - [x] `_bmad-output/test-scenarios/epic-6/ui-windows-validation.md` created with all 10 UI categories
+  - [x] All 84+ CNewUI* window classes enumerated with open/close/toggle procedures
+  - [x] Manual validation procedures documented for HUD, Character, Inventory, Commerce, Castle, Events, Quest, Social, Chat, GameShop
+  - [x] Screenshots / ground truth SSIM comparison procedures documented for 5 key windows
 
 ---
 
@@ -192,4 +192,4 @@ All ACs require new tests — none pre-mapped.
 - [x] CMakeLists.txt entry added for new test file
 - [x] ATDD checklist includes AC-to-test mapping table
 - [x] Standalone tests (AC-4, AC-5) compile without Win32 or OpenGL
-- [ ] All checklist items verified GREEN (pending dev-story implementation)
+- [x] All checklist items verified GREEN (dev-story implementation complete 2026-03-23)

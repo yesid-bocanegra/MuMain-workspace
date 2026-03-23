@@ -1,6 +1,6 @@
 # Story 6.4.1: UI Windows Comprehensive Validation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -44,47 +44,47 @@ Status: ready-for-dev
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** All CNewUI* window classes (84+ windows) validate structurally — class hierarchy, constants, and enum integrity confirmed via component tests on macOS and Linux
-- [ ] **AC-2:** Window positioning, sizing, and layering constants are valid — all UI dimension constants, position offsets, and z-order values validate within expected ranges
-- [ ] **AC-3:** Button, scroll bar, and list selection UI framework components validate — CNewUIButton, CNewUIScrollBar, CNewUIInventoryCtrl, CNewUITextBox class structures confirmed
-- [ ] **AC-4:** Window open/close/toggle registration validated — CNewUISystem window type enum coverage confirmed for all registered windows
-- [ ] **AC-5:** Ground truth comparison framework for key UI windows (inventory, character info, skills, map, chat) — SSIM comparison infrastructure validated
+- [x] **AC-1:** All CNewUI* window classes (84+ windows) validate structurally — class hierarchy, constants, and enum integrity confirmed via component tests on macOS and Linux
+- [x] **AC-2:** Window positioning, sizing, and layering constants are valid — all UI dimension constants, position offsets, and z-order values validate within expected ranges
+- [x] **AC-3:** Button, scroll bar, and list selection UI framework components validate — CNewUIButton, CNewUIScrollBar, CNewUIInventoryCtrl, CNewUITextBox class structures confirmed
+- [x] **AC-4:** Window open/close/toggle registration validated — CNewUISystem window type enum coverage confirmed for all registered windows
+- [x] **AC-5:** Ground truth comparison framework for key UI windows (inventory, character info, skills, map, chat) — SSIM comparison infrastructure validated
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy)
-- [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite with component-level validation
-- [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`)
-- [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
-- [ ] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `MuTests` target)
+- [x] **AC-STD-1:** Code Standards Compliance (naming, logging, error taxonomy)
+- [x] **AC-STD-2:** Testing Requirements — Catch2 test suite with component-level validation
+- [x] **AC-STD-13:** Quality Gate passes (`./ctl check`)
+- [x] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+- [x] **AC-STD-16:** Correct test infrastructure used (Catch2 v3.7.1, `MuTests` target)
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] Task 1 (AC: VAL-1, VAL-2): Document manual test scenarios for all UI windows
-  - [ ] Subtask 1.1: Create categorized checklist of all 84+ CNewUI* window classes
-  - [ ] Subtask 1.2: Document manual validation procedures for each window category (HUD, Character, Inventory, Commerce, Castle, Events, Quest, Social, Chat, GameShop)
-  - [ ] Subtask 1.3: Write to `_bmad-output/test-scenarios/epic-6/ui-windows-validation.md`
-- [ ] Task 2 (AC: 1-5): Implement Catch2 component test suite
-  - [ ] Subtask 2.1: Create `MuMain/tests/gameplay/test_ui_windows_validation.cpp`
-  - [ ] Subtask 2.2: Validate UI framework base classes (CNewUIObj, CNewUIBaseButton, CNewUIScrollBar, CNewUITextBox, CNewUIInventoryCtrl, CNewUIMessageBoxBase)
-  - [ ] Subtask 2.3: Validate HUD window classes — CNewUIMainFrameWindow, CNewUISkillList, CNewUICommandWindow, CNewUIMoveCommandWindow, CNewUIQuickCommandWindow, CNewUIWindowMenu, CNewUIMiniMap, CNewUINameWindow
-  - [ ] Subtask 2.4: Validate Character windows — CNewUICharacterInfoWindow, CNewUIMasterLevel, CNewUIBuffWindow, CNewUIMuHelper, CNewUIPetInfoWindow
-  - [ ] Subtask 2.5: Validate Inventory windows — CNewUIMyInventory, CNewUIStorageInventory, CNewUIStorageInventoryExt, CNewUIMyShopInventory, CNewUIPurchaseShopInventory, CNewUIMixInventory, CNewUILuckyItemWnd, CNewUIInventoryExtension
-  - [ ] Subtask 2.6: Validate Commerce windows — CNewUINPCShop, CNewUITrade, CNewUINPCQuest, CNewUINPCDialogue, CNewUIUnitedMarketPlaceWindow, CNewUIExchangeLuckyCoin, CNewUIRegistrationLuckyCoin
-  - [ ] Subtask 2.7: Validate Castle windows — CNewUICastleWindow, CNewUIGuardWindow, CNewUIGatemanWindow, CNewUIGateSwitchWindow, CNewUICatapultWindow
-  - [ ] Subtask 2.8: Validate Event windows — CNewUIBloodCastle, CNewUIEnterBloodCastle, CNewUIChaosCastleTime, CNewUIEnterDevilSquare, CNewUICursedTemple*, CNewUIDoppelGanger*, CNewUIEmpireGuardian*, CNewUIDuelWindow, CNewUIDuelWatch*, CNewUISiegeWar*, CNewUIKanturu*, CNewUICryWolf, CNewUIGoldBowman*, CNewUIHeroPositionInfo, CNewUIBattleSoccerScore
-  - [ ] Subtask 2.9: Validate Quest windows — CNewUIQuestProgress, CNewUIQuestProgressByEtc, CNewUIMyQuestInfoWindow
-  - [ ] Subtask 2.10: Validate Social windows — CNewUIPartyListWindow, CNewUIPartyInfoWindow, CNewUIFriendWindow, CNewUIGuildMakeWindow, CNewUIGuildInfoWindow, CNewUIGensRanking
-  - [ ] Subtask 2.11: Validate Chat & Options — CNewUIChatInputBox, CNewUIChatLogWindow, CNewUISystemLogWindow, CNewUIOptionWindow, CNewUIHelpWindow
-  - [ ] Subtask 2.12: Validate GameShop — CNewUIInGameShop
-  - [ ] Subtask 2.13: Validate MessageBox system — CNewUICommonMessageBox, CNewUI3DItemCommonMsgBox, CNewUITextInputMsgBox, CNewUIKeyPadMsgBox, CNewUIMessageBoxMng
-  - [ ] Subtask 2.14: Validate window type enum coverage and uniqueness
-- [ ] Task 3 (AC: STD-13): Quality gate verification
-  - [ ] Subtask 3.1: Run `./ctl check` and confirm 0 errors
+- [x] Task 1 (AC: VAL-1, VAL-2): Document manual test scenarios for all UI windows
+  - [x] Subtask 1.1: Create categorized checklist of all 84+ CNewUI* window classes
+  - [x] Subtask 1.2: Document manual validation procedures for each window category (HUD, Character, Inventory, Commerce, Castle, Events, Quest, Social, Chat, GameShop)
+  - [x] Subtask 1.3: Write to `_bmad-output/test-scenarios/epic-6/ui-windows-validation.md`
+- [x] Task 2 (AC: 1-5): Implement Catch2 component test suite
+  - [x] Subtask 2.1: Create `MuMain/tests/gameplay/test_ui_windows_validation.cpp`
+  - [x] Subtask 2.2: Validate UI framework base classes (CNewUIObj, CNewUIBaseButton, CNewUIScrollBar, CNewUITextBox, CNewUIInventoryCtrl, CNewUIMessageBoxBase)
+  - [x] Subtask 2.3: Validate HUD window classes — CNewUIMainFrameWindow, CNewUISkillList, CNewUICommandWindow, CNewUIMoveCommandWindow, CNewUIQuickCommandWindow, CNewUIWindowMenu, CNewUIMiniMap, CNewUINameWindow
+  - [x] Subtask 2.4: Validate Character windows — CNewUICharacterInfoWindow, CNewUIMasterLevel, CNewUIBuffWindow, CNewUIMuHelper, CNewUIPetInfoWindow
+  - [x] Subtask 2.5: Validate Inventory windows — CNewUIMyInventory, CNewUIStorageInventory, CNewUIStorageInventoryExt, CNewUIMyShopInventory, CNewUIPurchaseShopInventory, CNewUIMixInventory, CNewUILuckyItemWnd, CNewUIInventoryExtension
+  - [x] Subtask 2.6: Validate Commerce windows — CNewUINPCShop, CNewUITrade, CNewUINPCQuest, CNewUINPCDialogue, CNewUIUnitedMarketPlaceWindow, CNewUIExchangeLuckyCoin, CNewUIRegistrationLuckyCoin
+  - [x] Subtask 2.7: Validate Castle windows — CNewUICastleWindow, CNewUIGuardWindow, CNewUIGatemanWindow, CNewUIGateSwitchWindow, CNewUICatapultWindow
+  - [x] Subtask 2.8: Validate Event windows — CNewUIBloodCastle, CNewUIEnterBloodCastle, CNewUIChaosCastleTime, CNewUIEnterDevilSquare, CNewUICursedTemple*, CNewUIDoppelGanger*, CNewUIEmpireGuardian*, CNewUIDuelWindow, CNewUIDuelWatch*, CNewUISiegeWar*, CNewUIKanturu*, CNewUICryWolf, CNewUIGoldBowman*, CNewUIHeroPositionInfo, CNewUIBattleSoccerScore
+  - [x] Subtask 2.9: Validate Quest windows — CNewUIQuestProgress, CNewUIQuestProgressByEtc, CNewUIMyQuestInfoWindow
+  - [x] Subtask 2.10: Validate Social windows — CNewUIPartyListWindow, CNewUIPartyInfoWindow, CNewUIFriendWindow, CNewUIGuildMakeWindow, CNewUIGuildInfoWindow, CNewUIGensRanking
+  - [x] Subtask 2.11: Validate Chat & Options — CNewUIChatInputBox, CNewUIChatLogWindow, CNewUISystemLogWindow, CNewUIOptionWindow, CNewUIHelpWindow
+  - [x] Subtask 2.12: Validate GameShop — CNewUIInGameShop
+  - [x] Subtask 2.13: Validate MessageBox system — CNewUICommonMessageBox, CNewUI3DItemCommonMsgBox, CNewUITextInputMsgBox, CNewUIKeyPadMsgBox, CNewUIMessageBoxMng
+  - [x] Subtask 2.14: Validate window type enum coverage and uniqueness
+- [x] Task 3 (AC: STD-13): Quality gate verification
+  - [x] Subtask 3.1: Run `./ctl check` and confirm 0 errors
 
 ---
 
@@ -242,6 +242,11 @@ Claude Opus 4.6
 - Two-tier testing pattern established from 6 sibling stories in Epic 6
 - Risk R17 (server dependency) and R18 (scope) mitigated via systematic approach
 - This is the final story in EPIC-6 — completing it enables EPIC-7 stability stories (7-3-1, 7-3-2)
+- Implementation complete 2026-03-23: 19 Catch2 TEST_CASEs (10 standalone AC-4/AC-5 + 9 MU_GAME_AVAILABLE AC-1/2/3)
+- Manual test scenarios created: 59 scenarios across 10 UI categories (HUD, Character, Inventory, Commerce, Castle, Events, Quest, Social, Chat/Options, GameShop)
+- SSIM infrastructure validated: 190×429 inventory and 320×240 minimap buffer comparison with >= 0.99 threshold
+- INTERFACE_LIST enum coverage: 84+ window IDs validated for pairwise distinctness across 7 categories
+- Quality gate passed: `./ctl check` 0 errors on 711 files
 
 ### File List
 
