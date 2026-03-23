@@ -1,6 +1,6 @@
 # Sprint Health Audit — 2026-03-23
 
-**Generated:** 2026-03-23
+**Generated:** 2026-03-23T20:00:15Z (second run — post EPIC-6 completion)
 **Sprint:** Sprint 6
 **Scope:** active (in-progress + review)
 **Epic filter:** none
@@ -55,16 +55,16 @@ Scope filter `active` (status = in-progress or review) applied to sprint-6 stori
 
 Sprint-6 story status at time of audit:
 
-| Story | development_status | .paw state status | Notes |
-|-------|-------------------|-------------------|-------|
-| 5-3-1-audio-format-validation | done | completed @ code-review-finalize | ✓ Clean |
-| 6-1-1-auth-character-validation | done | completed @ code-review-finalize | ✓ Clean |
-| 6-1-2-world-navigation-validation | done | completed @ code-review-finalize | ✓ Clean |
-| 6-2-1-combat-system-validation | done | completed @ code-review-finalize | ✓ Clean |
-| 6-2-2-inventory-trading-validation | done | completed @ code-review-finalize | ✓ Clean |
-| 6-3-1-social-systems-validation | done | **failed** @ dev-story (stale) | ⚠ See Note A |
-| 6-3-2-advanced-systems-validation | done | completed @ code-review-finalize | ✓ Clean |
-| 6-4-1-ui-windows-validation | done | completed @ code-review-finalize | ✓ Clean |
+| Story | development_status | .paw state | last_run | Notes |
+|-------|-------------------|------------|----------|-------|
+| 5-3-1-audio-format-validation | done | completed @ code-review-finalize | 2026-03-20T23:26:39Z | ✓ Clean |
+| 6-1-1-auth-character-validation | done | completed @ code-review-finalize | 2026-03-21T00:51:30Z | ✓ Clean |
+| 6-1-2-world-navigation-validation | done | completed @ code-review-finalize | 2026-03-21T02:55:04Z | ✓ Clean |
+| 6-2-1-combat-system-validation | done | completed @ code-review-finalize | 2026-03-21T06:43:56Z | ✓ Clean |
+| 6-2-2-inventory-trading-validation | done | completed @ code-review-finalize | 2026-03-21T08:22:02Z | ✓ Clean |
+| 6-3-1-social-systems-validation | done | **failed** @ dev-story (stale) | 2026-03-21T10:12:16Z | ⚠ See Note A |
+| 6-3-2-advanced-systems-validation | done | completed @ code-review-finalize | 2026-03-23T10:41:46Z | ✓ Clean |
+| 6-4-1-ui-windows-validation | done | completed @ code-review-finalize | 2026-03-23T12:29:52Z | ✓ Clean |
 
 ---
 
@@ -102,7 +102,11 @@ active → completing (auto, when all stories done)
          → retrospective-done (sprint-retrospective workflow)
 ```
 
-**Recommended next action:** Run `sprint-complete` to close Sprint 6, record velocity, and unlock Sprint 7 planning.
+**Recommended next action:** Run `sprint-complete` to close Sprint 6, record velocity (planned: 26 pts), and unlock Sprint 7 planning.
+
+Sprint 7 unblocked stories (ready to plan):
+- `7-3-1-macos-stability-session` (5 pts) — deps: EPIC-2-6 all done ✓
+- `7-3-2-linux-stability-session` (5 pts) — deps: EPIC-2-6 all done ✓
 
 ---
 
