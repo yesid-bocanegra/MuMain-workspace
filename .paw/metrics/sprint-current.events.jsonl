@@ -28,3 +28,5 @@
 {"timestamp":"2026-03-24T23:23:46.872731+00:00","event_type":"story_completed","story_key":"7-3-0","step":null,"sprint":null,"epic":"7","data":{"total_steps":12,"total_retries":0,"total_regressions":0,"duration_seconds":6322.1}}
 {"timestamp":"2026-03-24T23:50:26.637243+00:00","event_type":"story_started","story_key":"7-5-1","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-24T23:50:26.638272+00:00","event_type":"step_started","story_key":"7-5-1","step":"create-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-24T23:51:36.633197+00:00","event_type":"step_passed","story_key":"7-5-1","step":"create-story","sprint":null,"epic":"7","data":{"duration_seconds":70.0,"input_tokens":36,"output_tokens":1405,"cache_creation_tokens":187229,"cache_read_tokens":839474,"num_turns":16,"num_tool_calls":8}}
+{"timestamp":"2026-03-24T23:51:37.639376+00:00","event_type":"step_started","story_key":"7-5-1","step":"validate-story","sprint":null,"epic":"7","data":{}}
