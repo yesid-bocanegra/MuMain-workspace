@@ -1,6 +1,6 @@
 # Implementation Artifacts Index
 
-*Auto-generated 2026-03-24 by `reorganize-docs` workflow*
+*Auto-generated 2026-03-24 18:23 by `paw index`*
 
 ## Operational (living files) (2)
 
@@ -25,7 +25,3 @@
 - [sprint-5-completion.md](sprint-5-completion.md)
 - [sprint-5-metrics-2026-03-20.html](sprint-5-metrics-2026-03-20.html)
 - [sprint-5-metrics-2026-03-20.md](sprint-5-metrics-2026-03-20.md)
-
----
-
-> All story artifacts reorganized to `stories/{{story_key}}/` on 2026-03-24.

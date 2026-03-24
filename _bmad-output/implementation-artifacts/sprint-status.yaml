@@ -188,7 +188,7 @@ sprints:
 
   sprint-7:
     name: "Sprint 7"
-    status: planned
+    status: active
     milestones: [M1, M5]
     start_date: "2026-03-24"
     end_date: "2026-04-07"
