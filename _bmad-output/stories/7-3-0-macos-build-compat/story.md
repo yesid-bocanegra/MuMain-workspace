@@ -180,3 +180,11 @@ claude-opus-4-6
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-03-24 | Implementation complete — all 7 tasks done, 9 ATDD tests pass, quality gate passes | claude-opus-4-6 |
+
+---
+
+## Related Work
+
+**Scope discovery from this story:**
+- 7-5-1-macos-build-quality-gate: Fix Remaining macOS Build Failures and Remove Quality Gate Bypass — created 2026-03-24
+  See: `_bmad-output/findings/finding-2026-03-24-macos-build-remaining-failures.md`
