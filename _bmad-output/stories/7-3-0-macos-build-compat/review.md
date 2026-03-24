@@ -71,14 +71,14 @@ No fix iterations needed — quality gate passed on first run.
 
 ### Severity Summary
 
-| Severity | Count |
-|----------|-------|
-| BLOCKER | 0 |
-| CRITICAL | 0 |
-| HIGH | 0 |
-| MEDIUM | 2 |
-| LOW | 4 |
-| **Total** | **6** |
+| Severity | Count | Status |
+|----------|-------|--------|
+| BLOCKER | 0 | — |
+| CRITICAL | 0 | — |
+| HIGH | 0 | — |
+| MEDIUM | 2 | 2 resolved ✅ |
+| LOW | 4 | 2 resolved ✅, 2 accepted |
+| **Total** | **6** | **4 resolved, 2 accepted** |
 
 ### Findings
 
@@ -87,32 +87,32 @@ No fix iterations needed — quality gate passed on first run.
 - **Category:** CODE-QUALITY
 - **File:** `src/source/Platform/PlatformCompat.h:180-183`
 - **Description:** The UTF-8 decoder loop `for (int i = 1; i < seqLen; ++i) { ch = (ch << 6) | (src[i] & 0x3F); }` does not verify that continuation bytes match the `10xxxxxx` pattern (`(src[i] & 0xC0) == 0x80`). Invalid sequences like `0xC2 0x41` (2-byte lead byte followed by ASCII 'A') are silently accepted and decoded into garbage codepoints instead of being rejected or replaced. The real Win32 `MultiByteToWideChar` rejects these with `ERROR_NO_UNICODE_TRANSLATION`. Current call sites pass ASCII-only texture filenames, so practical impact is nil.
-- **Fix:** Add `if ((src[i] & 0xC0) != 0x80) { break; }` guard in continuation byte loop. Defer to future story if desired.
-- **Status:** pending
+- **Fix:** Add `if ((src[i] & 0xC0) != 0x80) { break; }` guard in continuation byte loop. ✅ FIXED
+- **Status:** resolved
 
 #### MEDIUM-2: MultiByteToWideChar accepts overlong UTF-8 sequences
 
 - **Category:** CODE-QUALITY / SECURITY
 - **File:** `src/source/Platform/PlatformCompat.h:151-170`
 - **Description:** The decoder accepts overlong sequences such as `0xC0 0x80` (2-byte encoding of U+0000) and `0xC0 0xAF` (2-byte encoding of `/`). RFC 3629 prohibits overlong sequences — they are a known security vector for directory traversal attacks (encoding `/` or `\` in multi-byte form to bypass path validation). The real Win32 `MultiByteToWideChar` rejects these. Practical risk is low because call sites use this for texture filenames from trusted game asset files, not user input.
-- **Fix:** After decoding, validate that the codepoint requires the number of bytes used (e.g., 2-byte sequences must produce U+0080..U+07FF). Defer to future story if desired.
-- **Status:** pending
+- **Fix:** After decoding, validate that the codepoint requires the number of bytes used (e.g., 2-byte sequences must produce U+0080..U+07FF). ✅ FIXED
+- **Status:** resolved
 
 #### LOW-1: Stale `<codecvt>` include in GlobalBitmap.cpp
 
 - **Category:** CODE-QUALITY
 - **File:** `src/source/Data/GlobalBitmap.cpp:20`
 - **Description:** The `#include <codecvt>` remains after the `std::wstring_convert` usage was replaced by `mu_wchar_to_utf8()` in the `NarrowPath` function (AC-5). This header is deprecated in C++17 and may trigger deprecation warnings on some compilers. Dead include.
-- **Fix:** Remove `#include <codecvt>` from GlobalBitmap.cpp.
-- **Status:** pending
+- **Fix:** Remove `#include <codecvt>` from GlobalBitmap.cpp. ✅ FIXED
+- **Status:** resolved
 
 #### LOW-2: Stale `<codecvt>` and `<locale>` includes in LoadData.cpp
 
 - **Category:** CODE-QUALITY
 - **File:** `src/source/Data/LoadData.cpp:7-8`
 - **Description:** `#include <codecvt>` and `#include <locale>` remain in LoadData.cpp but are unused — no `std::wstring_convert` or locale-dependent code exists in this file. These are pre-existing dead includes but were not cleaned up when the `shlwapi.h` include was removed (AC-7). Deprecated header in C++17.
-- **Fix:** Remove both dead includes from LoadData.cpp.
-- **Status:** pending
+- **Fix:** Remove both dead includes from LoadData.cpp. ✅ FIXED
+- **Status:** resolved
 
 #### LOW-3: `_wsplitpath` stub uses unbounded `wcscpy` for filename and extension
 

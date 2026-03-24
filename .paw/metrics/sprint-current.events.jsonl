@@ -15,3 +15,5 @@
 {"timestamp":"2026-03-24T22:48:35.922110+00:00","event_type":"step_started","story_key":"7-3-0","step":"code-review","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-24T22:56:30.477687+00:00","event_type":"step_passed","story_key":"7-3-0","step":"code-review","sprint":null,"epic":"7","data":{"duration_seconds":474.6,"input_tokens":86,"output_tokens":11328,"cache_creation_tokens":419418,"cache_read_tokens":3973889,"num_turns":56,"num_tool_calls":32}}
 {"timestamp":"2026-03-24T22:56:31.481296+00:00","event_type":"step_started","story_key":"7-3-0","step":"code-review-qg","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-24T23:05:23.483886+00:00","event_type":"step_passed","story_key":"7-3-0","step":"code-review-qg","sprint":null,"epic":"7","data":{"duration_seconds":532.0,"input_tokens":15208,"output_tokens":2206,"cache_creation_tokens":305090,"cache_read_tokens":1106497,"num_turns":20,"num_tool_calls":11}}
+{"timestamp":"2026-03-24T23:05:24.490006+00:00","event_type":"step_started","story_key":"7-3-0","step":"code-review-analysis","sprint":null,"epic":"7","data":{}}
