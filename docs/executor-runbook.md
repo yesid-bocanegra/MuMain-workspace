@@ -212,6 +212,31 @@ Calculates rolling velocity, proposes story additions/removals, requires your co
 
 ---
 
+### 4.5. Mid-Sprint: Convert a Discovery into a Story
+
+Use when a session (story implementation, code review, or audit) surfaces a finding that needs to become a sprint story:
+
+```
+/bmad:pcc:workflows:scope-discover
+```
+
+**Purpose:** Convert a discovery artifact (RCA, finding, or gap analysis produced during a session) into a sprint-ready story with epic placement and sprint injection. Bridges the gap between "we found something" and "it's in the sprint."
+
+**When to use:**
+- After `pcc-scope-handling` or `pcc-document-first` skills surface a finding needing a story
+- When a story session produces a discovery document (RCA, build-rca.md, scope-discovery.md)
+- Known fix/gap with enough definition to implement immediately — not a spike
+- Out-of-scope work found during code review or audit needs sprint placement
+
+**Key inputs:**
+- `source_artifact` — path to discovery document (optional — agent prompts if missing)
+- `source_story` — story key where discovery was made (optional — used for back-linking)
+- `urgency` — `this-sprint` | `next-sprint` | `backlog` (default: `this-sprint`)
+
+**Confirmation gates:** Classification (Step 3), epic placement (Step 5), sprint injection (Step 7)
+
+---
+
 ### 5. Mid-Sprint: Things Are Broken
 
 ```bash
@@ -286,6 +311,56 @@ If FAIL → check the report, fix, re-run.
 ```
 
 Captures cross-story lessons to persistent memory. Required before moving to the next epic.
+
+---
+
+## Pencil UI Design
+
+Pencil `.pen` screens are the authoritative design specification. Design always precedes implementation. See `_bmad/pcc/docs/guides/pencil-design-first.md` for the full end-to-end guide.
+
+### One-Time Setup (before first screen)
+
+```
+/bmad:pcc:workflows:design-system-init
+```
+
+Establishes design tokens, component catalog, and framework mapping in the `.pen` file. Must run before `design-screen` on any project.
+
+---
+
+### Recover Missing or Stale Screens
+
+Use when screens were never designed, are poor quality, or artifacts are missing:
+
+```
+/bmad:pcc:workflows:pen-ui-recovery
+```
+
+Runs three passes:
+- **Pass 1** (autonomous, ~2 min): classifies every frontend story in the sprint as NEEDS_DESIGN / NEEDS_EXPORT / NEEDS_REVIEW / NEEDS_VALIDATION / UNIMPLEMENTED
+- **Pass 2** (interactive, Pencil editor must be open): designs missing screens, exports PNGs, quality-gates each screen with APPROVED / NEEDS_REVISION / REDESIGN
+- **Pass 3** (autonomous): validates implementations against `requirements.md` (functional gate) and design PNGs (visual diff)
+
+Targeted options:
+
+```bash
+# Audit only (no MCP needed)
+pass: "1"
+
+# One epic
+epic_filter: "3"
+
+# One story
+story_filter: "2-3-4-my-story"
+```
+
+After recovery, commit all new artifacts:
+
+```bash
+git add docs/spec-screenshots/ docs/stories/*/requirements.md \
+        docs/implementation-artifacts/epic-*-view-inventory.md \
+        docs/implementation-artifacts/*-pen-sidecar.json
+```
 
 ---
 
