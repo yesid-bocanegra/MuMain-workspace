@@ -14,7 +14,7 @@
 |------|--------|------|
 | 1. Quality Gate | PASSED (re-validated) | 2026-03-24 |
 | 2. Code Review Analysis | COMPLETE | 2026-03-24 |
-| 3. Code Review Finalize | pending | — |
+| 3. Code Review Finalize | COMPLETE | 2026-03-24 |
 
 ---
 
@@ -163,7 +163,36 @@ No fix iterations needed — quality gate passed on first run.
 
 ## Step 3: Resolution
 
-**Status:** pending
+**Completed:** 2026-03-24
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 4 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **MEDIUM-1:** fixed — Added continuation byte validation in MultiByteToWideChar UTF-8 decoder
+- **MEDIUM-2:** fixed — Added overlong sequence rejection in MultiByteToWideChar UTF-8 decoder
+- **LOW-1:** fixed — Removed stale `<codecvt>` include from GlobalBitmap.cpp
+- **LOW-2:** fixed — Removed stale `<codecvt>` and `<locale>` includes from LoadData.cpp
+- **LOW-3:** accepted — Matches Win32 `_wsplitpath` unbounded API contract (inherited risk)
+- **LOW-4:** accepted — Test coverage sufficient for current code structure; low risk for infrastructure story
+
+### Story Status Update
+
+- **Previous Status:** ac-validation
+- **New Status:** done
+- **Story File Updated:** `_bmad-output/stories/7-3-0-macos-build-compat/story.md`
+- **ATDD Checklist Synchronized:** Yes
+
+### Files Modified
+
+- `_bmad-output/stories/7-3-0-macos-build-compat/review.md` — Updated with resolution details
+- `_bmad-output/stories/7-3-0-macos-build-compat/story.md` — Status updated to done
 
 ---
 

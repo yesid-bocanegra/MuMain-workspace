@@ -119,7 +119,7 @@ epics:
       - "7.2 Performance Instrumentation"
       - "7.3 Stability Sessions"
       - "7.4 Native CI"
-    completion_pct: 50  # 3 of 6 stories done (7-1-1, 7-1-2, 7-2-1)
+    completion_pct: 71  # 5 of 7 stories done (7-1-1, 7-1-2, 7-2-1, 7-3-0, 7-4-1)
 
 # =====================
 # FEATURES
@@ -272,9 +272,9 @@ features:
   "7.3":
     name: "Stability Sessions"
     epic: EPIC-7
-    stories: ["7-3-1", "7-3-2"]
-    points: 10
-    completion_pct: 0
+    stories: ["7-3-0", "7-3-1", "7-3-2"]
+    points: 13
+    completion_pct: 33  # 1 of 3 stories done (7-3-0)
   "7.4":
     name: "Native CI"
     epic: EPIC-7
@@ -805,6 +805,18 @@ stories:
     atdd_checklist: "_bmad-output/stories/7-2-1-frame-time-instrumentation/atdd.md"
     review_file: "_bmad-output/stories/7-2-1-frame-time-instrumentation/review.md"
 
+  7-3-0-macos-build-compat:
+    name: "macOS Native Build Compatibility Fixes"
+    epic: EPIC-7
+    feature: "7.3"
+    status: done
+    points: 3
+    value_stream: "VS-0"
+    flow_code: VS0-QUAL-BUILDCOMPAT-MACOS
+    story_file: "_bmad-output/stories/7-3-0-macos-build-compat/story.md"
+    atdd_checklist: "_bmad-output/stories/7-3-0-macos-build-compat/atdd.md"
+    review_file: "_bmad-output/stories/7-3-0-macos-build-compat/review.md"
+
   7-3-1-macos-stability-session:
     name: "macOS Stability Session"
     epic: EPIC-7
@@ -879,6 +891,9 @@ catalogs:
     - code: VS0-QUAL-FRAMETIMER
       story: 7-2-1-frame-time-instrumentation
       value_stream: VS-0
+    - code: VS0-QUAL-BUILDCOMPAT-MACOS
+      story: 7-3-0-macos-build-compat
+      value_stream: VS-0
     # VS-1: Core Experience — SDL3 Windowing & Input
     - code: VS1-SDL-WINDOW-CREATE
       story: 2-1-1-sdl3-window-event-loop
@@ -952,18 +967,18 @@ catalogs:
 statistics:
   total_epics: 7
   total_features: 24
-  total_stories: 45
-  total_points: 172
+  total_stories: 46
+  total_points: 175
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 30
+  total_flow_codes: 31
   total_test_scenarios: 13  # epic-1 (1 epic-level), epic-2 (5 story + 1 epic), epic-3 (2 story), epic-4 (1 story + 1 epic-level + 1 test-scenarios)
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 36           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5) + EPIC-7(7-1-1,7-1-2,7-2-1,7-4-1=4)
-  stories_backlog: 9         # EPIC-6(7) + EPIC-7-backlog(2)
-  completion_rate: 80.0      # 36/45 stories done
-  points_done: 139           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5(18)+EPIC-7-done(14)
-  points_remaining: 33       # EPIC-6(23)+EPIC-7-backlog(10)
-  points_completion_rate: 80.8  # 139/172
+  stories_done: 44           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5) + EPIC-6(7) + EPIC-7(7-1-1,7-1-2,7-2-1,7-3-0,7-4-1=5)
+  stories_backlog: 2         # EPIC-7-backlog(7-3-1,7-3-2)
+  completion_rate: 95.7      # 44/46 stories done
+  points_done: 165           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5(18)+EPIC-6(23)+EPIC-7-done(17)
+  points_remaining: 10       # EPIC-7-backlog(7-3-1:5+7-3-2:5)
+  points_completion_rate: 94.3  # 165/175
