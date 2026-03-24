@@ -1,6 +1,6 @@
 # Story 7.3.0: macOS Native Build Compatibility Fixes
 
-Status: ready-for-dev
+Status: atdd
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
