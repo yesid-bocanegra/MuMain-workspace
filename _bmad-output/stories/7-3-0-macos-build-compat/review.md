@@ -14,7 +14,7 @@
 |------|--------|------|
 | 1. Quality Gate | PASSED | 2026-03-24 |
 | 2. Code Review Analysis | COMPLETE | 2026-03-24 |
-| 3. Code Review Finalize | PASSED | 2026-03-24 |
+| 3. Code Review Finalize | pending | — |
 
 ---
 
@@ -75,67 +75,59 @@ No fix iterations needed — quality gate passed on first run.
 |----------|-------|
 | BLOCKER | 0 |
 | CRITICAL | 0 |
-| HIGH | 1 |
-| MEDIUM | 4 |
-| LOW | 2 |
-| **Total** | **7** |
+| HIGH | 0 |
+| MEDIUM | 2 |
+| LOW | 4 |
+| **Total** | **6** |
 
 ### Findings
 
-#### HIGH-1: MultiByteToWideChar/WideCharToMultiByte stubs use naive byte casting
+#### MEDIUM-1: MultiByteToWideChar does not validate UTF-8 continuation bytes
 
 - **Category:** CODE-QUALITY
-- **File:** `src/source/Platform/PlatformCompat.h:136-174`
-- **Description:** Story Dev Notes specify "Use mu_utf8_to_wchar()/mu_wchar_to_utf8() as underlying implementation." Actual code does naive `static_cast<wchar_t>(unsigned char)` and `wchar_t & 0xFF` truncation. Corrupts non-ASCII text. Current call sites are ASCII-only (texture file names in LoadData.cpp), so practical impact is limited.
-- **Fix:** Replace byte-by-byte loops with calls to `mu_utf8_to_wchar()` and `mu_wchar_to_utf8()`.
-- **Status:** fixed
+- **File:** `src/source/Platform/PlatformCompat.h:180-183`
+- **Description:** The UTF-8 decoder loop `for (int i = 1; i < seqLen; ++i) { ch = (ch << 6) | (src[i] & 0x3F); }` does not verify that continuation bytes match the `10xxxxxx` pattern (`(src[i] & 0xC0) == 0x80`). Invalid sequences like `0xC2 0x41` (2-byte lead byte followed by ASCII 'A') are silently accepted and decoded into garbage codepoints instead of being rejected or replaced. The real Win32 `MultiByteToWideChar` rejects these with `ERROR_NO_UNICODE_TRANSLATION`. Current call sites pass ASCII-only texture filenames, so practical impact is nil.
+- **Fix:** Add `if ((src[i] & 0xC0) != 0x80) { break; }` guard in continuation byte loop. Defer to future story if desired.
+- **Status:** pending
 
-#### MEDIUM-1: Query mode returns incorrect buffer size for multi-byte UTF-8
+#### MEDIUM-2: MultiByteToWideChar accepts overlong UTF-8 sequences
+
+- **Category:** CODE-QUALITY / SECURITY
+- **File:** `src/source/Platform/PlatformCompat.h:151-170`
+- **Description:** The decoder accepts overlong sequences such as `0xC0 0x80` (2-byte encoding of U+0000) and `0xC0 0xAF` (2-byte encoding of `/`). RFC 3629 prohibits overlong sequences — they are a known security vector for directory traversal attacks (encoding `/` or `\` in multi-byte form to bypass path validation). The real Win32 `MultiByteToWideChar` rejects these. Practical risk is low because call sites use this for texture filenames from trusted game asset files, not user input.
+- **Fix:** After decoding, validate that the codepoint requires the number of bytes used (e.g., 2-byte sequences must produce U+0080..U+07FF). Defer to future story if desired.
+- **Status:** pending
+
+#### LOW-1: Stale `<codecvt>` include in GlobalBitmap.cpp
 
 - **Category:** CODE-QUALITY
-- **File:** `src/source/Platform/PlatformCompat.h:148,163`
-- **Description:** Query mode (output size=0) returns `srcLen` which is wrong for multi-byte UTF-8. Resolves when HIGH-1 is fixed.
-- **Fix:** Use mu_* functions for proper size calculation.
-- **Status:** fixed (resolved by HIGH-1 fix)
+- **File:** `src/source/Data/GlobalBitmap.cpp:20`
+- **Description:** The `#include <codecvt>` remains after the `std::wstring_convert` usage was replaced by `mu_wchar_to_utf8()` in the `NarrowPath` function (AC-5). This header is deprecated in C++17 and may trigger deprecation warnings on some compilers. Dead include.
+- **Fix:** Remove `#include <codecvt>` from GlobalBitmap.cpp.
+- **Status:** pending
 
-#### MEDIUM-2: _wsplitpath stub has no buffer size parameters
+#### LOW-2: Stale `<codecvt>` and `<locale>` includes in LoadData.cpp
 
 - **Category:** CODE-QUALITY
-- **File:** `src/source/Platform/PlatformCompat.h:68-112`
-- **Description:** Matches Win32 API signature exactly (also unsized). Callers use `_MAX_*` sized buffers (256). Inherited risk from Win32 API design.
-- **Fix:** No action needed — matches Win32 behavior. Document caller requirements.
+- **File:** `src/source/Data/LoadData.cpp:7-8`
+- **Description:** `#include <codecvt>` and `#include <locale>` remain in LoadData.cpp but are unused — no `std::wstring_convert` or locale-dependent code exists in this file. These are pre-existing dead includes but were not cleaned up when the `shlwapi.h` include was removed (AC-7). Deprecated header in C++17.
+- **Fix:** Remove both dead includes from LoadData.cpp.
+- **Status:** pending
+
+#### LOW-3: `_wsplitpath` stub uses unbounded `wcscpy` for filename and extension
+
+- **Category:** CODE-QUALITY
+- **File:** `src/source/Platform/PlatformCompat.h:112,119`
+- **Description:** `wcscpy(ext, lastDot)` and `wcscpy(fname, nameStart)` write without bounds checking. Callers are expected to provide `_MAX_EXT` (256) and `_MAX_FNAME` (256) buffers. This matches the Win32 `_wsplitpath` API contract (which is also unbounded — the safe version is `_wsplitpath_s`). Inherited risk from Win32 API design.
+- **Fix:** No action needed — matches Win32 behavior. Same finding as prior review (accepted).
 - **Status:** accepted
 
-#### MEDIUM-3: SetCursorPos lost diagnostic logging
+#### LOW-4: AC-8 ATDD test only validates content before first `#ifdef _WIN32`
 
-- **Category:** CODE-QUALITY
-- **File:** `src/source/Platform/PlatformCompat.h:908-912`
-- **Description:** Error logging removed when SDL3 3.2.8 changed SDL_WarpMouseInWindow to void return. Diagnostic capability lost.
-- **Fix:** Cosmetic — defer to future story.
-- **Status:** accepted
-
-#### MEDIUM-4: Three new #ifdef _WIN32 guards in Data/ game logic files
-
-- **Category:** AC-TENSION
-- **File:** `src/source/Data/GlobalBitmap.cpp`, `src/source/Data/GameConfig.cpp`
-- **Description:** AC-STD-1 vs AC-5/AC-8 tension. AC-5/AC-8 are more specific and take precedence.
-- **Fix:** No action needed — documented exception.
-- **Status:** accepted
-
-#### LOW-1: _snwprintf/swprintf truncation return semantics differ
-
-- **Category:** CODE-QUALITY
-- **File:** `src/source/Platform/PlatformCompat.h:43`
-- **Description:** Minor behavioral difference in truncation return value. No impact on current call sites.
-- **Fix:** No action needed.
-- **Status:** accepted
-
-#### LOW-2: __forceinline uses GCC __attribute__ instead of C++ [[gnu::always_inline]]
-
-- **Category:** CODE-STYLE
-- **File:** `src/source/Platform/PlatformTypes.h:70`
-- **Description:** Legacy GCC syntax. Both work on GCC/Clang.
-- **Fix:** No action needed.
+- **Category:** TEST-COVERAGE
+- **File:** `tests/build/test_ac8_gameconfig_dpapi_guarded.cmake:32-40`
+- **Description:** The test extracts the "cross-platform section" as everything before the first `#ifdef _WIN32` occurrence and checks that no DPAPI identifiers appear there. However, if DPAPI code were accidentally placed after a `#endif` (in a subsequent cross-platform section), the test would not catch it. In the current code, `DecryptSetting` and `EncryptSetting` each have their own `#ifdef _WIN32`/`#else`/`#endif` blocks, so there are multiple cross-platform sections interspersed. The test works correctly for the current code structure but is fragile against future refactors that move DPAPI calls outside their guards.
+- **Fix:** Consider checking ALL non-guarded sections rather than just the first. Defer — low risk for infrastructure story.
 - **Status:** accepted
 
 ### AC Validation
@@ -143,17 +135,17 @@ No fix iterations needed — quality gate passed on first run.
 | AC | Status | Evidence |
 |----|--------|----------|
 | AC-1 | PARTIAL | 6 scoped files compile; 9 other TUs beyond scope fail |
-| AC-2 | PASS | `add_compile_definitions(MU_ENABLE_SDL3)` in CMakeLists.txt |
-| AC-3 | PASS | CONST and CP_UTF8 in PlatformTypes.h non-Win32 section |
-| AC-4 | PASS | _wcsicmp, _TRUNCATE, OutputDebugString stubs present |
-| AC-5 | PASS | NarrowPath uses mu_wchar_to_utf8 on non-Windows |
-| AC-6 | PASS | 0x812Fu and 0x2901u literals used |
+| AC-2 | PASS | `add_compile_definitions(MU_ENABLE_SDL3)` in CMakeLists.txt line 239 |
+| AC-3 | PASS | CONST (line 57) and CP_UTF8 (line 61) in PlatformTypes.h non-Win32 section |
+| AC-4 | PASS | _wcsicmp (line 40), _TRUNCATE (line 44), OutputDebugString (line 46), MultiByteToWideChar (line 137), WideCharToMultiByte (line 194) stubs present |
+| AC-5 | PASS | NarrowPath uses mu_wchar_to_utf8 on non-Windows (GlobalBitmap.cpp:99) |
+| AC-6 | PASS | 0x812Fu (line 666) and 0x2901u (line 667) literals used |
 | AC-7 | PASS | shlwapi.h removed from LoadData.cpp |
-| AC-8 | PASS | DPAPI guarded with #ifdef _WIN32, stubs return input unchanged |
+| AC-8 | PASS | DPAPI guarded with #ifdef _WIN32 (GameConfig.cpp:273,310), stubs return input unchanged (lines 301,325) |
 | AC-9 | PASS | ./ctl check passes (711/711 files) |
-| AC-STD-1 | PASS (with exception) | 3 #ifdef _WIN32 blocks in Data/ — required by AC-5/AC-8 |
+| AC-STD-1 | PASS (with exception) | 3 #ifdef _WIN32 blocks in Data/ — required by AC-5/AC-8, documented exception |
 | AC-STD-2 | PASS | No new Catch2 tests (CMake script tests used instead) |
-| AC-STD-11 | PASS | Flow code VS0-QUAL-BUILDCOMPAT-MACOS present |
+| AC-STD-11 | PASS | Flow code VS0-QUAL-BUILDCOMPAT-MACOS present in all test files and story |
 | AC-STD-13 | PASS | ./ctl check exits 0 |
 | AC-STD-15 | PASS | No incomplete rebase or force push |
 | AC-STD-20 | PASS | No API/event/flow catalog entries |
@@ -165,41 +157,16 @@ No fix iterations needed — quality gate passed on first run.
 - **RED (incomplete):** 0
 - **Coverage:** 100%
 - **Sync issues:** 0
-- **Phantom claims:** 0 (all 9 test files verified present)
+- **Phantom claims:** 0 (all 9 test files verified present with meaningful assertions)
 
 ---
 
 ## Step 3: Resolution
 
-**Completed:** 2026-03-24
-**Final Status:** done
+**Status:** pending
 
-### Summary
+---
 
-| Metric | Count |
-|--------|-------|
-| Issues Fixed | 1 |
-| Action Items Created | 0 |
+## Notes
 
-### Resolution Details
-
-- **HIGH-1:** fixed — Replaced naive byte casting with proper UTF-8 multi-byte sequence decoder in MultiByteToWideChar and delegation to mu_wchar_to_utf8 in WideCharToMultiByte
-- **MEDIUM-1:** fixed (resolved by HIGH-1 fix) — Query mode now returns correct buffer size
-- **MEDIUM-2:** accepted — Matches Win32 API signature (inherited risk)
-- **MEDIUM-3:** accepted — Cosmetic, deferred to future story
-- **MEDIUM-4:** accepted — AC-5/AC-8 take precedence over AC-STD-1
-- **LOW-1:** accepted — No impact on current call sites
-- **LOW-2:** accepted — Both GCC syntaxes work
-
-### Story Status Update
-
-- **Previous Status:** review
-- **New Status:** done
-- **Story File Updated:** `_bmad-output/stories/7-3-0-macos-build-compat/story.md`
-- **ATDD Checklist Synchronized:** Yes
-
-### Files Modified
-
-- `src/source/Platform/PlatformCompat.h` - Fixed HIGH-1: proper UTF-8 encoding in MultiByteToWideChar/WideCharToMultiByte stubs
-- `_bmad-output/stories/7-3-0-macos-build-compat/story.md` - Status updated to done
-- `_bmad-output/stories/7-3-0-macos-build-compat/review.md` - Pipeline trace updated
+This review supersedes the prior review cycle (same date). The previous HIGH-1 finding (naive byte casting in MultiByteToWideChar/WideCharToMultiByte) was fixed during the earlier review cycle. The current MEDIUM findings address remaining UTF-8 decoder strictness gaps that are low practical risk but worth documenting. The LOW findings are cleanup items (dead includes) and inherited API design limitations.
