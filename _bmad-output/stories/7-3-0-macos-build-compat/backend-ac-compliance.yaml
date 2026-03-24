@@ -1,0 +1,66 @@
+metadata:
+  story_key: "7-3-0"
+  status: "passed"
+  total_iterations: 0
+  last_updated: "2026-03-24"
+  mode: "fix"
+
+test_class:
+  type: "cmake-script"
+  test_dir: "MuMain/tests/build"
+  ctest_dir: "MuMain/build-test/tests"
+  ctest_filter: "7\\.3\\.0"
+  test_count: 9
+
+test_results:
+  total_tests: 9
+  passed: 9
+  failed: 0
+  ac_mapping:
+    - ac_id: "AC-2"
+      test_name: "7.3.0-AC-2:cmake-mu-enable-sdl3-project-scope"
+      status: "passed"
+    - ac_id: "AC-3"
+      test_name: "7.3.0-AC-3:platform-types-const-cp-utf8"
+      status: "passed"
+    - ac_id: "AC-4"
+      test_name: "7.3.0-AC-4:platform-compat-wcsicmp-stubs"
+      status: "passed"
+    - ac_id: "AC-5"
+      test_name: "7.3.0-AC-5:globalbitmaps-no-wstring-convert"
+      status: "passed"
+    - ac_id: "AC-6"
+      test_name: "7.3.0-AC-6:globalbitmaps-gl-literals"
+      status: "passed"
+    - ac_id: "AC-7"
+      test_name: "7.3.0-AC-7:loaddata-no-shlwapi"
+      status: "passed"
+    - ac_id: "AC-8"
+      test_name: "7.3.0-AC-8:gameconfig-dpapi-guarded"
+      status: "passed"
+    - ac_id: "AC-9"
+      test_name: "7.3.0-AC-9:mingw-no-regression"
+      status: "passed"
+    - ac_id: "AC-STD-11"
+      test_name: "7.3.0-AC-STD-11:flow-code-traceability"
+      status: "passed"
+  passing_tests:
+    - "7.3.0-AC-2:cmake-mu-enable-sdl3-project-scope"
+    - "7.3.0-AC-3:platform-types-const-cp-utf8"
+    - "7.3.0-AC-4:platform-compat-wcsicmp-stubs"
+    - "7.3.0-AC-5:globalbitmaps-no-wstring-convert"
+    - "7.3.0-AC-6:globalbitmaps-gl-literals"
+    - "7.3.0-AC-7:loaddata-no-shlwapi"
+    - "7.3.0-AC-8:gameconfig-dpapi-guarded"
+    - "7.3.0-AC-9:mingw-no-regression"
+    - "7.3.0-AC-STD-11:flow-code-traceability"
+  failing_tests: []
+
+iterations: []
+blockers: []
+next_actions: []
+
+notes: |
+  Tests are CMake script tests (cmake -P pattern) registered via CTest.
+  Run from: MuMain/build-test/tests directory with ctest -R "7\.3\.0"
+  Story was already in "done" status - all 9 tests passed on first run with 0 iterations.
