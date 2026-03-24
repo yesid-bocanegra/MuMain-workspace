@@ -4,7 +4,7 @@ milestones:
   M1:
     name: "Platform Foundation"
     contributing_epics: [EPIC-1, EPIC-7]
-    linked_sprints: [sprint-1, sprint-2, sprint-3, sprint-5]
+    linked_sprints: [sprint-1, sprint-2, sprint-3, sprint-5, sprint-7]
     status: active
     validated_at: null
     report: null
@@ -69,7 +69,7 @@ milestones:
   M5:
     name: "MVP Complete"
     contributing_epics: [EPIC-6, EPIC-7]
-    linked_sprints: [sprint-6]
+    linked_sprints: [sprint-6, sprint-7]
     status: active
     validated_at: null
     report: null

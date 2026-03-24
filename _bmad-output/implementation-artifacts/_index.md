@@ -1,6 +1,6 @@
 # Implementation Artifacts Index
 
-*Auto-generated 2026-03-23 15:27 by `paw index`*
+*Auto-generated 2026-03-24 by `reorganize-docs` workflow*
 
 ## Operational (living files) (2)
 
@@ -20,13 +20,6 @@
 - [sprint-health-audit-2026-03-23.md](sprint-health-audit-2026-03-23.md)
 - [sprint-remediation-2026-03-09.md](sprint-remediation-2026-03-09.md)
 
-## Story Artifacts (should be in stories/) (4)
-
-- [atdd-checklist-2-1-1.md](atdd-checklist-2-1-1.md)
-- [atdd-checklist-2-1-2-sdl3-window-focus-display.md](atdd-checklist-2-1-2-sdl3-window-focus-display.md)
-- [code-review-2-1-1.md](code-review-2-1-1.md)
-- [code-review-2-1-2-sdl3-window-focus-display.md](code-review-2-1-2-sdl3-window-focus-display.md)
-
 ## Other (3)
 
 - [sprint-5-completion.md](sprint-5-completion.md)
@@ -35,4 +28,4 @@
 
 ---
 
-> **4 story artifact(s)** still in flat layout. Run `reorganize-docs` to move them to `stories/{{story_key}}/`.
+> All story artifacts reorganized to `stories/{{story_key}}/` on 2026-03-24.

@@ -1,5 +1,5 @@
 # Sprint Status
-# generated: 2026-03-09
+# generated: 2026-03-24
 # project: MuMain-workspace
 # project_key: MUMAIN
 # tracking_system: file-system
@@ -186,29 +186,47 @@ sprints:
       added: []
       removed: []
 
+  sprint-7:
+    name: "Sprint 7"
+    status: planned
+    milestones: [M1, M5]
+    start_date: "2026-03-24"
+    end_date: "2026-04-07"
+    planned_points: 10
+    stories:
+      # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
+      - 7-3-1-macos-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓
+      - 7-3-2-linux-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓
+    velocity: null
+    delivered_points: null
+    commitment_reliability: null
+    scope_changes:
+      added: []
+      removed: []
+
 # =====================
 # FLOW METRICS (SAFe)
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 26         # Sprint 6: complete (26 pts delivered)
-    previous_sprint: 20        # Sprint 5: complete (20 pts delivered)
-    rolling_average: 27.0      # 6-sprint average: (18+28+22+48+20+26)/6
-    trend: stable              # Sprint 6 at 26 pts; consistent delivery pattern
-  flow_time_avg_hours: 42.3    # Sprint 6 avg: 42.3 hrs (sprint-start to done; tail inflated by sequential deps on 6-3-2/6-4-1)
-  flow_efficiency_pct: 19.0    # Sprint 6 est. 19% (consistent with Sprint 5 baseline)
+    current_sprint: 0          # Sprint 7: planned, not yet started
+    previous_sprint: 26        # Sprint 6: complete (26 pts delivered)
+    rolling_average: 27.0      # 6-sprint average: (18+28+22+48+20+26)/6 — Sprint 7 not yet complete
+    trend: stable              # Consistent delivery across all 6 completed sprints
+  flow_time_avg_hours: 42.3    # Sprint 6 avg: 42.3 hrs (retained; Sprint 7 not yet started)
+  flow_efficiency_pct: 19.0    # Sprint 6 est. 19% (retained; Sprint 7 not yet started)
   commitment_reliability_pct: 100.0  # 6/6 completed sprints at 100%
   wip_limits:
     in_progress: 2
     review: 3
   wip_violations: 0
-  flow_distribution:           # Sprint 6 planned distribution
-    Feature: 8      # 5-3-1 (audio) + 7 EPIC-6 gameplay validation stories (26 pts)
-    Enabler: 0
+  flow_distribution:           # Sprint 7 planned distribution
+    Feature: 0
+    Enabler: 2      # 7-3-1 + 7-3-2 (10 pts) — final stability validation stories
     Defect: 0
     Debt: 0
   flow_load:
-    total_wip: 0               # Sprint 6 — 6-3-2 done, 6-4-1 in backlog
+    total_wip: 0               # Sprint 7 not yet started
     by_status:
       in_progress: 0
       review: 0
@@ -231,80 +249,40 @@ critical_path:
   project_critical_path:
     sequence: "EPIC-1 → EPIC-2 → EPIC-4 → EPIC-6 → EPIC-7.3.1/7.3.2"
     total_points: 116          # 18+17+48+23+10 on critical path
-    completed_points: 83       # EPIC-1 (18) + EPIC-2 (17) + EPIC-4 (48)
-    remaining_points: 33       # EPIC-6 (23) + EPIC-7 stability (10)
+    completed_points: 106      # EPIC-1 (18) + EPIC-2 (17) + EPIC-4 (48) + EPIC-6 (23)
+    remaining_points: 10       # EPIC-7 stability sessions only (7-3-1 + 7-3-2)
     parallel_opportunities:
-      - "EPIC-5 nearly complete (15/18 pts done) — 5-3-1 (3 pts) in Sprint 6 closes M4"
-      - "EPIC-6 starts Sprint 6 (23 pts) — all deps satisfied (EPIC-2,3,4 done)"
-      - "7-3-1/7-3-2 (stability, 10 pts) → Sprint 7 after EPIC-6 completes"
+      - "7-3-1 and 7-3-2 can run in parallel — no dependency between them"
+      - "M2/M3/M4 eligible for milestone-validation now (all contributing epics done)"
 
-  sprint_6_critical_path:
-    # Track A: 5-3-1 (3) — independent, closes M4
-    # Track B (critical): 6-1-1 (3) → 6-1-2 (3) → 6-2-1 (3) → 6-3-2 (3) = 12 pts
-    # Track C: 6-1-1 → 6-2-2 (3) = 6 pts
-    # Track D: 6-1-1 → 6-3-1 (3) = 6 pts
-    # Track E: 6-1-1 → 6-4-1 (5) = 8 pts
-    longest_chain: "6-1-1 → 6-1-2 → 6-2-1 → 6-3-2 (12 pts, 4 stories)"
+  sprint_7_critical_path:
+    # Track A: 7-3-1 (5) — macOS stability, parallel with Track B
+    # Track B: 7-3-2 (5) — Linux stability, parallel with Track A
+    # Equal length chains — either is the critical path
+    longest_chain: "7-3-1-macos-stability-session (5 pts) [parallel with 7-3-2 — equal length]"
     parallel_chains:
-      - track_a: "5-3-1 (3)"
-        points: 3
-        note: "Audio format validation — deps satisfied, closes EPIC-5 and M4"
-      - track_b: "6-1-1 (3) → 6-1-2 (3) → 6-2-1 (3) → 6-3-2 (3)"
-        points: 12
-        note: "Critical path — auth through combat to advanced systems"
-      - track_c: "6-1-1 (3) → 6-2-2 (3)"
-        points: 6
-        note: "Inventory/trading — parallel after 6-1-1"
-      - track_d: "6-1-1 (3) → 6-3-1 (3)"
-        points: 6
-        note: "Social systems — parallel after 6-1-1"
-      - track_e: "6-1-1 (3) → 6-4-1 (5)"
-        points: 8
-        note: "UI windows validation — parallel after 6-1-1"
+      - track_a: "7-3-1-macos-stability-session (5)"
+        points: 5
+        note: "macOS 60-min stability session — all deps satisfied (EPIC-2–6 ✓)"
+      - track_b: "7-3-2-linux-stability-session (5)"
+        points: 5
+        note: "Linux 60-min stability session — all deps satisfied (EPIC-2–6 ✓)"
     stories_with_no_dependencies:
-      - 5-3-1-audio-format-validation    # deps: 5.2.1 ✓, 5.2.2 ✓
-      - 6-1-1-auth-character-validation  # deps: EPIC-2,3,4 ✓
-    stories_that_unblock_other_stories:
-      - story: 6-1-1-auth-character-validation
-        unblocks: "6-1-2, 6-2-2, 6-3-1, 6-4-1 (fan-out: 4)"
-      - story: 6-1-2-world-navigation-validation
-        unblocks: "6-2-1"
-      - story: 6-2-1-combat-system-validation
-        unblocks: "6-3-2"
+      - 7-3-1-macos-stability-session
+      - 7-3-2-linux-stability-session
+    stories_that_unblock_other_stories: []
 
-  blocking_dependencies:
-    - from: 6-1-1-auth-character-validation
-      to: 6-1-2-world-navigation-validation
-      type: sequential
-    - from: 6-1-1-auth-character-validation
-      to: 6-2-2-inventory-trading-validation
-      type: parallel_after_gate
-    - from: 6-1-1-auth-character-validation
-      to: 6-3-1-social-systems-validation
-      type: parallel_after_gate
-    - from: 6-1-1-auth-character-validation
-      to: 6-4-1-ui-windows-validation
-      type: parallel_after_gate
-    - from: 6-1-2-world-navigation-validation
-      to: 6-2-1-combat-system-validation
-      type: sequential
-    - from: 6-2-1-combat-system-validation
-      to: 6-3-2-advanced-systems-validation
-      type: sequential
+  blocking_dependencies: []
 
   risk_items:
-    - id: R17
-      description: "Gameplay validation requires live server connection — all EPIC-6 stories need a running MU Online server for testing"
-      affected_stories: [6-1-1-auth-character-validation, 6-1-2-world-navigation-validation, 6-2-1-combat-system-validation, 6-2-2-inventory-trading-validation, 6-3-1-social-systems-validation, 6-3-2-advanced-systems-validation, 6-4-1-ui-windows-validation]
-      mitigation: "Ensure test server is available before sprint start; document server setup in dev guide"
-    - id: R18
-      description: "84 UI windows validation scope — comprehensive testing may exceed 5pt estimate for 6-4-1"
-      affected_stories: [6-4-1-ui-windows-validation]
-      mitigation: "Prioritize critical windows (inventory, character, skills, chat, map); systematic checklist approach"
-    - id: R19
-      description: "Audio format validation PCM hash comparison may fail due to floating-point decode differences across platforms"
-      affected_stories: [5-3-1-audio-format-validation]
-      mitigation: "Use tolerance-based comparison or sample-level delta threshold instead of exact hash match"
+    - id: R20
+      description: "Stability sessions require a running MU Online server for a full 60-minute gameplay session on macOS and Linux"
+      affected_stories: [7-3-1-macos-stability-session, 7-3-2-linux-stability-session]
+      mitigation: "Ensure OpenMU server is running and accessible before session start; document server setup steps"
+    - id: R21
+      description: "60-minute sessions may surface latent memory leaks or crash bugs not caught in earlier validation sprints"
+      affected_stories: [7-3-1-macos-stability-session, 7-3-2-linux-stability-session]
+      mitigation: "Run sessions with memory profiler attached; monitor MuError.log in real-time; treat any crash as sprint blocker requiring hotfix before re-run"
 
 # =====================
 # SCHEMA ALIGNMENT
@@ -432,6 +410,10 @@ epic_completion_gates:
       - frame_timer_confirms_30plus_fps
       - native_ci_validates_all_platforms
     status: in-progress
+    epic_validation:
+      status: pending
+      validated_at: null
+      report: null
 
 # =====================
 # DEVELOPMENT STATUS
