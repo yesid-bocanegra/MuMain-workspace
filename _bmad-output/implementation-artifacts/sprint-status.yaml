@@ -192,16 +192,25 @@ sprints:
     milestones: [M1, M5]
     start_date: "2026-03-24"
     end_date: "2026-04-07"
-    planned_points: 10
+    planned_points: 13
     stories:
+      # EPIC-7 — Build compat fix (prerequisite for stability sessions)
+      - 7-3-0-macos-build-compat                 # 3 pts | Flow:E | Deps: EPIC-2–6 ✓ | scope-discovery from 7-3-1
       # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
-      - 7-3-1-macos-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓
+      - 7-3-1-macos-stability-session            # 5 pts | Flow:E | Deps: 7-3-0 ✓
       - 7-3-2-linux-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓
     velocity: null
     delivered_points: null
     commitment_reliability: null
     scope_changes:
-      added: []
+      added:
+        - date: "2026-03-24"
+          type: scope_addition
+          story: 7-3-0-macos-build-compat
+          reason: "Scope discovery: macOS arm64 build fails — 5 compat-gap root causes block 7-3-1 stability session"
+          source_artifact: "_bmad-output/stories/7-3-1-macos-stability-session/build-rca.md"
+          source_story: "7-3-1"
+          points_delta: +3
       removed: []
 
 # =====================
@@ -485,12 +494,13 @@ development_status:
   6-4-1-ui-windows-validation: done               # 5 pts | Flow:F | Deps: 6.1.1 | code-review-finalize completed 2026-03-23
   epic-6-retrospective: optional
 
-  # EPIC-7: Stability, Diagnostics & Quality Gates [VS-0] [Enabler] (24 pts)
+  # EPIC-7: Stability, Diagnostics & Quality Gates [VS-0] [Enabler] (27 pts)
   epic-7: in-progress
   7-1-1-crossplatform-error-reporting: done             # 3 pts | Flow:E | Deps: 1.2.1 | Sprint-2
   7-1-2-posix-signal-handlers: done               # 3 pts | Flow:E | Deps: 7.1.1 ✓ | Sprint-3
   7-2-1-frame-time-instrumentation: done           # 3 pts | Flow:E | No deps | Sprint-2
-  7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
+  7-3-0-macos-build-compat: ready-for-dev       # 3 pts | Flow:E | Scope-discovery from 7-3-1 | Sprint-7
+  7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: 7-3-0
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-4-1-native-ci-runners: done                   # 5 pts | Flow:E | Deps: EPIC-4 ✓ | code-review-finalize completed 2026-03-20
   epic-7-retrospective: optional
