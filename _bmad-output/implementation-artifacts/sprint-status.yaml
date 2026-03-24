@@ -218,7 +218,7 @@ sprints:
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 0          # Sprint 7: planned, not yet started
+    current_sprint: 3          # Sprint 7: 7-3-0 done (3 pts)
     previous_sprint: 26        # Sprint 6: complete (26 pts delivered)
     rolling_average: 27.0      # 6-sprint average: (18+28+22+48+20+26)/6 — Sprint 7 not yet complete
     trend: stable              # Consistent delivery across all 6 completed sprints
@@ -235,7 +235,7 @@ flow_metrics:
     Defect: 0
     Debt: 0
   flow_load:
-    total_wip: 0               # Sprint 7 not yet started
+    total_wip: 0               # Sprint 7: 7-3-0 done, no active WIP
     by_status:
       in_progress: 0
       review: 0
@@ -499,7 +499,7 @@ development_status:
   7-1-1-crossplatform-error-reporting: done             # 3 pts | Flow:E | Deps: 1.2.1 | Sprint-2
   7-1-2-posix-signal-handlers: done               # 3 pts | Flow:E | Deps: 7.1.1 ✓ | Sprint-3
   7-2-1-frame-time-instrumentation: done           # 3 pts | Flow:E | No deps | Sprint-2
-  7-3-0-macos-build-compat: ready-for-dev       # 3 pts | Flow:E | Scope-discovery from 7-3-1 | Sprint-7
+  7-3-0-macos-build-compat: done                  # 3 pts | Flow:E | Scope-discovery from 7-3-1 | Sprint-7 | code-review-finalize completed 2026-03-24
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: 7-3-0
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-4-1-native-ci-runners: done                   # 5 pts | Flow:E | Deps: EPIC-4 ✓ | code-review-finalize completed 2026-03-20
