@@ -66,7 +66,7 @@
 - [x] AC-STD-1: No new `#ifdef _WIN32` in game logic source files — all guards in `PlatformCompat.h`
 - [x] AC-STD-1: CMake conditionals (`if(NOT WIN32)`) used for file exclusion, not source code guards
 - [x] AC-STD-1: `PlatformCompat.h` is the only non-CMake location with platform `#ifdef` guards
-- [ ] AC-STD-15: All commits use conventional commits format with flow code `VS0-QUAL-BUILDCOMP-MACOS`
+- [x] AC-STD-15: All commits use conventional commits format with flow code `VS0-QUAL-BUILDCOMP-MACOS`
 
 ### PCC Compliance
 

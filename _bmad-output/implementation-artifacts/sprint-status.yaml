@@ -524,7 +524,7 @@ development_status:
   7-2-1-frame-time-instrumentation: done           # 3 pts | Flow:E | No deps | Sprint-2
   7-3-0-macos-build-compat: done                  # 3 pts | Flow:E | Scope-discovery from 7-3-1 | Sprint-7 | code-review-finalize completed 2026-03-24
   7-5-1-macos-build-quality-gate: done          # 5 pts | Flow:E | Scope-discovery post-7-3-0 | Sprint-7 | code-review-finalize completed 2026-03-24
-  7-6-1-macos-native-build-compilation: in-progress  # 5 pts | Flow:E | Deps: 7-5-1 ✓ | Sprint-7
+  7-6-1-macos-native-build-compilation: review  # 5 pts | Flow:E | Deps: 7-5-1 ✓ | Sprint-7
   7-6-2-win32-string-include-cleanup: ready-for-dev   # 5 pts | Flow:E | Deps: 7-6-1
   7-6-3-data-layer-win32-removal: ready-for-dev       # 5 pts | Flow:E | Deps: 7-6-1
   7-6-4-cpu-usage-cross-platform: ready-for-dev       # 3 pts | Flow:E | Deps: 7-6-1
