@@ -11,16 +11,16 @@
 
 | AC | Description | Test Method | Location | Status |
 |----|-------------|-------------|----------|--------|
-| AC-1 | `check-win32-guards.py` exits 0 | Script: `python3 MuMain/scripts/check-win32-guards.py` | CI / manual | `[ ]` |
-| AC-2 | Compiles without `windows.h`, `SYSTEM_INFO`, `FILETIME`, `GetSystemInfo()`, `GetProcessTimes()` | Build: `./ctl check` (compile step) | CI / manual | `[ ]` |
-| AC-3 | CPU core count uses `std::thread::hardware_concurrency()` | `TEST_CASE("AC-3: hardware_concurrency returns positive value")` | `tests/core/test_cpu_usage.cpp` | `[ ]` |
-| AC-4 | Per-process CPU utilisation via platform-specific APIs, returns [0.0, 1.0] | `TEST_CASE("AC-4: CPU usage measurement returns value in [0,1] range")` | `tests/core/test_cpu_usage.cpp` | `[ ]` |
-| AC-5 | If timing unavailable, return 0.0 and log via `g_ErrorReport.Write()` — no crash | `TEST_CASE("AC-5: CPU usage never returns negative value or crashes")` | `tests/core/test_cpu_usage.cpp` | `[ ]` |
-| AC-6 | `./ctl check` passes | Script: `./ctl check` | CI / manual | `[ ]` |
-| AC-STD-1 | Code standards: `std::chrono::steady_clock`, clang-format clean | `./ctl check` (format-check) | CI / manual | `[ ]` |
-| AC-STD-2 | Catch2 unit tests: core count > 0, CPU usage in [0.0, 1.0] | All 3 `TEST_CASE`s in `test_cpu_usage.cpp` | `tests/core/test_cpu_usage.cpp` | `[ ]` |
-| AC-STD-13 | `./ctl check` exits 0 | Script: `./ctl check` | CI / manual | `[ ]` |
-| AC-STD-15 | Git safety — no force push, no incomplete rebase | Manual verification | Git | `[ ]` |
+| AC-1 | `check-win32-guards.py` exits 0 | Script: `python3 MuMain/scripts/check-win32-guards.py` | CI / manual | `[x]` |
+| AC-2 | Compiles without `windows.h`, `SYSTEM_INFO`, `FILETIME`, `GetSystemInfo()`, `GetProcessTimes()` | Build: `./ctl check` (compile step) | CI / manual | `[x]` |
+| AC-3 | CPU core count uses `std::thread::hardware_concurrency()` | `TEST_CASE("AC-3: hardware_concurrency returns positive value")` | `tests/core/test_cpu_usage.cpp` | `[x]` |
+| AC-4 | Per-process CPU utilisation via platform-specific APIs, returns [0.0, 1.0] | `TEST_CASE("AC-4: CPU usage measurement returns value in [0,1] range")` | `tests/core/test_cpu_usage.cpp` | `[x]` |
+| AC-5 | If timing unavailable, return 0.0 and log via `g_ErrorReport.Write()` — no crash | `TEST_CASE("AC-5: CPU usage never returns negative value or crashes")` | `tests/core/test_cpu_usage.cpp` | `[x]` |
+| AC-6 | `./ctl check` passes | Script: `./ctl check` | CI / manual | `[x]` |
+| AC-STD-1 | Code standards: `std::chrono::steady_clock`, clang-format clean | `./ctl check` (format-check) | CI / manual | `[x]` |
+| AC-STD-2 | Catch2 unit tests: core count > 0, CPU usage in [0.0, 1.0] | All 3 `TEST_CASE`s in `test_cpu_usage.cpp` | `tests/core/test_cpu_usage.cpp` | `[x]` |
+| AC-STD-13 | `./ctl check` exits 0 | Script: `./ctl check` | CI / manual | `[x]` |
+| AC-STD-15 | Git safety — no force push, no incomplete rebase | Manual verification | Git | `[x]` |
 
 ---
 

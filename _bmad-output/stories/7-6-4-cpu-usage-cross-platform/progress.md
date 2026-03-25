@@ -1,16 +1,16 @@
 # Progress — Story 7.6.4: Cross-Platform CPU Usage Monitoring
 
 **Story Key:** `7-6-4-cpu-usage-cross-platform`
-**Status:** review
+**Status:** done
 **Started:** 2026-03-25
 **Last Updated:** 2026-03-25
-**Session Count:** 1
+**Session Count:** 2
 
 ---
 
 ## Quick Resume
 
-- **Next Action:** Proceed to code review quality gate
+- **Next Action:** Story complete — all tasks done, quality gate passed, code review resolved
 - **Active File:** N/A — implementation complete
 - **Blocker:** None
 
@@ -45,6 +45,18 @@
   - `MuMain/src/source/Core/CpuUsage.cpp` — rewrote with cross-platform implementation
 - **Quality Gate:** ./ctl check passes (build + format + lint)
 - **Win32 Guard Check:** check-win32-guards.py exits 0
+
+---
+
+### Session 2 — 2026-03-25
+- **Label:** Pipeline regression fix — verify and finalize
+- **Tasks Completed:** ATDD checklist AC-to-Test Mapping updated (10 items → `[x]`), review.md status corrected, progress file synced
+- **Files Modified:**
+  - `_bmad-output/stories/7-6-4-cpu-usage-cross-platform/atdd.md` — AC-to-Test mapping all marked `[x]`
+  - `_bmad-output/stories/7-6-4-cpu-usage-cross-platform/review.md` — top-level status corrected to ALL FINDINGS RESOLVED
+  - `_bmad-output/stories/7-6-4-cpu-usage-cross-platform/progress.md` — status synced to done
+- **Quality Gate:** ./ctl check passes (format + lint)
+- **Verification:** All implementation files verified correct (CpuUsage.cpp, CpuUsage.h, PlatformCompat.h, test_cpu_usage.cpp, Winmain.cpp)
 
 ---
 
