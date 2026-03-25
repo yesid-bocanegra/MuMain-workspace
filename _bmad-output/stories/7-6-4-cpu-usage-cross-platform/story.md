@@ -1,6 +1,6 @@
 # Story 7.6.4: Cross-Platform CPU Usage Monitoring
 
-Status: review
+Status: done
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "story_key": "7-6-4-cpu-usage-cross-platform",
-  "current_step": "code-review-qg",
-  "status": "completed",
-  "last_run": "2026-03-25T14:57:04.176174"
+  "current_step": "code-review-analysis",
+  "status": "failed",
+  "last_run": "2026-03-25T15:12:19.096545"
 }
