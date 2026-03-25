@@ -7,9 +7,49 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status | Date |
+|------|--------|------|
+| 1. Quality Gate | PASSED | 2026-03-25 |
+| 2. Code Review Analysis | FINDINGS DOCUMENTED | 2026-03-25 |
+| 3. Code Review Finalize | pending | — |
+
 ## Quality Gate
 
-**Status:** Pending — run by pipeline (CODE_REVIEW_QG step)
+**Status:** PASSED
+**Date:** 2026-03-25
+**Components:** 1 backend (mumain — cpp-cmake)
+
+### Quality Gate Progress
+
+| Phase | Status |
+|-------|--------|
+| Backend Local (lint) | PASSED |
+| Backend Local (build) | PASSED |
+| Backend Local (coverage) | PASSED (no coverage configured) |
+| Backend SonarCloud | N/A (not configured) |
+| Frontend Local | N/A (no frontend component) |
+| Frontend SonarCloud | N/A (no frontend component) |
+| Schema Alignment | N/A (no frontend component) |
+
+### Quality Gate Summary
+
+| Gate | Status | Iterations | Issues Fixed |
+|------|--------|------------|--------------|
+| Backend (1 component) | PASSED | 0 | 0 |
+| Frontend (0 components) | N/A | — | — |
+| **Overall** | **PASSED** | **0** | **0** |
+
+### Non-Deterministic Checks
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| SonarCloud | N/A | No SONAR_TOKEN / project keys configured |
+| Schema Alignment | N/A | No frontend component |
+| AC Compliance | N/A | Infrastructure story (C++ cross-platform migration) |
+| E2E Test Quality | N/A | No frontend/E2E tests |
+| App Startup | N/A | Game client binary (not a server) |
 
 ---
 
