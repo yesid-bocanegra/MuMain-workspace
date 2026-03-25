@@ -94,11 +94,12 @@ cmd_clean() {
 }
 
 cmd_check() {
-    log_info "Running mumain quality gate (build + format-check + lint)..."
-    cmake -S MuMain -B build -G Ninja \
-        -DCMAKE_BUILD_TYPE=Debug \
-        -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
-        -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
+    log_info "Running mumain quality gate (anti-pattern check + build + format-check + lint)..."
+    python3 MuMain/scripts/check-win32-guards.py \
+        && cmake -S MuMain -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
+            -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
         && cmake --build build -j$(nproc) \
         && make -C MuMain format-check \
         && make -C MuMain lint

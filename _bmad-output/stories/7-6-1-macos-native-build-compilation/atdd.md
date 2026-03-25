@@ -54,28 +54,28 @@
 
 ### Runtime / Quality Gate Verification
 
-- [ ] AC-1: `./ctl build` exits 0 with zero compiler errors (Homebrew Clang 22)
-- [ ] AC-2 (runtime): `grep "CMAKE_CXX_COMPILER:FILEPATH" build/CMakeCache.txt` shows `/opt/homebrew/opt/llvm/bin/clang++`
-- [ ] AC-STD-2 / AC-STD-13: `./ctl check` exits 0 (format-check + lint + native build)
-- [ ] AC-VAL-1: `cmake --build build 2>&1 | grep "^FAILED:"` returns empty
-- [ ] AC-VAL-2: `cmake --build build 2>&1 | grep "Build complete"` shows success
-- [ ] AC-VAL-3: `./ctl check` passes without format or lint errors
+- [x] AC-1: `./ctl build` exits 0 with zero compiler errors (Homebrew Clang 22)
+- [x] AC-2 (runtime): `grep "CMAKE_CXX_COMPILER:FILEPATH" build/CMakeCache.txt` shows `/opt/homebrew/opt/llvm/bin/clang++`
+- [x] AC-STD-2 / AC-STD-13: `./ctl check` exits 0 (format-check + lint + native build)
+- [x] AC-VAL-1: `cmake --build build 2>&1 | grep "^FAILED:"` returns empty
+- [x] AC-VAL-2: `cmake --build build 2>&1 | grep "Build complete"` shows success
+- [x] AC-VAL-3: `./ctl check` passes without format or lint errors
 
 ### Code Standards Compliance
 
-- [ ] AC-STD-1: No new `#ifdef _WIN32` in game logic source files — all guards in `PlatformCompat.h`
-- [ ] AC-STD-1: CMake conditionals (`if(NOT WIN32)`) used for file exclusion, not source code guards
-- [ ] AC-STD-1: `PlatformCompat.h` is the only non-CMake location with platform `#ifdef` guards
+- [x] AC-STD-1: No new `#ifdef _WIN32` in game logic source files — all guards in `PlatformCompat.h`
+- [x] AC-STD-1: CMake conditionals (`if(NOT WIN32)`) used for file exclusion, not source code guards
+- [x] AC-STD-1: `PlatformCompat.h` is the only non-CMake location with platform `#ifdef` guards
 - [ ] AC-STD-15: All commits use conventional commits format with flow code `VS0-QUAL-BUILDCOMP-MACOS`
 
 ### PCC Compliance
 
-- [ ] PCC: No prohibited libraries used (no new Win32 API headers in game logic)
-- [ ] PCC: Testing follows project Catch2 + CMake-script pattern (`tests/build/`)
-- [ ] PCC: All test files have `# Flow Code: VS0-QUAL-BUILDCOMP-MACOS` header comment
-- [ ] PCC: All test files follow RED/GREEN phase documentation pattern
-- [ ] PCC: CMakeLists.txt updated with all story 7.6.1 `add_test()` entries
-- [ ] PCC: No `ThirdParty/` source files formatted (excluded from format/lint enforcement)
+- [x] PCC: No prohibited libraries used (no new Win32 API headers in game logic)
+- [x] PCC: Testing follows project Catch2 + CMake-script pattern (`tests/build/`)
+- [x] PCC: All test files have `# Flow Code: VS0-QUAL-BUILDCOMP-MACOS` header comment
+- [x] PCC: All test files follow RED/GREEN phase documentation pattern
+- [x] PCC: CMakeLists.txt updated with all story 7.6.1 `add_test()` entries
+- [x] PCC: No `ThirdParty/` source files formatted (excluded from format/lint enforcement)
 
 ---
 

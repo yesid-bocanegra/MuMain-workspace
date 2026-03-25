@@ -243,12 +243,11 @@ _This file contains critical rules and patterns that AI agents must follow when 
 | `#ifdef _WIN32` wrapping call sites or function bodies | Any file outside `Platform/`, `ThirdParty/`, `Audio/DSwaveIO*` | Add type stub to `PlatformCompat.h` non-Windows section; or CMake-exclude the whole TU with `if(NOT WIN32)` |
 | `#ifdef _WIN32` added to game logic headers (networking, gameplay, UI) | Any `.h`/`.cpp` in game module directories | PlatformCompat.h stub for the missing type; the call site is NEVER touched |
 
-**Verification grep (must return empty after any cross-platform compilation fix):**
+**Verification script (must exit 0 after any cross-platform compilation fix):**
 ```bash
-grep -rn "#ifdef _WIN32" MuMain/src/source/ --include="*.cpp" --include="*.h" \
-  | grep -v "/Platform/" | grep -v "/ThirdParty/" | grep -v "Audio/DSwaveIO"
+python3 MuMain/scripts/check-win32-guards.py
 ```
-If this grep returns any matches: the fix was applied at the wrong location. Trace the undeclared identifier back to the header that defines it and add a stub there instead.
+This script detects `#ifdef _WIN32` blocks that wrap code (function calls, statements) without an `#else` branch, outside the allowed platform directories. If it reports violations: the fix was applied at the wrong location. Trace the undeclared identifier back to the header that defines it and add a stub to `PlatformCompat.h` instead. This script is also run as the first step of `./ctl check` — the quality gate fails immediately if violations exist.
 
 **Fix Decision Tree (when a macOS/Linux build error occurs in game logic):**
 1. Read the error: `error: unknown type name 'FOO'` or `error: use of undeclared identifier 'bar'`

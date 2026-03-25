@@ -238,6 +238,18 @@ N/A — Infrastructure story, no API/event/flow catalog entries.
 - `.pcc-config.yaml` — quality_gate rationale comment (M-1)
 - `_bmad-output/stories/7-5-1-macos-build-quality-gate/review.md` — resolution trace
 
+### Fix Iteration 2 (2026-03-25)
+
+**Trigger:** Quality gate lint failure — cppcheck cannot evaluate `__has_warning()` function-like macro in `#if` directives.
+
+| File | Issue | Fix |
+|------|-------|-----|
+| `MuMain/src/source/GameShop/MsgBoxIGSBuySelectItem.cpp:353` | `#if defined(__has_warning) && __has_warning(...)` causes cppcheck `syntaxError` | Replaced with `#ifdef __clang__` — simpler, cppcheck-compatible; Clang ignores unknown diagnostic pragmas |
+| `MuMain/src/source/Data/ZzzOpenData.cpp:105` | Same `__has_warning` pattern | Same fix: `#ifdef __clang__` |
+| Multiple files | clang-format violations from prior changes | Ran `make format` — 721 files formatted |
+
+**Quality Gate Re-run:** PASSED (721/721 files, 0 lint errors, 0 format violations)
+
 ---
 
 ## FRESH CODE REVIEW ANALYSIS CHECKPOINT
