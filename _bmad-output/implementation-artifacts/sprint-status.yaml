@@ -192,14 +192,15 @@ sprints:
     milestones: [M1, M5]
     start_date: "2026-03-24"
     end_date: "2026-04-07"
-    planned_points: 18
+    planned_points: 23
     stories:
       # EPIC-7 — Build compat fix (prerequisite for stability sessions)
       - 7-3-0-macos-build-compat                 # 3 pts | Flow:E | Deps: EPIC-2–6 ✓ | scope-discovery from 7-3-1
       # EPIC-7 — Remaining build failures + quality gate bypass removal (prerequisite for 7-3-1)
       - 7-5-1-macos-build-quality-gate           # 5 pts | Flow:E | Deps: 7-3-0 ✓ | scope-discovery post-7-3-0
       # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
-      - 7-3-1-macos-stability-session            # 5 pts | Flow:E | Deps: 7-5-1 ✓
+      - 7-6-1-macos-native-build-compilation      # 5 pts | Flow:E | Deps: 7-5-1 ✓ | scope-discovery post-7-5-1
+      - 7-3-1-macos-stability-session            # 5 pts | Flow:E | Deps: 7-6-1
       - 7-3-2-linux-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓
     velocity: null
     delivered_points: null
@@ -219,6 +220,12 @@ sprints:
           reason: "Scope discovery: 7-3-0 accepted without build verification due to skip_checks bypass — remaining TU failures and quality gate bypass must be fixed before 7-3-1"
           source_artifact: "_bmad-output/findings/finding-2026-03-24-macos-build-remaining-failures.md"
           source_story: "7-3-0"
+          points_delta: +5
+        - date: "2026-03-24"
+          type: scope_addition
+          story: 7-6-1-macos-native-build-compilation
+          reason: "Scope discovery: 7-5-1 resolved widespread type errors but 3 CMake targets still fail — remaining compilation gaps must be fixed before 7-3-1 stability session"
+          source_story: "7-5-1"
           points_delta: +5
       removed: []
 
@@ -510,7 +517,8 @@ development_status:
   7-2-1-frame-time-instrumentation: done           # 3 pts | Flow:E | No deps | Sprint-2
   7-3-0-macos-build-compat: done                  # 3 pts | Flow:E | Scope-discovery from 7-3-1 | Sprint-7 | code-review-finalize completed 2026-03-24
   7-5-1-macos-build-quality-gate: done          # 5 pts | Flow:E | Scope-discovery post-7-3-0 | Sprint-7 | code-review-finalize completed 2026-03-24
-  7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: 7-5-1
+  7-6-1-macos-native-build-compilation: in-progress  # 5 pts | Flow:E | Deps: 7-5-1 ✓ | Sprint-7
+  7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: 7-6-1
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-4-1-native-ci-runners: done                   # 5 pts | Flow:E | Deps: EPIC-4 ✓ | code-review-finalize completed 2026-03-20
   epic-7-retrospective: optional
