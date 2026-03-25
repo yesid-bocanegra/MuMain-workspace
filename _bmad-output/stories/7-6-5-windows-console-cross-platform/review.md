@@ -11,20 +11,28 @@
 
 | Step | Status | Date | Duration |
 |------|--------|------|----------|
-| 1. Quality Gate | **PASSED** | 2026-03-25 | Pre-run results confirm all checks passing |
-| 2. Code Review Analysis | **PENDING** | — | — |
+| 1. Quality Gate | **PASSED** | 2026-03-25 | Fresh validation — all checks green |
+| 2. Code Review Analysis | **COMPLETE** | 2026-03-25 | 6 findings (1 HIGH, 3 MEDIUM, 2 LOW) |
 | 3. Code Review Finalize | **PENDING** | — | — |
 
 ## Quality Gate
 
-**Status:** PASSED (pre-run)
+**Status:** PASSED
 **Component:** mumain (cpp-cmake)
+**Run:** 2026-03-25 (quality-gate workflow execution)
 
 | Check | Result | Details |
 |-------|--------|---------|
-| lint | **PASS** | 0 cppcheck violations |
+| format-check | **PASS** | clang-format — 0 violations |
+| lint (cppcheck) | **PASS** | 0 cppcheck violations |
 | build | **PASS** | Native macOS arm64 build clean |
 | coverage | **PASS** | No coverage threshold configured |
+| SonarCloud | **SKIPPED** | No SONAR_TOKEN configured |
+| Frontend | **N/A** | No frontend components |
+| Schema Alignment | **N/A** | No frontend for drift tracking |
+| AC Compliance | **SKIPPED** | Infrastructure story |
+| E2E Test Quality | **SKIPPED** | Infrastructure story |
+| App Startup | **SKIPPED** | Game client (no server binary) |
 
 ---
 
