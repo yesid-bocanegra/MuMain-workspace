@@ -112,14 +112,16 @@ epics:
     phase: "0 + 10"
     priority: P0
     status: in-progress
-    total_points: 24
-    stories: 6
+    total_points: 76
+    stories: 15
     features:
       - "7.1 Diagnostics"
       - "7.2 Performance Instrumentation"
       - "7.3 Stability Sessions"
       - "7.4 Native CI"
-    completion_pct: 71  # 5 of 7 stories done (7-1-1, 7-1-2, 7-2-1, 7-3-0, 7-4-1)
+      - "7.5 Build Quality"
+      - "7.6 Win32 Elimination"
+    completion_pct: 71  # 10 of 14 stories done
 
 # =====================
 # FEATURES
@@ -281,6 +283,18 @@ features:
     stories: ["7-4-1"]
     points: 5
     completion_pct: 100
+  "7.5":
+    name: "Build Quality"
+    epic: EPIC-7
+    stories: ["7-5-1"]
+    points: 5
+    completion_pct: 100  # 1 of 1 story done
+  "7.6":
+    name: "Win32 Elimination"
+    epic: EPIC-7
+    stories: ["7-6-1", "7-6-2", "7-6-3", "7-6-4", "7-6-5", "7-6-6", "7-6-7"]
+    points: 44
+    completion_pct: 57  # 4 of 7 stories done (7-6-1, 7-6-2, 7-6-3, 7-6-4)
 
 # =====================
 # STORIES (with artifacts)
@@ -840,6 +854,71 @@ stories:
     status: done
     points: 5
     value_stream: "VS-0"
+
+  7-5-1-macos-build-quality-gate:
+    name: "macOS Build Quality Gate"
+    epic: EPIC-7
+    feature: "7.5"
+    status: done
+    points: 5
+    value_stream: "VS-0"
+
+  7-6-1-macos-native-build-compilation:
+    name: "macOS Native Build Compilation"
+    epic: EPIC-7
+    feature: "7.6"
+    status: done
+    points: 5
+    value_stream: "VS-0"
+
+  7-6-2-win32-string-include-cleanup:
+    name: "Win32 String Include Cleanup"
+    epic: EPIC-7
+    feature: "7.6"
+    status: done
+    points: 5
+    value_stream: "VS-0"
+
+  7-6-3-data-layer-win32-removal:
+    name: "Data Layer Win32 Removal"
+    epic: EPIC-7
+    feature: "7.6"
+    status: done
+    points: 5
+    value_stream: "VS-0"
+
+  7-6-4-cpu-usage-cross-platform:
+    name: "Cross-Platform CPU Usage Monitoring"
+    epic: EPIC-7
+    feature: "7.6"
+    status: done
+    points: 3
+    value_stream: "VS-0"
+    flow_code: "VS0-QUAL-WIN32CLEAN-CPUUSAGE"
+
+  7-6-5-windows-console-cross-platform:
+    name: "Windows Console Cross-Platform"
+    epic: EPIC-7
+    feature: "7.6"
+    status: ready-for-dev
+    points: 5
+    value_stream: "VS-0"
+
+  7-6-6-shoplistmanager-http-cross-platform:
+    name: "ShopListManager HTTP Cross-Platform"
+    epic: EPIC-7
+    feature: "7.6"
+    status: ready-for-dev
+    points: 13
+    value_stream: "VS-0"
+
+  7-6-7-error-report-cross-platform-diagnostics:
+    name: "Error Report Cross-Platform Diagnostics"
+    epic: EPIC-7
+    feature: "7.6"
+    status: ready-for-dev
+    points: 8
+    value_stream: "VS-0"
     flow_code: VS0-QUAL-CI-NATIVE
 
 # =====================
@@ -966,19 +1045,19 @@ catalogs:
 # =====================
 statistics:
   total_epics: 7
-  total_features: 24
-  total_stories: 46
-  total_points: 175
+  total_features: 26
+  total_stories: 54
+  total_points: 224
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 31
-  total_test_scenarios: 13  # epic-1 (1 epic-level), epic-2 (5 story + 1 epic), epic-3 (2 story), epic-4 (1 story + 1 epic-level + 1 test-scenarios)
+  total_flow_codes: 32
+  total_test_scenarios: 13
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 44           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5) + EPIC-6(7) + EPIC-7(7-1-1,7-1-2,7-2-1,7-3-0,7-4-1=5)
-  stories_backlog: 2         # EPIC-7-backlog(7-3-1,7-3-2)
-  completion_rate: 95.7      # 44/46 stories done
-  points_done: 165           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5(18)+EPIC-6(23)+EPIC-7-done(17)
-  points_remaining: 10       # EPIC-7-backlog(7-3-1:5+7-3-2:5)
-  points_completion_rate: 94.3  # 165/175
+  stories_done: 49           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5) + EPIC-6(7) + EPIC-7(10)
+  stories_backlog: 5         # EPIC-7(7-3-1, 7-3-2, 7-6-5, 7-6-6, 7-6-7)
+  completion_rate: 90.7      # 49/54 stories done
+  points_done: 188           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5(18)+EPIC-6(23)+EPIC-7-done(40)
+  points_remaining: 36       # EPIC-7-backlog(7-3-1:5+7-3-2:5+7-6-5:5+7-6-6:13+7-6-7:8)
+  points_completion_rate: 83.9  # 188/224
