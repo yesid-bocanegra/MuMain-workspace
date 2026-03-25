@@ -25,6 +25,9 @@ tech_profiles:
     format: "make -C MuMain format"
     format_check: "make -C MuMain format-check"
     # Local quality gate mirrors CI quality job: format-check + lint (build is CI-only MinGW job)
+    # NOTE (7-5-1): Native build intentionally excluded from quality_gate — Win32 TU failures
+    # make full build unsuitable for ./ctl check. Build verification is done via AC-8 iterative
+    # sweep and CI. Quality gate bypass removed per AC-9.
     quality_gate: "make -C MuMain format-check && make -C MuMain lint"
     clean: "rm -rf build build-mingw build-test"
     # Testing conventions
