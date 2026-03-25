@@ -528,7 +528,7 @@ development_status:
   7-6-2-win32-string-include-cleanup: done               # 5 pts | Flow:E | Deps: 7-6-1 | code-review-finalize completed 2026-03-25
   7-6-3-data-layer-win32-removal: done                # 5 pts | Flow:E | Deps: 7-6-1 | code-review-finalize completed 2026-03-25
   7-6-4-cpu-usage-cross-platform: done                # 3 pts | Flow:E | Deps: 7-6-1 | code-review-finalize completed 2026-03-25
-  7-6-5-windows-console-cross-platform: ready-for-dev # 5 pts | Flow:E | Deps: 7-6-1
+  7-6-5-windows-console-cross-platform: review # 5 pts | Flow:E | Deps: 7-6-1
   7-6-6-shoplistmanager-http-cross-platform: ready-for-dev # 13 pts | Flow:E | Deps: 7-6-1
   7-6-7-error-report-cross-platform-diagnostics: ready-for-dev # 8 pts | Flow:E | Deps: 7-6-1, 7-1-2 ✓
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: 7-6-1 + all 7-6-* done

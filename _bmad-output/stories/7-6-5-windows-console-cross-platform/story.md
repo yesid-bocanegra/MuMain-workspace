@@ -1,6 +1,6 @@
 # Story 7.6.5: Cross-Platform Terminal / Console
 
-Status: atdd-complete
+Status: review
 
 ---
 
@@ -40,52 +40,52 @@ Status: atdd-complete
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1:** `python3 MuMain/scripts/check-win32-guards.py` exits 0 — no violations in `Core/WindowsConsole.cpp`.
-- [ ] **AC-2:** `Core/WindowsConsole.cpp` compiles without `AllocConsole`, `SetConsoleMode`, `GetStdHandle`, `SetConsoleTitle`, `GetConsoleScreenBufferInfo`, `FillConsoleOutputCharacter`, `SetConsoleTextAttribute`, `GetConsoleWindow`, `COORD`, `CONSOLE_SCREEN_BUFFER_INFO`, `SMALL_RECT`, `CHAR_INFO`, or any other Win32 console API — on any platform.
-- [ ] **AC-3:** Console initialisation on **all platforms** (including Windows) uses ANSI escape sequences. On Windows, `mu_console_init()` calls `SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT)` once to enable ANSI support (Windows 10+), then uses the same ANSI path as macOS/Linux. Win32 console APIs (`SetConsoleTextAttribute`, `FillConsoleOutputCharacter`, etc.) are deleted entirely.
-- [ ] **AC-4:** Colour output uses ANSI escape sequences on all platforms; cursor positioning uses ANSI sequences; console clear uses `\033[2J\033[H`.
-- [ ] **AC-5:** Terminal title set via `\033]0;{title}\007` ANSI OSC escape on all platforms.
-- [ ] **AC-6:** Console size on all platforms: `ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws)` on POSIX; on Windows, `GetConsoleScreenBufferInfo` used only as a fallback inside `mu_console_init()` if ANSI terminal size reporting is unavailable — not used in game logic.
-- [ ] **AC-7:** `./ctl check` passes — build + format-check + lint all green.
+- [x] **AC-1:** `python3 MuMain/scripts/check-win32-guards.py` exits 0 — no violations in `Core/WindowsConsole.cpp`.
+- [x] **AC-2:** `Core/WindowsConsole.cpp` compiles without `AllocConsole`, `SetConsoleMode`, `GetStdHandle`, `SetConsoleTitle`, `GetConsoleScreenBufferInfo`, `FillConsoleOutputCharacter`, `SetConsoleTextAttribute`, `GetConsoleWindow`, `COORD`, `CONSOLE_SCREEN_BUFFER_INFO`, `SMALL_RECT`, `CHAR_INFO`, or any other Win32 console API — on any platform.
+- [x] **AC-3:** Console initialisation on **all platforms** (including Windows) uses ANSI escape sequences. On Windows, `mu_console_init()` calls `SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT)` once to enable ANSI support (Windows 10+), then uses the same ANSI path as macOS/Linux. Win32 console APIs (`SetConsoleTextAttribute`, `FillConsoleOutputCharacter`, etc.) are deleted entirely.
+- [x] **AC-4:** Colour output uses ANSI escape sequences on all platforms; cursor positioning uses ANSI sequences; console clear uses `\033[2J\033[H`.
+- [x] **AC-5:** Terminal title set via `\033]0;{title}\007` ANSI OSC escape on all platforms.
+- [x] **AC-6:** Console size on all platforms: `ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws)` on POSIX; on Windows, `GetConsoleScreenBufferInfo` used only as a fallback inside `mu_console_init()` if ANSI terminal size reporting is unavailable — not used in game logic.
+- [x] **AC-7:** `./ctl check` passes — build + format-check + lint all green.
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards — no `#ifdef _WIN32` wrapping call sites or function bodies in `WindowsConsole.cpp`; Win32 API calls isolated in `PlatformCompat.h` stubs; clang-format clean.
-- [ ] **AC-STD-2:** Tests — Catch2 unit tests in `tests/core/test_console.cpp`: `TEST_CASE("console init does not crash on macOS/Linux")`, `TEST_CASE("GetConsoleSize returns positive dimensions")`.
-- [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
-- [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
+- [x] **AC-STD-1:** Code Standards — no `#ifdef _WIN32` wrapping call sites or function bodies in `WindowsConsole.cpp`; Win32 API calls isolated in `PlatformCompat.h` stubs; clang-format clean.
+- [x] **AC-STD-2:** Tests — Catch2 unit tests in `tests/core/test_console.cpp`: `TEST_CASE("console init does not crash on macOS/Linux")`, `TEST_CASE("GetConsoleSize returns positive dimensions")`.
+- [x] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
+- [x] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Audit Core/WindowsConsole.cpp** (AC-2)
-  - [ ] 1.1: Read the file completely; list every Win32 API, type, and constant used
-  - [ ] 1.2: Group by functional category: init, colour, cursor, size, clear, title
+- [x] **Task 1: Audit Core/WindowsConsole.cpp** (AC-2)
+  - [x] 1.1: Read the file completely; list every Win32 API, type, and constant used
+  - [x] 1.2: Group by functional category: init, colour, cursor, size, clear, title
 
-- [ ] **Task 2: Add cross-platform ANSI terminal abstraction to PlatformCompat.h** (AC-3, AC-4, AC-5, AC-6)
-  - [ ] 2.1: Add `mu_console_init()` — calls `SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT)` on Windows to enable ANSI; checks `isatty(STDOUT_FILENO)` on all platforms; stores `g_muConsoleIsTTY`. No `#ifdef _WIN32` in `WindowsConsole.cpp` — this init call is unconditional.
-  - [ ] 2.2: Add `mu_set_console_title(const wchar_t* title)` — ANSI OSC: `printf("\033]0;%s\007", mu_wchar_to_utf8(title))` — same on all platforms
-  - [ ] 2.3: Add `mu_set_console_text_color(int colorCode)` — ANSI colour escape (`\033[31m` etc.) — same on all platforms
-  - [ ] 2.4: Add `mu_get_console_size(int* cols, int* rows)` — `ioctl(STDOUT_FILENO, TIOCGWINSZ)` on POSIX; `GetConsoleScreenBufferInfo` fallback on Windows only if ANSI size unavailable; default 80×24
-  - [ ] 2.5: Add `mu_console_clear()` — `printf("\033[2J\033[H")` — same on all platforms
-  - [ ] 2.6: Add `mu_console_set_cursor_position(int x, int y)` — `printf("\033[%d;%dH", y+1, x+1)` — same on all platforms
+- [x] **Task 2: Add cross-platform ANSI terminal abstraction to PlatformCompat.h** (AC-3, AC-4, AC-5, AC-6)
+  - [x] 2.1: Add `mu_console_init()` — calls `SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT)` on Windows to enable ANSI; checks `isatty(STDOUT_FILENO)` on all platforms; stores `g_muConsoleIsTTY`. No `#ifdef _WIN32` in `WindowsConsole.cpp` — this init call is unconditional.
+  - [x] 2.2: Add `mu_set_console_title(const wchar_t* title)` — ANSI OSC: `printf("\033]0;%s\007", mu_wchar_to_utf8(title))` — same on all platforms
+  - [x] 2.3: Add `mu_set_console_text_color(int colorCode)` — ANSI colour escape (`\033[31m` etc.) — same on all platforms
+  - [x] 2.4: Add `mu_get_console_size(int* cols, int* rows)` — `ioctl(STDOUT_FILENO, TIOCGWINSZ)` on POSIX; `GetConsoleScreenBufferInfo` fallback on Windows only if ANSI size unavailable; default 80×24
+  - [x] 2.5: Add `mu_console_clear()` — `printf("\033[2J\033[H")` — same on all platforms
+  - [x] 2.6: Add `mu_console_set_cursor_position(int x, int y)` — `printf("\033[%d;%dH", y+1, x+1)` — same on all platforms
 
-- [ ] **Task 3: Rewrite Core/WindowsConsole.cpp** (AC-3, AC-4)
-  - [ ] 3.1: Replace each Win32 console API call with the corresponding `mu_*` abstraction from Task 2
-  - [ ] 3.2: Remove all `#ifdef _WIN32` wrappers from the `.cpp` file
-  - [ ] 3.3: Remove Win32-only includes (`<windows.h>`, etc.) that are no longer referenced directly
+- [x] **Task 3: Rewrite Core/WindowsConsole.cpp** (AC-3, AC-4)
+  - [x] 3.1: Replace each Win32 console API call with the corresponding `mu_*` abstraction from Task 2
+  - [x] 3.2: Remove all `#ifdef _WIN32` wrappers from the `.cpp` file
+  - [x] 3.3: Remove Win32-only includes (`<windows.h>`, etc.) that are no longer referenced directly
 
-- [ ] **Task 4: Unit tests** (AC-STD-2)
-  - [ ] 4.1: Create `tests/core/test_console.cpp`
-  - [ ] 4.2: Test `mu_console_init()` — no crash, returns cleanly
-  - [ ] 4.3: Test `mu_get_console_size()` — returns cols > 0, rows > 0
+- [x] **Task 4: Unit tests** (AC-STD-2)
+  - [x] 4.1: Create `tests/core/test_console.cpp`
+  - [x] 4.2: Test `mu_console_init()` — no crash, returns cleanly
+  - [x] 4.3: Test `mu_get_console_size()` — returns cols > 0, rows > 0
 
-- [ ] **Task 5: Validate** (AC-1, AC-7)
-  - [ ] 5.1: Run `python3 MuMain/scripts/check-win32-guards.py` — zero violations in `Core/`
-  - [ ] 5.2: Run `./ctl check` — exits 0
+- [x] **Task 5: Validate** (AC-1, AC-7)
+  - [x] 5.1: Run `python3 MuMain/scripts/check-win32-guards.py` — zero violations in `Core/`
+  - [x] 5.2: Run `./ctl check` — exits 0
 
 ---
 
@@ -140,8 +140,26 @@ On Windows, `<io.h>` provides `isatty` and `STDOUT_FILENO`. `sys/ioctl.h` is POS
 
 ### Agent Model Used
 
-claude-sonnet-4-6
+claude-opus-4-6
 
 ### Completion Notes List
 
+- All 5 tasks completed in single session (2026-03-25)
+- WindowsConsole.cpp and .h fully rewritten — zero Win32 APIs, zero `#ifdef _WIN32`
+- 6 cross-platform `mu_console_*` functions added to PlatformCompat.h
+- COLOR_INDEX enum now uses explicit integer values (no FOREGROUND_* dependency)
+- Win32→ANSI colour mapping via static lookup table (16 entries)
+- SaveScreenBuffer() is now a no-op (ReadConsoleOutput has no cross-platform equivalent)
+- GetConsoleWndHandle() removed — was only used for diagnostic logging in muConsoleDebug.cpp
+- muConsoleDebug.cpp updated to remove HWND logging dependency
+
 ### File List
+
+| File | Action | Description |
+|------|--------|-------------|
+| `MuMain/src/source/Platform/PlatformCompat.h` | MODIFIED | Added 6 mu_console_* cross-platform terminal functions |
+| `MuMain/src/source/Core/WindowsConsole.h` | MODIFIED | Removed Win32 types (HWND, WORD, DWORD, BOOL CALLBACK), FOREGROUND_* constants; added explicit COLOR_INDEX values |
+| `MuMain/src/source/Core/WindowsConsole.cpp` | MODIFIED | Replaced all Win32 console APIs with mu_* abstractions and ANSI escape sequences |
+| `MuMain/src/source/Core/muConsoleDebug.cpp` | MODIFIED | Removed GetConsoleWndHandle() call (diagnostic logging only) |
+| `MuMain/tests/core/test_console.cpp` | MODIFIED | Updated header from RED to GREEN phase |
+| `MuMain/tests/CMakeLists.txt` | MODIFIED | Updated comment from RED to GREEN phase |
