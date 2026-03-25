@@ -148,3 +148,5 @@
 {"timestamp":"2026-03-25T14:07:41.062964+00:00","event_type":"step_retried","story_key":"7-6-2-win32-string-include-cleanup","step":"validate-story","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-25T14:07:41.063389+00:00","event_type":"feedback_saved","story_key":"7-6-2-win32-string-include-cleanup","step":"validate-story","sprint":null,"epic":"7","data":{"regression_target":"validate-story"}}
 {"timestamp":"2026-03-25T14:07:43.063939+00:00","event_type":"step_started","story_key":"7-6-2-win32-string-include-cleanup","step":"validate-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-25T14:10:00.340779+00:00","event_type":"step_passed","story_key":"7-6-2-win32-string-include-cleanup","step":"validate-story","sprint":null,"epic":"7","data":{"duration_seconds":137.3,"input_tokens":7760,"output_tokens":7026,"cache_creation_tokens":534795,"cache_read_tokens":5280713,"num_turns":48,"num_tool_calls":18}}
+{"timestamp":"2026-03-25T14:10:01.346950+00:00","event_type":"step_started","story_key":"7-6-2-win32-string-include-cleanup","step":"atdd","sprint":null,"epic":"7","data":{}}
