@@ -3,7 +3,7 @@
 **Story Key:** `7-6-4-cpu-usage-cross-platform`
 **Story Type:** infrastructure
 **Generated:** 2026-03-25
-**Status:** RED PHASE — tests created, awaiting implementation
+**Status:** GREEN PHASE — all tests pass, implementation complete
 
 ---
 
@@ -28,48 +28,48 @@
 
 ### Task 1: Audit Core/CpuUsage.cpp
 
-- [ ] 1.1 Read `Core/CpuUsage.cpp` completely and list every Win32 API/type used
-- [ ] 1.2 Identify which are in the public interface (header) vs implementation only
+- [x] 1.1 Read `Core/CpuUsage.cpp` completely and list every Win32 API/type used
+- [x] 1.2 Identify which are in the public interface (header) vs implementation only
 
 ### Task 2: Add cross-platform time helper to PlatformCompat.h
 
-- [ ] 2.1 Add `mu_get_process_cpu_times(uint64_t* kernelNs, uint64_t* userNs)` inline function:
+- [x] 2.1 Add `mu_get_process_cpu_times(uint64_t* kernelNs, uint64_t* userNs)` inline function:
   - `#ifdef _WIN32`: `GetProcessTimes()` → convert `FILETIME` to nanoseconds
   - macOS / Linux: `getrusage(RUSAGE_SELF, &ru)` → `ru_stime`/`ru_utime` (timeval → ns)
-- [ ] 2.2 Return `bool` — false if the syscall fails (caller returns 0.0 CPU usage)
+- [x] 2.2 Return `bool` — false if the syscall fails (caller returns 0.0 CPU usage)
 
 ### Task 3: Rewrite CpuUsage.cpp
 
-- [ ] 3.1 Replace `GetSystemInfo()` + `SYSTEM_INFO` with `std::thread::hardware_concurrency()`
-- [ ] 3.2 Replace `GetProcessTimes()` + `FILETIME` delta with `mu_get_process_cpu_times()` + `std::chrono::steady_clock`; normalise result to fraction [0.0, 1.0]
-- [ ] 3.3 Remove all `#ifdef _WIN32` blocks from `CpuUsage.cpp`
-- [ ] 3.4 Remove `windows.h` include (no longer needed)
+- [x] 3.1 Replace `GetSystemInfo()` + `SYSTEM_INFO` with `std::thread::hardware_concurrency()`
+- [x] 3.2 Replace `GetProcessTimes()` + `FILETIME` delta with `mu_get_process_cpu_times()` + `std::chrono::steady_clock`; normalise result to fraction [0.0, 1.0]
+- [x] 3.3 Remove all `#ifdef _WIN32` blocks from `CpuUsage.cpp`
+- [x] 3.4 Remove `windows.h` include (no longer needed)
 
 ### Task 4: Unit tests (RED → GREEN)
 
-- [ ] 4.1 `tests/core/test_cpu_usage.cpp` exists (DONE — file created in ATDD phase)
-- [ ] 4.2 `TEST_CASE("AC-3: hardware_concurrency returns positive value")` passes
-- [ ] 4.3 `TEST_CASE("AC-4: CPU usage measurement returns value in [0,1] range")` passes
-- [ ] 4.4 `TEST_CASE("AC-5: CPU usage never returns negative value or crashes")` passes
+- [x] 4.1 `tests/core/test_cpu_usage.cpp` exists (DONE — file created in ATDD phase)
+- [x] 4.2 `TEST_CASE("AC-3: hardware_concurrency returns positive value")` passes
+- [x] 4.3 `TEST_CASE("AC-4: CPU usage measurement returns value in [0,1] range")` passes
+- [x] 4.4 `TEST_CASE("AC-5: CPU usage never returns negative value or crashes")` passes
 
 ### Task 5: Validation
 
-- [ ] 5.1 `python3 MuMain/scripts/check-win32-guards.py` — zero violations in `Core/CpuUsage.cpp`
-- [ ] 5.2 `./ctl check` exits 0 (format-check + lint both green)
+- [x] 5.1 `python3 MuMain/scripts/check-win32-guards.py` — zero violations in `Core/CpuUsage.cpp`
+- [x] 5.2 `./ctl check` exits 0 (format-check + lint both green)
 
 ---
 
 ## PCC Compliance Checklist
 
-- [ ] No prohibited libraries referenced (N/A — pure C++ stdlib, Catch2, POSIX)
-- [ ] No `#ifdef _WIN32` in `CpuUsage.cpp` after implementation (game logic file)
-- [ ] `#ifdef _WIN32` in `PlatformCompat.h` only (allowed — platform abstraction header)
-- [ ] All new code uses `std::chrono::steady_clock` (never `timeGetTime()` / `GetTickCount()`)
-- [ ] All new code uses `nullptr` (never `NULL`)
-- [ ] No raw `new`/`delete` in new code
-- [ ] `g_ErrorReport.Write()` used for diagnostic logging when syscall fails (AC-5)
-- [ ] Test file includes no Win32 headers (macOS/Linux CI compatible)
-- [ ] `check-win32-guards.py` validation script exits 0
+- [x] No prohibited libraries referenced (N/A — pure C++ stdlib, Catch2, POSIX)
+- [x] No `#ifdef _WIN32` in `CpuUsage.cpp` after implementation (game logic file)
+- [x] `#ifdef _WIN32` in `PlatformCompat.h` only (allowed — platform abstraction header)
+- [x] All new code uses `std::chrono::steady_clock` (never `timeGetTime()` / `GetTickCount()`)
+- [x] All new code uses `nullptr` (never `NULL`)
+- [x] No raw `new`/`delete` in new code
+- [x] `g_ErrorReport.Write()` used for diagnostic logging when syscall fails (AC-5)
+- [x] Test file includes no Win32 headers (macOS/Linux CI compatible)
+- [x] `check-win32-guards.py` validation script exits 0
 
 ---
 
