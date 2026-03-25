@@ -57,6 +57,7 @@ Status: ready-for-dev
 
 - [ ] **AC-STD-1:** Code Standards — no `#ifdef _WIN32` outside `Platform/`; `std::filesystem::path` for all file paths; `std::wstring`/`std::string` instead of `TCHAR`; clang-format clean.
 - [ ] **AC-STD-2:** Tests — Catch2 integration test in `tests/gameshop/test_shoplist_download.cpp`: mock HTTP server (localhost) or static fixture files; test `CShopListManager::LoadScript(false)` (local mode, no download) succeeds.
+- [ ] **AC-STD-12:** SLI/SLO — File downloads must complete within p95 < 5000ms (large banner, poor network); timeouts configured in libcurl with `CURLOPT_TIMEOUT` (seconds). No hangs on macOS/Linux network stalls.
 - [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0 (macOS native build must compile the entire ShopListManager module).
 - [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
 
