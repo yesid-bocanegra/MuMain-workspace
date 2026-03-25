@@ -1,6 +1,6 @@
 # Story 7.6.1: macOS Native Build — Remaining Compilation Gaps
 
-Status: review
+Status: done
 
 ---
 

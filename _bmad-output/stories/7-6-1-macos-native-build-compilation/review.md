@@ -13,7 +13,7 @@
 |------|--------|------|
 | 1. Quality Gate | PASSED | 2026-03-25 |
 | 2. Code Review Analysis | COMPLETE | 2026-03-25 |
-| 3. Code Review Finalize | pending | — |
+| 3. Code Review Finalize | COMPLETE | 2026-03-25 |
 
 ## Quality Gate
 
@@ -413,5 +413,45 @@ The finalize step will:
 | Step | Workflow | Status |
 |------|----------|--------|
 | 1 | code-review-quality-gate | ✅ PASSED |
-| 2 | **code-review-analysis (YOU ARE HERE)** | **✅ COMPLETE** |
-| 3 | code-review-finalize | ⏳ Ready to run |
+| 2 | code-review-analysis | ✅ COMPLETE |
+| 3 | code-review-finalize | ✅ COMPLETE |
+
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-25
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 7 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **FINDING-1:** fixed — Corrected misleading SA_SIGINFO/SA_SIGACTION comment in PosixSignalHandlers.cpp
+- **FINDING-2:** fixed — Implemented Sleep() using std::this_thread::sleep_for (added `<thread>` include)
+- **FINDING-3:** fixed — mu_itow() now uses local buffer with sizeof-based size, preventing caller buffer overrun
+- **FINDING-4:** fixed — Extended anti-pattern script to detect `#if defined(_WIN32)` and `#if _WIN32` variants; excludes `#ifndef`/`!defined` (non-Windows guards)
+- **FINDING-5:** fixed — Removed redundant `using UINT = unsigned int;` (already defined in PlatformTypes.h)
+- **FINDING-6:** fixed — AC-7 test now uses definition-level patterns (`#define RGB`, `inline.*SetBkColor`, etc.) instead of bare name matching
+- **FINDING-7:** fixed — Updated stale toolchain comment to reflect successful macOS compilation post-7-6-1
+
+### Story Status Update
+
+- **Previous Status:** review
+- **New Status:** done
+- **Story File Updated:** _bmad-output/stories/7-6-1-macos-native-build-compilation/story.md
+- **ATDD Checklist Synchronized:** Yes (27/27 items GREEN)
+
+### Files Modified
+
+- `MuMain/src/source/Platform/posix/PosixSignalHandlers.cpp` — Fixed misleading comment (FINDING-1)
+- `MuMain/src/source/Platform/PlatformCompat.h` — Implemented Sleep(), fixed mu_itow(), removed redundant UINT (FINDING-2, -3, -5), added `<thread>` include
+- `MuMain/scripts/check-win32-guards.py` — Extended pattern detection to cover alternative _WIN32 syntaxes (FINDING-4)
+- `MuMain/tests/build/test_ac7_platform_compat_gdi_stubs_7_6_1.cmake` — Improved assertions with definition patterns (FINDING-6)
+- `MuMain/cmake/toolchains/macos-arm64.cmake` — Updated stale comment (FINDING-7)
+- `_bmad-output/stories/7-6-1-macos-native-build-compilation/story.md` — Status → done
