@@ -1,6 +1,6 @@
 {
   "story_key": "7-6-5-windows-console-cross-platform",
-  "current_step": "code-review-quality-gate",
-  "status": "review",
-  "last_run": "2026-03-25T21:30:00.000000"
+  "current_step": "dev-story",
+  "status": "completed",
+  "last_run": "2026-03-25T16:40:28.000243"
 }
