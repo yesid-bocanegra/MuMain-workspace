@@ -62,7 +62,7 @@
 | Severity | HIGH |
 | File | `MuMain/src/source/Core/CpuUsage.h:10` |
 | Related | `MuMain/src/source/Core/CpuUsage.cpp:68-69` |
-| Status | OPEN |
+| Status | RESOLVED |
 
 **Description:** The header comment states: `Returns CPU utilisation as fractional ratio in [0.0, 1.0] where 1.0 = 100% of one core.` This is mathematically incorrect given the formula in `CpuUsage.cpp:68-69`:
 
@@ -76,7 +76,7 @@ With `m_numProcessors` in the denominator, the semantics are:
 
 This misleads callers about the scale. The `RecordCpuUsage` function already multiplies by 100.0 to get a percentage, so a system using 1 core at 100% on an 8-core machine shows ~12.5% — a developer reading the header might think this is wrong.
 
-**Suggested Fix:** Change the comment to: `Returns CPU utilisation as fractional ratio in [0.0, 1.0] where 1.0 = 100% of all cores.`
+**Fix Applied:** Changed the comment to: `Returns CPU utilisation as fractional ratio in [0.0, 1.0] where 1.0 = 100% of all cores.` ✅ FIXED
 
 ---
 
@@ -168,14 +168,14 @@ The actual error path — `mu_get_process_cpu_times()` returning `false`, trigge
 | Severity | Count | IDs | Status |
 |----------|-------|-----|--------|
 | BLOCKER | 0 | — | — |
-| HIGH | 1 | F1 | OPEN |
-| MEDIUM | 3 | F2, F3, F4 | OPEN |
-| LOW | 2 | F5, F6 | OPEN |
-| **Total** | **6** | | **6 OPEN** |
+| HIGH | 1 | F1 | ✅ RESOLVED |
+| MEDIUM | 3 | F2, F3, F4 | OPEN (2 pre-existing, 1 inherent) |
+| LOW | 2 | F5, F6 | OPEN (acceptable) |
+| **Total** | **6** | | **1 RESOLVED, 5 OPEN** |
 
-**Verdict:** No BLOCKERs. One HIGH (incorrect documentation) should be fixed before finalize. Two MEDIUM findings (F2, F3) are pre-existing and out-of-scope — recommend tech-debt items. One MEDIUM finding (F4) is an inherent limitation of the singleton design — accept with documentation. Two LOW findings are acceptable as-is.
+**Verdict:** No BLOCKERs. HIGH finding (F1 — incorrect documentation) **RESOLVED in this analysis pass**. Two MEDIUM findings (F2, F3) are pre-existing concurrency issues out-of-scope — recommend tech-debt items. One MEDIUM finding (F4) is an inherent limitation of singleton design — accept with documentation. Two LOW findings are acceptable as-is (dead code, lack of null checks on internal function).
 
-**Actionable for this story:** F1 (fix comment), F4 (document partial coverage in ATDD), F5 (optional cleanup).
+**Action items completed:** F1 ✅ Documentation corrected from "100% of one core" to "100% of all cores"
 
 ---
 
