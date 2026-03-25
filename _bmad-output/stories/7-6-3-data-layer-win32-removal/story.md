@@ -1,6 +1,6 @@
 # Story 7.6.3: Data Layer Win32 Removal
 
-Status: validate-story-complete
+Status: atdd-complete
 
 ---
 
