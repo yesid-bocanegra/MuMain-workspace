@@ -36,7 +36,7 @@ DEVELOPMENT COMMANDS:
     format          Auto-format code (clang-format)
     format-check    Check code formatting without modifying
     clean           Clean build artifacts (build/, build-mingw/, build-test/)
-    check           Run quality gate (format-check + lint, mirrors CI quality job)
+    check           Run quality gate (build + format-check + lint)
 
 COMPONENTS:  mumain
 
@@ -54,9 +54,11 @@ EOF
 # =============================================================================
 
 cmd_build() {
-    log_info "Building mumain (native toolchain — catches -Werror + type errors)..."
+    log_info "Building mumain (Homebrew LLVM — Clang 22, catches -Werror + type errors)..."
     cmake -S MuMain -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
+        -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
         && cmake --build build -j$(nproc)
     log_success "Build complete"
 }
@@ -92,8 +94,13 @@ cmd_clean() {
 }
 
 cmd_check() {
-    log_info "Running mumain quality gate (format-check + lint, mirrors CI quality job)..."
-    make -C MuMain format-check \
+    log_info "Running mumain quality gate (build + format-check + lint)..."
+    cmake -S MuMain -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
+        -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
+        && cmake --build build -j$(nproc) \
+        && make -C MuMain format-check \
         && make -C MuMain lint
     log_success "Quality gate passed"
 }

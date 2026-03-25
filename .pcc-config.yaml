@@ -15,20 +15,18 @@ project:
 
 tech_profiles:
   cpp-cmake:
-    # Native build (no cross-compilation toolchain). Will fail on macOS (Win32 APIs).
-    # On Linux, catches -Werror violations and type errors with native GCC/Clang.
+    # Native macOS arm64 build using Homebrew LLVM (story 7-6-1).
+    # Homebrew Clang supports all project warning flags (including -Wnontrivial-memcall).
+    # Apple Clang 17 (system default) does not — pass explicit compiler paths.
     # CI uses MinGW cross-compilation separately (see MuMain/.github/workflows/ci.yml).
-    build: "cmake -S MuMain -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j$(nproc)"
+    build: "cmake -S MuMain -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ && cmake --build build -j$(nproc)"
     test: "make -C MuMain test"
     coverage: "echo 'No coverage configured yet'"
     lint: "make -C MuMain lint"
     format: "make -C MuMain format"
     format_check: "make -C MuMain format-check"
-    # Local quality gate mirrors CI quality job: format-check + lint (build is CI-only MinGW job)
-    # NOTE (7-5-1): Native build intentionally excluded from quality_gate — Win32 TU failures
-    # make full build unsuitable for ./ctl check. Build verification is done via AC-8 iterative
-    # sweep and CI. Quality gate bypass removed per AC-9.
-    quality_gate: "make -C MuMain format-check && make -C MuMain lint"
+    # Local quality gate: format-check + lint + native build (story 7-6-1 — macOS build now passes)
+    quality_gate: "cmake -S MuMain -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ && cmake --build build -j$(nproc) && make -C MuMain format-check && make -C MuMain lint"
     clean: "rm -rf build build-mingw build-test"
     # Testing conventions
     testing:
