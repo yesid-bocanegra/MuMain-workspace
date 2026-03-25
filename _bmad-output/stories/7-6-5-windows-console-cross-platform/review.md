@@ -7,15 +7,32 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status |
+|------|--------|
+| 1. Quality Gate | **PASSED** |
+| 2. Code Review Analysis | Complete |
+| 3. Code Review Finalize | Pending |
+
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASSED
+**Date:** 2026-03-25
+**Component:** mumain (cpp-cmake)
 
-| Check | Result |
-|-------|--------|
-| lint | Pending |
-| build | Pending |
-| coverage | Pending |
+| Check | Result | Details |
+|-------|--------|---------|
+| lint (`make -C MuMain lint`) | **PASS** | 0 cppcheck violations |
+| build (cmake + ninja) | **PASS** | Native macOS arm64 build clean |
+| format-check (`make -C MuMain format-check`) | **PASS** | All files formatted |
+| coverage | **PASS** | No coverage threshold configured (0%) |
+| SonarCloud | **SKIPPED** | No SONAR_TOKEN configured |
+| Frontend | **N/A** | Infrastructure story — no frontend components |
+| Schema Alignment | **N/A** | No frontend — no schema drift to track |
+| AC Compliance | **SKIPPED** | Infrastructure story — no AC test suite |
+| E2E Test Quality | **N/A** | No frontend E2E tests |
+| App Startup | **N/A** | Game client (GUI .exe) — no headless boot verification possible |
 
 ---
 
