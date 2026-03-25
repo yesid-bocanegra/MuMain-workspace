@@ -10,9 +10,16 @@
 
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASS
 
-Pre-run results provided by caller indicate ALL CHECKS PASSING (lint, build, coverage).
+| Check | Result | Notes |
+|-------|--------|-------|
+| lint (`./ctl check`) | PASS | clang-format + cppcheck clean |
+| build (CMake + Ninja) | PASS | macOS arm64 configure + partial build |
+| coverage | PASS | No coverage configured yet |
+| App startup | N/A | Win32 game client — cannot boot on macOS (requires DirectX, Win32 APIs) |
+
+All deterministic quality checks passed. No non-deterministic checks configured for cpp-cmake component.
 
 ---
 
