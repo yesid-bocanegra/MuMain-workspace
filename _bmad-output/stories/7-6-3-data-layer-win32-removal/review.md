@@ -1,9 +1,10 @@
 # Code Review — Story 7.6.3: Data Layer Win32 Removal
 
-**Reviewer:** Claude Haiku 4.5 (adversarial, fresh mode)
-**Analysis Date:** 2026-03-25 01:13 GMT
+**Reviewer:** Claude Opus 4.6 (adversarial, fresh pass)
+**Analysis Date:** 2026-03-25 13:45 GMT-5
 **Story Key:** 7-6-3-data-layer-win32-removal
-**Review Type:** Adversarial code review — Step 2 of 3 in code review pipeline
+**Review Type:** Adversarial code review (code-review workflow)
+**Review Pass:** 2 (fresh review after prior pass fixes applied)
 
 ---
 
@@ -12,135 +13,200 @@
 | Step | Workflow | Status | Date | Reviewer |
 |------|----------|--------|------|----------|
 | 1 | code-review-quality-gate | **PASSED** | 2026-03-25 | system |
-| 2 | code-review-analysis | **COMPLETE** | 2026-03-25 01:13 | Claude |
-| 3 | code-review-finalize | **COMPLETE** | 2026-03-25 13:16 | Claude |
+| 2 | code-review (adversarial) | **IN PROGRESS** | 2026-03-25 13:45 | Claude Opus 4.6 |
+| 3 | code-review-finalize | PENDING | — | — |
 
 ---
 
 ## Quality Gate
 
-**Status:** PASS — all checks green
-**Verified:**
-- clang-format: no violations
-- cppcheck: lint pass
-- check-win32-guards.py: no violations in Data/
+**Status:** PASS — all checks green (pre-run results provided by pipeline)
 
 | Check | Component | Result |
 |-------|-----------|--------|
 | lint | mumain (backend) | **PASS** — `make -C MuMain lint` |
 | build | mumain (backend) | **PASS** — cmake configure + build |
 | coverage | mumain (backend) | **PASS** — no coverage configured yet |
-| boot | N/A | **SKIP** — game client binary, no server to boot |
 
-**Non-deterministic checks:** None applicable (no SonarCloud, no schema alignment, no E2E tests for this infrastructure story).
+---
+
+## Prior Review Summary
+
+A prior adversarial review (Pass 1) found 7 issues (HIGH-1,2; MEDIUM-1,2,3; LOW-1,2) — all were fixed:
+- No-op fallback warning added (fprintf stderr)
+- Platform-specific serialization documented
+- Key material zeroed with OPENSSL_cleanse
+- ReportError wrapper with [DataFileIO] prefix + \r\n
+- INT_MAX size overflow guard added
+- ShowErrorAndExit renamed to ReportError
+- const_cast documented
+
+This Pass 2 reviews the code **after** those fixes to find remaining issues.
 
 ---
 
 ## Findings
 
-### HIGH-1: No-op fallback missing required g_ErrorReport.Write() warning
+### HIGH-1: PBKDF2 key derivation (100k iterations) called on every encrypt/decrypt — no caching
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | HIGH |
 | File | `MuMain/src/source/Platform/PlatformCompat.h` |
-| Lines | 2637–2658 |
+| Lines | 2464–2485, 2506, 2594 |
 
-**Description:** The identity no-op fallback for `mu_encrypt_blob` / `mu_decrypt_blob` (when `MU_HAS_OPENSSL` is not defined) silently passes bytes through unencrypted without any warning. The story's Task 3.3 explicitly requires: *"`#else` → identity no-op with `g_ErrorReport.Write()` warning"*. The ATDD checklist (CMake / Build, item 3) is marked GREEN but the code does not match — no logging occurs in the no-op path.
+**Description:** `mu_crypto_detail::DeriveKey()` runs PBKDF2 with 100,000 iterations on every call to `mu_encrypt_blob` or `mu_decrypt_blob`. The hostname and salt are fixed for the lifetime of the process, so the derived key is always identical.
 
-**Suggested Fix:** Add a one-time `g_ErrorReport.Write(L"[GameConfig] WARN: OpenSSL unavailable, config not encrypted\r\n")` call in the no-op `mu_encrypt_blob` (e.g., via a `static bool warned = false` guard to avoid per-call spam). Alternatively, if `g_ErrorReport` is not available at PlatformCompat.h include time, use `fprintf(stderr, ...)` or accept the deviation and update the story/ATDD to reflect the design decision.
+`GameConfig::EncryptAndSaveCredentials()` calls `EncryptSetting()` twice (once for username, once for password), triggering 200,000 PBKDF2 iterations per credential save. `DecryptCredentials()` calls `DecryptSetting()` twice, adding another 200,000 iterations at startup.
+
+On modern hardware PBKDF2-SHA256 with 100k iterations takes ~50-100ms per call. This means credential save takes 100-200ms and load takes 100-200ms — noticeable latency for a game client.
+
+**Suggested Fix:** Cache the derived key in a `static` local variable (thread-safe via C++11 magic statics). Derive once on first call, reuse thereafter:
+
+```cpp
+inline const uint8_t* mu_crypto_detail::GetCachedKey()
+{
+    static uint8_t cachedKey[MU_CRYPTO_KEY_LEN] = {};
+    static bool derived = false;
+    if (!derived) {
+        DeriveKey(cachedKey);
+        derived = true;
+    }
+    return cachedKey;
+}
+```
+
+Note: This trades off the ability to zero the key after use (OPENSSL_cleanse). Since the story notes "convenience feature, not a security boundary," caching is the better trade-off.
 
 ---
 
-### HIGH-2: wchar_t size mismatch breaks cross-platform credential portability
+### HIGH-2: No-op fallback format incompatible with OpenSSL format — silent credential loss on upgrade
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | HIGH |
+| File | `MuMain/src/source/Platform/PlatformCompat.h` |
+| Lines | 2657–2692 |
+
+**Description:** When `MU_HAS_OPENSSL` is not defined, `mu_encrypt_blob` stores raw bytes (identity copy). When `MU_HAS_OPENSSL` IS defined, `mu_decrypt_blob` expects `[12-byte IV][ciphertext][16-byte GCM tag]` format.
+
+If a user runs the game without OpenSSL (credentials stored as raw hex in config.ini), then later rebuilds with OpenSSL available, `mu_decrypt_blob` will attempt to parse the raw bytes as IV+ciphertext+tag. Since the raw data won't have a valid GCM tag, decryption silently fails and `DecryptSetting` returns `L""`. The user's saved credentials disappear with no error message.
+
+**Impact:** Users who upgrade their build environment lose their saved "remember me" credentials. The failure is silent — `DecryptCredentials` leaves output buffers untouched when `DecryptSetting` returns empty, and `EncryptAndSaveCredentials` skips save when encryption returns empty.
+
+**Suggested Fix:** Add a format version byte prefix to the encrypted blob (e.g., `0x01` for AES-256-GCM, `0x00` for raw). On decrypt, check the first byte to determine format. This allows the OpenSSL path to detect and re-encrypt legacy raw data.
+
+---
+
+### MEDIUM-1: `EncryptAndSaveCredentials` silently discards credentials on encrypt failure
+
+| Attribute | Value |
+|-----------|-------|
+| Severity | MEDIUM |
 | File | `MuMain/src/source/Data/GameConfig.cpp` |
-| Lines | 286, 302 |
+| Lines | 319–330 |
 
-**Description:** `EncryptSetting()` serializes credential strings as raw `wchar_t` bytes: `(wcslen(input) + 1) * sizeof(wchar_t)`. `DecryptSetting()` reconstructs via `reinterpret_cast<const wchar_t*>(decrypted.data()), decrypted.size() / sizeof(wchar_t)`. On Windows `sizeof(wchar_t) == 2` (UTF-16LE); on macOS/Linux `sizeof(wchar_t) == 4` (UTF-32). A `config.ini` encrypted on one platform is unreadable on another — the byte count and encoding differ.
+**Description:** If `EncryptSetting(user)` or `EncryptSetting(pass)` returns empty (indicating encryption failure — OpenSSL error, empty input, etc.), the entire save operation is silently skipped:
 
-Since credentials are machine-bound (PBKDF2 with hostname), cross-platform config portability may be intentionally out of scope. If so, this should be explicitly documented. If cross-platform config files are ever desired, the fix is to serialize to a fixed-width encoding (e.g., UTF-8) before encryption.
+```cpp
+if (!encUser.empty() && !encPass.empty())
+{
+    SetEncryptedUsername(encUser);
+    SetEncryptedPassword(encPass);
+    Save();
+}
+```
 
-**Suggested Fix:** Add a comment at both `EncryptSetting()` and `DecryptSetting()` documenting that the serialization format is platform-specific and not portable. Alternatively, serialize credentials as UTF-8 via `mu_wchar_to_utf8` before encryption for future-proofing.
+No error is logged. The user clicks "Remember Me," enters credentials, but they're never persisted. This is a poor user experience that is difficult to debug.
+
+**Suggested Fix:** Log a warning when encryption fails:
+```cpp
+if (encUser.empty() || encPass.empty())
+{
+    g_ErrorReport.Write(L"[GameConfig] WARN: Failed to encrypt credentials, not saved\r\n");
+    return;
+}
+```
 
 ---
 
-### MEDIUM-1: Cryptographic key material not zeroed after use
+### MEDIUM-2: OpenSSL headers included in all translation units via inline functions in header
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | MEDIUM |
 | File | `MuMain/src/source/Platform/PlatformCompat.h` |
-| Lines | 2498, 2577 |
+| Lines | 2446–2448 |
 
-**Description:** Both `mu_encrypt_blob` and `mu_decrypt_blob` declare `uint8_t key[MU_CRYPTO_KEY_LEN]` on the stack and never zero it after use. While the compiler will deallocate the stack frame, the key bytes remain in memory until overwritten by subsequent calls. A `memset` would likely be optimized away by the compiler. Crypto best practice is to use `OPENSSL_cleanse(key, sizeof(key))` (which is guaranteed not to be optimized out) or `explicit_bzero` on POSIX.
+**Description:** The crypto implementation is `inline` in `PlatformCompat.h`, which is included (directly or transitively) by nearly every translation unit. When `MU_HAS_OPENSSL` is defined, this pulls in `<openssl/evp.h>`, `<openssl/rand.h>`, and `<openssl/crypto.h>` — heavy headers that increase compile time across the entire project.
 
-The story notes that game config encryption is a "convenience feature, not a security boundary," which mitigates the severity. However, OPENSSL_cleanse is a one-line fix and establishes good hygiene.
+Only 2 files actually call `mu_encrypt_blob`/`mu_decrypt_blob`: `GameConfig.cpp` and `test_gameconfig_crypto.cpp`.
 
-**Suggested Fix:** Add `OPENSSL_cleanse(key, MU_CRYPTO_KEY_LEN);` before `return ok;` in both functions.
+**Suggested Fix:** Move the crypto implementation to a `.cpp` file (e.g., `Platform/PlatformCrypto.cpp`) and leave only the function declarations in the header. This confines OpenSSL headers to a single TU. Alternatively, use a forward-declaration header and `#include` the OpenSSL headers only in the implementation file.
 
 ---
 
-### MEDIUM-2: DataFileIO error messages missing [DataFileIO] prefix and \r\n suffix
+### MEDIUM-3: `DataFileIO.h` retains `#ifdef _WIN32` include guard in Data/ directory
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | MEDIUM |
-| File | `MuMain/src/source/Data/DataFileIO.cpp` |
-| Lines | 17, 27 |
+| File | `MuMain/src/source/Data/DataFileIO.h` |
+| Lines | 2–8 |
 
-**Description:** The story's Dev Notes specify the logging pattern as: `g_ErrorReport.Write(L"[DataFileIO] Failed to load item data\r\n")`. But the actual calls pass bare messages without the `[DataFileIO]` prefix or `\r\n` line terminator:
-- Line 17: `ShowErrorAndExit(L"Failed to read data from file")`
-- Line 27: `ShowErrorAndExit(L"Failed to read checksum from file")`
+**Description:** While AC-4 targets `.cpp` files ("No `#ifdef _WIN32` wraps any function call or data type in `DataFileIO.cpp` or `GameConfig.cpp`"), the header `DataFileIO.h` still contains:
 
-The `ShowErrorAndExit` wrapper (line 57–60) just forwards the message verbatim. This reduces log traceability (no module prefix) and may cause log lines to run together (no line terminator).
+```cpp
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include "Platform/PlatformTypes.h"
+#include "Platform/PlatformCompat.h"
+#endif
+```
 
-**Suggested Fix:** Either update `ShowErrorAndExit` to prepend `[DataFileIO]` and append `\r\n`, or update the caller strings to include both.
+This is in the `Data/` directory, not `Platform/`. The project rule states: "No `#ifdef _WIN32` in game logic — only in platform abstraction layer." DataFileIO.h is game logic (Data layer), not platform abstraction.
+
+The `.cpp` file was cleaned to use `#include "PlatformCompat.h"` unconditionally. The header should receive the same treatment for consistency.
+
+**Suggested Fix:** Replace the conditional block with:
+```cpp
+#include "Platform/PlatformTypes.h"
+#include "Platform/PlatformCompat.h"
+```
+On Windows, `PlatformTypes.h` already includes `<windows.h>` (or the types are available via `stdafx.h` PCH).
 
 ---
 
-### MEDIUM-3: static_cast<int>(cbIn) truncates on payloads > 2 GB
-
-| Attribute | Value |
-|-----------|-------|
-| Severity | MEDIUM |
-| File | `MuMain/src/source/Platform/PlatformCompat.h` |
-| Lines | 2534, 2607 |
-
-**Description:** `EVP_EncryptUpdate` and `EVP_DecryptUpdate` take `int` for the input length. The code casts `cbIn` (a `size_t`) to `int` via `static_cast<int>(cbIn)`. If `cbIn > INT_MAX` (~2.1 GB), this is undefined behavior and would silently corrupt the encryption. While credential strings will never approach this size, the function has a generic API (`const void*, size_t`) that doesn't communicate the limitation.
-
-**Suggested Fix:** Add an early-return guard: `if (cbIn > static_cast<size_t>(INT_MAX)) return false;`
-
----
-
-### LOW-1: ShowErrorAndExit name is misleading post-refactor
+### LOW-1: Static `warned` flag in no-op fallback has data race (benign)
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | LOW |
-| File | `MuMain/src/source/Data/DataFileIO.cpp` |
-| Lines | 57–60 |
+| File | `MuMain/src/source/Platform/PlatformCompat.h` |
+| Lines | 2668–2673 |
 
-**Description:** `ShowErrorAndExit` was likely originally a `MessageBox` + exit flow. After the refactor, it only calls `g_ErrorReport.Write()` and returns — it neither "shows" a dialog nor "exits." The callers return `nullptr` to propagate the error, but the function name suggests a terminal action. This is a readability issue for future maintainers.
+**Description:** The `static bool warned` variable in the no-op `mu_encrypt_blob` is read and written without synchronization. If two threads call `mu_encrypt_blob` concurrently, there's a data race on `warned`. Technically this is undefined behavior per the C++ standard.
 
-**Suggested Fix:** Rename to `LogError` or `ReportError` to match the actual behavior.
+In practice, the worst outcome is the warning being printed twice, and the game client is single-threaded for credential operations. This is a pedantic finding.
+
+**Suggested Fix:** Use `static std::atomic<bool> warned{false};` for standards compliance. Or accept the race since the game is effectively single-threaded here.
 
 ---
 
-### LOW-2: const_cast on GCM auth tag pointer
+### LOW-2: Hostname not zeroed in `DeriveKey` after PBKDF2
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | LOW |
 | File | `MuMain/src/source/Platform/PlatformCompat.h` |
-| Line | 2611 |
+| Lines | 2466–2483 |
 
-**Description:** `const_cast<uint8_t*>(tag)` is used to satisfy `EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, ...)` which takes a non-const `void*` despite only reading the tag. This is a known OpenSSL API wart (fixed in OpenSSL 3.x with `EVP_CIPHER_CTX_ctrl` accepting `const void*` for GET/SET). The cast is correct behavior but should be annotated.
+**Description:** After `PKCS5_PBKDF2_HMAC(hostname, ...)` completes, the `hostname` buffer (256 bytes on the stack) is not zeroed. While the derived key IS properly cleansed via `OPENSSL_cleanse(key, ...)`, the hostname remains in memory. The hostname is part of the key derivation input — knowing it reduces the key derivation to `PBKDF2(known_hostname, known_salt, 100k)`, making the key deterministic.
 
-**Suggested Fix:** Add a brief comment: `// OpenSSL API requires non-const; tag is not modified`
+However, hostname is generally discoverable through other means (network, OS APIs), so this provides negligible additional security. Combined with the "convenience feature, not a security boundary" design, this is a very low severity finding.
+
+**Suggested Fix:** `OPENSSL_cleanse(hostname, sizeof(hostname));` after the PBKDF2 call, for crypto hygiene consistency.
 
 ---
 
@@ -148,31 +214,29 @@ The `ShowErrorAndExit` wrapper (line 57–60) just forwards the message verbatim
 
 | AC | ATDD Status | Review Verdict | Notes |
 |----|-------------|----------------|-------|
-| AC-1 | GREEN | **PASS** | `check-win32-guards.py` validates Data/ — no Win32 guards found |
-| AC-2 | GREEN | **PASS** | MessageBox calls replaced with g_ErrorReport.Write(); windows.h removed from DataFileIO.cpp |
+| AC-1 | GREEN | **PASS** | `check-win32-guards.py` exits 0 for Data/ — verified no `#ifdef _WIN32` in .cpp files |
+| AC-2 | GREEN | **PASS** | MessageBox calls removed, ReportError with g_ErrorReport.Write() used |
 | AC-3 | GREEN | **PASS** | mu_encrypt_blob / mu_decrypt_blob implemented with AES-256-GCM; DPAPI fully removed |
-| AC-4 | GREEN | **PASS** | No `#ifdef _WIN32` in DataFileIO.cpp or GameConfig.cpp |
-| AC-5 | GREEN | **PASS** | Quality gate passes (721/721 files) |
-| AC-STD-1 | GREEN | **PASS** | Code standards met |
+| AC-4 | GREEN | **PASS** | No `#ifdef _WIN32` in DataFileIO.cpp or GameConfig.cpp (header noted in MEDIUM-3) |
+| AC-5 | GREEN | **PASS** | Quality gate passing |
+| AC-STD-1 | GREEN | **PASS** | Code standards met; clang-format clean |
 | AC-STD-2 | GREEN | **PASS** | 3 Catch2 test cases with meaningful assertions |
 | AC-STD-13 | GREEN | **PASS** | ./ctl check exits 0 |
-| AC-STD-15 | GREEN | **PASS** | No force push, clean git history |
+| AC-STD-15 | GREEN | **PASS** | Clean git history, no force push |
 
-### ATDD Accuracy Issue
+### ATDD Accuracy Assessment
 
-**CMake / Build checklist item 3** is marked `[x]` GREEN: *"`PlatformCompat.h` `#if defined(MU_HAS_OPENSSL)` guards AES-256-GCM impl; `#else` falls back to no-op with `g_ErrorReport.Write()` warning"*. The no-op fallback does **not** call `g_ErrorReport.Write()`. This checklist item should be marked as incomplete until HIGH-1 is resolved.
+All ATDD checklist items are accurately marked. The prior ATDD inaccuracy (no-op fallback warning) was fixed in Pass 1. No new ATDD mismatches found.
 
----
+### Test Quality Assessment
 
-## Test Quality Assessment
+The 3 test cases in `test_gameconfig_crypto.cpp` are genuine and well-structured:
 
-The 3 test cases in `test_gameconfig_crypto.cpp` are well-structured:
+1. **Round-trip** — 4 sections: ASCII, binary with embedded nulls, wstring credential bytes, empty input. Good coverage.
+2. **Tamper detection** — Flips a ciphertext byte, verifies GCM auth failure. Meaningful assertion (not vacuous).
+3. **Random IV** — Encrypts same plaintext twice, verifies different ciphertext. Proves nonce uniqueness.
 
-1. **Round-trip test** — covers ASCII, binary with embedded nulls, and wstring payloads. Good coverage of the credential use case.
-2. **Tamper detection** — flips a byte and verifies GCM authentication failure. Meaningful assertion.
-3. **Random IV** — encrypts same plaintext twice and verifies different ciphertext. Proves nonce uniqueness.
-
-**Test gap:** No test for empty/null input behavior of `mu_decrypt_blob` (only tested on `mu_encrypt_blob`). The empty-input SECTION in test 1 only tests the encrypt path's null/zero handling; there's no dedicated SECTION for calling `mu_decrypt_blob` with garbage/short input to verify the minimum-size guard (IV + tag).
+**Minor test gap:** No explicit test for `mu_decrypt_blob` with malformed input (too-short buffer, garbage data). The minimum-size guard (`cbIn < IV_LEN + TAG_LEN`) is untested. This is a LOW-priority gap — the guard is simple and unlikely to regress.
 
 ---
 
@@ -186,87 +250,4 @@ The 3 test cases in `test_gameconfig_crypto.cpp` are well-structured:
 | LOW | 2 |
 | **Total** | **7** |
 
-The implementation successfully removes all Win32 dependencies from the Data layer and provides a solid AES-256-GCM encryption replacement. The two HIGH issues are: (1) the no-op fallback missing its required log warning (ATDD mismatch), and (2) the wchar_t serialization format being platform-specific (design concern that should at minimum be documented). All other issues are code hygiene improvements.
-
----
-
-## Workflow Completion
-
-**Step 2: Code Review Analysis** — ✅ COMPLETE
-
-### Analysis Results
-- **Quality Gate:** ✅ PASSED (verified fresh: 721/721 files)
-- **ACs:** ✅ All 8 ACs implemented and passing tests
-- **Tasks:** ✅ All 5 tasks marked [x] with code evidence
-- **Code Quality:** 7 issues identified and FIXED (adversarial review complete)
-- **ATDD Sync:** ✅ 100% checklist items GREEN (all fixes verified)
-- **Test Quality:** ✅ 3 well-structured Catch2 test cases with meaningful assertions
-
-### All Issues — RESOLVED
-All 7 code quality findings from adversarial review have been fixed:
-- **HIGH-1:** ✅ No-op fallback now logs warning via fprintf(stderr) with static guard
-- **HIGH-2:** ✅ Platform-specific serialization documented at EncryptSetting/DecryptSetting
-- **MEDIUM-1:** ✅ Key material zeroed with OPENSSL_cleanse() in both encrypt/decrypt
-- **MEDIUM-2:** ✅ Error messages now include [DataFileIO] prefix and \r\n suffix via ReportError wrapper
-- **MEDIUM-3:** ✅ Size overflow guard added: `if (cbIn > INT_MAX) return false;`
-- **LOW-1:** ✅ Function renamed from ShowErrorAndExit to ReportError (all callers updated)
-- **LOW-2:** ✅ const_cast annotated with comment explaining OpenSSL API quirk
-
-### Fixes Applied
-1. `MuMain/src/source/Platform/PlatformCompat.h` — no-op fallback warning, key zeroing, size guards, const_cast comment
-2. `MuMain/src/source/Data/GameConfig.cpp` — platform-specific serialization comments
-3. `MuMain/src/source/Data/DataFileIO.cpp` — ReportError wrapper with proper formatting
-4. `MuMain/src/source/Data/DataFileIO.h` — function declaration updated
-5. `MuMain/src/source/Data/Items/ItemDataLoader.cpp` — updated all callers
-6. `MuMain/src/source/Data/Skills/SkillDataLoader.cpp` — updated all callers
-
----
-
-## Step 3: Resolution
-
-**Completed:** 2026-03-25 13:16
-**Final Status:** done
-
-### Summary
-
-| Metric | Count |
-|--------|-------|
-| Issues Found | 7 |
-| Issues Fixed | 7 |
-| Action Items | 0 |
-| Quality Gate Status | PASSED (721/721 files) |
-
-### Resolution Details
-
-- **HIGH-1:** ✅ No-op fallback warning added (fprintf stderr with static guard)
-- **HIGH-2:** ✅ Platform-specific serialization documented in both EncryptSetting/DecryptSetting
-- **MEDIUM-1:** ✅ Cryptographic key material zeroed with OPENSSL_cleanse()
-- **MEDIUM-2:** ✅ Error messages formatted with [DataFileIO] prefix and \r\n suffix
-- **MEDIUM-3:** ✅ Size overflow guard added for ciphertext length checks
-- **LOW-1:** ✅ ShowErrorAndExit renamed to ReportError (all callers updated)
-- **LOW-2:** ✅ const_cast documented with comment explaining OpenSSL API
-
-### Story Status Update
-
-- **Previous Status:** ready-for-review
-- **New Status:** done
-- **Story File:** `/Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-6-3-data-layer-win32-removal/story.md`
-- **ATDD Checklist Synchronized:** Yes (100% items GREEN)
-
-### Files Modified
-
-- `MuMain/src/source/Platform/PlatformCompat.h` - Added no-op fallback warning, key zeroing, size guards, const_cast comment
-- `MuMain/src/source/Data/GameConfig.cpp` - Added platform-specific serialization comments
-- `MuMain/src/source/Data/DataFileIO.cpp` - Implemented ReportError wrapper with proper formatting
-- `MuMain/src/source/Data/DataFileIO.h` - Updated function declaration
-- `MuMain/src/source/Data/Items/ItemDataLoader.cpp` - Updated all callers to ReportError
-- `MuMain/src/source/Data/Skills/SkillDataLoader.cpp` - Updated all callers to ReportError
-
-### Quality Verification
-
-**Final Quality Gate:** ✅ PASSED
-- Files checked: 721/721
-- Format violations: 0
-- Lint violations: 0
-- Win32 guards in Data/: 0
-- Compilation: ✅ Success
+The implementation is solid — all Win32 dependencies are removed from the Data layer, the AES-256-GCM crypto is correctly implemented with proper key management, and tests are meaningful. The two HIGH findings are: (1) PBKDF2 performance overhead from per-call key derivation, and (2) silent credential loss when upgrading from no-op to OpenSSL build. Neither is a blocker — they are improvements to robustness and user experience.
