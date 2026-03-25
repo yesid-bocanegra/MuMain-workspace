@@ -12,8 +12,8 @@
 | Step | Status | Date | Duration |
 |------|--------|------|----------|
 | 1. Quality Gate | **PASSED** | 2026-03-25 | Fresh validation — all checks green |
-| 2. Code Review Analysis | **COMPLETE** | 2026-03-25 | 6 findings identified (1 HIGH, 3 MEDIUM, 2 LOW) — all still present |
-| 3. Code Review Finalize | **PENDING** | — | — |
+| 2. Code Review Analysis | **COMPLETE** | 2026-03-25 | 6 findings identified (1 HIGH, 3 MEDIUM, 2 LOW) |
+| 3. Code Review Finalize | **COMPLETE** | 2026-03-25 | All 6 issues fixed, validation gates passed, story marked DONE, sprint synced |
 
 ## Quality Gate
 
@@ -296,6 +296,44 @@ inline void mu_console_init()
 - **SHOULD FIX in this cycle:** Findings 2–4 (MEDIUM — robustness, testability, correctness)
 - **NICE TO FIX:** Findings 5–6 (LOW — state hygiene, efficiency)
 
+
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-25
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 6 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **Finding 1 (HIGH):** fixed — `SetTextColor()` now always emits both fg+bg via `mu_set_console_text_color_with_bg()`, preventing background color leaking
+- **Finding 2 (MEDIUM):** fixed — Added explicit `#include "WindowsConsole.h"` to `test_console.cpp`, removing fragile transitive dependency
+- **Finding 3 (MEDIUM):** fixed — All 5 ANSI output functions now guard with `mu_console_is_tty_ref()` before emitting escape sequences
+- **Finding 4 (MEDIUM):** fixed — Color mapping test now uses `REQUIRE()` assertions via `GetConsoleTextColorIndex()` to verify state correctness for all 256 combinations + invalid indices
+- **Finding 5 (LOW):** fixed — `Close()` now resets `m_currentTextColor`/`m_currentBgColor` to defaults (white on black)
+- **Finding 6 (LOW):** fixed — Both Win32 and POSIX `mu_console_init()` implementations have `static bool s_inited` idempotency guard
+
+### Story Status Update
+
+- **Previous Status:** review
+- **New Status:** done
+- **Story File Updated:** `_bmad-output/stories/7-6-5-windows-console-cross-platform/story.md`
+- **ATDD Checklist Synchronized:** Yes
+
+### Files Modified
+
+- `MuMain/src/source/Core/WindowsConsole.cpp` — Fixed background color leak (Finding 1), reset color state in Close() (Finding 5)
+- `MuMain/src/source/Platform/PlatformCompat.h` — Added TTY guards to all ANSI output functions (Finding 3), added idempotency guard to mu_console_init() (Finding 6)
+- `MuMain/tests/core/test_console.cpp` — Added explicit WindowsConsole.h include (Finding 2), added real REQUIRE assertions to color mapping test (Finding 4)
+- `_bmad-output/stories/7-6-5-windows-console-cross-platform/story.md` — Status updated to done
+- `_bmad-output/stories/7-6-5-windows-console-cross-platform/review.md` — Pipeline completion documented
 
 ---
 

@@ -203,7 +203,7 @@ sprints:
       - 7-6-2-win32-string-include-cleanup        # 5 pts | Flow:E | Deps: 7-6-1
       - 7-6-3-data-layer-win32-removal            # 5 pts | Flow:E | Deps: 7-6-1
       - 7-6-4-cpu-usage-cross-platform            # 3 pts | Flow:E | Deps: 7-6-1
-      - 7-6-5-windows-console-cross-platform      # 5 pts | review | Flow:E | Deps: 7-6-1
+      - 7-6-5-windows-console-cross-platform      # 5 pts | done | Flow:E | Deps: 7-6-1
       - 7-6-6-shoplistmanager-http-cross-platform # 13 pts | Flow:E | Deps: 7-6-1
       - 7-6-7-error-report-cross-platform-diagnostics # 8 pts | Flow:E | Deps: 7-6-1, 7-1-2 ✓
       # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
@@ -241,7 +241,7 @@ sprints:
 # =====================
 flow_metrics:
   velocity:
-    current_sprint: 26         # Sprint 7: 7-3-0 done (3 pts) + 7-5-1 done (5 pts) + 7-6-1 done (5 pts) + 7-6-2 done (5 pts) + 7-6-3 done (5 pts) + 7-6-4 done (3 pts)
+    current_sprint: 31         # Sprint 7: 7-3-0 done (3 pts) + 7-5-1 done (5 pts) + 7-6-1 done (5 pts) + 7-6-2 done (5 pts) + 7-6-3 done (5 pts) + 7-6-4 done (3 pts) + 7-6-5 done (5 pts)
     previous_sprint: 26        # Sprint 6: complete (26 pts delivered)
     rolling_average: 27.0      # 6-sprint average: (18+28+22+48+20+26)/6 — Sprint 7 not yet complete
     trend: stable              # Consistent delivery across all 6 completed sprints
@@ -528,7 +528,7 @@ development_status:
   7-6-2-win32-string-include-cleanup: done               # 5 pts | Flow:E | Deps: 7-6-1 | code-review-finalize completed 2026-03-25
   7-6-3-data-layer-win32-removal: done                # 5 pts | Flow:E | Deps: 7-6-1 | code-review-finalize completed 2026-03-25
   7-6-4-cpu-usage-cross-platform: done                # 3 pts | Flow:E | Deps: 7-6-1 | code-review-finalize completed 2026-03-25
-  7-6-5-windows-console-cross-platform: review # 5 pts | Flow:E | Deps: 7-6-1
+  7-6-5-windows-console-cross-platform: done # 5 pts | Flow:E | Deps: 7-6-1 | code-review-finalize completed 2026-03-25
   7-6-6-shoplistmanager-http-cross-platform: ready-for-dev # 13 pts | Flow:E | Deps: 7-6-1
   7-6-7-error-report-cross-platform-diagnostics: ready-for-dev # 8 pts | Flow:E | Deps: 7-6-1, 7-1-2 ✓
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: 7-6-1 + all 7-6-* done
