@@ -1,0 +1,68 @@
+metadata:
+  story_key: "7-5-1"
+  status: passed
+  total_iterations: 1
+  last_updated: "2026-03-24T21:00:00-05:00"
+
+test_class:
+  package: "cmake-script"
+  class_name: "ATDD CMake Script Tests"
+  full_path: "MuMain/tests/build/*7_5_1*.cmake"
+
+test_results:
+  total_tests: 10
+  passed: 10
+  failed: 0
+  ac_mapping:
+    - ac_id: "AC-1"
+      test_name: "7.5.1-AC-1:swprintf-signature"
+      status: passed
+    - ac_id: "AC-2"
+      test_name: "7.5.1-AC-2:enum-cast-zzzopen"
+      status: passed
+    - ac_id: "AC-3"
+      test_name: "7.5.1-AC-3:wchar-null-compare"
+      status: passed
+    - ac_id: "AC-4"
+      test_name: "7.5.1-AC-4:unused-vars"
+      status: passed
+    - ac_id: "AC-5"
+      test_name: "7.5.1-AC-5:precedence-parens"
+      status: passed
+    - ac_id: "AC-6"
+      test_name: "7.5.1-AC-6:sign-compare"
+      status: passed
+    - ac_id: "AC-7"
+      test_name: "7.5.1-AC-7:char-buff-include"
+      status: passed
+    - ac_id: "AC-9"
+      test_name: "7.5.1-AC-9:skip-checks-removed"
+      status: passed
+    - ac_id: "AC-10"
+      test_name: "7.5.1-AC-10:mingw-no-regression"
+      status: passed
+    - ac_id: "AC-STD-11"
+      test_name: "7.5.1-AC-STD-11:flow-code-traceability"
+      status: passed
+  passing_tests:
+    - "7.5.1-AC-1:swprintf-signature"
+    - "7.5.1-AC-2:enum-cast-zzzopen"
+    - "7.5.1-AC-3:wchar-null-compare"
+    - "7.5.1-AC-4:unused-vars"
+    - "7.5.1-AC-5:precedence-parens"
+    - "7.5.1-AC-6:sign-compare"
+    - "7.5.1-AC-7:char-buff-include"
+    - "7.5.1-AC-9:skip-checks-removed"
+    - "7.5.1-AC-10:mingw-no-regression"
+    - "7.5.1-AC-STD-11:flow-code-traceability"
+  failing_tests: []
+
+iterations:
+  - iteration: 1
+    actions: []
+    tests_fixed: 0
+    tests_remaining: 0
+    note: "All tests passed on first run — no fixes required"
+
+blockers: []
+next_actions: []
