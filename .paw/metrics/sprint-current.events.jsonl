@@ -124,3 +124,5 @@
 {"timestamp":"2026-03-25T13:02:44.111074+00:00","event_type":"step_retried","story_key":"7-6-1-macos-native-build-compilation","step":"completeness-gate","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-25T13:02:44.111767+00:00","event_type":"feedback_saved","story_key":"7-6-1-macos-native-build-compilation","step":"completeness-gate","sprint":null,"epic":"7","data":{"regression_target":"completeness-gate"}}
 {"timestamp":"2026-03-25T13:02:46.119084+00:00","event_type":"step_started","story_key":"7-6-1-macos-native-build-compilation","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-25T13:09:42.475924+00:00","event_type":"step_passed","story_key":"7-6-1-macos-native-build-compilation","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":416.4,"input_tokens":688,"output_tokens":22575,"cache_creation_tokens":621842,"cache_read_tokens":7945075,"num_turns":61,"num_tool_calls":26}}
+{"timestamp":"2026-03-25T13:09:43.482067+00:00","event_type":"step_started","story_key":"7-6-1-macos-native-build-compilation","step":"code-review","sprint":null,"epic":"7","data":{}}
