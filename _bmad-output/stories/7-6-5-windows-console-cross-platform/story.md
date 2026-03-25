@@ -41,11 +41,11 @@ Status: ready-for-dev
 ## Functional Acceptance Criteria
 
 - [ ] **AC-1:** `python3 MuMain/scripts/check-win32-guards.py` exits 0 — no violations in `Core/WindowsConsole.cpp`.
-- [ ] **AC-2:** `Core/WindowsConsole.cpp` compiles without `AllocConsole`, `SetConsoleMode`, `GetStdHandle`, `SetConsoleTitle`, `GetConsoleScreenBufferInfo`, `FillConsoleOutputCharacter`, `SetConsoleTextAttribute`, `GetConsoleWindow`, `COORD`, `CONSOLE_SCREEN_BUFFER_INFO`, `SMALL_RECT`, `CHAR_INFO`, or any other Win32 console API.
-- [ ] **AC-3:** On Windows the console behaviour is unchanged — Win32 console APIs used via the abstraction layer as before.
-- [ ] **AC-4:** On macOS/Linux: console initialisation uses `isatty(STDOUT_FILENO)` to detect terminal; colour output uses ANSI escape sequences; cursor positioning uses ANSI sequences; console clear uses `\033[2J\033[H`.
-- [ ] **AC-5:** On macOS/Linux: `SetConsoleTitle` maps to setting the terminal title via `\033]0;{title}\007` ANSI OSC escape.
-- [ ] **AC-6:** On macOS/Linux: `GetConsoleScreenBufferInfo` (used for width/height) maps to `ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws)` → `ws.ws_col` / `ws.ws_row`; if unavailable, defaults to 80×24.
+- [ ] **AC-2:** `Core/WindowsConsole.cpp` compiles without `AllocConsole`, `SetConsoleMode`, `GetStdHandle`, `SetConsoleTitle`, `GetConsoleScreenBufferInfo`, `FillConsoleOutputCharacter`, `SetConsoleTextAttribute`, `GetConsoleWindow`, `COORD`, `CONSOLE_SCREEN_BUFFER_INFO`, `SMALL_RECT`, `CHAR_INFO`, or any other Win32 console API — on any platform.
+- [ ] **AC-3:** Console initialisation on **all platforms** (including Windows) uses ANSI escape sequences. On Windows, `mu_console_init()` calls `SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT)` once to enable ANSI support (Windows 10+), then uses the same ANSI path as macOS/Linux. Win32 console APIs (`SetConsoleTextAttribute`, `FillConsoleOutputCharacter`, etc.) are deleted entirely.
+- [ ] **AC-4:** Colour output uses ANSI escape sequences on all platforms; cursor positioning uses ANSI sequences; console clear uses `\033[2J\033[H`.
+- [ ] **AC-5:** Terminal title set via `\033]0;{title}\007` ANSI OSC escape on all platforms.
+- [ ] **AC-6:** Console size on all platforms: `ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws)` on POSIX; on Windows, `GetConsoleScreenBufferInfo` used only as a fallback inside `mu_console_init()` if ANSI terminal size reporting is unavailable — not used in game logic.
 - [ ] **AC-7:** `./ctl check` passes — build + format-check + lint all green.
 
 ---
@@ -65,13 +65,13 @@ Status: ready-for-dev
   - [ ] 1.1: Read the file completely; list every Win32 API, type, and constant used
   - [ ] 1.2: Group by functional category: init, colour, cursor, size, clear, title
 
-- [ ] **Task 2: Add POSIX terminal abstraction to PlatformCompat.h** (AC-4, AC-5, AC-6)
-  - [ ] 2.1: Add `mu_console_init()` — Windows: `AllocConsole` + `SetConsoleMode`; macOS/Linux: `isatty` check, store `g_muConsoleIsTTY`
-  - [ ] 2.2: Add `mu_set_console_title(const wchar_t* title)` — Windows: `SetConsoleTitleW`; POSIX: `printf("\033]0;%ls\007", title)` (convert via `mu_wchar_to_utf8`)
-  - [ ] 2.3: Add `mu_set_console_text_color(int colorCode)` — Windows: `SetConsoleTextAttribute`; POSIX: ANSI colour escape
-  - [ ] 2.4: Add `mu_get_console_size(int* cols, int* rows)` — Windows: `GetConsoleScreenBufferInfo`; POSIX: `ioctl(TIOCGWINSZ)`, fallback 80×24
-  - [ ] 2.5: Add `mu_console_clear()` — Windows: `FillConsoleOutputCharacter` + `SetConsoleCursorPosition`; POSIX: `printf("\033[2J\033[H")`
-  - [ ] 2.6: Add `mu_console_set_cursor_position(int x, int y)` — Windows: `SetConsoleCursorPosition`; POSIX: `printf("\033[%d;%dH", y+1, x+1)`
+- [ ] **Task 2: Add cross-platform ANSI terminal abstraction to PlatformCompat.h** (AC-3, AC-4, AC-5, AC-6)
+  - [ ] 2.1: Add `mu_console_init()` — calls `SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT)` on Windows to enable ANSI; checks `isatty(STDOUT_FILENO)` on all platforms; stores `g_muConsoleIsTTY`. No `#ifdef _WIN32` in `WindowsConsole.cpp` — this init call is unconditional.
+  - [ ] 2.2: Add `mu_set_console_title(const wchar_t* title)` — ANSI OSC: `printf("\033]0;%s\007", mu_wchar_to_utf8(title))` — same on all platforms
+  - [ ] 2.3: Add `mu_set_console_text_color(int colorCode)` — ANSI colour escape (`\033[31m` etc.) — same on all platforms
+  - [ ] 2.4: Add `mu_get_console_size(int* cols, int* rows)` — `ioctl(STDOUT_FILENO, TIOCGWINSZ)` on POSIX; `GetConsoleScreenBufferInfo` fallback on Windows only if ANSI size unavailable; default 80×24
+  - [ ] 2.5: Add `mu_console_clear()` — `printf("\033[2J\033[H")` — same on all platforms
+  - [ ] 2.6: Add `mu_console_set_cursor_position(int x, int y)` — `printf("\033[%d;%dH", y+1, x+1)` — same on all platforms
 
 - [ ] **Task 3: Rewrite Core/WindowsConsole.cpp** (AC-3, AC-4)
   - [ ] 3.1: Replace each Win32 console API call with the corresponding `mu_*` abstraction from Task 2
@@ -103,9 +103,9 @@ None — no API, event, or navigation contracts.
 
 ## Dev Notes
 
-### Critical Rule (from project-context.md)
+### Rule
 
-**NO `#ifdef _WIN32` in game logic.** All Win32 console API calls must be wrapped in `mu_*` functions in `PlatformCompat.h`. `WindowsConsole.cpp` must not contain any `#ifdef _WIN32` after this story.
+**Win32 console API is deleted, not wrapped.** ANSI escape sequences are the single implementation on all platforms. Windows 10+ (released 2015) supports ANSI natively once `ENABLE_VIRTUAL_TERMINAL_PROCESSING` is set. `WindowsConsole.cpp` contains zero `#ifdef _WIN32` and zero Win32 console API calls after this story.
 
 ### ANSI Colour Code Mapping
 
@@ -126,7 +126,7 @@ None — no API, event, or navigation contracts.
 #include <sys/ioctl.h> // ioctl, TIOCGWINSZ, struct winsize
 ```
 
-These are already available on macOS/Linux. On Windows they are not needed (Win32 APIs used instead via PlatformCompat.h).
+On Windows, `<io.h>` provides `isatty` and `STDOUT_FILENO`. `sys/ioctl.h` is POSIX-only; on Windows, `GetConsoleScreenBufferInfo` is used only inside `mu_console_init()` as a size fallback — not visible to game logic.
 
 ### References
 

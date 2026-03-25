@@ -42,9 +42,7 @@ Status: ready-for-dev
 
 - [ ] **AC-1:** `python3 MuMain/scripts/check-win32-guards.py` exits 0 — no violations in `Data/`.
 - [ ] **AC-2:** `Data/DataFileIO.cpp` — `MessageBox()` dialog calls replaced with `g_ErrorReport.Write()` logging; no `windows.h` or Win32 GUI API usage in data loading code.
-- [ ] **AC-3:** `Data/GameConfig.cpp` / `Data/GameConfig.h` — Windows DPAPI (`CryptProtectData`, `CryptUnprotectData`, `DATA_BLOB`, `LocalFree`) replaced with a cross-platform `mu_encrypt_blob` / `mu_decrypt_blob` abstraction in `PlatformCompat.h`.
-  - On Windows: `mu_encrypt_blob` wraps DPAPI (same behaviour as today).
-  - On macOS/Linux: `mu_encrypt_blob` uses AES-256-GCM via OpenSSL (`libcrypto`) with a machine-derived key (e.g. derived from machine hostname + fixed salt via PBKDF2), or if OpenSSL is unavailable, stores data as-is with a compile-time warning.
+- [ ] **AC-3:** `Data/GameConfig.cpp` / `Data/GameConfig.h` — Windows DPAPI (`CryptProtectData`, `CryptUnprotectData`, `DATA_BLOB`, `LocalFree`) deleted and replaced with a single cross-platform `mu_encrypt_blob` / `mu_decrypt_blob` implementation using AES-256-GCM via OpenSSL (`libcrypto`) on **all** platforms, including Windows. DPAPI is removed entirely — OpenSSL is the one implementation everywhere.
 - [ ] **AC-4:** No `#ifdef _WIN32` wraps any function call or data type in `Data/DataFileIO.cpp` or `Data/GameConfig.cpp`.
 - [ ] **AC-5:** `./ctl check` passes — build + format-check + lint all green.
 
@@ -67,20 +65,11 @@ Status: ready-for-dev
   - [ ] 1.3: Remove `windows.h` include if it was only needed for `MessageBox`
   - [ ] 1.4: Remove any `#ifdef _WIN32` wrapper blocks
 
-- [ ] **Task 2: Data/GameConfig — add platform crypto abstraction** (AC-3)
-  - [ ] 2.1: Add to `Platform/PlatformCompat.h` (in the `#else // !_WIN32` section):
-    ```cpp
-    // mu_encrypt_blob / mu_decrypt_blob — cross-platform DPAPI equivalent.
-    // macOS/Linux: AES-256-GCM via OpenSSL or identity (no-op) fallback.
-    inline bool mu_encrypt_blob(const void* pIn, DWORD cbIn, void** ppOut, DWORD* pcbOut);
-    inline bool mu_decrypt_blob(const void* pIn, DWORD cbIn, void** ppOut, DWORD* pcbOut);
-    inline void mu_free_blob(void* p);  // matches LocalFree semantics
-    ```
-  - [ ] 2.2: Add to `Platform/PlatformCompat.h` (in the `#ifdef _WIN32` section): forward to DPAPI
-  - [ ] 2.3: In `Data/GameConfig.cpp`, replace `CryptProtectData(...)` with `mu_encrypt_blob(...)` and `CryptUnprotectData(...)` with `mu_decrypt_blob(...)`
-  - [ ] 2.4: Replace `LocalFree(pBlob.pbData)` with `mu_free_blob(pBlob.pbData)`
-  - [ ] 2.5: Remove `DATA_BLOB`, `DPAPI`, `#include <wincrypt.h>` — types now hidden behind abstraction
-  - [ ] 2.6: Remove `#ifdef _WIN32` wrappers from `GameConfig.cpp` and `GameConfig.h`
+- [ ] **Task 2: Data/GameConfig — replace DPAPI with OpenSSL everywhere** (AC-3)
+  - [ ] 2.1: Add `mu_encrypt_blob(const void* pIn, size_t cbIn, std::vector<uint8_t>& out)` and `mu_decrypt_blob(const void* pIn, size_t cbIn, std::vector<uint8_t>& out)` to `Platform/PlatformCompat.h` — one implementation using OpenSSL AES-256-GCM; no `#ifdef _WIN32`; key derived via PBKDF2(gethostname(), fixed_salt, 100000, SHA-256)
+  - [ ] 2.2: In `Data/GameConfig.cpp`, replace `CryptProtectData` / `CryptUnprotectData` / `LocalFree` with `mu_encrypt_blob` / `mu_decrypt_blob`
+  - [ ] 2.3: Remove `DATA_BLOB`, `#include <wincrypt.h>`, `#include <dpapi.h>` entirely — no Windows crypto types remain
+  - [ ] 2.4: Remove all `#ifdef _WIN32` wrappers from `GameConfig.cpp` and `GameConfig.h`
 
 - [ ] **Task 3: OpenSSL CMake integration** (AC-3)
   - [ ] 3.1: In `MuMain/src/CMakeLists.txt`, add `find_package(OpenSSL OPTIONAL_COMPONENTS Crypto)` for non-Windows builds
@@ -130,28 +119,19 @@ MessageBoxW(nullptr, L"Failed to load item data", L"Error", MB_OK);
 g_ErrorReport.Write(L"[DataFileIO] Failed to load item data\r\n");
 ```
 
-### DPAPI Abstraction Design
+### Crypto Implementation
+
+One implementation, all platforms — no `#ifdef _WIN32`:
 
 ```
 PlatformCompat.h
-  #ifdef _WIN32
-    mu_encrypt_blob → CryptProtectData (DPAPI, user-scoped)
-    mu_decrypt_blob → CryptUnprotectData
-    mu_free_blob    → LocalFree
-  #else
-    #if MU_HAS_OPENSSL
-      mu_encrypt_blob → AES-256-GCM, key = PBKDF2(gethostname(), fixed_salt, 100000, SHA-256)
-      mu_decrypt_blob → AES-256-GCM decrypt
-      mu_free_blob    → free()
-    #else
-      mu_encrypt_blob → identity (copy as-is, log warning)
-      mu_decrypt_blob → identity
-      mu_free_blob    → free()
-    #endif
-  #endif
+  mu_encrypt_blob → AES-256-GCM (OpenSSL), key = PBKDF2(gethostname(), fixed_salt, 100000, SHA-256)
+  mu_decrypt_blob → AES-256-GCM decrypt (OpenSSL)
 ```
 
-**Security note:** The no-op fallback is acceptable for development builds. Game config encryption is a convenience feature, not a security boundary — the game client runs locally and the user has file system access anyway.
+DPAPI is deleted. OpenSSL is already required for libcurl (story 7-6-6 links `OpenSSL::Crypto` via libcurl's transitive dependency on most systems); if not, `find_package(OpenSSL REQUIRED)` pulls it in.
+
+**Security note:** Game config encryption is a convenience feature, not a security boundary — the game client runs locally and the user has file system access anyway.
 
 ### Logging Mechanism
 
