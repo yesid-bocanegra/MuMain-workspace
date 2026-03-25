@@ -14,7 +14,7 @@
 |------|----------|--------|------|----------|
 | 1 | code-review-quality-gate | **PASSED** | 2026-03-25 13:51 | system (re-validated) |
 | 2 | code-review (adversarial) | **COMPLETE** | 2026-03-25 14:07 | Claude Haiku 4.5 (fresh review, pass 3) |
-| 3 | code-review-finalize | PENDING | — | — |
+| 3 | code-review-finalize | **COMPLETE** | 2026-03-25 14:15 | Claude Opus 4.6 |
 
 ---
 
@@ -281,6 +281,51 @@ The implementation is solid — all Win32 dependencies are removed from the Data
 
 **Next Workflow:** `/bmad:pcc:workflows:code-review-finalize 7-6-3-data-layer-win32-removal`
 
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-25 14:15 GMT-5
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 7 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **HIGH-1:** fixed — Cached PBKDF2 derived key via `GetCachedKey()` static function. Eliminates 100k-iteration PBKDF2 per encrypt/decrypt call.
+- **HIGH-2:** fixed — Added format version byte prefix (`0x01` for AES-256-GCM, `0x00` for no-op). Decrypt detects format and handles cross-build compatibility. Legacy data without version byte handled via fallback.
+- **MEDIUM-1:** fixed — Added `g_ErrorReport.Write()` warning in `EncryptAndSaveCredentials()` when encryption fails, with early return.
+- **MEDIUM-2:** fixed — Moved crypto implementation from inline functions in `PlatformCompat.h` to `PlatformCrypto.h` (declarations) + `PlatformCrypto.cpp` (implementations). OpenSSL headers now confined to single TU. Added `OpenSSL::Crypto` linkage to `MUPlatform` target.
+- **MEDIUM-3:** fixed — Removed `#ifdef _WIN32` conditional include block from `DataFileIO.h`. Now unconditionally includes `Platform/PlatformTypes.h` and `Platform/PlatformCompat.h`.
+- **LOW-1:** fixed — Changed `static bool warned` to `static std::atomic<bool> warned{false}` with `exchange()` for thread-safe one-shot warning in no-op fallback.
+- **LOW-2:** fixed — Added `OPENSSL_cleanse(hostname, sizeof(hostname))` after PBKDF2 derivation for crypto hygiene consistency.
+
+### Story Status Update
+
+- **Previous Status:** ready-for-review
+- **New Status:** done
+- **Story File Updated:** _bmad-output/stories/7-6-3-data-layer-win32-removal/story.md
+- **ATDD Checklist Synchronized:** Yes (all 15/15 items GREEN)
+
+### Files Modified
+
+- `MuMain/src/source/Platform/PlatformCrypto.h` — created (crypto declarations, no OpenSSL includes)
+- `MuMain/src/source/Platform/PlatformCrypto.cpp` — created (crypto implementations with key caching, version bytes, hostname zeroing, atomic warned flag)
+- `MuMain/src/source/Platform/PlatformCompat.h` — removed inline crypto code, replaced with `#include "PlatformCrypto.h"`
+- `MuMain/src/source/Data/GameConfig.cpp` — added encrypt failure logging
+- `MuMain/src/source/Data/DataFileIO.h` — removed `#ifdef _WIN32` conditional include
+- `MuMain/src/CMakeLists.txt` — added OpenSSL::Crypto linkage to MUPlatform
+
+### Quality Gate
+
+- **Lint:** PASS (723/723 files, 100%)
+- **Build:** PASS (349/349 targets linked)
+- **Format:** PASS (clang-format clean after auto-format)
 
 ---
 

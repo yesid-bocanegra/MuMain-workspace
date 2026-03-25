@@ -177,6 +177,7 @@ claude-opus-4-6
 | 2026-03-25 | Task 4: Create Catch2 unit tests | test_gameconfig_crypto.cpp, tests/CMakeLists.txt |
 | 2026-03-25 | Task 5: Validate — quality gate + check-win32-guards pass | — |
 | 2026-03-25 | Code review fixes: 7 issues resolved (HIGH-1,2; MED-1,2,3; LOW-1,2) | PlatformCompat.h, GameConfig.cpp, DataFileIO.cpp/h, ItemDataLoader.cpp, SkillDataLoader.cpp |
+| 2026-03-25 | Code review finalize: moved crypto to PlatformCrypto.cpp, cached PBKDF2 key, added format versioning, added encrypt failure logging, removed #ifdef from DataFileIO.h | PlatformCrypto.h, PlatformCrypto.cpp, PlatformCompat.h, GameConfig.cpp, DataFileIO.h, CMakeLists.txt |
 
 ### File List
 
@@ -191,3 +192,6 @@ claude-opus-4-6
 | MuMain/src/source/Data/Items/ItemDataLoader.cpp | modified | Updated callers: ShowErrorAndExit → ReportError |
 | MuMain/src/source/Data/Skills/SkillDataLoader.cpp | modified | Updated callers: ShowErrorAndExit → ReportError |
 | MuMain/tests/CMakeLists.txt | modified | Registered test_gameconfig_crypto.cpp |
+| MuMain/src/source/Platform/PlatformCrypto.h | created | Crypto function declarations (no OpenSSL includes) |
+| MuMain/src/source/Platform/PlatformCrypto.cpp | created | Crypto implementations — confined OpenSSL headers to single TU |
+| MuMain/src/source/Data/DataFileIO.h | modified | Removed #ifdef _WIN32 conditional include |
