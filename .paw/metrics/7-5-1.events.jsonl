@@ -14,3 +14,5 @@
 {"timestamp":"2026-03-25T01:18:43.766946+00:00","event_type":"step_retried","story_key":"7-5-1","step":"dev-story","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-25T01:18:43.768452+00:00","event_type":"feedback_saved","story_key":"7-5-1","step":"dev-story","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-03-25T01:18:45.778455+00:00","event_type":"step_started","story_key":"7-5-1","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-25T01:25:37.316686+00:00","event_type":"step_passed","story_key":"7-5-1","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":411.5,"input_tokens":10105,"output_tokens":5448,"cache_creation_tokens":216750,"cache_read_tokens":2792680,"num_turns":36,"num_tool_calls":20}}
+{"timestamp":"2026-03-25T01:25:38.327125+00:00","event_type":"step_started","story_key":"7-5-1","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
