@@ -1,6 +1,6 @@
 # Story 7.5.1: Fix Remaining macOS Build Failures and Remove Quality Gate Bypass
 
-Status: code-review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
