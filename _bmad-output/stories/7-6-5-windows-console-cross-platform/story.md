@@ -1,6 +1,6 @@
 # Story 7.6.5: Cross-Platform Terminal / Console
 
-Status: ready-for-dev
+Status: atdd-complete
 
 ---
 

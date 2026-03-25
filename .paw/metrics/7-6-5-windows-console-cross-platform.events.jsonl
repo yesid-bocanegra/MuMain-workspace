@@ -1,2 +1,4 @@
 {"timestamp":"2026-03-25T21:13:36.892218+00:00","event_type":"story_started","story_key":"7-6-5-windows-console-cross-platform","step":null,"sprint":null,"epic":"7","data":{"from_step":"validate-story","to_step":"code-review-finalize","planned_steps":11,"fresh":false}}
 {"timestamp":"2026-03-25T21:13:36.892802+00:00","event_type":"step_started","story_key":"7-6-5-windows-console-cross-platform","step":"validate-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-25T21:14:55.700298+00:00","event_type":"step_passed","story_key":"7-6-5-windows-console-cross-platform","step":"validate-story","sprint":null,"epic":"7","data":{"duration_seconds":78.8,"input_tokens":347,"output_tokens":3397,"cache_creation_tokens":458014,"cache_read_tokens":3079192,"num_turns":31,"num_tool_calls":14}}
+{"timestamp":"2026-03-25T21:14:56.711331+00:00","event_type":"step_started","story_key":"7-6-5-windows-console-cross-platform","step":"atdd","sprint":null,"epic":"7","data":{}}
