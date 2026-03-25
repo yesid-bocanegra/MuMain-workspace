@@ -1,6 +1,6 @@
 # Story 7.6.3: Data Layer Win32 Removal
 
-Status: review
+Status: done
 
 ---
 
@@ -176,6 +176,7 @@ claude-opus-4-6
 | 2026-03-25 | Task 2.1: Implement AES-256-GCM crypto in PlatformCompat.h | PlatformCompat.h |
 | 2026-03-25 | Task 4: Create Catch2 unit tests | test_gameconfig_crypto.cpp, tests/CMakeLists.txt |
 | 2026-03-25 | Task 5: Validate — quality gate + check-win32-guards pass | — |
+| 2026-03-25 | Code review fixes: 7 issues resolved (HIGH-1,2; MED-1,2,3; LOW-1,2) | PlatformCompat.h, GameConfig.cpp, DataFileIO.cpp/h, ItemDataLoader.cpp, SkillDataLoader.cpp |
 
 ### File List
 
@@ -187,4 +188,6 @@ claude-opus-4-6
 | MuMain/src/source/Platform/PlatformCompat.h | modified | Added mu_encrypt_blob/mu_decrypt_blob (AES-256-GCM) |
 | MuMain/src/CMakeLists.txt | modified | Added OpenSSL::Crypto optional dependency |
 | MuMain/tests/data/test_gameconfig_crypto.cpp | created | Catch2 unit tests for crypto round-trip |
+| MuMain/src/source/Data/Items/ItemDataLoader.cpp | modified | Updated callers: ShowErrorAndExit → ReportError |
+| MuMain/src/source/Data/Skills/SkillDataLoader.cpp | modified | Updated callers: ShowErrorAndExit → ReportError |
 | MuMain/tests/CMakeLists.txt | modified | Registered test_gameconfig_crypto.cpp |
