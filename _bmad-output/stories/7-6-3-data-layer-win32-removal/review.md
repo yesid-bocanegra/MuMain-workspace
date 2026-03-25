@@ -9,7 +9,16 @@
 
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASS — all checks green
+
+| Check | Component | Result |
+|-------|-----------|--------|
+| lint | mumain (backend) | **PASS** — `make -C MuMain lint` |
+| build | mumain (backend) | **PASS** — cmake configure + build |
+| coverage | mumain (backend) | **PASS** — no coverage configured yet |
+| boot | N/A | **SKIP** — game client binary, no server to boot |
+
+**Non-deterministic checks:** None applicable (no SonarCloud, no schema alignment, no E2E tests for this infrastructure story).
 
 ---
 
