@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-25T19:18:09.900358+00:00","event_type":"story_started","story_key":"7-6-4-cpu-usage-cross-platform","step":null,"sprint":null,"epic":"7","data":{"from_step":"validate-story","to_step":"code-review-finalize","planned_steps":11,"fresh":false}}
+{"timestamp":"2026-03-25T19:18:09.900785+00:00","event_type":"step_started","story_key":"7-6-4-cpu-usage-cross-platform","step":"validate-story","sprint":null,"epic":"7","data":{}}
