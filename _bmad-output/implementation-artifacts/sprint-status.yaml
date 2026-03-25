@@ -203,7 +203,7 @@ sprints:
       - 7-6-2-win32-string-include-cleanup        # 5 pts | Flow:E | Deps: 7-6-1
       - 7-6-3-data-layer-win32-removal            # 5 pts | Flow:E | Deps: 7-6-1
       - 7-6-4-cpu-usage-cross-platform            # 3 pts | Flow:E | Deps: 7-6-1
-      - 7-6-5-windows-console-cross-platform      # 5 pts | Flow:E | Deps: 7-6-1
+      - 7-6-5-windows-console-cross-platform      # 5 pts | review | Flow:E | Deps: 7-6-1
       - 7-6-6-shoplistmanager-http-cross-platform # 13 pts | Flow:E | Deps: 7-6-1
       - 7-6-7-error-report-cross-platform-diagnostics # 8 pts | Flow:E | Deps: 7-6-1, 7-1-2 ✓
       # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
