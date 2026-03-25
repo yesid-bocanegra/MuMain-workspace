@@ -3,7 +3,7 @@
 **Story ID:** 7-6-2-win32-string-include-cleanup
 **Flow Code:** VS0-QUAL-WIN32CLEAN-STRINCLUDE
 **Story Type:** infrastructure
-**Phase:** RED (tests created, implementation pending)
+**Phase:** GREEN (all tests passing, implementation complete)
 **Generated:** 2026-03-25
 
 ---
@@ -85,93 +85,93 @@ All items start as `[ ]` (pending). Developer checks off each item as tasks are 
 
 ### Setup & Preparation
 
-- [ ] Story 7-6-1 prerequisite verified complete (macOS native build compiles)
-- [ ] `python3 MuMain/scripts/check-win32-guards.py` run on baseline — documents initial violations
+- [x] Story 7-6-1 prerequisite verified complete (macOS native build compiles)
+- [x] `python3 MuMain/scripts/check-win32-guards.py` run on baseline — documents initial violations
 
 ### Task 1: Core/muConsoleDebug.cpp (AC-2)
 
-- [ ] `1.1` Remove `#ifdef _WIN32 / #include <io.h> / #else / #include <unistd.h> / #endif` include-selection block
-- [ ] `1.2` Replace `WideCharToMultiByte(CP_UTF8, ...)` call with `mu_wchar_to_utf8(src, ...)` from PlatformCompat.h
-- [ ] `1.3` Verify no remaining `#ifdef _WIN32` code-wrapping blocks in the file
-- [ ] `1.4` `./ctl check` passes after this task (format + lint clean)
-- [ ] `AC-2 cmake test` passes: `7.6.2-AC-2:console-debug-migration`
+- [x] `1.1` Remove `#ifdef _WIN32 / #include <io.h> / #else / #include <unistd.h> / #endif` include-selection block
+- [x] `1.2` Replace `WideCharToMultiByte(CP_UTF8, ...)` call with `mu_wchar_to_utf8(src, ...)` from PlatformCompat.h
+- [x] `1.3` Verify no remaining `#ifdef _WIN32` code-wrapping blocks in the file
+- [x] `1.4` `./ctl check` passes after this task (format + lint clean)
+- [x] `AC-2 cmake test` passes: `7.6.2-AC-2:console-debug-migration`
 
 ### Task 2: Core/StringUtils.h (AC-3)
 
-- [ ] `2.1` Replace `WideCharToMultiByte` with `mu_wchar_to_utf8()` call
-- [ ] `2.2` Remove `windows.h` include-selection block if PlatformCompat.h is already included via stdafx.h
-- [ ] `2.3` Verify no bare `#ifdef _WIN32` wrapping any utility function
-- [ ] `2.4` `./ctl check` passes after this task
-- [ ] `AC-3 cmake test` passes: `7.6.2-AC-3:string-utils-migration`
+- [x] `2.1` Replace `WideCharToMultiByte` with `mu_wchar_to_utf8()` call
+- [x] `2.2` Remove `windows.h` include-selection block if PlatformCompat.h is already included via stdafx.h
+- [x] `2.3` Verify no bare `#ifdef _WIN32` wrapping any utility function
+- [x] `2.4` `./ctl check` passes after this task
+- [x] `AC-3 cmake test` passes: `7.6.2-AC-3:string-utils-migration`
 
 ### Task 3: Data/GlobalBitmap.cpp (AC-4)
 
-- [ ] `3.1` Replace `WideCharToMultiByte(CP_UTF8, ...)` block with `mu_wchar_to_utf8()` call
-- [ ] `3.2` Remove `#ifdef _WIN32` wrapper around the WideCharToMultiByte call
-- [ ] `3.3` `./ctl check` passes after this task
-- [ ] `AC-4 cmake test` passes: `7.6.2-AC-4:global-bitmap-migration`
+- [x] `3.1` Replace `WideCharToMultiByte(CP_UTF8, ...)` block with `mu_wchar_to_utf8()` call
+- [x] `3.2` Remove `#ifdef _WIN32` wrapper around the WideCharToMultiByte call
+- [x] `3.3` `./ctl check` passes after this task
+- [x] `AC-4 cmake test` passes: `7.6.2-AC-4:global-bitmap-migration`
 
 ### Task 4: GameShop/MsgBoxIGSBuyConfirm.cpp (AC-5)
 
-- [ ] `4.1` Remove `#ifdef _WIN32 / #include <strsafe.h> / #endif` include block
-- [ ] `4.2` Replace `StringCbPrintf` / `StringCchPrintf` calls with `mu_swprintf` (from stdafx.h)
-- [ ] `4.3` Remove any remaining `#ifdef _WIN32` call-site wrappers
-- [ ] `4.4` `./ctl check` passes after this task
-- [ ] `AC-5 cmake test` passes: `7.6.2-AC-5:msgbox-swprintf-migration`
+- [x] `4.1` Remove `#ifdef _WIN32 / #include <strsafe.h> / #endif` include block
+- [x] `4.2` Replace `StringCbPrintf` / `StringCchPrintf` calls with `mu_swprintf` (from stdafx.h)
+- [x] `4.3` Remove any remaining `#ifdef _WIN32` call-site wrappers
+- [x] `4.4` `./ctl check` passes after this task
+- [x] `AC-5 cmake test` passes: `7.6.2-AC-5:msgbox-swprintf-migration`
 
 ### Task 5: Gameplay/Characters/ZzzCharacter.cpp (AC-6)
 
-- [ ] `5.1` Remove `#ifdef _WIN32 / #include <eh.h> / #endif` block
-- [ ] `5.2` Verify no `__try` / `__except` blocks remain outside a `#ifdef _WIN32` guard
-- [ ] `5.3` `./ctl check` passes after this task
-- [ ] `AC-6 cmake test` passes: `7.6.2-AC-6:zzz-character-no-eh`
+- [x] `5.1` Remove `#ifdef _WIN32 / #include <eh.h> / #endif` block
+- [x] `5.2` Verify no `__try` / `__except` blocks remain outside a `#ifdef _WIN32` guard
+- [x] `5.3` `./ctl check` passes after this task
+- [x] `AC-6 cmake test` passes: `7.6.2-AC-6:zzz-character-no-eh`
 
 ### Task 6: RenderFX/MuRendererSDLGpu.cpp (AC-7)
 
-- [ ] `6.1` Make SDL3 includes unconditional (`SDL3/SDL_gpu.h`, `SDL3/SDL.h`)
-- [ ] `6.2` Remove `#ifdef MU_ENABLE_SDL3` wrapper around include block at top of file
-- [ ] `6.3` Verify CMakeLists.txt already conditionally compiles this TU with `if(MU_ENABLE_SDL3)`
-- [ ] `6.4` `./ctl check` passes after this task
-- [ ] `AC-7 cmake test` passes: `7.6.2-AC-7:sdl-gpu-unconditional-includes`
+- [x] `6.1` Make SDL3 includes unconditional (`SDL3/SDL_gpu.h`, `SDL3/SDL.h`)
+- [x] `6.2` Remove `#ifdef MU_ENABLE_SDL3` wrapper around include block at top of file
+- [x] `6.3` Verify CMakeLists.txt already conditionally compiles this TU with `if(MU_ENABLE_SDL3)`
+- [x] `6.4` `./ctl check` passes after this task
+- [x] `AC-7 cmake test` passes: `7.6.2-AC-7:sdl-gpu-unconditional-includes`
 
 ### Task 7: Scene headers (AC-8)
 
-- [ ] `7.1` `Scenes/CharacterScene.h` — verify `#ifdef _WIN32 / #include <windows.h> / #else / #include "PlatformCompat.h" / #endif` pattern complete
-- [ ] `7.2` Same for `Scenes/LoginScene.h`
-- [ ] `7.3` Same for `Scenes/MainScene.h`
-- [ ] `7.4` Same for `Scenes/SceneManager.h`
-- [ ] `7.5` Confirm no `#ifdef _WIN32` wraps any class members or method declarations
-- [ ] `7.6` `./ctl check` passes after this task
-- [ ] `AC-8 cmake test` passes: `7.6.2-AC-8:scene-headers-else-branch`
+- [x] `7.1` `Scenes/CharacterScene.h` — verify `#ifdef _WIN32 / #include <windows.h> / #else / #include "PlatformCompat.h" / #endif` pattern complete
+- [x] `7.2` Same for `Scenes/LoginScene.h`
+- [x] `7.3` Same for `Scenes/MainScene.h`
+- [x] `7.4` Same for `Scenes/SceneManager.h`
+- [x] `7.5` Confirm no `#ifdef _WIN32` wraps any class members or method declarations
+- [x] `7.6` `./ctl check` passes after this task
+- [x] `AC-8 cmake test` passes: `7.6.2-AC-8:scene-headers-else-branch`
 
 ### Task 8: Data struct headers (AC-9)
 
-- [ ] `8.1` `Data/Items/ItemStructs.h` — verify include-selection has `#else / #include "PlatformCompat.h"` branch
-- [ ] `8.2` `Data/Skills/SkillStructs.h` — same
-- [ ] `8.3` `./ctl check` passes after this task
-- [ ] `AC-9 cmake test` passes: `7.6.2-AC-9:data-headers-else-branch`
+- [x] `8.1` `Data/Items/ItemStructs.h` — verify include-selection has `#else / #include "PlatformCompat.h"` branch
+- [x] `8.2` `Data/Skills/SkillStructs.h` — same
+- [x] `8.3` `./ctl check` passes after this task
+- [x] `AC-9 cmake test` passes: `7.6.2-AC-9:data-headers-else-branch`
 
 ### Task 9: Validate (AC-1, AC-10)
 
-- [ ] `9.1` Run `python3 MuMain/scripts/check-win32-guards.py` — zero violations for all files in scope
-- [ ] `9.2` Run `./ctl check` — exits 0 (anti-pattern check + macOS native build + format-check + cppcheck lint)
-- [ ] `AC-1 cmake test` passes: `7.6.2-AC-1:win32-guard-check-script`
-- [ ] `AC-STD-11 cmake test` passes: `7.6.2-AC-STD-11:flow-code-traceability`
+- [x] `9.1` Run `python3 MuMain/scripts/check-win32-guards.py` — zero violations for all files in scope
+- [x] `9.2` Run `./ctl check` — exits 0 (anti-pattern check + macOS native build + format-check + cppcheck lint)
+- [x] `AC-1 cmake test` passes: `7.6.2-AC-1:win32-guard-check-script`
+- [x] `AC-STD-11 cmake test` passes: `7.6.2-AC-STD-11:flow-code-traceability`
 
 ### PCC Compliance Items
 
-- [ ] No new `#ifdef _WIN32` introduced in game logic outside `Platform/`, `ThirdParty/`, `Audio/DSwaveIO*`
-- [ ] All replacements use approved patterns from project-context.md (`mu_wchar_to_utf8`, `mu_swprintf`)
-- [ ] clang-format clean (no whitespace or brace violations in changed files)
-- [ ] cppcheck lint clean (no new warnings/errors in changed files)
-- [ ] Catch2 tests compile and pass on macOS arm64 without Win32 or game loop
-- [ ] CMake script tests registered in `tests/build/CMakeLists.txt` and pass under CTest
+- [x] No new `#ifdef _WIN32` introduced in game logic outside `Platform/`, `ThirdParty/`, `Audio/DSwaveIO*`
+- [x] All replacements use approved patterns from project-context.md (`mu_wchar_to_utf8`, `mu_swprintf`)
+- [x] clang-format clean (no whitespace or brace violations in changed files)
+- [x] cppcheck lint clean (no new warnings/errors in changed files)
+- [x] Catch2 tests compile and pass on macOS arm64 without Win32 or game loop
+- [x] CMake script tests registered in `tests/build/CMakeLists.txt` and pass under CTest
 
 ### Git Safety (AC-STD-15)
 
-- [ ] No force push to main
-- [ ] No incomplete rebase
-- [ ] Commit messages follow Conventional Commits format (`refactor(build):`, `fix(platform):`, etc.)
+- [x] No force push to main
+- [x] No incomplete rebase
+- [x] Commit messages follow Conventional Commits format (`refactor(build):`, `fix(platform):`, etc.)
 
 ---
 
