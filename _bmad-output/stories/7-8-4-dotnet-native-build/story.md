@@ -163,8 +163,8 @@ Followed the `FindDotnetAOT.cmake` pattern for platform detection. Moved RID det
 - AC-1/AC-2: Combined into single edit — RID detection + MU_DOTNET_LIB_EXT set in one block, DOTNET_DLL_PATH uses variable
 - AC-3: Removed `"MU_ENABLE_DOTNET": "OFF"` from both `linux-base` and `macos-base` presets
 - AC-4: `#ifdef _WIN32` guard on `#include "resource.h"` — `check-win32-guards.py` confirms allowed (Main/Winmain.cpp)
-- .NET build attempted with `osx-arm64` correctly, but linker fails due to missing OpenSSL on macOS (pre-existing environment issue, not a code defect)
-- Quality gate passes despite .NET linker failure (ctl considers .NET build optional)
+- .NET build attempted with `osx-arm64` correctly; linker initially failed with `ld: library 'ssl' not found` — Homebrew OpenSSL at `/opt/homebrew/opt/openssl@3/lib/` not in default linker search path
+- Fixed: added portable `LIBRARY_PATH` env var injection to the `dotnet publish` custom command — reuses `find_package(OpenSSL)` result already present at line 277; `get_filename_component` extracts the lib dir from `OPENSSL_CRYPTO_LIBRARY`; guard `NOT Windows` ensures MSVC path is unaffected
 
 ### Completion Notes
 
@@ -186,3 +186,4 @@ All 6 functional ACs and 5 standard ACs satisfied. 4 ATDD cmake tests go from RE
 ## Change Log
 
 - 2026-03-26: Implemented all ACs — RID platform detection, library extension fix, preset enablement, resource.h guard. Quality gate passed.
+- 2026-03-26: Fixed .NET AOT linker — portable OpenSSL LIBRARY_PATH injection via cmake `_DOTNET_ENV_EXTRA` list; works on macOS (Homebrew), Linux (apt/system), no-op on Windows.
