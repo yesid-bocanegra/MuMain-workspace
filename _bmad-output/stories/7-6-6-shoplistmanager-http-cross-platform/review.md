@@ -6,15 +6,31 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status |
+|------|--------|
+| 1. Quality Gate | **PASSED** |
+| 2. Code Review Analysis | PASSED (adversarial review complete — 8 findings) |
+| 3. Code Review Finalize | Pending |
+
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASSED
+**Date:** 2026-03-25
+**Components:** mumain (backend)
 
-| Check | Result |
-|-------|--------|
-| lint | Pending |
-| build | Pending |
-| coverage | Pending |
+| Check | Result | Notes |
+|-------|--------|-------|
+| lint | **PASS** | `make -C MuMain lint` — 0 errors |
+| build | **PASS** | CMake + Ninja debug build — clean |
+| coverage | **PASS** | No coverage configured yet |
+| SonarCloud | N/A | Not configured for this project |
+| Frontend | N/A | No frontend components |
+| Schema Alignment | N/A | No frontend/backend schema contract |
+| AC Compliance | N/A | Infrastructure story — skipped |
+| E2E Test Quality | N/A | No E2E tests (infrastructure story) |
+| App Startup | N/A | Game client — no server boot check |
 
 ---
 
@@ -153,11 +169,11 @@
 | AC-7 | `[x]` | OK | DownloadInfo.h uses portable types (wchar_t, uint32_t, uint64_t) |
 | AC-8 | `[x]` | OK | Urlmon.lib removed, libcurl used in BannerInfo.cpp |
 | AC-9 | `[x]` | OK | Path.cpp uses std::filesystem |
-| AC-10 | `[x]` | Pending | Quality gate run by pipeline |
+| AC-10 | `[x]` | **PASS** | `./ctl check` exits 0 — lint + build green |
 | AC-STD-1 | `[x]` | **ISSUE** | Finding 8: MultiByteToWideChar/WideCharToMultiByte in ShopList.cpp |
 | AC-STD-2 | `[x]` | OK | Catch2 test with fixture files |
 | AC-STD-12 | `[x]` | OK | CURLOPT_TIMEOUT set in FileDownloader.cpp and BannerInfo.cpp |
-| AC-STD-13 | `[x]` | Pending | Quality gate run by pipeline |
+| AC-STD-13 | `[x]` | **PASS** | `./ctl check` exits 0 — quality gate green |
 | AC-STD-15 | `[x]` | OK | Git safety — no force push |
 | PCC: unique_ptr RAII | `[x]` | **FALSE** | Finding 7: No std::unique_ptr for CURL handles — raw pointers throughout |
 
