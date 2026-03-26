@@ -594,3 +594,5 @@
 {"timestamp":"2026-03-26T21:32:37.947592+00:00","event_type":"step_retried","story_key":"7-8-4-dotnet-native-build","step":"validate-story","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-26T21:32:37.949756+00:00","event_type":"feedback_saved","story_key":"7-8-4-dotnet-native-build","step":"validate-story","sprint":null,"epic":"7","data":{"regression_target":"validate-story"}}
 {"timestamp":"2026-03-26T21:32:39.960641+00:00","event_type":"step_started","story_key":"7-8-4-dotnet-native-build","step":"validate-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-26T21:34:49.358705+00:00","event_type":"step_passed","story_key":"7-8-4-dotnet-native-build","step":"validate-story","sprint":null,"epic":"7","data":{"duration_seconds":129.4,"input_tokens":607,"output_tokens":9443,"cache_creation_tokens":452589,"cache_read_tokens":4618024,"num_turns":40,"num_tool_calls":16}}
+{"timestamp":"2026-03-26T21:34:50.367749+00:00","event_type":"step_started","story_key":"7-8-4-dotnet-native-build","step":"atdd","sprint":null,"epic":"7","data":{}}
