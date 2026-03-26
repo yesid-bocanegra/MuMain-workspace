@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-26T01:04:52.912325+00:00","event_type":"story_started","story_key":"7-6-7-error-report-cross-platform-diagnostics","step":null,"sprint":null,"epic":"7","data":{"from_step":"validate-story","to_step":"code-review-finalize","planned_steps":11,"fresh":false}}
+{"timestamp":"2026-03-26T01:04:52.912702+00:00","event_type":"step_started","story_key":"7-6-7-error-report-cross-platform-diagnostics","step":"validate-story","sprint":null,"epic":"7","data":{}}
