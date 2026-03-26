@@ -35,3 +35,5 @@
 {"timestamp":"2026-03-26T04:26:14.134620+00:00","event_type":"step_regressed","story_key":"7-3-1-macos-stability-session","step":"completeness-gate","sprint":null,"epic":"7","data":{"from_step":"completeness-gate","to_step":"dev-story","regression_count":2}}
 {"timestamp":"2026-03-26T04:26:14.135389+00:00","event_type":"feedback_saved","story_key":"7-3-1-macos-stability-session","step":"completeness-gate","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-03-26T04:26:16.146135+00:00","event_type":"step_started","story_key":"7-3-1-macos-stability-session","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-26T04:45:35.613186+00:00","event_type":"step_passed","story_key":"7-3-1-macos-stability-session","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1159.5,"input_tokens":182,"output_tokens":33765,"cache_creation_tokens":321137,"cache_read_tokens":12858112,"num_turns":103,"num_tool_calls":57}}
+{"timestamp":"2026-03-26T04:45:36.621266+00:00","event_type":"step_started","story_key":"7-3-1-macos-stability-session","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
