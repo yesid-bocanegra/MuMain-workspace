@@ -4,3 +4,5 @@
 {"timestamp":"2026-03-26T16:02:32.206542+00:00","event_type":"step_retried","story_key":"7-8-2-gameplay-header-cross-platform","step":"validate-story","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-26T16:02:32.208516+00:00","event_type":"feedback_saved","story_key":"7-8-2-gameplay-header-cross-platform","step":"validate-story","sprint":null,"epic":"7","data":{"regression_target":"validate-story"}}
 {"timestamp":"2026-03-26T16:02:34.214204+00:00","event_type":"step_started","story_key":"7-8-2-gameplay-header-cross-platform","step":"validate-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-26T16:05:01.300938+00:00","event_type":"step_passed","story_key":"7-8-2-gameplay-header-cross-platform","step":"validate-story","sprint":null,"epic":"7","data":{"duration_seconds":147.1,"input_tokens":45731,"output_tokens":8048,"cache_creation_tokens":445736,"cache_read_tokens":4312662,"num_turns":38,"num_tool_calls":16}}
+{"timestamp":"2026-03-26T16:05:02.307361+00:00","event_type":"step_started","story_key":"7-8-2-gameplay-header-cross-platform","step":"atdd","sprint":null,"epic":"7","data":{}}
