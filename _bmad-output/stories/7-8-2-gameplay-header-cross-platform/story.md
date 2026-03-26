@@ -1,6 +1,6 @@
 # Story 7.8.2: Gameplay Header Cross-Platform Fixes
 
-Status: done
+Status: review
 
 ---
 
@@ -152,10 +152,20 @@ All 4 header fixes implemented and verified. No runtime behavior change — all 
 | `MuMain/src/source/Core/mu_enum.h` | MODIFIED | Added `inline` to SKILL_REPLACEMENTS, added `#include <map>` |
 | `MuMain/src/source/World/ZzzPath.h` | MODIFIED | Added `#include "ErrorReport.h"` |
 | `MuMain/src/source/Data/Skills/SkillStructs.h` | MODIFIED | Added `#include "MultiLanguage.h"` |
-| `MuMain/src/source/Gameplay/Items/CSItemOption.h` | MODIFIED | Added `#include "mu_enum.h"`, `struct ITEM;` forward declaration |
+| `MuMain/src/source/Gameplay/Items/CSItemOption.h` | MODIFIED | Added `#include "mu_enum.h"`, `struct tagITEM; typedef struct tagITEM ITEM;` forward declaration |
+| `MuMain/tests/gameplay/test_gameplay_header_crossplatform_7_8_2.cpp` | CREATED | Catch2 runtime tests for AC-1 (ODR link + SKILL_REPLACEMENTS content) |
+| `MuMain/tests/build/test_ac1_mu_enum_inline_7_8_2.cmake` | CREATED | CMake script test: verifies `inline` keyword on SKILL_REPLACEMENTS |
+| `MuMain/tests/build/test_ac2_zzzpath_errorreport_include_7_8_2.cmake` | CREATED | CMake script test: verifies ErrorReport.h include in ZzzPath.h |
+| `MuMain/tests/build/test_ac3_skillstructs_multilanguage_7_8_2.cmake` | CREATED | CMake script test: verifies MultiLanguage.h include in SkillStructs.h |
+| `MuMain/tests/build/test_ac4_csitemoption_type_includes_7_8_2.cmake` | CREATED | CMake script test: verifies type includes in CSItemOption.h |
+| `MuMain/tests/build/test_ac_std11_flow_code_7_8_2.cmake` | CREATED | CMake script test: flow code traceability |
+| `MuMain/tests/build/CMakeLists.txt` | MODIFIED | Registered 5 CTest entries for story 7.8.2 |
+| `MuMain/tests/CMakeLists.txt` | MODIFIED | Added Catch2 test source for story 7.8.2 |
 
 ---
 
 ## Change Log
 
 - **2026-03-26**: Implemented all tasks (1–5). All header fixes applied, quality gate passed, 5/5 CMake tests green.
+- **2026-03-26**: Code review fix — corrected ITEM forward declaration (`struct tagITEM; typedef struct tagITEM ITEM;`), updated CMake AC-4 test, removed redundant `#ifdef` in test file.
+- **2026-03-26**: Dev-story completion — updated File List (12 files), verified all gates, status → review.

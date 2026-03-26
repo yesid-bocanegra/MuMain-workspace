@@ -211,7 +211,7 @@ sprints:
       - 7-3-2-linux-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓, 7-6-* ✓
       # EPIC-7 — Remaining compilation blockers discovered during macOS native build
       - 7-8-1-audio-interface-win32-types        # 5 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: Win32 types in audio interface headers block all-platform build
-      - 7-8-2-gameplay-header-cross-platform     # 5 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: ODR violation + missing includes in gameplay headers
+      - 7-8-2-gameplay-header-cross-platform     # 5 pts | review | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: ODR violation + missing includes in gameplay headers
       - 7-8-3-test-compilation-fixes             # 3 pts | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: invalid enum values + unused variable errors in test files
     velocity: null
     delivered_points: null  # in-progress: 65 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1), 10 pts remaining (7-3-2,7-8-2,7-8-3)
