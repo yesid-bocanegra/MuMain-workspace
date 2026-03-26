@@ -122,7 +122,7 @@ All items start `[ ]` (pending). Mark `[x]` as each is completed during dev-stor
 - [x]No WinINet APIs (`InternetOpen`, `InternetConnect`, `FtpGetFile`, `HttpOpenRequest`, `HttpSendRequest`, `URLDownloadToFile`) anywhere in module
 - [x]`CURLOPT_TIMEOUT` set in all curl handles (AC-STD-12 — no hangs on network stalls)
 - [x]`std::filesystem::path` used for all path operations (no backslash literals, no `TCHAR` paths)
-- [x]`std::unique_ptr` for curl handle RAII (no raw `new`/`delete` for curl resources)
+- [ ]`std::unique_ptr` for curl handle RAII (no raw `new`/`delete` for curl resources)
 
 ### Bruno Quality Checklist Items
 
