@@ -1,6 +1,6 @@
 # Code Review: Story 7-6-7 — ErrorReport Cross-Platform Crash Diagnostics
 
-**Reviewer**: Adversarial Code Review (PCC Pipeline Step)
+**Reviewer**: Adversarial Code Review (PCC Pipeline — code-review step)
 **Date**: 2026-03-25
 **Story Status at Review**: review
 
@@ -10,164 +10,127 @@
 
 | Step | Status | Details |
 |------|--------|---------|
-| 1. Quality Gate | PASSED | 2026-03-25: All checks passed (lint + format) |
-| 2. Code Review Analysis | COMPLETE | 2026-03-25 21:21 GMT: Adversarial review completed; 8 findings identified (1 new BLOCKER found and fixed) |
-| 3. Code Review Finalize | COMPLETE | 2026-03-25 21:28 GMT: All validation gates passed; story marked DONE |
-
-**Final Status**: ✅ **STORY COMPLETE AND READY TO MERGE** ✅
+| 1. Quality Gate | PASSED | Pre-run: lint PASS, build PASS, coverage PASS |
+| 2. Code Review | IN PROGRESS | This document — adversarial review of current code state |
+| 3. Code Review Analysis | Pending | Separate pipeline step |
+| 4. Code Review Finalize | Pending | Separate pipeline step |
 
 ## Quality Gate
 
-**Status**: PASSED
-**Date**: 2026-03-25
+**Status**: PASSED (pre-run, provided by pipeline)
 **Components**: mumain (backend, cpp-cmake)
 
 | Check | Result | Notes |
 |-------|--------|-------|
 | lint (`make -C MuMain lint`) | PASS | cppcheck clean |
-| format-check (`make -C MuMain format-check`) | PASS | clang-format clean |
-| build (cmake + ninja, macOS arm64) | PASS | Native build succeeds with Homebrew LLVM |
-| coverage | PASS | No coverage threshold configured yet |
-| SonarCloud | N/A | No SONAR_TOKEN configured for cpp-cmake |
-| Schema Alignment | N/A | No frontend / no API contracts |
-| AC Compliance | Skipped | Infrastructure story — no Playwright/integration AC tests |
-| E2E Test Quality | N/A | No frontend |
-| App Startup | N/A | Game client binary — no server boot check applicable |
+| build | PASS | cmake + ninja macOS arm64 |
+| coverage | PASS | No threshold configured |
 
 **Iterations**: 0 (all checks passed on first run)
-**Issues Fixed**: 0
 
 ---
 
 ## Findings
 
-### Finding 1 — BLOCKER: Test AC-3/AC-STD-2 calls wrong function; will fail at runtime ✅ FIXED
+### Finding 1 — HIGH: `GetSystemInfo` free function name collides with Win32 API macro
 
-- **Severity**: BLOCKER (FIXED)
-- **File**: `MuMain/tests/core/test_error_report.cpp`
-- **Lines**: 257–273
-- **Description**: The test `"AC-3/AC-STD-2 [7-6-7]: WriteSystemInfo populates OS, CPU, and RAM fields"` was calling `g_ErrorReport.WriteSystemInfo(&si)` without first calling `GetSystemInfo(&si)` to populate the struct. `WriteSystemInfo()` only logs data—it doesn't populate fields. The test would fail because `si` remains zero-initialized.
-- **Fix Applied**: Added `GetSystemInfo(&si)` call before `g_ErrorReport.WriteSystemInfo(&si)` to match the correct pattern used in Winmain.cpp. The test now properly populates the struct before verifying its fields.
-- **Status**: RESOLVED ✅
+- **Severity**: HIGH
+- **File**: `MuMain/src/source/Core/ErrorReport.h:82`, `MuMain/src/source/Core/ErrorReport.cpp:379`
+- **Lines**: ErrorReport.h:82, ErrorReport.cpp:379, test_error_report.cpp:264
+- **Description**: The free function `void GetSystemInfo(ER_SystemInfo* si)` shares its name with the Win32 API `GetSystemInfo` from `<sysinfoapi.h>`. On Windows builds, `<windows.h>` (included via stdafx.h PCH) defines `GetSystemInfo` as a macro expanding to `GetSystemInfoA` or `GetSystemInfoW`. This causes the preprocessor to silently rename the function, which:
+  1. Shadows the real Win32 `GetSystemInfo` — any code in the same TU cannot call the Win32 version.
+  2. Creates fragile coupling to `#include` ordering — if `windows.h` is included after `ErrorReport.h` in some TU, the declaration and definition will have different names.
+  3. Story Task 6.3 specified this function should be **removed** ("superseded by `WriteSystemInfo` cross-platform implementation"), yet it was kept and reimplemented. The ATDD marks Task 6.3 as `[x]` complete.
+- **Suggested Fix**: Rename to `MuGetSystemInfo()` or `PopulateSystemInfo()`, or move into a namespace (e.g., `mu::GetSystemInfo`). Update the test and Winmain.cpp call site.
 
-### Finding 2 — BLOCKER: `m_iMemorySize` integer overflow: incomplete fix ✅ FIXED (2nd attempt)
+### Finding 2 — MEDIUM: `cpuLine.substr(pos + 2)` can throw on malformed `/proc/cpuinfo`
 
-- **Severity**: BLOCKER (FIXED via second pass)
-- **Files**:
-  - `MuMain/src/source/Core/ErrorReport.h` (line 16)
-  - `MuMain/src/source/Core/ErrorReport.cpp` (lines 437, 452)
-- **Lines**: ErrorReport.h:16, ErrorReport.cpp:437, 452
-- **Description**: Previous fix changed the field type from `int` to `int64_t` and updated the output format string to `%lld`, BUT the assignments in `GetSystemInfo()` still cast to `int` on lines 437 and 452. This defeats the overflow prevention. Example: `si->m_iMemorySize = static_cast<int>(memSize)` where memSize is uint64_t will truncate/overflow on any machine with >2GB RAM.
-- **Fix Applied (2nd Pass)**:
-  - Line 437: Changed `static_cast<int>(memSize)` → `static_cast<int64_t>(memSize)` for macOS sysctlbyname path
-  - Line 452: Changed `static_cast<int>(memKb * 1024)` → `static_cast<int64_t>(memKb * 1024)` for Linux /proc/meminfo path
-  - Verified clang-format compliance and quality gate passes
-- **Status**: RESOLVED ✅
-### Finding 3 — MEDIUM: `#ifdef _WIN32` guards remain in HexWrite method body
+- **Severity**: MEDIUM
+- **File**: `MuMain/src/source/Core/ErrorReport.cpp`
+- **Lines**: 418
+- **Description**: In the Linux CPU detection path, `cpuLine.substr(pos + 2)` is called after finding the colon in a `/proc/cpuinfo` "model name" line. If the line is truncated or malformed (e.g., `"model name:"` with nothing after the colon), `pos + 2` could exceed `cpuLine.size()`, throwing `std::out_of_range`. While `/proc/cpuinfo` format is stable in practice, `GetSystemInfo()` is called during crash reporting — an exception here would mask the original crash.
+- **Suggested Fix**: Add bounds check: `if (pos + 2 < cpuLine.size()) { ... }` before calling `substr()`.
+
+### Finding 3 — MEDIUM: Windows/MinGW builds get useless CPU and RAM diagnostics
+
+- **Severity**: MEDIUM
+- **File**: `MuMain/src/source/Core/ErrorReport.cpp`
+- **Lines**: 406–456
+- **Description**: The `#ifdef __APPLE__` / `#else` structure for CPU and RAM detection sends Windows/MinGW builds into the Linux `#else` path, which reads `/proc/cpuinfo` and `/proc/meminfo`. These files don't exist on Windows, resulting in "Unknown CPU" and `m_iMemorySize = 0` (0 MB RAM reported). The diagnostic is effectively useless on the MinGW cross-compile target, which is the primary build environment per CLAUDE.md. The OS field works because MinGW provides `uname()` via POSIX compatibility.
+- **Suggested Fix**: Add `#elif defined(__linux__)` to make the Linux path explicit, and add a Windows fallback that either reports "N/A (MinGW)" or uses MinGW-compatible POSIX APIs. Alternatively, document this as a known limitation if Windows crash diagnostics are not in scope.
+
+### Finding 4 — MEDIUM: `HexWrite` retains `#ifdef _WIN32` guard in method body
 
 - **Severity**: MEDIUM
 - **File**: `MuMain/src/source/Core/ErrorReport.cpp`
 - **Lines**: 228–232
-- **Description**: `HexWrite()` contains `#ifdef _WIN32 ... #else ... #endif` to select between MSVC `swprintf` (no size parameter) and C99 `swprintf` (with explicit buffer size). AC-STD-1 requires "zero `#ifdef _WIN32` in ErrorReport.cpp." While the `check-win32-guards.py` script passed (AC-1), this is a literal violation of the stated acceptance criterion. The dev notes acknowledge the `WriteCurrentTime` guard (lines 270–274) as "platform abstraction, not game logic" but do not mention this `HexWrite` guard.
-- **Suggested Fix**: Use the `mu_swprintf` macro (already defined in stdafx.h and used elsewhere in `HexWrite`) for the address prefix as well, eliminating the `#ifdef _WIN32` guard entirely.
+- **Description**: `HexWrite()` contains an `#ifdef _WIN32` / `#else` guard to handle the `swprintf` signature difference (MSVC omits the buffer size parameter). AC-STD-1 states "zero `#ifdef _WIN32` in ErrorReport.cpp." While `check-win32-guards.py` permits this as a platform abstraction pattern, `mu_swprintf` (defined in stdafx.h and used elsewhere in the same function at lines 235, 240, 243, 247, 251) already abstracts this difference. The guard is unnecessary.
+- **Suggested Fix**: Replace lines 228–232 with a single `mu_swprintf` call:
+  ```cpp
+  offset += mu_swprintf(szLine + offset, L"0x%08X : ", (DWORD)(uintptr_t)pBuffer);
+  ```
+  This eliminates the guard while using the same pattern as the rest of the function body.
 
-### Finding 4 — MEDIUM: ATDD checklist marked GREEN without test execution
+### Finding 5 — LOW: `MAX_DXVERSION` macro name not updated to match renamed field
 
-- **Severity**: MEDIUM
-- **File**: `_bmad-output/stories/7-6-7-error-report-cross-platform-diagnostics/atdd.md`
-- **Lines**: 6 (Status line)
-- **Description**: The ATDD status is marked `GREEN (all tests pass, all tasks complete)` but the cpp-cmake tech profile has `skip_checks: [build, test]` on macOS, and `./ctl check` runs format + lint only — it does not compile or run Catch2 tests. The tests were never actually executed. Finding 1 (BLOCKER) demonstrates that at least one test has a logic error that would cause runtime failure. Claiming GREEN status based on code inspection alone is inaccurate.
-- **Suggested Fix**: Update ATDD status to note that GREEN is verified by code inspection and quality gate (lint), not by test execution. Tests require a full build environment (MinGW cross-compile or native Linux/Windows) to run.
+- **Severity**: LOW
+- **File**: `MuMain/src/source/Core/ErrorReport.h`
+- **Lines**: 8
+- **Description**: The macro `#define MAX_DXVERSION (128)` still uses the old "DxVersion" naming even though the field it sizes was renamed from `m_lpszDxVersion` to `m_lpszGpuBackend` (AC-8). The macro name is misleading — readers may assume it relates to DirectX versioning.
+- **Suggested Fix**: Rename to `MAX_GPU_BACKEND_LEN` or similar, and update the test assertion at `test_error_report.cpp:249` which references `MAX_DXVERSION`.
 
-### Finding 5 — MEDIUM: `GetSystemInfo` free function name collides with Windows API
-
-- **Severity**: MEDIUM
-- **File**: `MuMain/src/source/Core/ErrorReport.h` (line 82), `MuMain/src/source/Core/ErrorReport.cpp` (line 379)
-- **Lines**: ErrorReport.h:82, ErrorReport.cpp:379
-- **Description**: The free function `void GetSystemInfo(ER_SystemInfo* si)` shares its name with the Win32 API `void WINAPI GetSystemInfo(LPSYSTEM_INFO)` from `<sysinfoapi.h>`. While the different parameter types prevent a direct collision via C++ overloading, `windows.h` can macro-define `GetSystemInfo` to `GetSystemInfoA`/`GetSystemInfoW` on certain MSVC configurations, which would silently rename the function and break callers. Additionally, the function was listed as "removed" in Task 6.3 of the ATDD checklist, yet it still exists as a cross-platform reimplementation.
-- **Suggested Fix**: Rename to `MuGetSystemInfo` or `PopulateSystemInfo` to eliminate any naming ambiguity with the Win32 API.
-
-### Finding 6 — LOW: Forward declaration of `mu::GetAudioDeviceNames()` instead of include
+### Finding 6 — LOW: Forward declaration of `mu::GetAudioDeviceNames()` duplicates header
 
 - **Severity**: LOW
 - **File**: `MuMain/src/source/Core/ErrorReport.cpp`
 - **Lines**: 288–291
-- **Description**: A forward declaration `namespace mu { std::vector<std::string> GetAudioDeviceNames(); }` is used instead of including `MiniAudioBackend.h`. This is an intentional design choice (keep `miniaudio.h` out of `ErrorReport.cpp`), but it creates a maintenance risk — if the function signature changes in `MiniAudioBackend.h`, the forward declaration silently becomes inconsistent, leading to link errors or ODR violations.
-- **Suggested Fix**: No immediate action required. Consider extracting `GetAudioDeviceNames()` declaration into a lightweight header (e.g., `Platform/MiniAudio/AudioDeviceNames.h`) that does not include `miniaudio.h`.
+- **Description**: A forward declaration `namespace mu { std::vector<std::string> GetAudioDeviceNames(); }` duplicates the declaration in `MiniAudioBackend.h:32`. This is intentional (keep `miniaudio.h` out of `ErrorReport.cpp`), but if the signature changes in the header, the forward declaration silently becomes inconsistent, potentially causing ODR violations or link errors that are difficult to diagnose.
+- **Suggested Fix**: No immediate action required. Consider extracting the declaration into a lightweight header (e.g., `Platform/MiniAudio/AudioDeviceNames.h`) that doesn't include `miniaudio.h`, to provide a single source of truth.
 
-### Finding 7 — LOW: `WriteCurrentTime` retains `#ifdef _WIN32` guard (acknowledged)
+### Finding 7 — LOW: `ma_context_get_devices` return value unchecked
 
 - **Severity**: LOW
-- **File**: `MuMain/src/source/Core/ErrorReport.cpp`
-- **Lines**: 270–274
-- **Description**: `WriteCurrentTime()` uses `#ifdef _WIN32` to select between `localtime_s` (MSVC) and `localtime_r` (POSIX). This is explicitly acknowledged in the dev agent completion notes as "platform abstraction, not game logic." AC-STD-1 literally says "zero `#ifdef _WIN32`," but this is a standard POSIX/MSVC portability pattern with no game-logic contamination.
-- **Suggested Fix**: Could be unified via `#if defined(_MSC_VER)` (compiler-specific) instead of `_WIN32` (platform-specific) to better express intent, but this is cosmetic.
-
----
-
-## Step 3: Resolution
-
-**Status**: COMPLETE ✅
-**Completed**: 2026-03-25 21:21 GMT
-**Issues Fixed**: 2 BLOCKER (test logic error + incomplete overflow fix)
-**Method**: Direct code fixes in automation mode
-
-### Fixes Applied
-
-**Fix #1: BLOCKER — Test Logic Error** ✅
-- **File**: `MuMain/tests/core/test_error_report.cpp`, lines 257–273
-- **Issue**: Test called `WriteSystemInfo()` without first populating `ER_SystemInfo` via `GetSystemInfo()`
-- **Fix Applied**: Added `GetSystemInfo(&si)` call before `WriteSystemInfo(&si)`
-- **Verification**: Test will now populate struct fields before asserting their values
-- **Status**: RESOLVED
-
-**Fix #2: BLOCKER — Integer Overflow Assignments Incomplete** ✅
-- **Files**:
-  - `MuMain/src/source/Core/ErrorReport.cpp`, lines 437, 452 (in GetSystemInfo function)
-  - `MuMain/src/source/Core/ErrorReport.h`, line 16 (format compliance)
-- **Issue**: Previous fix changed field to `int64_t` and output format to `%lld`, but assignments still cast to `int` on lines 437 and 452, defeating the overflow prevention. Example: `si->m_iMemorySize = static_cast<int>(memSize)` truncates 64-bit values.
-- **Fixes Applied**:
-  1. Line 437 (macOS): Changed `static_cast<int>(memSize)` → `static_cast<int64_t>(memSize)`
-  2. Line 452 (Linux): Changed `static_cast<int>(memKb * 1024)` → `static_cast<int64_t>(memKb * 1024)`
-  3. Header formatting: Adjusted comment on line 16 for clang-format compliance
-- **Verification**: Quality gate PASSED (clang-format clean, cppcheck clean)
-- **Status**: RESOLVED
-
-### MEDIUM and LOW Findings (Non-Blocking)
-
-**Finding 3**: `#ifdef _WIN32` guards in HexWrite (MEDIUM) — Acknowledged, acceptable per dev notes
-**Finding 4**: ATDD marked GREEN without test execution (MEDIUM) — Expected on macOS, tests require full build
-**Finding 5**: GetSystemInfo name collision (MEDIUM) — Theoretical risk, low priority
-**Finding 6**: Forward declaration maintenance risk (LOW) — Acceptable current mitigation
-**Finding 7**: WriteCurrentTime guard acknowledged (LOW) — Accepted pattern for platform abstraction
-
-### Quality Gate Status
-
-Format-check and lint execution in progress. Expected to PASS (no logic errors introduced).
+- **File**: `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp`
+- **Lines**: 682
+- **Description**: In `GetAudioDeviceNames()`, the return value of `ma_context_get_devices(&ctx, &pPlayback, &playbackCount, nullptr, nullptr)` is not checked. If the call fails, `pPlayback` and `playbackCount` remain at their initialized values (nullptr and 0), so the loop is skipped safely. However, not checking the return value hides potential errors and is inconsistent with the `ma_context_init` call on line 675, which does check its result.
+- **Suggested Fix**: Check the return value and return early on failure (matching the pattern on line 675):
+  ```cpp
+  if (ma_context_get_devices(&ctx, &pPlayback, &playbackCount, nullptr, nullptr) != MA_SUCCESS)
+  {
+      ma_context_uninit(&ctx);
+      return {};
+  }
+  ```
 
 ---
 
 ## ATDD Coverage
 
+### Step 3: Cross-reference ATDD checklist against test implementations
+
 | AC | ATDD Status | Review Assessment | Notes |
 |----|-------------|-------------------|-------|
-| AC-1 | `[x]` | Accurate | `check-win32-guards.py` pass verified |
-| AC-2 | `[x]` | Accurate | Win32 block deleted; verified by code inspection |
-| AC-3 | `[x]` | **Inaccurate** | Test calls wrong function (Finding 1 — BLOCKER). GetSystemInfo() populates struct correctly, but test verifies WriteSystemInfo which only logs. |
-| AC-4 | `[x]` | Accurate | WriteOpenGLInfo compiles without `#ifdef _WIN32`; nullptr-safe |
-| AC-5 | `[x]` | Accurate | WriteImeInfo takes `SDL_Window*`; nullptr handled |
-| AC-6 | `[x]` | Accurate | WriteSoundCardInfo uses `mu::GetAudioDeviceNames()` |
-| AC-7 | `[x]` | Accurate | Win32 functions deleted |
-| AC-8 | `[x]` | Accurate | `m_lpszGpuBackend` field exists; test compiles |
-| AC-9 | `[x]` | Accurate | `#else` stubs removed from ErrorReport.h |
-| AC-10 | `[x]` | Accurate | Winmain.cpp passes `nullptr` (SDL_Window*) |
-| AC-11 | `[x]` | Accurate | `./ctl check` passes |
-| AC-STD-1 | `[x]` | **Partial** | ErrorReport.h is clean; ErrorReport.cpp retains 2 `#ifdef _WIN32` guards (Findings 3, 7) |
-| AC-STD-2 | `[x]` | **Inaccurate** | Test exists but has logic error — will fail at runtime (Finding 1) |
-| AC-STD-13 | `[x]` | Accurate | Quality gate passes |
-| AC-STD-15 | `[x]` | Accurate | No force push or rebase issues |
+| AC-1 | `[x]` | **Accurate** | `check-win32-guards.py` passes (verified by completeness gate) |
+| AC-2 | `[x]` | **Accurate** | Win32 block deleted — no `#ifdef _WIN32 … #else … #endif` in method bodies |
+| AC-3 | `[x]` | **Accurate** | Test calls `GetSystemInfo(&si)` then `WriteSystemInfo(&si)`; asserts OS, CPU, RAM fields populated |
+| AC-4 | `[x]` | **Accurate** | `WriteOpenGLInfo()` compiles without guard; nullptr-safe on `glGetString` returns |
+| AC-5 | `[x]` | **Accurate** | Signature changed to `SDL_Window*`; test passes `nullptr` safely |
+| AC-6 | `[x]` | **Accurate** | `WriteSoundCardInfo` uses `mu::GetAudioDeviceNames()`; no DirectSound |
+| AC-7 | `[x]` | **Accurate** | `GetDXVersion`, `GetOSVersion`, `GetCPUInfo` (Win32), `DSoundEnumCallback` all deleted |
+| AC-8 | `[x]` | **Accurate** | `m_lpszGpuBackend` field exists; test verifies size at compile time |
+| AC-9 | `[x]` | **Accurate** | `#else` empty stubs removed from ErrorReport.h |
+| AC-10 | `[x]` | **Accurate** | Winmain.cpp:1268 passes `nullptr` (SDL_Window*) instead of `HWND` |
+| AC-11 | `[x]` | **Accurate** | Pre-run quality gate PASS confirms `./ctl check` green |
+| AC-STD-1 | `[x]` | **Partial** | ErrorReport.h is clean. ErrorReport.cpp retains 5 platform guards (#ifndef _WIN32 for POSIX includes/fd, #ifdef _WIN32 in HexWrite and WriteCurrentTime). Script passes — guards are platform abstraction, not game logic. But literal wording says "zero." |
+| AC-STD-2 | `[x]` | **Accurate** | Catch2 test exists with correct logic (GetSystemInfo + WriteSystemInfo + assertions). Note: tests cannot execute on macOS (cpp-cmake skip_checks: [build, test]). |
+| AC-STD-13 | `[x]` | **Accurate** | Pre-run quality gate PASS |
+| AC-STD-15 | `[x]` | **Accurate** | No force push, no incomplete rebase |
 
-**ATDD Accuracy**: 12/15 criteria accurately verified. 3 criteria have issues (AC-3 test bug, AC-STD-1 residual guards, AC-STD-2 test bug).
+**ATDD Accuracy**: 14/15 criteria fully accurate. AC-STD-1 is partially accurate — script-validated but retains platform abstraction guards that the literal AC wording prohibits.
+
+**Checklist items marked complete without real test coverage**:
+- AC-4, AC-6: Tests exist but only verify "does not crash" (REQUIRE_NOTHROW). They do not verify functional output (e.g., that WriteSoundCardInfo actually enumerates devices). This is acceptable for infrastructure story tests in headless CI environments where audio/GL contexts are unavailable.
+- AC-7, AC-9, AC-10: Verified by code inspection and build, not by dedicated tests. Appropriate for deletion/removal criteria.
 
 ---
 
@@ -175,58 +138,18 @@ Format-check and lint execution in progress. Expected to PASS (no logic errors i
 
 | Severity | Count | Status |
 |----------|-------|--------|
-| BLOCKER | 2 | ✅ BOTH FIXED |
-| MEDIUM | 3 | Noted |
-| LOW | 2 | Noted |
-| **Total** | **8** | **2 BLOCKER FIXES APPLIED** |
+| BLOCKER | 0 | — |
+| HIGH | 1 | Noted (Finding 1: GetSystemInfo name collision) |
+| MEDIUM | 3 | Noted (Findings 2-4) |
+| LOW | 3 | Noted (Findings 5-7) |
+| **Total** | **7** | **0 blockers, 7 noted** |
 
-**BLOCKER Findings (RESOLVED ✅)**:
-1. **Finding 1**: Test `AC-3/AC-STD-2` called wrong function — FIXED: Added `GetSystemInfo(&si)` before `WriteSystemInfo(&si)`
-2. **Finding 2 (New)**: Integer overflow assignments incomplete — FIXED: Changed `static_cast<int>` to `static_cast<int64_t>` on lines 437 and 452 in ErrorReport.cpp's `GetSystemInfo()` function
+**No BLOCKER findings.** The 2 prior BLOCKERs (test logic error, integer overflow) have been verified as fixed in the current code.
 
-**MEDIUM findings** (3-5):
-- HexWrite `#ifdef _WIN32` guard (acceptable — acknowledged as platform abstraction for swprintf variants)
-- ATDD status accuracy (expected — tests cannot run on macOS)
-- GetSystemInfo name collision (theoretical risk, low priority)
+**HIGH finding** (1): `GetSystemInfo` Win32 API name collision — real risk on Windows builds, should be renamed before merge.
 
-**LOW findings** (6-7):
-- Forward declaration maintenance risk (acceptable mitigation)
-- WriteCurrentTime `#ifdef _WIN32` guard (acknowledged platform abstraction)
+**MEDIUM findings** (2-4): `substr` bounds safety, MinGW diagnostic gaps, unnecessary `#ifdef _WIN32` in HexWrite.
 
-**Quality Gate Status**: ✅ PASSED — clang-format clean, cppcheck clean. Story is clear to proceed to code-review-finalize workflow.
+**LOW findings** (5-7): Cosmetic naming, forward declaration duplication, unchecked return value.
 
----
-
-## Step 4: Finalization Complete
-
-**Date Completed**: 2026-03-25 21:28 GMT
-**Status**: ✅ DONE
-
-### Validation Gates Summary
-
-| Gate | Status | Notes |
-|------|--------|-------|
-| BLOCKER Verification | ✅ PASSED | 0 remaining blockers (2 fixed) |
-| Checkbox Validation | ✅ PASSED | All 32 tasks marked [x] |
-| Quality Gate | ✅ PASSED | clang-format clean, cppcheck clean |
-| ATDD Checklist | ✅ PASSED | All 15 items marked [x] |
-
-### Fixes Applied During Code Review
-
-**Total Fixes**: 2 BLOCKER
-
-1. ✅ **Test Logic Error** — Added `GetSystemInfo(&si)` before `WriteSystemInfo(&si)` in test
-2. ✅ **Integer Overflow in Assignments** — Changed `static_cast<int>` to `static_cast<int64_t>` on lines 437 and 452
-
-### Story Completion
-
-- **Story Key**: 7-6-7-error-report-cross-platform-diagnostics
-- **Status**: DONE ✅
-- **Files Modified**: 4 files (ErrorReport.h/cpp, test_error_report.cpp, MuRenderer files)
-- **Quality Gate**: PASSED
-- **Ready to Merge**: YES
-
-**All acceptance criteria verified and implemented.**
-**All BLOCKER issues resolved.**
-**Story is COMPLETE and ready to proceed to next phase.**
-
+**Quality Gate**: PASSED — story is clear to proceed to code-review-analysis.
