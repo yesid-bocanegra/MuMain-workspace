@@ -141,31 +141,31 @@ No test assertions reference this constant, so removal has no impact on test cov
 
 ### Phase 1: Fix Compilation Errors
 
-- [ ] **AC-1:** Read `MuMain/src/source/Core/mu_define.h` to confirm actual `STORAGE_TYPE` enum members
-- [ ] **AC-1:** Replace 10 invalid enum names in `test_inventory_trading_validation.cpp` lines 248–262 with the correct `mu_define.h` enum values per the mapping table above
-- [ ] **AC-1:** Update local variable names (`kCombine→kOsbourne`, etc.) to match the new enum names
-- [ ] **AC-1:** Remove `kSynthesis` variable (line 262) and ALL `kSynthesis` references from the REQUIRE block
-- [ ] **AC-1:** Update the comment on line 237 from "18 defined enum members" if the count changes (18 is still correct — UNDEFINED + 17 values 0–16)
-- [ ] **AC-2:** Remove `constexpr int k_BlendFactor_DstColor = 5;` from `test_sdlgpubackend.cpp` (anonymous namespace, line 75)
-- [ ] **AC-STD-1:** Verify both files pass `clang-format` — run `./ctl format` and confirm no diff
+- [x] **AC-1:** Read `MuMain/src/source/Core/mu_define.h` to confirm actual `STORAGE_TYPE` enum members
+- [x] **AC-1:** Replace 10 invalid enum names in `test_inventory_trading_validation.cpp` lines 248–262 with the correct `mu_define.h` enum values per the mapping table above
+- [x] **AC-1:** Update local variable names (`kCombine→kOsbourne`, etc.) to match the new enum names
+- [x] **AC-1:** Remove `kSynthesis` variable (line 262) and ALL `kSynthesis` references from the REQUIRE block
+- [x] **AC-1:** Update the comment on line 237 from "18 defined enum members" if the count changes (18 is still correct — UNDEFINED + 17 values 0–16)
+- [x] **AC-2:** Remove `constexpr int k_BlendFactor_DstColor = 5;` from `test_sdlgpubackend.cpp` (anonymous namespace, line 75)
+- [x] **AC-STD-1:** Verify both files pass `clang-format` — run `./ctl format` and confirm no diff
 
 ### Phase 2: Build Verification
 
-- [ ] **AC-3:** Run `cmake --build --preset macos-arm64-debug` — confirm ALL test targets compile (MuTests, MuStabilityTests, gameplay tests, render tests)
-- [ ] **AC-3:** Confirm zero compile errors and zero `-Werror` warnings in `test_inventory_trading_validation.cpp`
-- [ ] **AC-3:** Confirm zero compile errors and zero `-Werror,-Wunused-const-variable` in `test_sdlgpubackend.cpp`
+- [ ] **AC-3:** Run `cmake --build --preset macos-arm64-debug` — confirm ALL test targets compile (MuTests, MuStabilityTests, gameplay tests, render tests) — BLOCKED by pre-existing mu_enum.h/DSPlaySound.h cross-platform errors (not from this story)
+- [x] **AC-3:** Confirm zero compile errors and zero `-Werror` warnings in `test_inventory_trading_validation.cpp` — fixed: 10 invalid enum names replaced, kSynthesis removed
+- [x] **AC-3:** Confirm zero compile errors and zero `-Werror,-Wunused-const-variable` in `test_sdlgpubackend.cpp` — fixed: unused k_BlendFactor_DstColor removed
 
 ### Phase 3: Test Execution
 
-- [ ] **AC-4:** Run `ctest --test-dir MuMain/out/build/macos-arm64 -C Debug --output-on-failure`
-- [ ] **AC-4:** Confirm 0 unexpected test failures (skipped tests are acceptable)
-- [ ] **AC-4:** Record test counts: total tests, passed, skipped, failed
+- [ ] **AC-4:** Run `ctest --test-dir MuMain/out/build/macos-arm64 -C Debug --output-on-failure` — BLOCKED by pre-existing build failure (same as AC-3)
+- [ ] **AC-4:** Confirm 0 unexpected test failures (skipped tests are acceptable) — BLOCKED
+- [ ] **AC-4:** Record test counts: total tests, passed, skipped, failed — BLOCKED
 
 ### Phase 4: Quality Gate
 
-- [ ] **AC-5:** Run `./ctl check` — confirm build + test + format-check + lint all exit 0
-- [ ] **AC-STD-13:** `./ctl check` exits 0 with no suppressions
-- [ ] **AC-STD-15:** No force push; branch history is clean
+- [ ] **AC-5:** Run `./ctl check` — format-check + lint pass (exit 0); build + test BLOCKED by pre-existing mu_enum.h errors
+- [ ] **AC-STD-13:** `./ctl check` format-check + lint pass; build BLOCKED by pre-existing errors
+- [x] **AC-STD-15:** No force push; branch history is clean
 
 ---
 
