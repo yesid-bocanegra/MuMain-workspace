@@ -6,15 +6,34 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status |
+|------|--------|
+| 1. Quality Gate | PASSED |
+| 2. Code Review Analysis | COMPLETE |
+| 3. Code Review Finalize | Pending |
+
 ## Quality Gate
 
-**Status**: Pending — run by pipeline
+**Status**: PASSED
+**Date**: 2026-03-25
+**Components**: mumain (backend, cpp-cmake)
 
-| Check | Result |
-|-------|--------|
-| lint (`./ctl check`) | Pending |
-| build | Pending |
-| coverage | Pending |
+| Check | Result | Notes |
+|-------|--------|-------|
+| lint (`make -C MuMain lint`) | PASS | cppcheck clean |
+| format-check (`make -C MuMain format-check`) | PASS | clang-format clean |
+| build (cmake + ninja, macOS arm64) | PASS | Native build succeeds with Homebrew LLVM |
+| coverage | PASS | No coverage threshold configured yet |
+| SonarCloud | N/A | No SONAR_TOKEN configured for cpp-cmake |
+| Schema Alignment | N/A | No frontend / no API contracts |
+| AC Compliance | Skipped | Infrastructure story — no Playwright/integration AC tests |
+| E2E Test Quality | N/A | No frontend |
+| App Startup | N/A | Game client binary — no server boot check applicable |
+
+**Iterations**: 0 (all checks passed on first run)
+**Issues Fixed**: 0
 
 ---
 
