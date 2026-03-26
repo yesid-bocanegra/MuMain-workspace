@@ -571,3 +571,5 @@
 {"timestamp":"2026-03-26T20:53:45.994277+00:00","event_type":"step_regressed","story_key":"7-8-3-test-compilation-fixes","step":"code-review-analysis","sprint":null,"epic":"7","data":{"from_step":"code-review-analysis","to_step":"dev-story","regression_count":2}}
 {"timestamp":"2026-03-26T20:53:45.995045+00:00","event_type":"feedback_saved","story_key":"7-8-3-test-compilation-fixes","step":"code-review-analysis","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-03-26T20:53:48.004051+00:00","event_type":"step_started","story_key":"7-8-3-test-compilation-fixes","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-26T20:58:06.177335+00:00","event_type":"step_passed","story_key":"7-8-3-test-compilation-fixes","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":258.2,"input_tokens":75,"output_tokens":6623,"cache_creation_tokens":296303,"cache_read_tokens":3492624,"num_turns":44,"num_tool_calls":25}}
+{"timestamp":"2026-03-26T20:58:07.179471+00:00","event_type":"step_started","story_key":"7-8-3-test-compilation-fixes","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
