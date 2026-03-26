@@ -9,12 +9,13 @@
 
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** PASS
 
 | Check | Result |
 |-------|--------|
-| `./ctl check` (build + test + format-check + lint) | PASS (pre-run) |
-| `python3 MuMain/scripts/check-win32-guards.py` | PASS (pre-run) |
+| `./ctl check` (build + test + format-check + lint) | PASS |
+| `python3 MuMain/scripts/check-win32-guards.py` | PASS |
+| App startup check | N/A — game client binary, no server process |
 
 ---
 
