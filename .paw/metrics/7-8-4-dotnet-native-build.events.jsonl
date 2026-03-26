@@ -11,3 +11,5 @@
 {"timestamp":"2026-03-26T21:41:02.160169+00:00","event_type":"step_started","story_key":"7-8-4-dotnet-native-build","step":"design-screen","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-26T21:41:02.162283+00:00","event_type":"step_passed","story_key":"7-8-4-dotnet-native-build","step":"design-screen","sprint":null,"epic":"7","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0,"cache_creation_tokens":0,"cache_read_tokens":0,"num_turns":0,"num_tool_calls":0}}
 {"timestamp":"2026-03-26T21:41:03.173185+00:00","event_type":"step_started","story_key":"7-8-4-dotnet-native-build","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-26T21:56:25.547381+00:00","event_type":"step_passed","story_key":"7-8-4-dotnet-native-build","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":922.4,"input_tokens":11649,"output_tokens":36090,"cache_creation_tokens":721411,"cache_read_tokens":26643157,"num_turns":168,"num_tool_calls":97}}
+{"timestamp":"2026-03-26T21:56:26.554134+00:00","event_type":"step_started","story_key":"7-8-4-dotnet-native-build","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
