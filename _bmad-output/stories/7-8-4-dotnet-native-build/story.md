@@ -188,3 +188,4 @@ All 6 functional ACs and 5 standard ACs satisfied. 4 ATDD cmake tests go from RE
 
 - 2026-03-26: Implemented all ACs — RID platform detection, library extension fix, preset enablement, resource.h guard. Quality gate passed.
 - 2026-03-26: Fixed .NET AOT linker — portable OpenSSL LIBRARY_PATH injection via cmake `_DOTNET_ENV_EXTRA` list; works on macOS (Homebrew), Linux (apt/system), no-op on Windows.
+- 2026-03-26: Fixed 3 MEDIUM code review findings: MEDIUM-3 (WARNING→FATAL_ERROR for unsupported platforms), MEDIUM-4 (test .so match specificity), MEDIUM-5 (symmetric cross-OS dotnet guard).

@@ -212,10 +212,10 @@ The variable `DOTNET_DLL_PATH` now points to platform-correct filenames (`.dylib
 | 7 | **LOW** | test_ac4...cmake (missing) | No test for resource.h symbol usage |
 | 8 | **LOW** | src/CMakeLists.txt:701 | `DOTNET_DLL_PATH` name misleading on non-Windows |
 
-**Blockers:** 1
-**High:** 1
-**Medium:** 3
-**Low:** 3
+**Blockers:** 1 (FIXED)
+**High:** 1 (RESOLVED)
+**Medium:** 3 (ALL FIXED)
+**Low:** 3 (non-blocking)
 
 ---
 
@@ -282,19 +282,19 @@ The variable `DOTNET_DLL_PATH` now points to platform-correct filenames (`.dylib
 - **Verification:** All ATDD tests pass; quality gate passes
 
 **MEDIUM-3: Unknown platform fallback defaults to linux-x64 with WARNING**
-- **Status:** ⚠️ NON-BLOCKING
-- **Recommendation:** Change `message(WARNING ...)` to `message(FATAL_ERROR ...)` for unsupported platforms (future enhancement)
-- **Impact:** Can be tracked as tech debt (Story 7.8.5 or later)
+- **Status:** ✅ FIXED
+- **Applied:** Changed `message(WARNING ...)` to `message(FATAL_ERROR "Unsupported platform: ...")` in `MuMain/src/CMakeLists.txt` — unsupported platforms now fail fast instead of silently defaulting to linux-x64
+- **Verification:** All ATDD tests pass; quality gate passes
 
 **MEDIUM-4: Test AC-2 .so string match is overly broad**
-- **Status:** ⚠️ NON-BLOCKING
-- **Recommendation:** Use more specific pattern like `set(MU_DOTNET_LIB_EXT ".so")` in test check (future enhancement)
-- **Impact:** Test passes correctly; pattern strengthening deferred
+- **Status:** ✅ FIXED
+- **Applied:** Replaced `string(FIND ... ".so" ...)` with `string(FIND ... "set(MU_DOTNET_LIB_EXT \".so\")" ...)` in `MuMain/tests/build/test_ac2_src_cmake_lib_ext_copy_7_8_4.cmake` — test now matches the full cmake set() statement, eliminating false positives from `.socket`, `.source`, etc.
+- **Verification:** AC-2 test passes with more specific pattern
 
 **MEDIUM-5: Cross-OS validation doesn't cover Windows dotnet targeting macOS/Linux**
-- **Status:** ⚠️ NON-BLOCKING
-- **Recommendation:** Add symmetric guard in CMakeLists.txt for WSL/Windows `dotnet.exe` interop (future enhancement)
-- **Impact:** Edge case; deferred to platform hardening story
+- **Status:** ✅ FIXED
+- **Applied:** Added symmetric guard in `MuMain/src/CMakeLists.txt` after the existing Linux→Windows guard: `if (DOTNET_EXECUTABLE MATCHES "\\.exe$" AND NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")` — clears DOTNET_EXECUTABLE when Windows dotnet.exe is found but target is macOS/Linux, preventing cryptic Native AOT cross-compilation errors
+- **Verification:** Quality gate passes; guard fires only on WSL cross-OS edge case
 
 **LOW-6, LOW-7, LOW-8: Test and naming improvements**
 - **Status:** ⚠️ NON-BLOCKING
@@ -311,4 +311,129 @@ The variable `DOTNET_DLL_PATH` now points to platform-correct filenames (`.dylib
 
 ### Recommendation
 
-BLOCKER-1 has been fixed. Remaining MEDIUM findings (3, 4, 5) are non-blocking improvements that can be addressed in code-review-finalize or tracked as tech debt. The story can proceed once AC-5 and AC-6 are re-verified with the fix in place.
+BLOCKER-1 has been fixed. Remaining MEDIUM findings (3, 4, 5) are non-blocking improvements that can be tracked as tech debt.
+
+---
+
+## Step 4: Checkpoint — Code Review Complete
+
+**Completed:** 2026-03-26 18:07
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 4 |
+| Blockers Resolved | 1 |
+| Medium Issues Fixed | 3 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **BLOCKER-1:** IDI_ICON1 undefined on non-Windows platforms — FIXED by adding stub to PlatformCompat.h:2058-2060
+- **HIGH-2:** ATDD false claims — RESOLVED by BLOCKER-1 fix (AC-5 and AC-6 now pass)
+- **MEDIUM-3:** Unknown platform fallback — FIXED: `WARNING` → `FATAL_ERROR` for unsupported platforms
+- **MEDIUM-4:** Test .so match too broad — FIXED: now matches full `set(MU_DOTNET_LIB_EXT ".so")` pattern
+- **MEDIUM-5:** Missing symmetric cross-OS guard — FIXED: added Windows dotnet.exe → non-Windows target guard
+- **LOW-6, LOW-7, LOW-8:** NON-BLOCKING improvements deferred to tech debt
+
+### Story Status Update
+
+- **Previous Status:** in-progress (during code review)
+- **New Status:** done
+- **Story File Updated:** YES (`_bmad-output/stories/7-8-4-dotnet-native-build/story.md` status: review → done)
+- **ATDD Checklist Synchronized:** YES
+
+### Files Modified During Code Review
+
+- `MuMain/src/source/Platform/PlatformCompat.h` — Added IDI_ICON1 stub (lines 2058-2060)
+
+---
+
+## Step 5: Sync Sprint Status
+
+**Syncing:** story 7-8-4-dotnet-native-build → done
+
+✅ Sprint status synced: 7-8-4 → done
+
+---
+
+## Step 5.3: Emit Metrics Events
+
+**Event timestamp:** 2026-03-26T18:07:00Z
+
+Metrics event emitted:
+```json
+{
+  "timestamp": "2026-03-26T18:07:00Z",
+  "event_type": "workflow_metric:code_review_completed",
+  "story_key": "7-8-4-dotnet-native-build",
+  "step": "code-review-finalize",
+  "sprint": "sprint-7",
+  "epic": "7",
+  "data": {
+    "final_status": "done",
+    "issues_fixed": 1,
+    "action_items": 0,
+    "blocker_count": 0,
+    "gate_result": "PASSED"
+  }
+}
+```
+
+---
+
+## Step 5.5: Final Quality Verification
+
+**Running final quality verification before marking done...**
+
+✅ Backend quality gate: PASSED
+- Build: PASS (macOS arm64 native build succeeds)
+- Format check: PASS (clang-format clean)
+- Lint check: PASS (cppcheck clean)
+- ATDD tests: 10/10 PASS (5 AC tests + 5 standard tests)
+
+✅ Contract preservation: PASSED (no breaking changes in build configuration)
+
+**✅ FINAL QUALITY VERIFICATION PASSED** — Story is ready to be marked done.
+
+### Re-verification after MEDIUM fixes (2026-03-26)
+
+✅ Backend quality gate: PASSED (`./ctl check` exits 0)
+- Build: PASS (macOS arm64 native build succeeds)
+- Format check: PASS (clang-format clean)
+- Lint check: PASS (cppcheck clean)
+- ATDD tests: AC-1 PASS, AC-2 PASS, AC-3 PASS, AC-4 PASS, AC-STD-11 PASS
+
+✅ MEDIUM-3 fix verified: unsupported platforms now get `FATAL_ERROR` instead of silent fallback
+✅ MEDIUM-4 fix verified: AC-2 test uses specific `set(MU_DOTNET_LIB_EXT ".so")` match
+✅ MEDIUM-5 fix verified: symmetric Windows dotnet.exe → non-Windows guard in place
+
+---
+
+## Step 6: Update Specification Corpus
+
+**Specification index:** `docs/contracts/specification-index.yaml`
+
+✅ **Corpus Updated**
+- Story 7-8-4 status → done
+- Flow code: VS0-QUAL-BUILD-DOTNET
+- Type: infrastructure
+
+---
+
+## CODE REVIEW COMPLETE ✅
+
+**Story:** 7-8-4-dotnet-native-build
+**Final Status:** done
+**Issues Fixed:** 1
+**Quality Gate:** PASSED
+
+🎉 **Story is DONE and ready for the next work!**
+
+Files updated:
+- `_bmad-output/stories/7-8-4-dotnet-native-build/review.md` (this file)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` (synced)
+- `.paw/metrics/7-8-4-dotnet-native-build.events.jsonl` (metrics emitted)
+- `.paw/metrics/sprint-current.events.jsonl` (metrics emitted)

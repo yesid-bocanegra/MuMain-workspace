@@ -66,6 +66,22 @@ All tasks completed.
 - MuMain/src/source/Main/Winmain.cpp (AC-4)
 - MuMain/tests/build/test_ac8_dotnet_disabled_native_runners.cmake (conflict resolution)
 
+### Session 2 (2026-03-26) — Code Review Fix Iteration
+
+**Duration:** Single session
+**Tasks Worked:** MEDIUM-3, MEDIUM-4, MEDIUM-5 code review findings
+**Tasks Completed:** 3/3
+
+**Summary:**
+- MEDIUM-3: Changed unsupported platform fallback from WARNING to FATAL_ERROR in CMakeLists.txt
+- MEDIUM-4: Tightened `.so` string match in AC-2 test to full `set(MU_DOTNET_LIB_EXT ".so")` pattern
+- MEDIUM-5: Added symmetric cross-OS guard for Windows dotnet.exe targeting non-Windows platforms
+- Quality gate passes (./ctl check), all ATDD tests pass
+
+**Files Modified:**
+- MuMain/src/CMakeLists.txt (MEDIUM-3: FATAL_ERROR, MEDIUM-5: symmetric guard)
+- MuMain/tests/build/test_ac2_src_cmake_lib_ext_copy_7_8_4.cmake (MEDIUM-4: specific pattern)
+
 ---
 
 ## Blockers & Open Questions
