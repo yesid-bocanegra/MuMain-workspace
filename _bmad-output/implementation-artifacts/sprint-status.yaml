@@ -213,9 +213,9 @@ sprints:
       - 7-8-1-audio-interface-win32-types        # 5 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: Win32 types in audio interface headers block all-platform build
       - 7-8-2-gameplay-header-cross-platform     # 5 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: ODR violation + missing includes in gameplay headers
       - 7-8-3-test-compilation-fixes             # 3 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: invalid enum values + unused variable errors in test files
-      - 7-8-4-dotnet-native-build               # 3 pts | review | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: cmake hardcodes win-x64 RID — must build osx-arm64/linux-x64 natively
-    velocity: null
-    delivered_points: null  # in-progress: 73 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1,7-8-2,7-8-3), 8 pts remaining (7-3-2,7-8-4)
+      - 7-8-4-dotnet-native-build               # 3 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: cmake hardcodes win-x64 RID — must build osx-arm64/linux-x64 natively
+    velocity: 76
+    delivered_points: 76  # in-progress: 76 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1,7-8-2,7-8-3,7-8-4), 5 pts remaining (7-3-2)
     commitment_reliability: null
     scope_changes:
       added:

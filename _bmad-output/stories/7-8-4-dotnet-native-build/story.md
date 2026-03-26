@@ -1,6 +1,6 @@
 # Story 7.8.4: .NET Client Library Native Build
 
-Status: review
+Status: done
 
 ---
 
