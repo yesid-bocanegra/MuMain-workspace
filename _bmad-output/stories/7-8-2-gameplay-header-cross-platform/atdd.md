@@ -124,6 +124,6 @@
 
 3. **AC-3 SkillStructs.h:** Has `#include <windows.h>` at line 4. The story is not asking to remove this — only to add the missing `MultiLanguage.h` include for `CMultiLanguage`. The windows.h include is a separate, pre-existing issue.
 
-4. **AC-4 ITEM type:** `ITEM` is used as `ITEM*` parameters in CSItemOption.h methods. Use a forward declaration `struct ITEM;` if a full include would introduce circular dependencies, or add `#include "mu_struct.h"` if ITEM is defined there.
+4. **AC-4 ITEM type:** `ITEM` is used as `ITEM*` parameters in CSItemOption.h methods. Use a forward declaration `struct tagITEM; typedef struct tagITEM ITEM;` (matching the typedef pattern in mu_struct.h) if a full include would introduce circular dependencies, or add `#include "mu_struct.h"` if ITEM is defined there. Note: A plain `struct ITEM;` is **incorrect** — it introduces a conflicting tag name on Clang.
 
-5. **AC-5 macOS build:** Requires macOS with Xcode CLT and SDL3 (fetched by FetchContent). The quality gate `./ctl check` on macOS runs cppcheck + clang-format but not a full compilation. For the full build test, `cmake --build --preset macos-arm64-debug` must be run on a macOS machine.
+5. **AC-5 macOS build:** Requires macOS with Xcode CLT and SDL3 (fetched by FetchContent). The quality gate `./ctl check` on macOS runs cppcheck + clang-format but not a full compilation. For the full build test, `cmake --build --preset macos-arm64-debug` must be run on a macOS machine. **Note:** AC-5/AC-6 were verified against story-scoped targets only (296/297 targets succeed). Pre-existing build failures in `test_inventory_trading_validation.cpp` (story 7-8-3 scope) are external to this story.

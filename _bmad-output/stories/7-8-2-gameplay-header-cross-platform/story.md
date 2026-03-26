@@ -1,6 +1,6 @@
 # Story 7.8.2: Gameplay Header Cross-Platform Fixes
 
-Status: review
+Status: done
 
 ---
 
@@ -143,6 +143,14 @@ All 4 header fixes implemented and verified. No runtime behavior change — all 
 
 **BLOCKER found:** `struct ITEM;` forward declaration in CSItemOption.h was incompatible with `typedef struct tagITEM { ... } ITEM;` in mu_struct.h. On Clang, `struct ITEM;` introduces a tag name that conflicts with the typedef. Fixed to `struct tagITEM; typedef struct tagITEM ITEM;`. Also fixed redundant `#ifdef` in test file and updated CMake AC-4 test to verify correct forward declaration pattern.
 
+### Code Review Finalize Fix (2026-03-26)
+
+**Finding 1 (MEDIUM):** Added `#include "mu_define.h"` to CSItemOption.h for `MAX_EQUIPMENT_INDEX` and `MAX_ITEM` constants — header was relying on PCH transitive includes.
+**Finding 3 (LOW):** Updated ATDD note 4 to use correct `struct tagITEM; typedef struct tagITEM ITEM;` forward declaration pattern instead of incorrect `struct ITEM;`.
+**Finding 4 (LOW):** Added `pos_tag_fwd` validation check in CMake AC-4 test — previously dead variable now verifies both tag and typedef are present.
+**Finding 2 (MEDIUM):** Documented AC-5/AC-6 conditional pass in ATDD notes (pre-existing build failures are story 7-8-3 scope).
+**Findings 5-7 (LOW):** Accepted as-is per review recommendations (SIOF theoretical risk, CMake false-positive low risk, `<map>` include correctness).
+
 ---
 
 ## File List
@@ -152,7 +160,7 @@ All 4 header fixes implemented and verified. No runtime behavior change — all 
 | `MuMain/src/source/Core/mu_enum.h` | MODIFIED | Added `inline` to SKILL_REPLACEMENTS, added `#include <map>` |
 | `MuMain/src/source/World/ZzzPath.h` | MODIFIED | Added `#include "ErrorReport.h"` |
 | `MuMain/src/source/Data/Skills/SkillStructs.h` | MODIFIED | Added `#include "MultiLanguage.h"` |
-| `MuMain/src/source/Gameplay/Items/CSItemOption.h` | MODIFIED | Added `#include "mu_enum.h"`, `struct tagITEM; typedef struct tagITEM ITEM;` forward declaration |
+| `MuMain/src/source/Gameplay/Items/CSItemOption.h` | MODIFIED | Added `#include "mu_define.h"`, `#include "mu_enum.h"`, `struct tagITEM; typedef struct tagITEM ITEM;` forward declaration |
 | `MuMain/tests/gameplay/test_gameplay_header_crossplatform_7_8_2.cpp` | CREATED | Catch2 runtime tests for AC-1 (ODR link + SKILL_REPLACEMENTS content) |
 | `MuMain/tests/build/test_ac1_mu_enum_inline_7_8_2.cmake` | CREATED | CMake script test: verifies `inline` keyword on SKILL_REPLACEMENTS |
 | `MuMain/tests/build/test_ac2_zzzpath_errorreport_include_7_8_2.cmake` | CREATED | CMake script test: verifies ErrorReport.h include in ZzzPath.h |
@@ -169,3 +177,4 @@ All 4 header fixes implemented and verified. No runtime behavior change — all 
 - **2026-03-26**: Implemented all tasks (1–5). All header fixes applied, quality gate passed, 5/5 CMake tests green.
 - **2026-03-26**: Code review fix — corrected ITEM forward declaration (`struct tagITEM; typedef struct tagITEM ITEM;`), updated CMake AC-4 test, removed redundant `#ifdef` in test file.
 - **2026-03-26**: Dev-story completion — updated File List (12 files), verified all gates, status → review.
+- **2026-03-26**: Code review finalize — fixed 4 findings (1 MEDIUM code fix, 1 MEDIUM doc fix, 2 LOW fixes), accepted 3 LOW as-is. All validation gates passed. Status → done.

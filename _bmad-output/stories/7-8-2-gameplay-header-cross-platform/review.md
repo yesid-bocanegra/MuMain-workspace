@@ -14,7 +14,7 @@
 |------|------|--------|-----------|-------|
 | 1 | code-review-quality-gate | **PASSED** | 2026-03-26 | All checks green (lint, build, coverage) |
 | 2 | code-review-analysis | **COMPLETE** | 2026-03-26 | Adversarial review cycle 3 — all AC validations pass, 7 findings documented |
-| 3 | code-review-finalize | — PENDING | — | |
+| 3 | code-review-finalize | **COMPLETE** | 2026-03-26 | All 7 findings resolved: 4 fixed, 3 accepted as-is |
 
 ---
 
@@ -263,6 +263,44 @@ CMake tests are **well-structured with good error messages** and regression guar
 
 Story is ready to proceed to code-review-finalize.
 
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-26
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 4 |
+| Issues Accepted As-Is | 3 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **Finding 1 (MEDIUM):** FIXED — Added `#include "mu_define.h"` to CSItemOption.h for `MAX_EQUIPMENT_INDEX` and `MAX_ITEM` constants
+- **Finding 2 (MEDIUM):** FIXED — Documented AC-5/AC-6 conditional pass in ATDD notes (pre-existing failures are story 7-8-3 scope)
+- **Finding 3 (LOW):** FIXED — Updated ATDD note 4 to use correct `struct tagITEM; typedef struct tagITEM ITEM;` pattern
+- **Finding 4 (LOW):** FIXED — Added `pos_tag_fwd` validation check in CMake AC-4 test (was dead variable)
+- **Finding 5 (LOW):** ACCEPTED — SIOF risk is theoretical; SKILL_REPLACEMENTS only accessed during gameplay
+- **Finding 6 (LOW):** ACCEPTED — CMake string-search false-positive risk is low; regression guards mitigate
+- **Finding 7 (LOW):** ACCEPTED — `<map>` include broadening is correct for self-containment; PCH covers primary build path
+
+### Story Status Update
+
+- **Previous Status:** review
+- **New Status:** done
+- **Story File Updated:** _bmad-output/stories/7-8-2-gameplay-header-cross-platform/story.md
+- **ATDD Checklist Synchronized:** Yes
+
+### Files Modified
+
+- `MuMain/src/source/Gameplay/Items/CSItemOption.h` — Added `#include "mu_define.h"` for self-containment
+- `MuMain/tests/build/test_ac4_csitemoption_type_includes_7_8_2.cmake` — Added `pos_tag_fwd` validation check
+- `_bmad-output/stories/7-8-2-gameplay-header-cross-platform/atdd.md` — Fixed note 4, added AC-5/AC-6 documentation
+- `_bmad-output/stories/7-8-2-gameplay-header-cross-platform/story.md` — Status → done, updated dev agent record and file list
 
 ---
 
