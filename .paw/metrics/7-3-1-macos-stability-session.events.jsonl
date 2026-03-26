@@ -5,3 +5,5 @@
 {"timestamp":"2026-03-25T04:09:15.128707+00:00","event_type":"batch_completed","story_key":"7-3-1-macos-stability-session","step":null,"sprint":null,"epic":"7","data":{"total":2,"completed":0,"failed":1}}
 {"timestamp":"2026-03-26T03:20:38.102272+00:00","event_type":"story_started","story_key":"7-3-1-macos-stability-session","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-26T03:20:38.102795+00:00","event_type":"step_started","story_key":"7-3-1-macos-stability-session","step":"create-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-26T03:23:53.555937+00:00","event_type":"step_passed","story_key":"7-3-1-macos-stability-session","step":"create-story","sprint":null,"epic":"7","data":{"duration_seconds":195.5,"input_tokens":76,"output_tokens":6900,"cache_creation_tokens":481801,"cache_read_tokens":4123556,"num_turns":48,"num_tool_calls":27}}
+{"timestamp":"2026-03-26T03:23:54.566748+00:00","event_type":"step_started","story_key":"7-3-1-macos-stability-session","step":"validate-story","sprint":null,"epic":"7","data":{}}

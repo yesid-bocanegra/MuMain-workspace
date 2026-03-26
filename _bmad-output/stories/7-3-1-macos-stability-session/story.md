@@ -57,9 +57,9 @@ Status: ready-for-dev
 
 - [ ] **AC-STD-1:** Code Standards Compliance — any hotfixes during session follow project naming, logging, and error handling conventions
 - [ ] **AC-STD-2:** Testing Requirements — if code changes are made, `./ctl check` passes (format + lint, 0 errors)
-- [ ] **AC-STD-6:** Conventional commit: `test(platform): macOS 60-minute stability session passed`
+- [ ] **AC-STD-3:** Conventional Commit — commit message: `test(platform): macOS 60-minute stability session passed`
 - [ ] **AC-STD-13:** Quality Gate passes (`./ctl check`) — must pass before session begins AND after any hotfixes
-- [ ] **AC-STD-15:** Git Safety — no incomplete rebase, no force push
+- [ ] **AC-STD-14:** Git Safety — no incomplete rebase, no force push
 
 ---
 
