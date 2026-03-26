@@ -179,6 +179,7 @@ All 6 functional ACs and 5 standard ACs satisfied. 4 ATDD cmake tests go from RE
 | MODIFIED | `MuMain/src/CMakeLists.txt` |
 | MODIFIED | `MuMain/CMakePresets.json` |
 | MODIFIED | `MuMain/src/source/Main/Winmain.cpp` |
+| MODIFIED | `MuMain/src/source/Platform/PlatformCompat.h` |
 | MODIFIED | `MuMain/tests/build/test_ac8_dotnet_disabled_native_runners.cmake` |
 
 ---
