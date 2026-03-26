@@ -12,7 +12,7 @@
 |------|--------|---------|
 | 1. Quality Gate | PASSED | Re-validated 2026-03-25 — all checks green |
 | 2. Code Review Analysis | COMPLETED | 2026-03-25 22:55 GMT — 0 BLOCKER, 1 HIGH, 3 MEDIUM, 3 LOW findings |
-| 3. Code Review Finalize | Pending | Fixes and final status update |
+| 3. Code Review Finalize | COMPLETED | 2026-03-25 — all 7 findings fixed, quality gate PASSED |
 
 ## Quality Gate
 
@@ -167,10 +167,10 @@
 | Severity | Count | Status |
 |----------|-------|--------|
 | BLOCKER | 0 | — |
-| HIGH | 1 | Noted (Finding 1: GetSystemInfo name collision) |
-| MEDIUM | 3 | Noted (Findings 2-4) |
-| LOW | 3 | Noted (Findings 5-7) |
-| **Total** | **7** | **0 blockers, 7 noted** |
+| HIGH | 1 | Fixed (Finding 1: GetSystemInfo → MuGetSystemInfo) |
+| MEDIUM | 3 | Fixed (Findings 2-4) |
+| LOW | 3 | Fixed (Findings 5-7) |
+| **Total** | **7** | **0 blockers, 7 fixed** |
 
 **No BLOCKER findings.** The 2 prior BLOCKERs (test logic error, integer overflow) have been verified as fixed in the current code.
 
@@ -388,7 +388,54 @@ I've executed the code-review-analysis workflow for story **7-6-7-error-report-c
 - Quality gate PASSED
 - Trace file updated with analysis results
 
-**Next Step**: `/bmad:pcc:workflows:code-review-finalize 7-6-7`
+---
+
+## Step 3: Resolution
+
+**Completed:** 2026-03-25
+**Final Status:** done
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Issues Fixed | 7 |
+| Action Items Created | 0 |
+
+### Resolution Details
+
+- **Finding 1 (HIGH):** Fixed — renamed `GetSystemInfo` → `MuGetSystemInfo` in ErrorReport.h, ErrorReport.cpp, test_error_report.cpp, Winmain.cpp
+- **Finding 2 (MEDIUM):** Fixed — added bounds check `pos + 2 < cpuLine.size()` before `substr()` call in Linux CPU detection
+- **Finding 3 (MEDIUM):** Fixed — changed `#else` to `#elif defined(__linux__)` for CPU and RAM detection; added Windows/MinGW fallback with "N/A (MinGW)" / 0
+- **Finding 4 (MEDIUM):** Fixed — replaced `#ifdef _WIN32` / `#else` swprintf guard in HexWrite with single `mu_swprintf` call
+- **Finding 5 (LOW):** Fixed — renamed `MAX_DXVERSION` → `MAX_GPU_BACKEND_LEN` in ErrorReport.h and test_error_report.cpp
+- **Finding 6 (LOW):** Fixed — created `Platform/MiniAudio/AudioDeviceNames.h` lightweight header; replaced forward declaration in ErrorReport.cpp with `#include`
+- **Finding 7 (LOW):** Fixed — added `ma_context_get_devices` return value check with early return on failure in MiniAudioBackend.cpp
+
+### Story Status Update
+
+- **Previous Status:** review
+- **New Status:** done
+- **Story File Updated:** _bmad-output/stories/7-6-7-error-report-cross-platform-diagnostics/story.md
+- **ATDD Checklist Synchronized:** Yes (26/26 items, all GREEN)
+
+### Files Modified
+
+- `MuMain/src/source/Core/ErrorReport.h` — renamed MAX_DXVERSION → MAX_GPU_BACKEND_LEN, renamed GetSystemInfo → MuGetSystemInfo
+- `MuMain/src/source/Core/ErrorReport.cpp` — renamed MuGetSystemInfo, bounds check on substr, explicit #elif __linux__, replaced HexWrite guard with mu_swprintf, replaced forward declaration with #include
+- `MuMain/src/source/Main/Winmain.cpp` — updated MuGetSystemInfo call
+- `MuMain/tests/core/test_error_report.cpp` — renamed MuGetSystemInfo, renamed MAX_GPU_BACKEND_LEN
+- `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` — added ma_context_get_devices return value check
+- `MuMain/src/source/Platform/MiniAudio/AudioDeviceNames.h` — NEW: lightweight header for mu::GetAudioDeviceNames()
+
+### Quality Gate Verification
+
+- **`./ctl check`**: PASSED (post-fix, 723/723 files checked, 0 errors)
+- **Build**: PASSED (all libraries linked successfully)
+- **Format**: PASSED (clang-format clean)
+- **Lint**: PASSED (cppcheck clean)
+
+---
 
 📋 Result:
 ## ✅ Code Review Analysis Complete — Story 7-6-7
