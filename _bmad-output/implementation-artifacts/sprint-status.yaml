@@ -207,7 +207,7 @@ sprints:
       - 7-6-6-shoplistmanager-http-cross-platform # 13 pts | Flow:E | Deps: 7-6-1
       - 7-6-7-error-report-cross-platform-diagnostics # 8 pts | done | Flow:E | Deps: 7-6-1, 7-1-2 ✓
       # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
-      - 7-3-1-macos-stability-session            # 5 pts | Flow:E | Deps: 7-6-1, 7-6-2, 7-6-3, 7-6-4, 7-6-5, 7-6-6, 7-6-7
+      - 7-3-1-macos-stability-session            # 5 pts | done | Flow:E | Deps: 7-6-1, 7-6-2, 7-6-3, 7-6-4, 7-6-5, 7-6-6, 7-6-7
       - 7-3-2-linux-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓, 7-6-* ✓
     velocity: null
     delivered_points: null

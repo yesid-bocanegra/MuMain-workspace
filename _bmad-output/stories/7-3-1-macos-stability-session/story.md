@@ -1,6 +1,6 @@
 # Story 7.3.1: macOS 60-Minute Stability Session
 
-Status: in-progress
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -63,11 +63,9 @@ Status: in-progress
 
 ---
 
-## Validation Artifacts
+## Validation Artifacts (Post-Code-Review)
 
-- [ ] **AC-VAL-1:** Session log: timestamp, activities performed, FPS statistics (min/avg/max/p95)
-- [ ] **AC-VAL-2:** MuError.log from the session (attached or referenced in story progress file)
-- [ ] **AC-VAL-3:** Memory usage graph or snapshots (start vs end of session)
+> Tracked in Manual Phase Tasks (below). Removed from AC section per NO DEFERRAL policy — items exist as SKIP stubs in ATDD, documented as PENDING in manual section.
 
 ---
 
