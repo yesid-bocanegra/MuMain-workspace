@@ -192,7 +192,7 @@ sprints:
     milestones: [M1, M5]
     start_date: "2026-03-24"
     end_date: "2026-04-07"
-    planned_points: 62
+    planned_points: 75
     stories:
       # EPIC-7 — Build compat fix (prerequisite for stability sessions)
       - 7-3-0-macos-build-compat                 # 3 pts | Flow:E | Deps: EPIC-2–6 ✓ | scope-discovery from 7-3-1
@@ -209,8 +209,12 @@ sprints:
       # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
       - 7-3-1-macos-stability-session            # 5 pts | done | Flow:E | Deps: 7-6-1, 7-6-2, 7-6-3, 7-6-4, 7-6-5, 7-6-6, 7-6-7
       - 7-3-2-linux-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓, 7-6-* ✓
+      # EPIC-7 — Remaining compilation blockers discovered during macOS native build
+      - 7-8-1-audio-interface-win32-types        # 5 pts | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: Win32 types in audio interface headers block all-platform build
+      - 7-8-2-gameplay-header-cross-platform     # 5 pts | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: ODR violation + missing includes in gameplay headers
+      - 7-8-3-test-compilation-fixes             # 3 pts | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: invalid enum values + unused variable errors in test files
     velocity: null
-    delivered_points: null
+    delivered_points: null  # in-progress: 60 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1), 15 pts remaining (7-3-2,7-8-1,7-8-2,7-8-3)
     commitment_reliability: null
     scope_changes:
       added:
@@ -234,6 +238,24 @@ sprints:
           reason: "Scope discovery: 7-5-1 resolved widespread type errors but 3 CMake targets still fail — remaining compilation gaps must be fixed before 7-3-1 stability session"
           source_story: "7-5-1"
           points_delta: +5
+        - date: "2026-03-26"
+          type: scope_addition
+          story: 7-8-1-audio-interface-win32-types
+          reason: "Scope discovery: HRESULT/BOOL/OBJECT* in DSPlaySound.h, IPlatformAudio.h, MiniAudioBackend.h prevent compilation on macOS/Linux — discovered when enforcing mandatory native builds"
+          source_story: "7-3-1"
+          points_delta: +5
+        - date: "2026-03-26"
+          type: scope_addition
+          story: 7-8-2-gameplay-header-cross-platform
+          reason: "Scope discovery: non-inline SKILL_REPLACEMENTS map in mu_enum.h causes ODR violations; missing includes in ZzzPath.h, SkillStructs.h, CSItemOption.h cause compilation failures"
+          source_story: "7-3-1"
+          points_delta: +5
+        - date: "2026-03-26"
+          type: scope_addition
+          story: 7-8-3-test-compilation-fixes
+          reason: "Scope discovery: invalid STORAGE_TYPE enum values in test_inventory_trading_validation.cpp and unused variable error in test_sdlgpubackend.cpp prevent MuTests from compiling"
+          source_story: "7-3-1"
+          points_delta: +3
       removed: []
 
 # =====================
@@ -254,7 +276,7 @@ flow_metrics:
   wip_violations: 0
   flow_distribution:           # Sprint 7 planned distribution
     Feature: 0
-    Enabler: 2      # 7-3-1 + 7-3-2 (10 pts) — final stability validation stories
+    Enabler: 5      # 7-3-1 + 7-3-2 + 7-8-1 + 7-8-2 + 7-8-3 (23 pts remaining) — stability sessions + build blockers
     Defect: 0
     Debt: 0
   flow_load:
@@ -288,21 +310,33 @@ critical_path:
       - "M2/M3/M4 eligible for milestone-validation now (all contributing epics done)"
 
   sprint_7_critical_path:
-    # Track A: 7-3-1 (5) — macOS stability, parallel with Track B
-    # Track B: 7-3-2 (5) — Linux stability, parallel with Track A
-    # Equal length chains — either is the critical path
-    longest_chain: "7-3-1-macos-stability-session (5 pts) [parallel with 7-3-2 — equal length]"
+    # 7-8-1, 7-8-2, 7-8-3 are parallel compilation blockers — all must complete before 7-3-2 stability session
+    # 7-3-2 depends on full native build passing, which requires 7-8-1+7-8-2+7-8-3
+    longest_chain: "7-8-1/7-8-2/7-8-3 (parallel, 5+5+3 pts) → 7-3-2 (5 pts)"
     parallel_chains:
-      - track_a: "7-3-1-macos-stability-session (5)"
+      - track_a: "7-8-1-audio-interface-win32-types (5)"
         points: 5
-        note: "macOS 60-min stability session — all deps satisfied (EPIC-2–6 ✓)"
-      - track_b: "7-3-2-linux-stability-session (5)"
+        note: "Audio interface Win32 type cleanup — blocks full native build"
+      - track_b: "7-8-2-gameplay-header-cross-platform (5)"
         points: 5
-        note: "Linux 60-min stability session — all deps satisfied (EPIC-2–6 ✓)"
+        note: "Gameplay header include/ODR fixes — blocks full native build"
+      - track_c: "7-8-3-test-compilation-fixes (3)"
+        points: 3
+        note: "Test file compilation fixes — blocks ctest run"
+      - track_d: "7-3-2-linux-stability-session (5)"
+        points: 5
+        note: "Linux 60-min stability session — requires 7-8-* complete"
     stories_with_no_dependencies:
-      - 7-3-1-macos-stability-session
-      - 7-3-2-linux-stability-session
-    stories_that_unblock_other_stories: []
+      - 7-8-1-audio-interface-win32-types
+      - 7-8-2-gameplay-header-cross-platform
+      - 7-8-3-test-compilation-fixes
+    stories_that_unblock_other_stories:
+      - story: 7-8-1-audio-interface-win32-types
+        unblocks: [7-3-2-linux-stability-session]
+      - story: 7-8-2-gameplay-header-cross-platform
+        unblocks: [7-3-2-linux-stability-session]
+      - story: 7-8-3-test-compilation-fixes
+        unblocks: [7-3-2-linux-stability-session]
 
   blocking_dependencies: []
 

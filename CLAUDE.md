@@ -22,29 +22,20 @@ MU Online game client (Season 5.2→6). C++20 monolithic game loop + .NET 10 Nat
 
 ## Build Commands (by OS)
 
-### macOS — Quality Gates Only
-
-macOS **cannot** compile the game client (requires Win32 APIs, DirectX, `windows.h`). Use macOS for code quality checks and editing only.
-
-```bash
-brew install clang-format cppcheck          # one-time
-./ctl check                                 # format-check + lint (mirrors CI)
-./ctl format                                # auto-format all C++ files
-```
-
 ### macOS — Native Build (arm64)
 
-macOS can configure the CMake project natively. Full compilation is blocked until EPIC-2 (SDL3 windowing migration), but configure succeeds and validates the build system.
+macOS **MUST** build natively. All platforms are first-class build targets.
 
 ```bash
 # Install build tools (one-time, Clang ships with Xcode CLI tools)
 xcode-select --install
-brew install cmake ninja
+brew install cmake ninja clang-format cppcheck
 
-# Configure and attempt build (from MuMain/ directory)
-cd MuMain
-cmake --preset macos-arm64
-cmake --build --preset macos-arm64-debug    # partial — Win32 TUs fail until EPIC-2
+# Build (from workspace root — ctl handles directory changes)
+./ctl build                                 # configure + build
+./ctl test                                  # run tests via ctest
+./ctl check                                 # full quality gate: build + test + format-check + lint
+./ctl format                                # auto-format all C++ files
 ```
 
 > **Note:** SDL3 is fetched via FetchContent on first configure (internet required, ~30 sec). `.NET` SDK needed for server connectivity.
@@ -72,16 +63,17 @@ cmake --build build-mingw -j$(nproc)
 
 ### Linux — Native Build (x64)
 
-Linux can configure the CMake project natively. Full compilation is blocked until EPIC-2 (SDL3 windowing migration), but configure succeeds and validates the build system.
+Linux **MUST** build natively. All platforms are first-class build targets.
 
 ```bash
 # Install toolchain (one-time)
-sudo apt-get update && sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev
+sudo apt-get update && sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev clang-format cppcheck
 
-# Configure and attempt build (from MuMain/ directory)
-cd MuMain
-cmake --preset linux-x64
-cmake --build --preset linux-x64-debug      # partial — Win32 TUs fail until EPIC-2
+# Build (from workspace root — ctl handles directory changes)
+./ctl build                                 # configure + build
+./ctl test                                  # run tests via ctest
+./ctl check                                 # full quality gate: build + test + format-check + lint
+./ctl format                                # auto-format all C++ files
 ```
 
 > **Note:** SDL3 is fetched via FetchContent on first configure (internet required, ~30 sec). GCC 12+ required for full C++20 support.
@@ -121,7 +113,8 @@ XSLT-generated from XML packet definitions. Located in `MuMain/src/source/Dotnet
 - No `#ifdef _WIN32` in game logic — only in platform abstraction layer
 - No backslash path literals, no `wchar_t` in new serialization
 - Forward slashes, `std::filesystem::path` for new code
-- CI (MinGW) build must pass on all changes
+- Native builds on macOS (arm64), Linux (x64), and Windows (x64) MUST all pass — no platform is optional
+- CI (MinGW cross-compile) build must also pass on all changes
 
 ## Documentation — Load On Demand
 
