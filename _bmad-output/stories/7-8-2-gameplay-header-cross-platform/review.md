@@ -4,6 +4,7 @@
 **Date:** 2026-03-26
 **Story:** 7-8-2-gameplay-header-cross-platform
 **Flow Code:** VS0-QUAL-BUILD-HEADERS
+**Review Cycle:** 2 (fresh adversarial review of post-fix code state)
 
 ---
 
@@ -11,296 +12,193 @@
 
 | Step | Task | Status | Timestamp | Notes |
 |------|------|--------|-----------|-------|
-| 1 | code-review-quality-gate | ✓ PASSED | 2026-03-26 11:52 | Quality gate: build + format + lint all green |
-| 2 | code-review-analysis | ✓ PASSED | 2026-03-26 13:00 | Fresh adversarial review complete: 0 blockers, 9/9 ACs verified, ATDD 100%, quality gate confirmed passing |
-| 3 | code-review-finalize | — PENDING | — | Next: Mark story done, sync sprint status, emit metrics |
+| 1 | code-review-quality-gate | — PENDING | — | Pre-run: lint PASS, build FAIL (pre-existing) |
+| 2 | code-review | IN PROGRESS | 2026-03-26 | Fresh adversarial review — this document |
+| 3 | code-review-analysis | — PENDING | — | |
+| 4 | code-review-finalize | — PENDING | — | |
 
 ---
 
 ## Quality Gate
 
-**Pre-fix status:** FAIL (build error from incorrect ITEM forward declaration)
-**Post-fix status:** PASS
+**Pre-run status (provided by pipeline):**
 
-| Check | Component | Pre-Fix | Post-Fix |
-|-------|-----------|---------|----------|
-| lint | mumain | PASS | PASS |
-| build | mumain | **FAIL** | **PASS** |
+| Check | Component | Result | Notes |
+|-------|-----------|--------|-------|
+| lint | mumain | **PASS** | `make -C MuMain lint` exits 0 |
+| build | mumain | **FAIL** | 2 errors — pre-existing, not caused by story 7-8-2 changes |
+
+**Build failure analysis:** The 2 compile errors originate from `test_inventory_trading_validation.cpp` (STORAGE_TYPE enum members), which is story 7-8-3 scope. The story 7-8-2 header changes (`mu_enum.h`, `ZzzPath.h`, `SkillStructs.h`, `CSItemOption.h`) do not contribute to this failure. Prior review cycle confirmed the story's changes build successfully (296/297 targets).
 
 ---
 
 ## Findings
 
-### Finding 1 — BLOCKER: Incorrect `struct ITEM;` forward declaration breaks Clang build
+### Finding 1 — MEDIUM: CSItemOption.h still relies on transitive includes for `MAX_ITEM` and `MAX_EQUIPMENT_INDEX`
 
 | Attribute | Value |
 |-----------|-------|
-| Severity | **BLOCKER** |
+| Severity | **MEDIUM** |
 | File | `MuMain/src/source/Gameplay/Items/CSItemOption.h` |
-| Line | 9 |
+| Lines | 22, 99 |
+| AC | Beyond AC-4 scope |
+
+**Description:**
+
+CSItemOption.h uses `MAX_EQUIPMENT_INDEX` (line 22) and `MAX_ITEM` (line 99), both defined in `Core/mu_define.h`. The file includes only `Singleton.h`, `mu_enum.h`, `<array>`, `<cstdint>`, and `<map>` — none of which transitively provide these constants. The header compiles only because the PCH (`stdafx.h`) includes `mu_define.h`.
+
+This is the exact category of issue (implicit transitive include dependency) that story 7-8-2 was designed to fix, but the AC scope was limited to `ActionSkillType` and `ITEM`. The header remains non-self-contained on macOS/Linux without PCH.
+
+**Suggested fix:** Add `#include "mu_define.h"` to CSItemOption.h. Out of this story's AC scope — candidate for a follow-up story or backlog item.
+
+---
+
+### Finding 2 — MEDIUM: Pre-existing build failure prevents independent AC-5/AC-6 verification
+
+| Attribute | Value |
+|-----------|-------|
+| Severity | **MEDIUM** |
+| File | Pipeline quality gate |
+| Lines | — |
+| AC | AC-5, AC-6 |
+
+**Description:**
+
+AC-5 states "cmake --build succeeds with 0 errors" and AC-6 states "./ctl check passes". The quality gate currently reports build FAIL due to pre-existing errors in `test_inventory_trading_validation.cpp` (story 7-8-3 scope). A fresh reviewer cannot independently verify AC-5/AC-6 by running the build.
+
+The prior review cycle documented that the story's changes build successfully (296/297 targets, only pre-existing failures). The ATDD checklist marks these as complete based on that prior verification.
+
+**Suggested fix:** No code change. Document in ATDD that AC-5/AC-6 were verified against story-scoped targets only, with pre-existing failures noted as external.
+
+---
+
+### Finding 3 — LOW: ATDD Note 4 still recommends incorrect `struct ITEM;` forward declaration
+
+| Attribute | Value |
+|-----------|-------|
+| Severity | **LOW** |
+| File | `_bmad-output/stories/7-8-2-gameplay-header-cross-platform/atdd.md` |
+| Line | 127 |
 | AC | AC-4 |
 
 **Description:**
 
-The forward declaration `struct ITEM;` introduces `ITEM` as a struct tag name. However, `ITEM` is defined in `mu_struct.h` (line 173-242) as:
+ATDD "Notes for Implementer" item 4 still reads:
 
-```cpp
-typedef struct tagITEM
-{
-    ...
-} ITEM;
-```
+> Use a forward declaration `struct ITEM;` if a full include would introduce circular dependencies
 
-In C++, `struct ITEM;` and `typedef struct tagITEM { ... } ITEM;` declare `ITEM` in different namespaces (tag vs. typedef). When a translation unit includes both `CSItemOption.h` (with `struct ITEM;`) and later `mu_struct.h` (with `typedef struct tagITEM { ... } ITEM;`), Clang reports a type redefinition error at `mu_struct.h:242` because `ITEM` was already introduced as a struct tag by the forward declaration.
+This was the exact pattern that caused the BLOCKER in the prior review cycle (struct tag vs. typedef conflict on Clang). The note should reference the correct pattern: `struct tagITEM; typedef struct tagITEM ITEM;`.
 
-This is the exact build failure reported by the quality gate:
-```
-mu_struct.h:242:3: error: ...
-  242 | } ITEM;
-      |   ^
-```
+**Suggested fix:** Update ATDD note 4 to:
 
-**Suggested fix:**
-
-Replace `struct ITEM;` with a C-compatible forward declaration that matches the actual typedef pattern:
-
-```cpp
-// Before (incorrect):
-struct ITEM;
-
-// After (correct):
-struct tagITEM;
-typedef struct tagITEM ITEM;
-```
+> Use a forward declaration `struct tagITEM; typedef struct tagITEM ITEM;` (matching the typedef pattern in mu_struct.h) if a full include would introduce circular dependencies.
 
 ---
 
-### Finding 2 — MEDIUM: ATDD checklist falsely marks AC-5/AC-6 as complete
+### Finding 4 — LOW: Dead variable `pos_tag_fwd` in AC-4 CMake test
 
 | Attribute | Value |
 |-----------|-------|
-| Severity | **MEDIUM** |
-| File | `_bmad-output/stories/7-8-2-gameplay-header-cross-platform/atdd.md` |
-| Line | 76-77 |
-| AC | AC-5, AC-6 |
-
-**Description:**
-
-The ATDD checklist marks these items as complete (`[x]`):
-- **AC-5.1:** `cmake --build --preset macos-arm64-debug`: exits 0
-- **AC-5.2:** `./ctl check`: exits 0
-
-However, the build is currently **failing** due to Finding 1. The `struct ITEM;` forward declaration in CSItemOption.h causes a compilation error when any TU includes both CSItemOption.h and mu_struct.h. These checkboxes should be `[ ]` until the build passes.
-
-**Suggested fix:** Uncheck AC-5.1, AC-5.2, and AC-6 items in the ATDD checklist until the build actually passes after fixing Finding 1.
-
----
-
-### Finding 3 — MEDIUM: Story marked "done" despite build failure
-
-| Attribute | Value |
-|-----------|-------|
-| Severity | **MEDIUM** |
-| File | `_bmad-output/stories/7-8-2-gameplay-header-cross-platform/story.md` |
-| Line | 3 |
-| AC | AC-5, AC-6 |
-
-**Description:**
-
-The story `Status: done` (line 3) is premature. The build fails on Clang due to Finding 1. The story should remain in `dev-story` or `code-review` status until the ITEM forward declaration is fixed and the build passes.
-
-**Suggested fix:** Revert status to the appropriate pipeline step until the build is green.
-
----
-
-### Finding 4 — MEDIUM: CMake AC-4 test gives false positive for ITEM forward declaration
-
-| Attribute | Value |
-|-----------|-------|
-| Severity | **MEDIUM** |
+| Severity | **LOW** |
 | File | `MuMain/tests/build/test_ac4_csitemoption_type_includes_7_8_2.cmake` |
-| Line | 53 |
+| Line | 58 |
 | AC | AC-4 |
 
 **Description:**
 
-The CMake script test for AC-4 Check 2 searches for:
-```cmake
-string(FIND "${content}" "struct ITEM" pos_fwd_item)
-```
+Line 58 sets `pos_tag_fwd` via `string(FIND "${content}" "struct tagITEM" pos_tag_fwd)`, but this variable is never referenced in any conditional. The test logic at line 60 checks only `pos_typedef_fwd`, `pos_mu_struct`, and `pos_item_h`. The `pos_tag_fwd` variable is dead code.
 
-This matches `struct ITEM;` in CSItemOption.h and reports PASS. However, `struct ITEM;` is the **wrong** forward declaration pattern for a type defined as `typedef struct tagITEM { ... } ITEM;`. The test should either:
-1. Also verify the typedef pattern: `typedef struct tagITEM ITEM;`
-2. Or verify that the actual build succeeds (which it does not)
-
-The static text-search test cannot detect this semantic error — it matches the string but the declaration is incorrect at the C++ type system level.
-
-**Suggested fix:** Update the CMake test to check for the correct forward declaration pattern:
-```cmake
-string(FIND "${content}" "typedef struct tagITEM ITEM" pos_typedef_fwd)
-string(FIND "${content}" "struct tagITEM" pos_tag_fwd)
-```
+**Suggested fix:** Either remove the dead `string(FIND)` call, or add a check requiring `pos_tag_fwd != -1` when `pos_typedef_fwd != -1` (verifying both the forward declaration and the typedef are present).
 
 ---
 
-### Finding 5 — LOW: Redundant `#ifdef _WIN32` in test file
+### Finding 5 — LOW: SKILL_REPLACEMENTS static initialization order risk
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | **LOW** |
-| File | `MuMain/tests/gameplay/test_gameplay_header_crossplatform_7_8_2.cpp` |
-| Line | 32-36 |
-| AC | — |
+| File | `MuMain/src/source/Core/mu_enum.h` |
+| Line | 635 |
+| AC | AC-1 |
 
 **Description:**
 
-Both branches of the preprocessor conditional include the same file:
-```cpp
-#ifdef _WIN32
-#include "PlatformTypes.h"
-#else
-#include "PlatformTypes.h"
-#endif
-```
+`inline const std::map<ActionSkillType, ActionSkillType> SKILL_REPLACEMENTS` is a static-storage-duration variable with a complex initializer. While `inline` correctly fixes the ODR violation, `std::map` construction during static initialization participates in the Static Initialization Order Fiasco (SIOF). If any code accesses `SKILL_REPLACEMENTS` during static initialization of another TU (before `main()`), the behavior is undefined.
 
-This is dead code. The `#ifdef`/`#else`/`#endif` block serves no purpose since both branches are identical.
+Risk is low in a game client where SKILL_REPLACEMENTS is accessed during gameplay, not at startup. No immediate fix needed.
 
-**Suggested fix:** Replace with a single unconditional include:
-```cpp
-#include "PlatformTypes.h"
-```
+**Suggested fix (future):** If this ever becomes a problem, use a function-local static (`const auto& GetSkillReplacements() { static const std::map<...> m = {...}; return m; }`) for guaranteed initialization order.
 
 ---
 
-### Finding 6 — LOW: ATDD notes mislabel "AC-1 include note" for AC-2 content
+### Finding 6 — LOW: CMake string-search tests could false-positive on commented-out includes
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | **LOW** |
-| File | `_bmad-output/stories/7-8-2-gameplay-header-cross-platform/atdd.md` |
-| Line | 121 |
-| AC | AC-2 |
+| File | `MuMain/tests/build/test_ac2_zzzpath_errorreport_include_7_8_2.cmake` (and AC-3, AC-4 tests) |
+| Lines | 34-43 (AC-2), 33-44 (AC-3), 32-42 (AC-4) |
+| AC | AC-2, AC-3, AC-4 |
 
 **Description:**
 
-"Notes for Implementer" item 1 is titled "AC-1 include note" but its content discusses AC-2 (ErrorReport.h flat include convention in ZzzPath.h). This is a documentation inconsistency that could confuse implementers.
+All CMake build tests use `string(FIND)` to detect include patterns. This substring matching approach cannot distinguish between:
+- `#include "ErrorReport.h"` (active include)
+- `// #include "ErrorReport.h"` (commented-out include)
+- `/* #include "ErrorReport.h" */` (block-commented include)
 
-**Suggested fix:** Change "AC-1 include note" to "AC-2 include note".
+A future edit that comments out the include while leaving the text would produce a false pass. The regression guards (file length checks, usage pattern checks) partially mitigate this risk.
+
+**Suggested fix:** Accept as-is — the risk is low and CMake `string(REGEX)` for comment detection would add disproportionate complexity. Document the limitation.
+
+---
+
+### Finding 7 — LOW: `#include <map>` broadens mu_enum.h include graph
+
+| Attribute | Value |
+|-----------|-------|
+| Severity | **LOW** |
+| File | `MuMain/src/source/Core/mu_enum.h` |
+| Line | 3 |
+| AC | AC-1 |
+
+**Description:**
+
+Adding `#include <map>` at line 3 makes mu_enum.h self-contained (correct per AC-1). However, mu_enum.h is included transitively by ~50+ TUs across the codebase. On non-PCH builds (macOS/Linux native), every TU that includes mu_enum.h now also includes `<map>`, which is a heavyweight STL header (~15K lines after preprocessing). The PCH already includes `<map>`, so incremental build impact on Windows/MinGW is zero.
+
+**Suggested fix:** Accept as-is — correctness (self-contained header) outweighs compile-time cost. The PCH path remains the primary build mode.
 
 ---
 
 ## ATDD Coverage
 
-| AC | ATDD Status | Pre-Fix Status | Post-Fix Status | Notes |
-|----|-------------|----------------|-----------------|-------|
-| AC-1 | `[x]` complete | **PASS** | **PASS** | `inline` keyword correctly added to SKILL_REPLACEMENTS at mu_enum.h:635 |
-| AC-2 | `[x]` complete | **PASS** | **PASS** | `#include "ErrorReport.h"` added to ZzzPath.h:8 (flat style, correct) |
-| AC-3 | `[x]` complete | **PASS** | **PASS** | `#include "MultiLanguage.h"` added to SkillStructs.h:24 |
-| AC-4 | `[x]` complete | **FAIL** | **PASS** | Fixed: `typedef struct tagITEM ITEM;` replaces incorrect `struct ITEM;` |
-| AC-5 | `[x]` complete | **FAIL** | **PASS** | Build passes after AC-4 fix |
-| AC-6 | `[x]` complete | **FAIL** | **PASS** | `./ctl check` passes after AC-4 fix |
-| AC-STD-11 | `[x]` complete | **PASS** | **PASS** | Flow code traceability verified in all test files |
+| AC | ATDD Checked | Code Verified | Notes |
+|----|-------------|---------------|-------|
+| AC-1 | `[x]` | **PASS** | `inline` keyword at mu_enum.h:635, `#include <map>` at line 3 |
+| AC-2 | `[x]` | **PASS** | `#include "ErrorReport.h"` at ZzzPath.h:8 (flat style) |
+| AC-3 | `[x]` | **PASS** | `#include "MultiLanguage.h"` at SkillStructs.h:24 |
+| AC-4 | `[x]` | **PASS** | `#include "mu_enum.h"` + `struct tagITEM; typedef struct tagITEM ITEM;` at CSItemOption.h:3,9-10 |
+| AC-5 | `[x]` | **CONDITIONAL** | Build FAIL is pre-existing (7-8-3 scope); story changes build successfully per prior cycle |
+| AC-6 | `[x]` | **CONDITIONAL** | Same as AC-5 — ./ctl check blocked by pre-existing build failure |
+| AC-STD-1 | `[x]` | **PASS** | Forward-slash includes, clang-format clean |
+| AC-STD-2 | `[x]` | **PASS** | Test suite not broken by header changes |
+| AC-STD-11 | `[x]` | **PASS** | Flow code `VS0-QUAL-BUILD-HEADERS` in all 4 build test files |
 
-**Summary:** 4/7 ACs were correct before review. 3 ACs were blocked by the ITEM forward declaration BLOCKER (Finding 1). All 7/7 ACs pass after fixes applied during review.
+**ATDD accuracy issues:**
+- ATDD Note 4 (line 127) still recommends incorrect `struct ITEM;` pattern — see Finding 3
+- AC-5/AC-6 marked complete but cannot be freshly verified due to pre-existing build failure — see Finding 2
 
 ---
-
-## Code Review Analysis — Step 2 COMPLETE
-
-**Date Analyzed:** 2026-03-26 (FRESH adversarial analysis)
-**Reviewer:** Claude (code-review-analysis workflow step 2)
-**Mode:** FRESH MODE — re-analyzed all claims without trusting prior completion
-
-### Adversarial Analysis Results
-
-#### Acceptance Criteria Audit (PASS/FAIL)
-
-| AC | Status | Evidence | Comments |
-|----|--------|----------|----------|
-| AC-1 | **PASS** | `mu_enum.h:635` has `inline const std::map<...> SKILL_REPLACEMENTS` + `#include <map>` | ODR-safe, header self-contained |
-| AC-2 | **PASS** | `ZzzPath.h:8` has `#include "ErrorReport.h"` (flat style, correct) | No circular includes detected |
-| AC-3 | **PASS** | `SkillStructs.h:24` has `#include "MultiLanguage.h"` | No circular includes detected |
-| AC-4 | **PASS** | `CSItemOption.h:9-10` has correct `struct tagITEM; typedef struct tagITEM ITEM;` | Matches typedef pattern in mu_struct.h |
-| AC-5 | **PASS** | Quality gate: `./ctl check` succeeded, build exits 0 | 296/297 targets built (pre-existing failures unrelated) |
-| AC-6 | **PASS** | Quality gate final message: `✓ Quality gate passed (macos-arm64-debug)` | Format + lint + build all green |
-| AC-STD-1 | **PASS** | Code standards verified via quality gate clang-format check | No style violations |
-| AC-STD-2 | **PASS** | Existing test suite `./ctl test` not broken by header changes | No new failures |
-| AC-STD-11 | **PASS** | Flow code `VS0-QUAL-BUILD-HEADERS` traceable in all test files | Verified in test file headers |
-
-**RESULT: 0 BLOCKERS, 0 CRITICAL, 0 HIGH findings**
-
-The prior review identified and fixed issues during that session. This fresh analysis confirms all fixes are correct and all ACs are satisfied.
-
-#### ATDD Completeness Audit
-
-- Total ATDD items: 22
-- Checked [x]: 22
-- Unchecked [ ]: 0
-- **Coverage: 100%**
-
-All test scenarios documented in ATDD are marked complete and verified passing.
-
-#### Code Quality Audit
-
-| Category | Finding | Status |
-|----------|---------|--------|
-| **Security** | No injection risks, no unsafe pointer casts in header changes | ✓ PASS |
-| **Circular Includes** | Verified no new circular includes: ErrorReport.h → {filesystem, fstream}, MultiLanguage.h → {} | ✓ PASS |
-| **Include Patterns** | All includes use flat convention: `"ErrorReport.h"`, `"MultiLanguage.h"` (no path prefixes) | ✓ PASS |
-| **Cross-Platform** | No platform-specific `#ifdef` added to game logic, headers are platform-agnostic | ✓ PASS |
-| **Type Safety** | Forward declaration pattern matches actual typedef, no tag name conflicts | ✓ PASS |
-| **Code Style** | Quality gate clang-format check passed — no formatting violations | ✓ PASS |
-| **Error Handling** | Headers are declaration-only, no error handling needed | ✓ PASS |
-
-**0 issues found in fresh adversarial review.**
 
 ## Verdict
 
-**PASS** — All acceptance criteria verified and satisfied. Quality gate confirmed passing. ATDD 100% complete. Story ready for code-review-finalize step.
+**PASS with caveats** — All story-scoped code changes are correct. The 4 header fixes (AC-1 through AC-4) are properly implemented. Tests are meaningful and well-structured. The prior BLOCKER (incorrect ITEM forward declaration) was fixed correctly.
 
-The fixes applied during prior review session (struct tagITEM forward declaration correction, CMake test update, test file redundancy removal, ATDD label correction) are confirmed correct and effective.
+**Caveats:**
+- AC-5/AC-6 cannot be independently verified due to pre-existing build failure (7-8-3 scope)
+- CSItemOption.h remains partially non-self-contained (Finding 1 — `MAX_ITEM`/`MAX_EQUIPMENT_INDEX`)
+- 1 stale documentation item (Finding 3 — ATDD note recommends wrong pattern)
 
----
+**Severity summary:** 0 BLOCKER, 0 CRITICAL, 0 HIGH, 2 MEDIUM, 5 LOW
 
-## Fixes Applied During Review
-
-The following fixes were applied during the code review session to resolve the BLOCKER:
-
-| # | Finding | Fix Applied |
-|---|---------|-------------|
-| 1 | BLOCKER: `struct ITEM;` incompatible forward declaration | Changed to `struct tagITEM; typedef struct tagITEM ITEM;` in CSItemOption.h |
-| 4 | CMake AC-4 test false positive | Updated test to check for `typedef struct tagITEM ITEM` pattern |
-| 5 | Redundant `#ifdef _WIN32` in test file | Removed conditional, single `#include "PlatformTypes.h"` |
-| 6 | ATDD notes mislabel "AC-1" for AC-2 | Corrected to "AC-2 include note" |
-
-**Post-fix verification:**
-- `cmake --build build` — **PASS** (296/297 targets, executable linked)
-- `./ctl check` — **PASS** (`✓ Quality gate passed (macos-arm64-debug)`)
-
----
-
-## Step 3: Resolution
-
-**Status:** IN_PROGRESS
-**Started:** 2026-03-26 13:05
-**Iteration:** 1 / 10
-
-### Analysis Results Summary
-
-| Severity | Count |
-|----------|-------|
-| BLOCKER | 0 |
-| CRITICAL | 0 |
-| HIGH | 0 |
-| MEDIUM | 0 |
-| LOW | 0 |
-| **TOTAL** | **0** |
-
-**Status:** All issues identified in analysis have been previously fixed and verified. Quality gate confirmed passing.
-
-### Fix Progress
-
-| Iteration | Issues Fixed | Quality Gate | Timestamp |
-|-----------|--------------|--------------|-----------|
-| 1 | 0 (all previously fixed) | PASSED | 2026-03-26 13:05 |
-- Pre-existing failures (test_shoplist_download.cpp, .NET cross-OS) are unrelated to this story
+Story is ready to proceed to code-review-analysis.
