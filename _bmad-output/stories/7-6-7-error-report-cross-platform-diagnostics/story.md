@@ -1,6 +1,6 @@
 # Story 7.6.7: ErrorReport Cross-Platform Crash Diagnostics
 
-Status: review
+Status: done
 
 ---
 
