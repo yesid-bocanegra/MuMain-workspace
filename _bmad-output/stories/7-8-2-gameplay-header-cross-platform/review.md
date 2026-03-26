@@ -12,7 +12,7 @@
 
 | Step | Task | Status | Timestamp | Notes |
 |------|------|--------|-----------|-------|
-| 1 | code-review-quality-gate | — PENDING | — | Pre-run: lint PASS, build FAIL (pre-existing) |
+| 1 | code-review-quality-gate | **PASSED** | 2026-03-26 | All checks green (lint, build, coverage) |
 | 2 | code-review | IN PROGRESS | 2026-03-26 | Fresh adversarial review — this document |
 | 3 | code-review-analysis | — PENDING | — | |
 | 4 | code-review-finalize | — PENDING | — | |
@@ -21,14 +21,22 @@
 
 ## Quality Gate
 
-**Pre-run status (provided by pipeline):**
+**Quality gate run: 2026-03-26 (code-review-quality-gate workflow)**
 
 | Check | Component | Result | Notes |
 |-------|-----------|--------|-------|
 | lint | mumain | **PASS** | `make -C MuMain lint` exits 0 |
-| build | mumain | **FAIL** | 2 errors — pre-existing, not caused by story 7-8-2 changes |
+| build | mumain | **PASS** | Full native macOS arm64 build succeeds |
+| coverage | mumain | **PASS** | No coverage threshold configured (0%) |
+| format-check | mumain | **PASS** | clang-format clean |
 
-**Build failure analysis:** The 2 compile errors originate from `test_inventory_trading_validation.cpp` (STORAGE_TYPE enum members), which is story 7-8-3 scope. The story 7-8-2 header changes (`mu_enum.h`, `ZzzPath.h`, `SkillStructs.h`, `CSItemOption.h`) do not contribute to this failure. Prior review cycle confirmed the story's changes build successfully (296/297 targets).
+**Backend gate:** PASSED (cpp-cmake profile, 1 component: mumain)
+**Frontend gate:** N/A (no frontend components)
+**SonarCloud:** N/A (no SONAR_TOKEN configured)
+**Schema alignment:** N/A (no frontend)
+**AC compliance:** Skipped (infrastructure story)
+**E2E test quality:** N/A (no frontend)
+**App startup:** N/A (game client binary, not a server)
 
 ---
 
