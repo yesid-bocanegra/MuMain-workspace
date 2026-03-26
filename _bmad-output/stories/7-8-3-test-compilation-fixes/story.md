@@ -161,7 +161,6 @@ This story addresses two specific test compilation failures that block the full 
 | CREATED | MuMain/tests/stubs/test_game_stubs.cpp |
 | MODIFIED | MuMain/src/source/Core/mu_enum.h |
 | MODIFIED | MuMain/src/source/Core/mu_types.h |
-| MODIFIED | MuMain/src/source/Core/mu_struct.h |
 | MODIFIED | MuMain/src/source/Core/mu_define.h |
 | MODIFIED | MuMain/src/source/Core/ZzzMathLib.h |
 | MODIFIED | MuMain/src/source/Gameplay/Buffs/w_Buff.h |
