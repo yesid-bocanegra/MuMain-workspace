@@ -3,7 +3,7 @@
 
 **Story:** 7-8-2-gameplay-header-cross-platform
 **Story Type:** infrastructure
-**Phase:** RED (all items pending — tests exist but will fail until implementation is complete)
+**Phase:** GREEN (all items complete — tests pass)
 **Generated:** 2026-03-26
 
 ---
@@ -53,49 +53,49 @@
 
 ### Phase 1: Header Fixes (Tasks 1–4)
 
-- [ ] **AC-1.1** — `Core/mu_enum.h` line 633: Add `inline` keyword to `SKILL_REPLACEMENTS` declaration
+- [x] **AC-1.1** — `Core/mu_enum.h` line 633: Add `inline` keyword to `SKILL_REPLACEMENTS` declaration
   - Before: `const std::map<ActionSkillType, ActionSkillType> SKILL_REPLACEMENTS = {...};`
   - After: `inline const std::map<ActionSkillType, ActionSkillType> SKILL_REPLACEMENTS = {...};`
   - Verifier: `tests/build/test_ac1_mu_enum_inline_7_8_2.cmake` passes
-- [ ] **AC-1.2** — `Core/mu_enum.h`: Verify no other non-inline variable definitions at namespace scope
-- [ ] **AC-2.1** — `World/ZzzPath.h`: Add `#include "ErrorReport.h"` (flat style — not `Core/ErrorReport.h`)
+- [x] **AC-1.2** — `Core/mu_enum.h`: Verify no other non-inline variable definitions at namespace scope
+- [x] **AC-2.1** — `World/ZzzPath.h`: Add `#include "ErrorReport.h"` (flat style — not `Core/ErrorReport.h`)
   - Placement: after existing includes (`<math.h>`, `"BaseCls.h"`)
   - Verifier: `tests/build/test_ac2_zzzpath_errorreport_include_7_8_2.cmake` passes
-- [ ] **AC-2.2** — `World/ZzzPath.h`: Verify no circular include introduced
-- [ ] **AC-3.1** — `Data/Skills/SkillStructs.h`: Add `#include "MultiLanguage.h"` to resolve `CMultiLanguage`
+- [x] **AC-2.2** — `World/ZzzPath.h`: Verify no circular include introduced
+- [x] **AC-3.1** — `Data/Skills/SkillStructs.h`: Add `#include "MultiLanguage.h"` to resolve `CMultiLanguage`
   - The file already has comments `// Requires: #include "MultiLanguage.h"` — this adds the actual include
   - Verifier: `tests/build/test_ac3_skillstructs_multilanguage_7_8_2.cmake` passes
-- [ ] **AC-4.1** — `Gameplay/Items/CSItemOption.h`: Add `#include "mu_enum.h"` for `ActionSkillType`
+- [x] **AC-4.1** — `Gameplay/Items/CSItemOption.h`: Add `#include "mu_enum.h"` for `ActionSkillType`
   - Verifier: `tests/build/test_ac4_csitemoption_type_includes_7_8_2.cmake` passes (Check 1)
-- [ ] **AC-4.2** — `Gameplay/Items/CSItemOption.h`: Add include or forward declaration for `ITEM` type
+- [x] **AC-4.2** — `Gameplay/Items/CSItemOption.h`: Add include or forward declaration for `ITEM` type
   - Options: `#include "mu_struct.h"` or `struct ITEM;` forward declaration
   - Verifier: `tests/build/test_ac4_csitemoption_type_includes_7_8_2.cmake` passes (Check 2)
 
 ### Phase 2: Build Verification (Task 5)
 
-- [ ] **AC-5.1** — Run `cmake --build --preset macos-arm64-debug`: exits 0, no errors from affected headers
-- [ ] **AC-5.2** — Run `./ctl check`: exits 0 (build + tests + format-check + lint)
+- [x] **AC-5.1** — Run `cmake --build --preset macos-arm64-debug`: exits 0, no errors from affected headers
+- [x] **AC-5.2** — Run `./ctl check`: exits 0 (build + tests + format-check + lint)
 
 ### Phase 3: Test Verification
 
-- [ ] **AC-1.catch2** — `MuTests` builds and links without duplicate-symbol error on macOS/Linux
+- [x] **AC-1.catch2** — `MuTests` builds and links without duplicate-symbol error on macOS/Linux
   - RED: `SKILL_REPLACEMENTS` is `const` → ODR violation → linker error
   - GREEN: `SKILL_REPLACEMENTS` is `inline const` → 3 test cases pass
-- [ ] **AC-1.cmake** — `7.8.2-AC-1:mu-enum-inline-skill-replacements` CTest passes
-- [ ] **AC-2.cmake** — `7.8.2-AC-2:zzzpath-errorreport-include` CTest passes
-- [ ] **AC-3.cmake** — `7.8.2-AC-3:skillstructs-multilanguage-include` CTest passes
-- [ ] **AC-4.cmake** — `7.8.2-AC-4:csitemoption-type-includes` CTest passes
-- [ ] **AC-STD-11.cmake** — `7.8.2-AC-STD-11:flow-code-traceability` CTest passes
+- [x] **AC-1.cmake** — `7.8.2-AC-1:mu-enum-inline-skill-replacements` CTest passes
+- [x] **AC-2.cmake** — `7.8.2-AC-2:zzzpath-errorreport-include` CTest passes
+- [x] **AC-3.cmake** — `7.8.2-AC-3:skillstructs-multilanguage-include` CTest passes
+- [x] **AC-4.cmake** — `7.8.2-AC-4:csitemoption-type-includes` CTest passes
+- [x] **AC-STD-11.cmake** — `7.8.2-AC-STD-11:flow-code-traceability` CTest passes
 
 ### PCC Compliance
 
-- [ ] PCC: No prohibited libraries used (Catch2 only, no mocking frameworks)
-- [ ] PCC: All test files compile without Win32 API calls in test logic
-- [ ] PCC: Include directives use flat style (`"ErrorReport.h"` not `"Core/ErrorReport.h"`)
-- [ ] PCC: Include directives use forward-slash paths (no backslashes)
-- [ ] PCC: Allman brace style, 4-space indent, 120-column limit in test file
-- [ ] PCC: clang-format clean (`./ctl format` applied)
-- [ ] PCC: `./ctl check` exits 0 before story is marked done
+- [x] PCC: No prohibited libraries used (Catch2 only, no mocking frameworks)
+- [x] PCC: All test files compile without Win32 API calls in test logic
+- [x] PCC: Include directives use flat style (`"ErrorReport.h"` not `"Core/ErrorReport.h"`)
+- [x] PCC: Include directives use forward-slash paths (no backslashes)
+- [x] PCC: Allman brace style, 4-space indent, 120-column limit in test file
+- [x] PCC: clang-format clean (`./ctl format` applied)
+- [x] PCC: `./ctl check` exits 0 before story is marked done
 
 ---
 
@@ -103,11 +103,11 @@
 
 | File | Status | Purpose |
 |------|--------|---------|
-| `MuMain/tests/gameplay/test_gameplay_header_crossplatform_7_8_2.cpp` | RED | AC-1 Catch2 runtime tests — ODR link test + SKILL_REPLACEMENTS content |
-| `MuMain/tests/build/test_ac1_mu_enum_inline_7_8_2.cmake` | RED | AC-1 static: verifies `inline` keyword in SKILL_REPLACEMENTS |
-| `MuMain/tests/build/test_ac2_zzzpath_errorreport_include_7_8_2.cmake` | RED | AC-2 static: verifies `ErrorReport.h` include in ZzzPath.h |
-| `MuMain/tests/build/test_ac3_skillstructs_multilanguage_7_8_2.cmake` | RED | AC-3 static: verifies `MultiLanguage.h` include in SkillStructs.h |
-| `MuMain/tests/build/test_ac4_csitemoption_type_includes_7_8_2.cmake` | RED | AC-4 static: verifies type includes in CSItemOption.h |
+| `MuMain/tests/gameplay/test_gameplay_header_crossplatform_7_8_2.cpp` | GREEN | AC-1 Catch2 runtime tests — ODR link test + SKILL_REPLACEMENTS content |
+| `MuMain/tests/build/test_ac1_mu_enum_inline_7_8_2.cmake` | GREEN | AC-1 static: verifies `inline` keyword in SKILL_REPLACEMENTS |
+| `MuMain/tests/build/test_ac2_zzzpath_errorreport_include_7_8_2.cmake` | GREEN | AC-2 static: verifies `ErrorReport.h` include in ZzzPath.h |
+| `MuMain/tests/build/test_ac3_skillstructs_multilanguage_7_8_2.cmake` | GREEN | AC-3 static: verifies `MultiLanguage.h` include in SkillStructs.h |
+| `MuMain/tests/build/test_ac4_csitemoption_type_includes_7_8_2.cmake` | GREEN | AC-4 static: verifies type includes in CSItemOption.h |
 | `MuMain/tests/build/test_ac_std11_flow_code_7_8_2.cmake` | GREEN | AC-STD-11: verifies all 4 build test files carry the flow code |
 
 **CMakeLists.txt updates:**
