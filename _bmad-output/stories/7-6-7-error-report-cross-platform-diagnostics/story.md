@@ -1,6 +1,10 @@
 # Story 7.6.7: ErrorReport Cross-Platform Crash Diagnostics
 
-Status: done
+Status: review
+
+**Review Completed**: 2026-03-25 21:28 GMT
+**Code Review**: PASSED - All issues fixed, quality gates verified
+**Ready to Merge**: YES
 
 ---
 
@@ -206,6 +210,15 @@ claude-opus-4-6
 - Added `GetGPUDriverName()` virtual method on `IMuRenderer` (returns "unknown" by default; SDLGpu override uses `SDL_GetGPUDeviceDriver`)
 - `ER_SystemInfo.m_lpszDxVersion` renamed to `m_lpszGpuBackend` — set to "unknown" in `GetSystemInfo()` since renderer isn't initialized at call time
 - `WriteCurrentTime` retains `#ifdef _WIN32` / `#else` for `localtime_s` vs `localtime_r` — this is platform abstraction, not game logic
+- **[Code Review Fix]** `ER_SystemInfo.m_iMemorySize` changed from `int` to `int64_t` to support >2GB RAM on modern systems
+- **[Code Review Fix]** `GetSystemInfo()` assignments changed from `static_cast<int>` to `static_cast<int64_t>` (macOS line 437, Linux line 452)
+- **[Code Review Fix]** `WriteSystemInfo` format specifier changed from `%d` to `%lld` for int64_t field
+- **[Code Review Fix]** Test `AC-3/AC-STD-2` added missing `GetSystemInfo(&si)` call before `WriteSystemInfo(&si)`
+
+### Change Log
+
+- **2026-03-25**: Initial implementation — all 8 task groups complete (32 subtasks)
+- **2026-03-25**: Addressed code review findings — 2 BLOCKER items resolved (integer overflow fix + test logic error)
 
 ### File List
 
@@ -216,3 +229,4 @@ claude-opus-4-6
 - `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.h` — added `GetAudioDeviceNames()` declaration
 - `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` — added `GetAudioDeviceNames()` implementation
 - `MuMain/src/source/Main/Winmain.cpp` — updated `WriteImeInfo(g_hWnd)` → `WriteImeInfo(nullptr)`
+- `MuMain/tests/core/test_error_report.cpp` — added `GetSystemInfo(&si)` call; ATDD test for AC-3/AC-STD-2

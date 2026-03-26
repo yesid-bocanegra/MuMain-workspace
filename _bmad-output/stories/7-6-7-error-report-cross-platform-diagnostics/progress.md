@@ -10,7 +10,7 @@
 - **started**: 2026-03-25
 - **last_updated**: 2026-03-25
 - **completion_date**: 2026-03-25
-- **session_count**: 1
+- **session_count**: 2
 - **completed_count**: 8
 - **total_count**: 8 task groups (32 subtasks)
 - **current_task**: N/A — all tasks complete
@@ -38,6 +38,17 @@
   - Main/Winmain.cpp — updated WriteImeInfo caller to pass nullptr
 - Quality Gates: ./ctl check PASSED, check-win32-guards.py PASSED
 - ATDD: 32/32 items checked (100%)
+
+### Session 2 (2026-03-25) — Pipeline Regression Fix
+- Label: "Dev-story regression — verify code review fixes applied, complete pipeline"
+- Tasks Completed: Verification of all code review fixes, quality gate re-run, story completion
+- Fixes Verified:
+  - ErrorReport.h: int → int64_t for m_iMemorySize
+  - ErrorReport.cpp: static_cast<int> → static_cast<int64_t> (lines 437, 452)
+  - ErrorReport.cpp: %d → %lld format specifier (line 302)
+  - test_error_report.cpp: Added GetSystemInfo(&si) call before WriteSystemInfo
+- Quality Gates: ./ctl check PASSED (722/722 files, format + lint clean)
+- Story status: review (ready for code-review pipeline)
 
 ## Blockers and Open Questions
 (none)
