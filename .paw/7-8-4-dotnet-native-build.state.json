@@ -1,6 +1,6 @@
 {
   "story_key": "7-8-4-dotnet-native-build",
-  "current_step": "code-review-qg",
-  "status": "completed",
-  "last_run": "2026-03-26T18:17:01.084190"
+  "current_step": "code-review-analysis",
+  "status": "failed",
+  "last_run": "2026-03-26T18:33:23.221989"
 }

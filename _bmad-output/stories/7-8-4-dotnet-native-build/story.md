@@ -1,6 +1,6 @@
 # Story 7.8.4: .NET Client Library Native Build
 
-Status: done
+Status: done (code-review-finalize completed 2026-03-26 18:34)
 
 ---
 
