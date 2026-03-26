@@ -200,6 +200,28 @@ Claude Opus 4.6 (create-story + dev-story workflow, 2026-03-25)
 - All 7-6-x prerequisite stories are done — macOS build chain is clear
 - PCC compliant: SAFe metadata, AC-STD sections, flow code documented
 
+### Pipeline Regression Session (2026-03-25, Session 2)
+
+**Trigger:** Completeness gate regression → dev-story (CHECK 1: 36.6% ATDD, CHECK 3: 18% tasks)
+
+**Verification Performed:**
+1. Build: `cmake --build --preset macos-arm64-debug --target MuStabilityTests` — SUCCESS
+2. Tests: 6 passed, 9 skipped (manual), 11/11 assertions GREEN
+3. Quality gate: `./ctl check` — 723/723 files, 0 errors, 0 format violations
+4. ATDD grep: 15 [x] / 26 [ ] = 15/41 items (36.6%)
+5. Story tasks grep: 3 [x] / 43 [ ] subtasks
+
+**Finding:** All 26 unchecked ATDD items and all remaining story tasks require external dependencies:
+- Human operator to play the game for 60+ minutes
+- Running OpenMU server accessible from macOS machine
+- Real-time FPS/memory/connectivity monitoring during gameplay
+- Post-session data collection and GREEN phase test activation
+
+**Conclusion:** No additional automated work is possible. The dev-story phase is COMPLETE for all automatable deliverables. The completeness gate will fail (by design) until the manual gameplay session is executed. This is not a defect — it is the intended two-phase lifecycle for manual validation stories.
+
+**BLOCKER — External Dependency:**
+Tasks 2-5 and ATDD GREEN phase items are blocked on: OpenMU server availability + human operator scheduling. This cannot be resolved by the dev agent.
+
 ### File List
 
 | File | Action | Notes |
@@ -214,10 +236,11 @@ Claude Opus 4.6 (create-story + dev-story workflow, 2026-03-25)
 
 ---
 
-## Completeness Gate Status — 2026-03-25 11:12pm
+## Completeness Gate Status — 2026-03-25 (Updated: Session 2 Verification)
 
 **Story Phase:** RED (Pre-session Infrastructure) — 100% Complete
-**Manual Phase:** GREEN (Session Execution) — Pending (Expected)
+**Manual Phase:** GREEN (Session Execution) — BLOCKED on External Dependency
+**Dev-Story Phase:** COMPLETE for all automatable deliverables
 
 ### Completeness Gate Assessment
 

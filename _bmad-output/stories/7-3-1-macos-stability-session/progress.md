@@ -3,9 +3,9 @@
 **Story:** macOS 60-Minute Stability Session
 **Story File:** `_bmad-output/stories/7-3-1-macos-stability-session/story.md`
 **ATDD Checklist:** `_bmad-output/stories/7-3-1-macos-stability-session/atdd.md`
-**Status:** in-progress
+**Status:** blocked — external dependency (manual session requires human operator + OpenMU server)
 **Started:** 2026-03-25
-**Last Updated:** 2026-03-25
+**Last Updated:** 2026-03-25 (Session 2: pipeline regression verification)
 
 ---
 
@@ -20,9 +20,10 @@
 | Metric | Value |
 |--------|-------|
 | Tasks Complete | 1/5 (20%) — Task 1 done (except 1.3 server check = manual) |
-| Current Task | Task 2: Execute 60-minute gameplay session (MANUAL) |
-| Task Progress | 0% |
-| Session Count | 1 |
+| Current Task | BLOCKED — Task 2 requires human operator + OpenMU server |
+| Task Progress | 0% (external dependency) |
+| Session Count | 2 |
+| Automated Phase | COMPLETE — all automatable deliverables verified GREEN |
 
 ---
 
@@ -84,7 +85,7 @@ Tasks 2-5 cannot be executed by the dev agent. They require:
 
 ## Session History
 
-### Session 1 (2026-03-25)
+### Session 1 (2026-03-25, ~11:00 PM)
 
 **Duration:** ~45 minutes
 **Tasks Worked:** Task 1 (pre-session environment validation)
@@ -92,6 +93,21 @@ Tasks 2-5 cannot be executed by the dev agent. They require:
 
 **Summary:**
 Pre-session quality gate completed. Fixed 7 test compilation issues across 6 files to unblock the macOS test build. Created standalone MuStabilityTests target to isolate from pre-existing MuTests macOS failures. All 6 infrastructure tests passed (AC-4: threshold constants, hitch detection, FPS measurement; AC-5: clean log scan, error detection, missing file handling). Quality gate `./ctl check` passed (723 files). Tasks 2-5 are manual — require human operator with running OpenMU server for 60-minute gameplay session.
+
+### Session 2 (2026-03-25, ~11:15 PM) — Pipeline Regression Verification
+
+**Duration:** ~10 minutes
+**Trigger:** Completeness gate regression → dev-story (CHECK 1: 36.6% ATDD, CHECK 3: 18% tasks)
+**Tasks Worked:** Re-verification of all automated deliverables
+
+**Verification Results:**
+- Build: `cmake --build --preset macos-arm64-debug --target MuStabilityTests` — SUCCESS
+- Tests: 6 passed, 9 skipped (manual), 11/11 assertions GREEN
+- Quality gate: `./ctl check` — 723/723 files, 0 errors
+- ATDD: 15/41 checked (36.6%) — all 15 are automated items, all 26 unchecked are manual
+- Story tasks: 3/46 subtasks checked — all 3 are automated, remaining require human operator
+
+**Conclusion:** No additional automated work possible. All automatable deliverables verified GREEN. The completeness gate failures are by design for this manual validation story type — they will persist until the human gameplay session is conducted. Dev-story phase is COMPLETE for automatable scope. Story is BLOCKED on external dependency (OpenMU server + human operator).
 
 ---
 
