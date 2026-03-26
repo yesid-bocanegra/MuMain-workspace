@@ -1,6 +1,7 @@
 # Story 7.8.3: Test Compilation Fixes
 
 Status: done
+CodeReviewStatus: complete
 
 ---
 
@@ -144,6 +145,15 @@ This story addresses two specific test compilation failures that block the full 
 - Tests: 90 total, 89 pass, 1 pre-existing SIGSEGV (WriteOpenGLInfo — null GL context)
 - Quality gate: `./ctl check` exits 0
 - .NET ClientLibrary cross-OS Native AOT failure is expected and unfixable on macOS
+
+### Code Review Fixes Applied (2026-03-26)
+- **F-1 (MEDIUM):** WZResult::BuildResult double-formatting UB → Fixed by direct member assignment (avoids re-interpreting formatted output as format string)
+- **F-3 (MEDIUM):** WZResult::operator= self-assignment UB → Fixed by adding guard `if (this == &a2) return *this;`
+- **F-4 (LOW):** PadRGBToRGBA validation → Fixed by adding precondition checks for width/height/nullptr
+- **F-5 (LOW):** MuStabilityTests missing stubs linkage → Fixed by adding `target_sources(MuStabilityTests PRIVATE stubs/test_game_stubs.cpp)`
+- **F-2 (MEDIUM):** mu_swprintf hardcoded 1024 buffer → Pre-existing design issue (unfixed, tracked as tech debt for future refactor)
+- **F-6 (LOW):** Class stub maintenance burden → Documented in test_game_stubs.cpp header (lines 8-9) with ABI-compat warning
+- **F-7 (LOW):** Out-of-scope formatting change → Accepted as clang-format normalization (no code change needed)
 
 ---
 

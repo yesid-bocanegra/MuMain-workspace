@@ -1,7 +1,7 @@
 # Progress: Story 7-8-3 — Test Compilation Fixes
 
 ## Quick Resume
-- **next_action:** Story complete — proceed to code-review-quality-gate
+- **next_action:** Dev-story complete — proceed to code-review-quality-gate
 - **active_file:** none
 - **blocker:** none
 
@@ -12,7 +12,7 @@
 - **started:** 2026-03-26
 - **last_updated:** 2026-03-26
 - **completion_date:** 2026-03-26
-- **session_count:** 2
+- **session_count:** 3
 - **completed_count:** 13
 - **total_count:** 13
 - **current_task:** All tasks complete
@@ -48,6 +48,13 @@ All tasks complete.
 - Build: MuTests links successfully
 - Tests: 90 total, 89 pass, 1 pre-existing SIGSEGV (WriteOpenGLInfo)
 - Quality gate: `./ctl check` exits 0
+
+### Session 3 — 2026-03-26
+- Label: "Re-verification after pipeline regression from code-review-analysis"
+- Tasks Completed: None (all already complete)
+- Verification: `./ctl check` passed, MuTests 89/90 pass, ATDD 16/16 checked, story 43/43 checked
+- Code review fixes (F-1, F-3, F-4, F-5) confirmed in MuMain submodule (clean working tree)
+- Dev-story phase verified complete
 
 ## Blockers and Open Questions
 - None remaining. All ACs verified.
