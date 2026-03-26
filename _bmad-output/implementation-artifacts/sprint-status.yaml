@@ -213,8 +213,9 @@ sprints:
       - 7-8-1-audio-interface-win32-types        # 5 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: Win32 types in audio interface headers block all-platform build
       - 7-8-2-gameplay-header-cross-platform     # 5 pts | review | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: ODR violation + missing includes in gameplay headers
       - 7-8-3-test-compilation-fixes             # 3 pts | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: invalid enum values + unused variable errors in test files
+      - 7-8-4-dotnet-native-build               # 3 pts | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: cmake hardcodes win-x64 RID — must build osx-arm64/linux-x64 natively
     velocity: null
-    delivered_points: null  # in-progress: 65 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1), 10 pts remaining (7-3-2,7-8-2,7-8-3)
+    delivered_points: null  # in-progress: 65 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1), 13 pts remaining (7-3-2,7-8-2,7-8-3,7-8-4)
     commitment_reliability: null
     scope_changes:
       added:
@@ -254,6 +255,12 @@ sprints:
           type: scope_addition
           story: 7-8-3-test-compilation-fixes
           reason: "Scope discovery: invalid STORAGE_TYPE enum values in test_inventory_trading_validation.cpp and unused variable error in test_sdlgpubackend.cpp prevent MuTests from compiling"
+          source_story: "7-3-1"
+          points_delta: +3
+        - date: "2026-03-26"
+          type: scope_addition
+          story: 7-8-4-dotnet-native-build
+          reason: "Scope discovery: cmake DOTNET_RID hardcoded to win-x64 regardless of host OS — .NET Client Library must build natively (osx-arm64 on macOS, linux-x64 on Linux). C++ loader side already done (Connection.cpp uses MU_DOTNET_LIB_EXT, posix/PlatformLibrary.cpp uses dlopen). Only cmake fix needed."
           source_story: "7-3-1"
           points_delta: +3
       removed: []
