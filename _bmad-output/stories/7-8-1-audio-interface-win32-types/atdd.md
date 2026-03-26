@@ -123,8 +123,8 @@
 - [x] All Catch2 tests in `test_audio_interface_portable_types_7_8_1.cpp` pass
 - [x] Existing Story 5.1.1 tests in `test_muaudio_abstraction.cpp` still GREEN
 - [x] `./ctl check` exits 0 (AC-6 / AC-STD-13)
-- [x] Story status updated to `done`
-- [x] Sprint status updated in `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- [ ] Story status updated to `done` — handled by code-review-finalize
+- [ ] Sprint status updated in `_bmad-output/implementation-artifacts/sprint-status.yaml` — handled by code-review-finalize
 
 ---
 
