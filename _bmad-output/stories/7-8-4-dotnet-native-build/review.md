@@ -7,146 +7,92 @@
 
 ---
 
-## Pipeline Status
-
-| Step | Status | Date |
-|------|--------|------|
-| 1. Quality Gate | **PASSED** | 2026-03-26 |
-| 2. Code Review Analysis | **COMPLETE** | 2026-03-26 17:52 |
-| 3. Code Review Finalize | **COMPLETE** | 2026-03-26 17:53 |
-
 ## Quality Gate
 
-**Status:** PASSED — all checks green (post BLOCKER-1 fix)
-
-| Check | Component | Result | Notes |
-|-------|-----------|--------|-------|
-| lint | mumain | **PASS** | `make -C MuMain lint` — 0 violations |
-| build | mumain | **PASS** | Native macOS arm64 build succeeds (.NET AOT + C++) |
-| coverage | mumain | **PASS** | No coverage threshold configured |
-| format-check | mumain | **PASS** | clang-format clean |
-| SonarCloud | mumain | **N/A** | No SONAR_TOKEN configured (cpp-cmake project) |
-| Frontend | — | **N/A** | No frontend components |
-| Schema Alignment | — | **N/A** | No frontend; no schema validation |
-| AC Compliance | — | **SKIPPED** | Infrastructure story — no AC tests |
-| E2E Test Quality | — | **SKIPPED** | Infrastructure story — no E2E tests |
-
-> Quality gate re-validated 2026-03-26 after BLOCKER-1 fix (IDI_ICON1 stub in PlatformCompat.h).
+**Status:** Pending — run by pipeline
 
 ---
 
 ## Findings
 
-### BLOCKER-1: `IDI_ICON1` undefined on non-Windows platforms — build fails
-
-| Attribute | Value |
-|-----------|-------|
-| Severity | **BLOCKER** |
-| File | `MuMain/src/source/Main/Winmain.cpp` |
-| Line | 1136 |
-| AC | AC-4 (incomplete implementation), AC-5 (build fails), AC-6 (quality gate fails) |
-
-**Description:**
-AC-4 correctly guards `#include "resource.h"` with `#ifdef _WIN32` (lines 27-29). However, `IDI_ICON1` — defined as `101` in `Resources/Windows/resource.h:6` — is used on line 1136 without any guard or fallback definition:
-
-```cpp
-wndClass.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_ICON1);
-```
-
-On macOS/Linux, `resource.h` is not included (due to the guard), so `IDI_ICON1` is undeclared. This causes a compilation error: `use of undeclared identifier 'IDI_ICON1'`. This is the build error reported by the quality gate.
-
-**Suggested fix:** Either:
-1. Guard the `LoadIcon` line (and surrounding Win32 window creation block) with `#ifdef _WIN32`, OR
-2. Add `#ifndef IDI_ICON1` / `#define IDI_ICON1 101` / `#endif` in `PlatformCompat.h` as a fallback stub
-
----
-
-### HIGH-2: ATDD checklist marks AC-5 and AC-6 as complete but build actually fails
-
-| Attribute | Value |
-|-----------|-------|
-| Severity | **HIGH** |
-| File | `_bmad-output/stories/7-8-4-dotnet-native-build/atdd.md` |
-| Line | 102-109 |
-| AC | AC-5, AC-6 |
-
-**Description:**
-The ATDD checklist marks both AC-5 ("cmake --build --preset macos-arm64-debug succeeds") and AC-6 ("./ctl check exits 0") as `[x]` complete. However, the quality gate shows the build fails with a compilation error.
-
-The story's Dev Agent Record states: "linker fails due to missing OpenSSL on macOS (pre-existing environment issue, not a code defect)." This mischaracterizes the actual failure — the error is a **compilation error** (undeclared `IDI_ICON1`), not a .NET linker issue. The dev agent may not have correctly identified the root cause.
-
-**Suggested fix:** Uncheck AC-5 and AC-6, fix BLOCKER-1, then re-verify.
-
----
-
-### MEDIUM-3: Unknown platform fallback defaults to `linux-x64` with only a WARNING
+### MEDIUM-1: OpenSSL LIBRARY_PATH environment variable overwrite
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | **MEDIUM** |
 | File | `MuMain/src/CMakeLists.txt` |
-| Line | 692-696 |
-| AC | AC-1 |
+| Line | 731-735 |
+| AC | N/A (implementation detail) |
 
 **Description:**
-The else() fallback for unrecognized `CMAKE_SYSTEM_NAME` values silently defaults to `linux-x64` and `.so`:
+The OpenSSL injection at line 733 sets `LIBRARY_PATH=${_OPENSSL_LIB_DIR}` as part of the `_DOTNET_ENV_EXTRA` list passed to the `dotnet publish` custom command. This completely **overwrites** any pre-existing `LIBRARY_PATH` environment variable in the build environment:
 
 ```cmake
-else()
-    message(WARNING "Unrecognized platform: ${CMAKE_SYSTEM_NAME}. Defaulting to linux-x64.")
-    set(MU_DOTNET_LIB_EXT ".so")
-    set(DOTNET_RID "linux-x64")
-    set(DOTNET_PLATFORM "x64")
-endif()
+list(APPEND _DOTNET_ENV_EXTRA "LIBRARY_PATH=${_OPENSSL_LIB_DIR}")
 ```
 
-On unsupported platforms (e.g., FreeBSD), `dotnet publish -r linux-x64` will fail. A `FATAL_ERROR` would be more appropriate since the build cannot succeed anyway, and the silent default could lead to confusing errors downstream.
+On Linux systems where developers or CI runners have additional library paths configured in `LIBRARY_PATH`, these will be silently dropped during the `dotnet publish` step. The .NET Native AOT linker may fail to find other required libraries that were previously available via `LIBRARY_PATH`.
 
-**Suggested fix:** Change `message(WARNING ...)` to `message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}. .NET Native AOT supports Windows, macOS (Darwin), and Linux only.")`.
+On macOS with Homebrew, `LIBRARY_PATH` is typically unset (Homebrew uses `-L` flags), so this is less impactful. On Linux with custom library installations (e.g., CUDA, custom OpenSSL, distro-specific lib paths), this could cause unexpected link failures.
+
+**Suggested fix:** Append to the existing LIBRARY_PATH rather than replacing it. CMake's `env` command doesn't support `$ENV{LIBRARY_PATH}` at build time, but you could capture it at configure time:
+
+```cmake
+set(_LIBRARY_PATH_PREFIX "${_OPENSSL_LIB_DIR}")
+if(DEFINED ENV{LIBRARY_PATH})
+  set(_LIBRARY_PATH_PREFIX "${_OPENSSL_LIB_DIR}:$ENV{LIBRARY_PATH}")
+endif()
+list(APPEND _DOTNET_ENV_EXTRA "LIBRARY_PATH=${_LIBRARY_PATH_PREFIX}")
+```
 
 ---
 
-### MEDIUM-4: Test AC-2 `.so` string match is overly broad
+### MEDIUM-2: Test AC-2 `.dylib` check is inconsistently broad after MEDIUM-4 fix
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | **MEDIUM** |
 | File | `MuMain/tests/build/test_ac2_src_cmake_lib_ext_copy_7_8_4.cmake` |
-| Line | 47-49 |
+| Line | 42-45 |
 | AC | AC-2 (test quality) |
 
 **Description:**
-Check 3 uses `string(FIND "${CMAKE_CONTENT}" ".so" _pos_so)` which matches any two-character sequence `.so` anywhere in the file — including comments, filenames like `.socket`, or strings like `.source`. The test passes correctly today because `.so` is present, but could produce a false positive if the actual extension assignment were removed while the string `.so` appeared in a comment.
+The previous code review (MEDIUM-4) correctly identified that `string(FIND ... ".so" ...)` was too broad and could match `.socket`, `.source`, etc. This was fixed on line 47 to use `set(MU_DOTNET_LIB_EXT ".so")`. However, the `.dylib` check on line 42 was **not updated** to match:
 
-**Suggested fix:** Use a more specific pattern like `set(MU_DOTNET_LIB_EXT ".so")` or at minimum `".so"` with surrounding quotes.
-
----
-
-### MEDIUM-5: Cross-OS validation doesn't cover Windows dotnet targeting macOS/Linux
-
-| Attribute | Value |
-|-----------|-------|
-| Severity | **MEDIUM** |
-| File | `MuMain/src/CMakeLists.txt` |
-| Line | 634-639 |
-| AC | N/A (pre-existing, but newly relevant) |
-
-**Description:**
-The cross-OS guard at line 634 only catches one failure mode: Linux `dotnet` binary targeting Windows. It does NOT guard against Windows `dotnet.exe` (via WSL interop) being used with macOS or Linux RIDs.
-
-Before this story, macOS/Linux had `MU_ENABLE_DOTNET=OFF` so this path was never reached. Now that .NET builds on all platforms, a WSL environment with `dotnet.exe` in the path could attempt `dotnet.exe publish -r osx-arm64`, which would fail with a cryptic Native AOT cross-compilation error.
-
-**Suggested fix:** Add a symmetric guard:
 ```cmake
-if (DOTNET_EXECUTABLE MATCHES "\\.exe$" AND NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    message(WARNING "Found Windows dotnet.exe but target is ${CMAKE_SYSTEM_NAME}. ...")
-    set(DOTNET_EXECUTABLE "")
-endif()
+# Line 42 — broad match (unfixed):
+string(FIND "${CMAKE_CONTENT}" ".dylib" _pos_dylib)
+
+# Line 47 — specific match (fixed):
+string(FIND "${CMAKE_CONTENT}" "set(MU_DOTNET_LIB_EXT \".so\")" _pos_so)
+```
+
+The `.dylib` check could false-positive on comments or unrelated strings containing `.dylib`. While less likely than `.so` false positives, the inconsistency means one platform's test is stricter than the other.
+
+**Suggested fix:** Make the `.dylib` check equally specific:
+```cmake
+string(FIND "${CMAKE_CONTENT}" "set(MU_DOTNET_LIB_EXT \".dylib\")" _pos_dylib)
 ```
 
 ---
 
-### LOW-6: Test AC-4 `#endif` check is overly permissive
+### LOW-3: `DOTNET_DLL_PATH` variable name is misleading on non-Windows
+
+| Attribute | Value |
+|-----------|-------|
+| Severity | **LOW** |
+| File | `MuMain/src/CMakeLists.txt` |
+| Line | 738 |
+| AC | AC-2 |
+
+**Description:**
+The variable `DOTNET_DLL_PATH` (line 738) now stores paths to `.dylib` (macOS) and `.so` (Linux) files, but retains the `DLL` naming which is Windows-specific terminology. The same `DLL` terminology appears in POST_BUILD comments at lines 786-795 ("Copying ClientLibrary DLL..."). While the code works correctly, this can confuse developers working on macOS/Linux who see `DLL_PATH` referencing a `.dylib` or `.so`.
+
+**Suggested fix:** Rename to `DOTNET_LIB_PATH` and update comments to say "library" instead of "DLL". Non-blocking — cosmetic only.
+
+---
+
+### LOW-4: Test AC-4 `#endif` fallback check is overly permissive
 
 | Attribute | Value |
 |-----------|-------|
@@ -156,18 +102,18 @@ endif()
 | AC | AC-4 (test quality) |
 
 **Description:**
-The fallback path in check 3 searches for ANY `#endif` anywhere in the file:
+Check 3's fallback path at line 53 searches for ANY `#endif` anywhere in the file:
 ```cmake
 string(FIND "${WINMAIN_CONTENT}" "#endif" _pos_endif)
 ```
 
-Winmain.cpp contains dozens of `#endif` directives for other guards. This check would pass even if the `#ifdef _WIN32` around `resource.h` had no matching `#endif`. The primary regex (line 47) covers the happy path, but the fallback weakens the validation.
+Winmain.cpp contains dozens of `#endif` directives for unrelated preprocessor guards. This check would pass even if the `#ifdef _WIN32` around `resource.h` had no matching `#endif`, as long as any other `#endif` exists in the file. The primary regex at line 47 covers the happy path correctly, but the fallback (lines 50-56) provides a false sense of validation.
 
-**Suggested fix:** Verify that `_pos_endif` is positioned after `_pos_first_guard` and within a reasonable distance (e.g., < 200 characters from the guard).
+**Suggested fix:** Verify `_pos_endif` appears within a reasonable distance after the `#ifdef _WIN32` guard that precedes `resource.h`, rather than searching the entire file.
 
 ---
 
-### LOW-7: Test AC-4 does not verify resource.h symbol usage is also guarded
+### LOW-5: Test AC-4 does not verify IDI_ICON1 has fallback definition
 
 | Attribute | Value |
 |-----------|-------|
@@ -177,25 +123,63 @@ Winmain.cpp contains dozens of `#endif` directives for other guards. This check 
 | AC | AC-4 (test gap) |
 
 **Description:**
-The test validates that `#include "resource.h"` is inside `#ifdef _WIN32`, but does not check that symbols defined by resource.h (specifically `IDI_ICON1`) are also guarded or have fallback definitions. This is why BLOCKER-1 was not caught by the ATDD test suite — the test checks the include guard but not the downstream usage.
+The test validates that `#include "resource.h"` is inside `#ifdef _WIN32`, but does not verify that symbols defined by `resource.h` (specifically `IDI_ICON1` used at Winmain.cpp:1136) have fallback definitions for non-Windows platforms. This is exactly the gap that allowed BLOCKER-1 to exist in the original implementation — the ATDD test passed while the build was actually broken.
 
-**Suggested fix:** Add a check verifying `IDI_ICON1` does not appear unguarded (i.e., outside a `#ifdef _WIN32` block) in Winmain.cpp.
+The fix (IDI_ICON1 stub in PlatformCompat.h:2058-2060) is in place, but no test validates it. If someone removes the stub, the ATDD suite would still pass while the build breaks.
+
+**Suggested fix:** Add a check verifying either: (a) `IDI_ICON1` does not appear unguarded in Winmain.cpp, or (b) `PlatformCompat.h` contains an `IDI_ICON1` fallback definition.
 
 ---
 
-### LOW-8: `DOTNET_DLL_PATH` variable name is misleading on non-Windows
+### LOW-6: macOS/Linux x86_64 architecture detection uses catch-all else()
 
 | Attribute | Value |
 |-----------|-------|
 | Severity | **LOW** |
 | File | `MuMain/src/CMakeLists.txt` |
-| Line | 701 |
-| AC | AC-2 |
+| Line | 707, 716 |
+| AC | AC-1 |
 
 **Description:**
-The variable `DOTNET_DLL_PATH` now points to platform-correct filenames (`.dylib` on macOS, `.so` on Linux), but retains the `DLL` name which is Windows-specific terminology. This is cosmetic but potentially confusing for developers working on macOS/Linux who see `DLL_PATH` referencing a `.dylib` or `.so`.
+The Darwin and Linux architecture detection uses `if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64")` with an `else()` catch-all for the x64 case:
 
-**Suggested fix:** Consider renaming to `DOTNET_LIB_PATH` in a future cleanup. Not blocking — the variable works correctly.
+```cmake
+# Darwin (line 704-710):
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64")
+  set(DOTNET_RID "osx-arm64")
+else()
+  set(DOTNET_RID "osx-x64")  # catches x86_64, i386, and any unknown
+endif()
+```
+
+On obscure architectures (e.g., `i386` if someone builds a 32-bit macOS target, though unlikely), this would silently set `osx-x64` which is incorrect. By contrast, the Windows branch uses `CMAKE_SIZEOF_VOID_P` which correctly differentiates 32-bit from 64-bit.
+
+**Suggested fix:** Optionally add an explicit check for `x86_64|x64|AMD64` and warn on unknown architectures. Non-blocking — .NET 10 doesn't support macOS/Linux x86 anyway.
+
+---
+
+### LOW-7: Debug echo statements in POST_BUILD copy command
+
+| Attribute | Value |
+|-----------|-------|
+| Severity | **LOW** |
+| File | `MuMain/src/CMakeLists.txt` |
+| Line | 788-793 |
+| AC | N/A |
+
+**Description:**
+The POST_BUILD copy command includes three debug echo statements:
+
+```cmake
+COMMAND ${CMAKE_COMMAND} -E echo "=== DEBUG: Copying ClientLibrary DLL from: ${DOTNET_DLL_PATH}"
+COMMAND ${CMAKE_COMMAND} -E echo "=== DEBUG: Copying ClientLibrary DLL to: $<TARGET_FILE_DIR:Main>"
+...
+COMMAND ${CMAKE_COMMAND} -E echo "=== DEBUG: ClientLibrary DLL copy complete"
+```
+
+These `=== DEBUG:` prefixed messages add noise to build output. While useful during development, they should be removed or converted to CMake `message(VERBOSE ...)` for production builds.
+
+**Suggested fix:** Remove the debug echo commands or replace with `COMMENT` strings that only show when the copy actually runs.
 
 ---
 
@@ -203,19 +187,18 @@ The variable `DOTNET_DLL_PATH` now points to platform-correct filenames (`.dylib
 
 | # | Severity | File | Issue |
 |---|----------|------|-------|
-| 1 | **BLOCKER** | Winmain.cpp:1136 | `IDI_ICON1` undefined on non-Windows — build fails |
-| 2 | **HIGH** | atdd.md:102-109 | AC-5/AC-6 marked complete but build actually fails |
-| 3 | **MEDIUM** | src/CMakeLists.txt:692-696 | Unknown platform fallback should be FATAL_ERROR |
-| 4 | **MEDIUM** | test_ac2...cmake:47-49 | `.so` string match is too broad |
-| 5 | **MEDIUM** | src/CMakeLists.txt:634-639 | Cross-OS guard missing symmetric check |
-| 6 | **LOW** | test_ac4...cmake:50-56 | `#endif` check overly permissive |
-| 7 | **LOW** | test_ac4...cmake (missing) | No test for resource.h symbol usage |
-| 8 | **LOW** | src/CMakeLists.txt:701 | `DOTNET_DLL_PATH` name misleading on non-Windows |
+| 1 | **MEDIUM** | src/CMakeLists.txt:731-735 | OpenSSL LIBRARY_PATH overwrites user environment |
+| 2 | **MEDIUM** | test_ac2...cmake:42-45 | `.dylib` check inconsistently broad after `.so` fix |
+| 3 | **LOW** | src/CMakeLists.txt:738 | `DOTNET_DLL_PATH` naming misleading on non-Windows |
+| 4 | **LOW** | test_ac4...cmake:50-56 | `#endif` fallback check overly permissive |
+| 5 | **LOW** | test_ac4...cmake (missing) | No test for IDI_ICON1 fallback definition |
+| 6 | **LOW** | src/CMakeLists.txt:707,716 | x86_64 arch detection uses catch-all else() |
+| 7 | **LOW** | src/CMakeLists.txt:788-793 | Debug echo statements in POST_BUILD copy |
 
-**Blockers:** 1 (FIXED)
-**High:** 1 (RESOLVED)
-**Medium:** 3 (ALL FIXED)
-**Low:** 3 (non-blocking)
+**Blockers:** 0
+**High:** 0
+**Medium:** 2 (non-blocking)
+**Low:** 5 (non-blocking)
 
 ---
 
@@ -223,217 +206,40 @@ The variable `DOTNET_DLL_PATH` now points to platform-correct filenames (`.dylib
 
 | AC | ATDD Status | Actual Status | Notes |
 |----|-------------|---------------|-------|
-| AC-1 | [x] GREEN | Correct | RID detection logic is correctly implemented |
-| AC-2 | [x] GREEN | Correct | Library extension handling is correct |
-| AC-3 | [x] GREEN | Correct | MU_ENABLE_DOTNET removed from presets |
-| AC-4 | [x] GREEN | **Partial** | Include guard is correct but downstream `IDI_ICON1` usage is unguarded (BLOCKER-1) |
-| AC-5 | [x] Verified | **FAIL** | Build fails due to BLOCKER-1; Dev Agent Record misidentified the error as an OpenSSL linker issue |
-| AC-6 | [x] Verified | **FAIL** | Quality gate build check fails |
-| AC-STD-1 | [x] | Correct | No format violations |
-| AC-STD-11 | [x] GREEN | Correct | Flow code traceability passes |
-| AC-STD-13 | [x] | **FAIL** | Same as AC-6 |
-| AC-STD-15 | [x] | Correct | No git safety issues |
+| AC-1 | [x] GREEN | **Correct** | RID detection logic correctly uses CMAKE_SYSTEM_NAME + CMAKE_SYSTEM_PROCESSOR |
+| AC-2 | [x] GREEN | **Correct** | Library extension uses MU_DOTNET_LIB_EXT variable, no hardcoded .dll in copy |
+| AC-3 | [x] GREEN | **Correct** | MU_ENABLE_DOTNET=OFF removed from macos-base and linux-base presets |
+| AC-4 | [x] GREEN | **Correct** | resource.h guarded; IDI_ICON1 fallback in PlatformCompat.h (BLOCKER-1 from previous review fixed) |
+| AC-5 | [x] Verified | **Correct** | Build succeeds on macOS arm64 with osx-arm64 RID |
+| AC-6 | [x] Verified | **Correct** | Quality gate passes (build + format-check + lint) |
+| AC-STD-1 | [x] | **Correct** | No format violations |
+| AC-STD-11 | [x] GREEN | **Correct** | Flow code traceability passes |
+| AC-STD-13 | [x] | **Correct** | Same as AC-6 |
+| AC-STD-15 | [x] | **Correct** | No git safety issues |
 
-**ATDD Checklist Accuracy:** 7/10 items correctly reported. AC-4 is partially correct (test passes but implementation incomplete), AC-5, AC-6, and AC-STD-13 are incorrectly marked as complete.
-
----
-
-## Fix Applied
-
-**BLOCKER-1 fixed during review:** Added `IDI_ICON1` stub to `PlatformCompat.h:2058-2060` following the existing `IDC_ARROW` pattern:
-
-```cpp
-#ifndef IDI_ICON1
-#define IDI_ICON1 101
-#endif
-```
-
-**Verification after fix:**
-- Build: PASS (0 errors, only pre-existing warnings)
-- ATDD tests: 5/5 PASS
-- Lint: PASS (pre-existing)
-
-**Additional file modified:** `MuMain/src/source/Platform/PlatformCompat.h` (not in original story file list)
+**ATDD Checklist Accuracy:** 10/10 items correctly reported. All acceptance criteria are satisfied.
 
 ---
 
-## Step 3: Resolution
+## Previous Review Issues — Resolution Status
 
-**Status:** COMPLETE
-**Date:** 2026-03-26 17:52
+The previous code review run identified 8 issues. Current status:
 
-### Fix Progress
-
-| Iteration | Issues Fixed | Quality Gate | Notes |
-|-----------|--------------|--------------|-------|
-| 1 (pre-analysis) | 1 (BLOCKER-1: IDI_ICON1 stub) | ✅ PASS | IDI_ICON1 stub added to PlatformCompat.h |
-
-### Resolution Summary
-
-**BLOCKER-1: IDI_ICON1 undefined on non-Windows platforms**
-- **Status:** ✅ FIXED
-- **Applied:** Added `#ifndef IDI_ICON1 / #define IDI_ICON1 101 / #endif` to `MuMain/src/source/Platform/PlatformCompat.h` (lines 2058-2060)
-- **Verification:** Quality gate passed (macOS arm64 native build succeeds)
-- **Commit:** f19564f (integrated in 03c70e7 feat(story): pass quality gate)
-
-**HIGH-2: ATDD checklist false AC-5/AC-6 claims**
-- **Status:** ✅ RESOLVED
-- **Root Cause:** BLOCKER-1 (IDI_ICON1) was the actual blocker; fix resolves AC-5 and AC-6
-- **Verification:** All ATDD tests pass; quality gate passes
-
-**MEDIUM-3: Unknown platform fallback defaults to linux-x64 with WARNING**
-- **Status:** ✅ FIXED
-- **Applied:** Changed `message(WARNING ...)` to `message(FATAL_ERROR "Unsupported platform: ...")` in `MuMain/src/CMakeLists.txt` — unsupported platforms now fail fast instead of silently defaulting to linux-x64
-- **Verification:** All ATDD tests pass; quality gate passes
-
-**MEDIUM-4: Test AC-2 .so string match is overly broad**
-- **Status:** ✅ FIXED
-- **Applied:** Replaced `string(FIND ... ".so" ...)` with `string(FIND ... "set(MU_DOTNET_LIB_EXT \".so\")" ...)` in `MuMain/tests/build/test_ac2_src_cmake_lib_ext_copy_7_8_4.cmake` — test now matches the full cmake set() statement, eliminating false positives from `.socket`, `.source`, etc.
-- **Verification:** AC-2 test passes with more specific pattern
-
-**MEDIUM-5: Cross-OS validation doesn't cover Windows dotnet targeting macOS/Linux**
-- **Status:** ✅ FIXED
-- **Applied:** Added symmetric guard in `MuMain/src/CMakeLists.txt` after the existing Linux→Windows guard: `if (DOTNET_EXECUTABLE MATCHES "\\.exe$" AND NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")` — clears DOTNET_EXECUTABLE when Windows dotnet.exe is found but target is macOS/Linux, preventing cryptic Native AOT cross-compilation errors
-- **Verification:** Quality gate passes; guard fires only on WSL cross-OS edge case
-
-**LOW-6, LOW-7, LOW-8: Test and naming improvements**
-- **Status:** ⚠️ NON-BLOCKING
-- **Recommendation:** Address as code quality improvements in future sprints
-- **Impact:** Zero runtime impact; cosmetic/test quality improvements
-
-### Quality Gate Re-validation
-
-✅ **Quality gate PASSED** (2026-03-26 17:52)
-- Build: PASS (macOS arm64 native build succeeds)
-- Format check: PASS (clang-format clean)
-- Lint check: PASS (cppcheck clean)
-- ATDD tests: 5/5 PASS
-
-### Recommendation
-
-BLOCKER-1 has been fixed. Remaining MEDIUM findings (3, 4, 5) are non-blocking improvements that can be tracked as tech debt.
+| # | Severity | Issue | Status |
+|---|----------|-------|--------|
+| BLOCKER-1 | BLOCKER | IDI_ICON1 undefined on non-Windows | **FIXED** (PlatformCompat.h:2058-2060) |
+| HIGH-2 | HIGH | ATDD false AC-5/AC-6 claims | **RESOLVED** (BLOCKER-1 fix resolved both) |
+| MEDIUM-3 | MEDIUM | Unknown platform fallback WARNING | **FIXED** (changed to FATAL_ERROR) |
+| MEDIUM-4 | MEDIUM | Test .so match too broad | **FIXED** (uses specific `set()` pattern) |
+| MEDIUM-5 | MEDIUM | Missing symmetric cross-OS guard | **FIXED** (added Windows dotnet.exe guard) |
+| LOW-6 | LOW | Test #endif check permissive | **UNFIXED** (non-blocking, see LOW-4 above) |
+| LOW-7 | LOW | No test for IDI_ICON1 usage | **UNFIXED** (non-blocking, see LOW-5 above) |
+| LOW-8 | LOW | DOTNET_DLL_PATH naming | **UNFIXED** (non-blocking, see LOW-3 above) |
 
 ---
 
-## Step 4: Checkpoint — Code Review Complete
+## Recommendation
 
-**Completed:** 2026-03-26 18:07
-**Final Status:** done
+**No blockers or high-severity issues found.** The implementation is solid and all acceptance criteria are correctly satisfied. The 2 MEDIUM findings (LIBRARY_PATH overwrite, inconsistent test specificity) and 5 LOW findings are all non-blocking improvements suitable for future tech debt cleanup.
 
-### Summary
-
-| Metric | Count |
-|--------|-------|
-| Issues Fixed | 4 |
-| Blockers Resolved | 1 |
-| Medium Issues Fixed | 3 |
-| Action Items Created | 0 |
-
-### Resolution Details
-
-- **BLOCKER-1:** IDI_ICON1 undefined on non-Windows platforms — FIXED by adding stub to PlatformCompat.h:2058-2060
-- **HIGH-2:** ATDD false claims — RESOLVED by BLOCKER-1 fix (AC-5 and AC-6 now pass)
-- **MEDIUM-3:** Unknown platform fallback — FIXED: `WARNING` → `FATAL_ERROR` for unsupported platforms
-- **MEDIUM-4:** Test .so match too broad — FIXED: now matches full `set(MU_DOTNET_LIB_EXT ".so")` pattern
-- **MEDIUM-5:** Missing symmetric cross-OS guard — FIXED: added Windows dotnet.exe → non-Windows target guard
-- **LOW-6, LOW-7, LOW-8:** NON-BLOCKING improvements deferred to tech debt
-
-### Story Status Update
-
-- **Previous Status:** in-progress (during code review)
-- **New Status:** done
-- **Story File Updated:** YES (`_bmad-output/stories/7-8-4-dotnet-native-build/story.md` status: review → done)
-- **ATDD Checklist Synchronized:** YES
-
-### Files Modified During Code Review
-
-- `MuMain/src/source/Platform/PlatformCompat.h` — Added IDI_ICON1 stub (lines 2058-2060)
-
----
-
-## Step 5: Sync Sprint Status
-
-**Syncing:** story 7-8-4-dotnet-native-build → done
-
-✅ Sprint status synced: 7-8-4 → done
-
----
-
-## Step 5.3: Emit Metrics Events
-
-**Event timestamp:** 2026-03-26T18:07:00Z
-
-Metrics event emitted:
-```json
-{
-  "timestamp": "2026-03-26T18:07:00Z",
-  "event_type": "workflow_metric:code_review_completed",
-  "story_key": "7-8-4-dotnet-native-build",
-  "step": "code-review-finalize",
-  "sprint": "sprint-7",
-  "epic": "7",
-  "data": {
-    "final_status": "done",
-    "issues_fixed": 1,
-    "action_items": 0,
-    "blocker_count": 0,
-    "gate_result": "PASSED"
-  }
-}
-```
-
----
-
-## Step 5.5: Final Quality Verification
-
-**Running final quality verification before marking done...**
-
-✅ Backend quality gate: PASSED
-- Build: PASS (macOS arm64 native build succeeds)
-- Format check: PASS (clang-format clean)
-- Lint check: PASS (cppcheck clean)
-- ATDD tests: 10/10 PASS (5 AC tests + 5 standard tests)
-
-✅ Contract preservation: PASSED (no breaking changes in build configuration)
-
-**✅ FINAL QUALITY VERIFICATION PASSED** — Story is ready to be marked done.
-
-### Re-verification after MEDIUM fixes (2026-03-26)
-
-✅ Backend quality gate: PASSED (`./ctl check` exits 0)
-- Build: PASS (macOS arm64 native build succeeds)
-- Format check: PASS (clang-format clean)
-- Lint check: PASS (cppcheck clean)
-- ATDD tests: AC-1 PASS, AC-2 PASS, AC-3 PASS, AC-4 PASS, AC-STD-11 PASS
-
-✅ MEDIUM-3 fix verified: unsupported platforms now get `FATAL_ERROR` instead of silent fallback
-✅ MEDIUM-4 fix verified: AC-2 test uses specific `set(MU_DOTNET_LIB_EXT ".so")` match
-✅ MEDIUM-5 fix verified: symmetric Windows dotnet.exe → non-Windows guard in place
-
----
-
-## Step 6: Update Specification Corpus
-
-**Specification index:** `docs/contracts/specification-index.yaml`
-
-✅ **Corpus Updated**
-- Story 7-8-4 status → done
-- Flow code: VS0-QUAL-BUILD-DOTNET
-- Type: infrastructure
-
----
-
-## CODE REVIEW COMPLETE ✅
-
-**Story:** 7-8-4-dotnet-native-build
-**Final Status:** done
-**Issues Fixed:** 1
-**Quality Gate:** PASSED
-
-🎉 **Story is DONE and ready for the next work!**
-
-Files updated:
-- `_bmad-output/stories/7-8-4-dotnet-native-build/review.md` (this file)
-- `_bmad-output/implementation-artifacts/sprint-status.yaml` (synced)
-- `.paw/metrics/7-8-4-dotnet-native-build.events.jsonl` (metrics emitted)
-- `.paw/metrics/sprint-current.events.jsonl` (metrics emitted)
+The story is ready to proceed through the pipeline.
