@@ -118,7 +118,7 @@
 
 ## Notes for Implementer
 
-1. **AC-1 include note:** The story's Dev Notes say `#include "Core/ErrorReport.h"` for AC-2, but the project convention is **flat includes**: `#include "ErrorReport.h"`. Use the flat form. The cmake test verifies either form passes (with warning for path form) but the flat form is preferred.
+1. **AC-2 include note:** The story's Dev Notes say `#include "Core/ErrorReport.h"` for AC-2, but the project convention is **flat includes**: `#include "ErrorReport.h"`. Use the flat form. The cmake test verifies either form passes (with warning for path form) but the flat form is preferred.
 
 2. **AC-1 ODR note:** The non-inline `SKILL_REPLACEMENTS` causes a linker error on macOS/Linux when MuTests is linked because three test files now include `mu_enum.h`: `test_combat_system_validation.cpp`, `test_ui_windows_validation.cpp`, and `test_gameplay_header_crossplatform_7_8_2.cpp`. The MinGW CI build may not catch this (COMDAT semantics differ on Windows).
 

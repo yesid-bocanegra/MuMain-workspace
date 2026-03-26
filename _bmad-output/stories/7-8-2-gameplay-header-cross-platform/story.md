@@ -139,6 +139,10 @@ After fixes:
 
 All 4 header fixes implemented and verified. No runtime behavior change — all changes are header-only include/linkage fixes. Forward declaration used for ITEM type in CSItemOption.h to minimize include graph expansion.
 
+### Code Review Fix (2026-03-26)
+
+**BLOCKER found:** `struct ITEM;` forward declaration in CSItemOption.h was incompatible with `typedef struct tagITEM { ... } ITEM;` in mu_struct.h. On Clang, `struct ITEM;` introduces a tag name that conflicts with the typedef. Fixed to `struct tagITEM; typedef struct tagITEM ITEM;`. Also fixed redundant `#ifdef` in test file and updated CMake AC-4 test to verify correct forward declaration pattern.
+
 ---
 
 ## File List
