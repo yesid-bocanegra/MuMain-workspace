@@ -10,23 +10,52 @@
 
 | Step | Status | Details |
 |------|--------|---------|
-| 1. Quality Gate | PASSED | Pre-run: lint PASS, build PASS, coverage PASS |
+| 1. Quality Gate | PASSED | Re-validated 2026-03-25 — all checks green |
 | 2. Code Review | IN PROGRESS | This document — adversarial review of current code state |
 | 3. Code Review Analysis | Pending | Separate pipeline step |
 | 4. Code Review Finalize | Pending | Separate pipeline step |
 
 ## Quality Gate
 
-**Status**: PASSED (pre-run, provided by pipeline)
+**Status**: PASSED
+**Date**: 2026-03-25
 **Components**: mumain (backend, cpp-cmake)
+
+### Backend: mumain
 
 | Check | Result | Notes |
 |-------|--------|-------|
 | lint (`make -C MuMain lint`) | PASS | cppcheck clean |
-| build | PASS | cmake + ninja macOS arm64 |
+| build (cmake + ninja macOS arm64) | PASS | Homebrew LLVM clang, all TUs compile |
 | coverage | PASS | No threshold configured |
+| SonarCloud | SKIPPED | No SONAR_TOKEN configured |
+
+### Frontend
+
+| Check | Result | Notes |
+|-------|--------|-------|
+| (all) | SKIPPED | No frontend components in this story |
+
+### Non-Deterministic Checks
+
+| Check | Result | Notes |
+|-------|--------|-------|
+| Schema Alignment | SKIPPED | No frontend — no backend/frontend drift to validate |
+| AC Compliance | SKIPPED | Infrastructure story — no Playwright/integration AC tests |
+| E2E Test Quality | SKIPPED | Infrastructure story — no E2E tests |
+| App Boot Verification | N/A | Game client (Win32 GUI), not a server — build success is the applicable check |
 
 **Iterations**: 0 (all checks passed on first run)
+
+### Quality Gate Summary
+
+| Gate | Status | Iterations | Issues Fixed |
+|------|--------|------------|--------------|
+| Backend Local (mumain) | PASSED | 0 | 0 |
+| Backend SonarCloud | SKIPPED | — | — |
+| Frontend Local | SKIPPED | — | — |
+| Frontend SonarCloud | SKIPPED | — | — |
+| **Overall** | **PASSED** | **0** | **0** |
 
 ---
 
