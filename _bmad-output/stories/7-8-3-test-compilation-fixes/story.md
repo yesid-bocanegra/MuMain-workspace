@@ -51,6 +51,8 @@ Status: ready-for-dev
 ## Standard Acceptance Criteria
 
 - [ ] **AC-STD-1:** Code Standards — test corrections use the correct enum values from production code; clang-format clean.
+- [ ] **AC-STD-2:** Testing Requirements — all test targets compile and execute without errors on macOS and Linux. No warnings promoted to errors.
+- [ ] **AC-STD-12:** SLI/SLO Targets — test compilation completes in <60 seconds on modern hardware; test suite runs to completion in <30 seconds.
 - [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
 - [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
 
@@ -71,3 +73,29 @@ Status: ready-for-dev
   - [ ] 3.1: Run `cmake --build --preset macos-arm64-debug` — confirm all test targets compile
   - [ ] 3.2: Run `ctest --test-dir MuMain/out/build/macos-arm64 -C Debug --output-on-failure`
   - [ ] 3.3: Run `./ctl check`
+
+---
+
+## Dev Notes
+
+### Background
+This story addresses two specific test compilation failures that block the full test suite on macOS and Linux:
+
+1. **test_inventory_trading_validation.cpp** — Invalid STORAGE_TYPE enum values. The test hardcodes enum member names that don't exist in the production code. Find the actual enum definition and use the correct member names.
+2. **test_sdlgpubackend.cpp** — Unused const variable warning. The variable `k_BlendFactor_DstColor` is declared but never used. Decide whether it should be tested (add assertion) or removed.
+
+### Implementation Notes
+- Use the project context patterns for cross-platform testing (see CLAUDE.md and development-standards.md §3 Testing Rules)
+- Ensure fixes do not break the Windows build — test locally on MSVC if possible, verify CI passes
+- Keep error messages clear and actionable for future developers who might encounter similar issues
+
+### Related Stories
+- 7-6-1: macOS native build compilation (prerequisite — already done)
+- 7-6-2: Win32 string include cleanup
+- 7-8-2: Gameplay header cross-platform (story that validated cross-platform header design)
+
+### Quality Gate Checklist
+- [ ] Enum values corrected to match production code
+- [ ] Unused variable handled (removed or tested)
+- [ ] All test targets compile on macOS/Linux
+- [ ] `./ctl check` passes (build + test + format + lint)
