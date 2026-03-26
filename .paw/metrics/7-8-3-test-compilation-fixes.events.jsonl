@@ -23,3 +23,5 @@
 {"timestamp":"2026-03-26T20:18:36.815851+00:00","event_type":"step_retried","story_key":"7-8-3-test-compilation-fixes","step":"completeness-gate","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-26T20:18:36.817683+00:00","event_type":"feedback_saved","story_key":"7-8-3-test-compilation-fixes","step":"completeness-gate","sprint":null,"epic":"7","data":{"regression_target":"completeness-gate"}}
 {"timestamp":"2026-03-26T20:18:38.826656+00:00","event_type":"step_started","story_key":"7-8-3-test-compilation-fixes","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-26T20:22:44.326786+00:00","event_type":"step_passed","story_key":"7-8-3-test-compilation-fixes","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":245.5,"input_tokens":36234,"output_tokens":16779,"cache_creation_tokens":582986,"cache_read_tokens":8291373,"num_turns":72,"num_tool_calls":38}}
+{"timestamp":"2026-03-26T20:22:45.332032+00:00","event_type":"step_started","story_key":"7-8-3-test-compilation-fixes","step":"code-review","sprint":null,"epic":"7","data":{}}
