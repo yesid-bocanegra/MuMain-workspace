@@ -54,6 +54,8 @@ Status: ready-for-dev
 ## Standard Acceptance Criteria
 
 - [ ] **AC-STD-1:** Code Standards — added `#include` directives use forward-slash paths; clang-format clean.
+- [ ] **AC-STD-2:** Testing Requirements — infrastructure changes verified to not break existing test suite. No new tests required for header fixes (no behavior change). `./ctl test` passes with 0 failures.
+- [ ] **AC-STD-12:** SLI/SLO targets — compile time impact negligible (< 100ms additional per TU for new includes). No runtime performance regression expected (header-only changes).
 - [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
 - [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
 
@@ -81,3 +83,36 @@ Status: ready-for-dev
 - [ ] **Task 5: Verify build** (AC-5, AC-6)
   - [ ] 5.1: Run `cmake --build --preset macos-arm64-debug` — confirm 0 errors from these headers
   - [ ] 5.2: Run `./ctl check`
+
+---
+
+## Dev Notes
+
+### Background
+
+The game client has multiple header files that either:
+1. Define non-inline variables at namespace scope, violating the ODR (One Definition Rule) when included by multiple TUs
+2. Use types or functions without properly including the headers that define them, relying on transitive includes
+
+This becomes visible when compiling on macOS/Linux with fresh include paths that don't have the transitive includes.
+
+### Key Files to Modify
+
+| File | Issue | Fix |
+|------|-------|-----|
+| `Core/mu_enum.h` | `SKILL_REPLACEMENTS` is non-inline map constant | Add `inline` keyword |
+| `World/ZzzPath.h` | Uses `g_ErrorReport` without including `ErrorReport.h` | Add `#include "Core/ErrorReport.h"` |
+| `Skill/SkillStructs.h` | Uses `CMultiLanguage` without proper include | Add or forward-declare |
+| `Item/CSItemOption.h` | Uses `ActionSkillType` and `ITEM` without includes | Add required includes |
+
+### Build Verification
+
+After fixes:
+- **macOS native:** `cmake --build --preset macos-arm64-debug` must succeed
+- **CI MinGW cross-compile:** `./ctl check` must pass (format + lint + build)
+- **No runtime behavior change:** These are header-only fixes
+
+### Cross-Platform Standards Reference
+
+- See `docs/development-standards.md` §1 for cross-platform readiness checklist
+- See `_bmad-output/project-context.md` for C++ naming and include conventions
