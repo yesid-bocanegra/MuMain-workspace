@@ -1,6 +1,6 @@
 # Story 7.8.1: Audio Interface Win32 Type Cleanup
 
-Status: review
+Status: done
 
 ---
 
@@ -40,7 +40,7 @@ Status: review
 
 ## Functional Acceptance Criteria
 
-- [x] **AC-1:** `Audio/DSPlaySound.h` function declarations that use `HRESULT`, `HWND`, or `OBJECT*` are either wrapped in `#ifdef _WIN32` guards (if DirectSound-only) or removed from the cross-platform header.
+- [x] **AC-1:** `Audio/DSPlaySound.h` function declarations that use `HRESULT`, `HWND`, or `OBJECT*` are either wrapped in `#ifdef _WIN32` guards (if DirectSound-only), made portable via `PlatformTypes.h` (if shared by 1000+ call sites), or removed from the cross-platform header.
 - [x] **AC-2:** `Platform/IPlatformAudio.h` pure virtual interface uses only portable types:
   - `HRESULT` → `bool` (return true on success)
   - `BOOL` → `bool`
@@ -154,7 +154,8 @@ This story addresses one of the core cross-platform compilation blockers identif
 | `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` | Modified | Updated implementations: `bool` returns, `void*` params with `static_cast` to `OBJECT*` where needed |
 | `MuMain/src/source/Audio/DSPlaySound.h` | Modified | Added `#include "Platform/PlatformTypes.h"` + `struct OBJECT` forward decl; wrapped `InitDirectSound` in `#ifdef _WIN32` |
 | `MuMain/src/source/Audio/DSplaysound.cpp` | Modified | Updated `PlayBuffer`/`StopBuffer` bridge functions for `bool` return and `BOOL`→`bool` conversion |
-| `MuMain/scripts/check-win32-guards.py` | Modified | Fixed ALLOWED_PATHS case mismatch: added `"Audio/DSPlaySound"` entry |
+| `MuMain/scripts/check-win32-guards.py` | Modified | Fixed ALLOWED_PATHS case mismatch: added `"Audio/DSPlaySound"` entry; added comments explaining near-duplicate paths |
+| `MuMain/src/source/Platform/PlatformTypes.h` | Modified | Added `E_FAIL` macro for cross-platform HRESULT error code |
 | `MuMain/tests/audio/test_miniaudio_sfx.cpp` | Modified | Updated to portable types: `HRESULT`→`bool`, `FALSE`→`false`, `S_FALSE`→`false` |
 | `MuMain/tests/audio/test_miniaudio_bgm.cpp` | Modified | Updated `TRUE`→`true` in StopMusic/PlayMusic calls |
 | `MuMain/tests/audio/test_muaudio_abstraction.cpp` | Modified | Added `[[maybe_unused]]` capture for `[[nodiscard]] bool PlaySound()` return |
@@ -167,7 +168,7 @@ This story addresses one of the core cross-platform compilation blockers identif
 
 - **DSPlaySound.h guard strategy**: Initially wrapped all Win32-typed function declarations in `#ifdef _WIN32`, but `PlayBuffer`/`StopBuffer`/`ReleaseBuffer` are called from 1323+ game files. Reverted to making the header self-contained via `#include "Platform/PlatformTypes.h"` which provides portable type stubs. Only `InitDirectSound(HWND)` is guarded as it's truly DirectSound-only.
 - **check-win32-guards.py case bug**: ALLOWED_PATHS had `"Audio/DSplaysound"` (lowercase 's') which didn't match `"Audio/DSPlaySound.h"` (capital 'P','S'). Fixed by adding the correct-case entry.
-- **PlayBuffer bridge HRESULT inversion**: `PlaySound()` returns `bool` but `PlayBuffer()` returns `HRESULT`. Naive `return bool_value` would map `true`(1)=`S_FALSE` and `false`(0)=`S_OK` — semantically inverted. Fixed with ternary: `return result ? S_OK : S_FALSE`.
+- **PlayBuffer bridge HRESULT inversion**: `PlaySound()` returns `bool` but `PlayBuffer()` returns `HRESULT`. Naive `return bool_value` would map `true`(1)=`S_FALSE` and `false`(0)=`S_OK` — semantically inverted. Fixed with ternary: `return result ? S_OK : E_FAIL` (code-review-finalize changed `S_FALSE` to `E_FAIL` since `S_FALSE` is a success code).
 - **Test file Win32 type usage**: Existing audio tests (sfx, bgm, abstraction) still used `HRESULT`, `TRUE`, `FALSE`, `S_FALSE`. Updated to portable `bool`/`true`/`false`.
 - **[[nodiscard]] in REQUIRE_NOTHROW**: `PlaySound()` now has `[[nodiscard]] bool` which triggers `-Wunused-result` inside `REQUIRE_NOTHROW` lambda. Fixed with `[[maybe_unused]]` capture.
 

@@ -123,8 +123,8 @@
 - [x] All Catch2 tests in `test_audio_interface_portable_types_7_8_1.cpp` pass
 - [x] Existing Story 5.1.1 tests in `test_muaudio_abstraction.cpp` still GREEN
 - [x] `./ctl check` exits 0 (AC-6 / AC-STD-13)
-- [ ] Story status updated to `done` — handled by code-review-finalize
-- [ ] Sprint status updated in `_bmad-output/implementation-artifacts/sprint-status.yaml` — handled by code-review-finalize
+- [x] Story status updated to `done` — completed by code-review-finalize
+- [x] Sprint status updated in `_bmad-output/implementation-artifacts/sprint-status.yaml` — completed by code-review-finalize
 
 ---
 
@@ -160,7 +160,7 @@ REQUIRE(sizeof(result) == sizeof(bool)); // sizeof(HRESULT=long) != sizeof(bool)
 Fix IPlatformAudio.h (Task 2) FIRST — it's the contract. Then update MiniAudioBackend.h (Task 3) to match. Then update DSPlaySound.h (Task 4) and call sites (Task 5). This order prevents cascading compile errors.
 
 ### `OBJECT*` → `void*` Migration
-The `OBJECT` type is defined in `World/w_ObjectInfo.h` and forward-declared in `Core/mu_struct.h`. Using `void*` in the audio interface is safe because the MiniAudio backend never dereferences `pObject` directly — it uses it only for 3D position lookup via `m_soundObjects`. The cast `reinterpret_cast<const void*>(pObject)` at call sites, and `reinterpret_cast<const OBJECT*>(m_soundObjects[i])` in Set3DSoundPosition are the correct migration pattern.
+The `OBJECT` type is defined in `World/w_ObjectInfo.h` and forward-declared in `Core/mu_struct.h`. Using `void*` in the audio interface is safe because the MiniAudio backend never dereferences `pObject` directly — it uses it only for 3D position lookup via `m_soundObjects`. The cast `static_cast<const void*>(pObject)` at call sites, and `static_cast<const OBJECT*>(m_soundObjects[i])` in Set3DSoundPosition are the correct migration pattern.
 
 ### S_OK / S_FALSE → true / false
 - `S_OK` (0) = success → `true`
