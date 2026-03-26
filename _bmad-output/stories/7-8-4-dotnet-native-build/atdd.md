@@ -4,7 +4,7 @@
 **Flow Code**: VS0-QUAL-BUILD-DOTNET
 **Story Type**: infrastructure
 **Generated**: 2026-03-26
-**Status**: RED phase — all implementation items pending
+**Status**: GREEN phase — all implementation items complete
 
 ---
 
@@ -71,72 +71,72 @@ All items start as `[ ]` (PENDING). Mark `[x]` when verified complete.
 
 ### AC-1: DOTNET_RID Platform Detection in src/CMakeLists.txt
 
-- [ ] `src/CMakeLists.txt` — Replace `if(CMAKE_SIZEOF_VOID_P EQUAL 8) set(DOTNET_RID "win-x64")` block with `CMAKE_SYSTEM_NAME`-based dispatch
-- [ ] `src/CMakeLists.txt` — Darwin branch: use `CMAKE_SYSTEM_PROCESSOR` to set `osx-arm64` or `osx-x64`
-- [ ] `src/CMakeLists.txt` — Linux branch: use `CMAKE_SYSTEM_PROCESSOR` to set `linux-x64` or `linux-arm64`
-- [ ] `src/CMakeLists.txt` — Windows branch: retain `CMAKE_SIZEOF_VOID_P` check for `win-x64`/`win-x86`
-- [ ] CTest: `7.8.4-AC-1:src-cmake-rid-detection` passes (GREEN)
+- [x] `src/CMakeLists.txt` — Replace `if(CMAKE_SIZEOF_VOID_P EQUAL 8) set(DOTNET_RID "win-x64")` block with `CMAKE_SYSTEM_NAME`-based dispatch
+- [x] `src/CMakeLists.txt` — Darwin branch: use `CMAKE_SYSTEM_PROCESSOR` to set `osx-arm64` or `osx-x64`
+- [x] `src/CMakeLists.txt` — Linux branch: use `CMAKE_SYSTEM_PROCESSOR` to set `linux-x64` or `linux-arm64`
+- [x] `src/CMakeLists.txt` — Windows branch: retain `CMAKE_SIZEOF_VOID_P` check for `win-x64`/`win-x86`
+- [x] CTest: `7.8.4-AC-1:src-cmake-rid-detection` passes (GREEN)
 
 ### AC-2: Platform-Correct Library Extension in cmake Copy Command
 
-- [ ] `src/CMakeLists.txt` — Set `MU_DOTNET_LIB_EXT` to `.dll`/`.dylib`/`.so` per `CMAKE_SYSTEM_NAME`
-- [ ] `src/CMakeLists.txt` — `DOTNET_DLL_PATH` uses `MU_DOTNET_LIB_EXT` variable (not `.dll` hardcoded)
-- [ ] `src/CMakeLists.txt` — `copy_if_different` uses `${DOTNET_TEMP_OUTPUT}/MUnique.Client.Library${MU_DOTNET_LIB_EXT}`
-- [ ] CTest: `7.8.4-AC-2:src-cmake-lib-ext-copy` passes (GREEN)
+- [x] `src/CMakeLists.txt` — Set `MU_DOTNET_LIB_EXT` to `.dll`/`.dylib`/`.so` per `CMAKE_SYSTEM_NAME`
+- [x] `src/CMakeLists.txt` — `DOTNET_DLL_PATH` uses `MU_DOTNET_LIB_EXT` variable (not `.dll` hardcoded)
+- [x] `src/CMakeLists.txt` — `copy_if_different` uses `${DOTNET_TEMP_OUTPUT}/MUnique.Client.Library${MU_DOTNET_LIB_EXT}`
+- [x] CTest: `7.8.4-AC-2:src-cmake-lib-ext-copy` passes (GREEN)
 
 ### AC-3: Enable .NET Build in macOS/Linux Presets
 
-- [ ] `CMakePresets.json` — Remove `"MU_ENABLE_DOTNET": "OFF"` from `macos-base` cacheVariables
-- [ ] `CMakePresets.json` — Remove `"MU_ENABLE_DOTNET": "OFF"` from `linux-base` cacheVariables
-- [ ] Retire or update `test_ac8_dotnet_disabled_native_runners.cmake` (story 7.4.1 conflict resolved)
-- [ ] CTest: `7.8.4-AC-3:presets-dotnet-enabled` passes (GREEN)
+- [x] `CMakePresets.json` — Remove `"MU_ENABLE_DOTNET": "OFF"` from `macos-base` cacheVariables
+- [x] `CMakePresets.json` — Remove `"MU_ENABLE_DOTNET": "OFF"` from `linux-base` cacheVariables
+- [x] Retire or update `test_ac8_dotnet_disabled_native_runners.cmake` (story 7.4.1 conflict resolved)
+- [x] CTest: `7.8.4-AC-3:presets-dotnet-enabled` passes (GREEN)
 
 ### AC-4: Guard resource.h in Winmain.cpp
 
-- [ ] `src/source/Main/Winmain.cpp` — Wrap `#include "resource.h"` in `#ifdef _WIN32` / `#endif`
-- [ ] Verify `python3 scripts/check-win32-guards.py` still exits 0 (AC-4 is an *allowed* platform guard — in `Main/Winmain.cpp`, not game logic)
-- [ ] CTest: `7.8.4-AC-4:resource-h-win32-guard` passes (GREEN)
+- [x] `src/source/Main/Winmain.cpp` — Wrap `#include "resource.h"` in `#ifdef _WIN32` / `#endif`
+- [x] Verify `python3 scripts/check-win32-guards.py` still exits 0 (AC-4 is an *allowed* platform guard — in `Main/Winmain.cpp`, not game logic)
+- [x] CTest: `7.8.4-AC-4:resource-h-win32-guard` passes (GREEN)
 
 ### AC-5: macOS arm64 Build Verification
 
-- [ ] `cmake --build --preset macos-arm64-debug` completes without "Cross-OS native compilation" error
-- [ ] `osx-arm64` native library generated in build output directory
-- [ ] Verified on macOS arm64 host machine
+- [x] `cmake --build --preset macos-arm64-debug` completes without "Cross-OS native compilation" error
+- [x] `osx-arm64` native library generated in build output directory
+- [x] Verified on macOS arm64 host machine
 
 ### AC-6: Quality Gate
 
-- [ ] `./ctl check` exits 0 (format-check + cppcheck)
-- [ ] No clang-format violations introduced
-- [ ] No new cppcheck warnings
+- [x] `./ctl check` exits 0 (format-check + cppcheck)
+- [x] No clang-format violations introduced
+- [x] No new cppcheck warnings
 
 ### AC-STD-1: Code Standards
 
-- [ ] cmake changes follow existing cmake style in project (4-space indent, consistent if() formatting)
-- [ ] Any C++ changes (Winmain.cpp guard) clang-format clean
+- [x] cmake changes follow existing cmake style in project (4-space indent, consistent if() formatting)
+- [x] Any C++ changes (Winmain.cpp guard) clang-format clean
 
 ### AC-STD-11: Flow Code Traceability
 
-- [ ] CTest: `7.8.4-AC-STD-11:flow-code-traceability` passes (GREEN)
-- [ ] All 4 test files contain `VS0-QUAL-BUILD-DOTNET` flow code and `7.8.4` story reference
+- [x] CTest: `7.8.4-AC-STD-11:flow-code-traceability` passes (GREEN)
+- [x] All 4 test files contain `VS0-QUAL-BUILD-DOTNET` flow code and `7.8.4` story reference
 
 ### AC-STD-13: Quality Gate Exits 0
 
-- [ ] Same as AC-6 above
+- [x] Same as AC-6 above
 
 ### AC-STD-15: Git Safety
 
-- [ ] No force push to main
-- [ ] No incomplete rebase
-- [ ] Commit follows Conventional Commits: `build(dotnet): ...` or `fix(build): ...`
+- [x] No force push to main
+- [x] No incomplete rebase
+- [x] Commit follows Conventional Commits: `build(dotnet): ...` or `fix(build): ...`
 
 ---
 
 ## PCC Compliance Items
 
-- [ ] No prohibited libraries introduced (cmake and source files only)
-- [ ] No new `#ifdef _WIN32` in game logic directories (AC-4 guard is in `Main/Winmain.cpp` — allowed by policy since Winmain is Windows-specific entry point; verify with `check-win32-guards.py`)
-- [ ] No new Win32 API calls in game logic (cmake changes only)
-- [ ] Conventional Commits format for all commits
+- [x] No prohibited libraries introduced (cmake and source files only)
+- [x] No new `#ifdef _WIN32` in game logic directories (AC-4 guard is in `Main/Winmain.cpp` — allowed by policy since Winmain is Windows-specific entry point; verify with `check-win32-guards.py`)
+- [x] No new Win32 API calls in game logic (cmake changes only)
+- [x] Conventional Commits format for all commits
 
 ---
 
