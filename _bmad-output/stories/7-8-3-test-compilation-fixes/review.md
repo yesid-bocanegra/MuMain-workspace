@@ -4,179 +4,131 @@
 **Date**: 2026-03-26
 **Story Key**: 7-8-3-test-compilation-fixes
 **Story File**: `_bmad-output/stories/7-8-3-test-compilation-fixes/story.md`
-**Files Reviewed**: 17 (15 in File List + 2 additional modified)
+**Files Reviewed**: 15 (all files in story File List)
+**Review Pass**: 2 (post-fix re-review)
 
 ---
 
-## Pipeline Status
+## Quality Gate
 
-| Step | Status | Date |
-|------|--------|------|
-| 1. Quality Gate | PASSED | 2026-03-26 |
-| 2. Code Review Analysis | COMPLETE | 2026-03-26 |
-| 3. Code Review Finalize | COMPLETE | 2026-03-26 |
+**Status**: Pending — run by pipeline
 
 ---
 
-## Quality Gate Progress
+## Prior Review Fix Verification
 
-| Phase | Status | Details |
-|-------|--------|---------|
-| Backend Local (mumain) | PASSED | lint: PASS, build: PASS, coverage: PASS (none configured) |
-| Backend SonarCloud | SKIPPED | No SONAR_TOKEN configured |
-| Frontend Local | SKIPPED | No frontend components |
-| Frontend SonarCloud | SKIPPED | No frontend components |
-| Schema Alignment | SKIPPED | No frontend components |
-| AC Compliance | SKIPPED | Infrastructure story |
-| E2E Test Quality | SKIPPED | Infrastructure story |
+The first code review pass (2026-03-26) identified 7 issues (F-1 through F-7). Fixes were applied in the finalize step. This section verifies the fixes are correctly applied in the current codebase.
 
-**Overall Quality Gate Status**: PASSED
+| Prior Issue | Status | Verification |
+|-------------|--------|-------------|
+| F-1 (BuildResult double-formatting) | VERIFIED FIXED | `test_game_stubs.cpp:233-248` — direct member assignment instead of calling `SetResult` with formatted buffer |
+| F-2 (mu_swprintf hardcoded 1024) | VERIFIED DEFERRED | Still present in `PlatformCompat.h:2322` and `stdafx.h:336` — accepted as pre-existing tech debt |
+| F-3 (operator= self-assignment UB) | VERIFIED FIXED | `test_game_stubs.cpp:200` — `if (this == &a2) return *this;` guard added |
+| F-4 (PadRGBToRGBA validation) | VERIFIED FIXED | `test_game_stubs.cpp:388-391` — width/height/nullptr checks added |
+| F-5 (MuStabilityTests stubs linkage) | VERIFIED FIXED | `CMakeLists.txt:411` — `target_sources(MuStabilityTests PRIVATE stubs/test_game_stubs.cpp)` added |
+| F-6 (Stub maintenance burden) | VERIFIED DOCUMENTED | `test_game_stubs.cpp:8-9` — ABI-compat warning in header comment |
+| F-7 (Out-of-scope formatting) | VERIFIED ACCEPTED | clang-format normalization, no code change needed |
 
----
-
-## Quality Gate Results
-
-### Backend: mumain (`./MuMain`, cpp-cmake)
-
-| Check | Status | Command |
-|-------|--------|---------|
-| lint | PASS | `make -C MuMain lint` |
-| build | PASS | `cmake -S MuMain -B build ... && cmake --build build` |
-| coverage | PASS | No coverage configured yet |
-
-- **Iterations**: 0 (all checks passed on first run)
-- **Issues Fixed**: 0
+**All prior fixes correctly applied.**
 
 ---
 
 ## Findings
 
-### F-1: WZResult::BuildResult double-formatting vulnerability
+### F-8: WZResult::SetResult does not null-terminate on vswprintf failure
 
 | Attribute | Value |
 |-----------|-------|
 | **Severity** | MEDIUM |
 | **File** | `MuMain/tests/stubs/test_game_stubs.cpp` |
-| **Lines** | 232–243 |
-| **Category** | Correctness / Undefined Behavior |
+| **Lines** | 208–216 |
+| **Category** | Correctness / Robustness |
 
-**Description**: `BuildResult()` formats user input with `vswprintf(Buffer, ...)`, then passes the formatted `Buffer` to `SetResult(dwErrorCode, dwWindowErrorCode, Buffer)`. Inside `SetResult`, `Buffer` is treated as a *format string* and expanded again via `vswprintf(m_szErrorMessage, MAX_ERROR_MESSAGE, szFormat, va)`. If the original format produces output containing `%` characters (e.g., from `%%` → `%`), the second pass interprets `%` as a format specifier and reads from an empty `va_list` — undefined behavior.
+**Description**: `SetResult()` calls `vswprintf(m_szErrorMessage, MAX_ERROR_MESSAGE, szFormat, va)` without checking the return value. Per the C standard (§7.29.2.5), if `vswprintf` fails (returns negative), the contents of the destination buffer are indeterminate — `m_szErrorMessage` may not be null-terminated. A subsequent call to `GetErrorMessage()` would return a pointer to an unterminated buffer, which callers (including test assertions) would read past the buffer boundary.
 
-**Suggested Fix**: In `BuildResult`, replace the `SetResult` call with direct member assignment:
+**Suggested Fix**: Add return value check and fallback null-termination:
 ```cpp
-result.m_dwErrorCode = dwErrorCode;
-result.m_dwWindowErrorCode = dwWindowErrorCode;
-wcsncpy(result.m_szErrorMessage, Buffer, MAX_ERROR_MESSAGE - 1);
-result.m_szErrorMessage[MAX_ERROR_MESSAGE - 1] = L'\0';
-```
-
----
-
-### F-2: mu_swprintf hardcoded 1024 buffer size replicated into PlatformCompat.h
-
-| Attribute | Value |
-|-----------|-------|
-| **Severity** | MEDIUM |
-| **File** | `MuMain/src/source/Platform/PlatformCompat.h` |
-| **Lines** | 2320–2322 |
-| **Category** | Correctness / Buffer Overflow Risk |
-
-**Description**: The `mu_swprintf` template on GCC/Clang passes `1024` as the buffer size to `std::swprintf`, regardless of the actual buffer capacity. This pre-existing design issue (already present in `stdafx.h:336`) is now replicated into PlatformCompat.h, enshrining the bug in two locations. Any caller providing a buffer smaller than 1024 wide characters risks a buffer overflow on non-MSVC platforms.
-
-**Suggested Fix**: Accept a size parameter or use the array-deducing overload pattern:
-```cpp
-template <size_t N, typename... Args>
-inline int mu_swprintf(wchar_t (&buffer)[N], const wchar_t* format, Args... args)
+int written = vswprintf(m_szErrorMessage, MAX_ERROR_MESSAGE, szFormat, va);
+if (written < 0)
 {
-    return std::swprintf(buffer, N, format, args...);
-}
-```
-Note: This is a pre-existing design issue. Track as tech debt if not addressable in this story.
-
----
-
-### F-3: WZResult::operator= missing self-assignment guard
-
-| Attribute | Value |
-|-----------|-------|
-| **Severity** | MEDIUM |
-| **File** | `MuMain/tests/stubs/test_game_stubs.cpp` |
-| **Lines** | 198–205 |
-| **Category** | Correctness / Undefined Behavior |
-
-**Description**: `WZResult::operator=` calls `wcsncpy(m_szErrorMessage, a2.m_szErrorMessage, ...)`. If `this == &a2` (self-assignment), the source and destination buffers overlap. Per the C standard, `wcsncpy` with overlapping buffers is undefined behavior. While unlikely to be triggered in test scenarios, this is a correctness defect in a "real implementation" that tests check return values of.
-
-**Suggested Fix**: Add self-assignment guard:
-```cpp
-WZResult& WZResult::operator=(const WZResult& a2)
-{
-    if (this == &a2) return *this;
-    // ... rest of copy
+    m_szErrorMessage[0] = L'\0'; // ensure null-terminated on failure
 }
 ```
 
 ---
 
-### F-4: PadRGBToRGBA does not validate negative dimensions
+### F-9: PadRGBToRGBA multiplication overflow for large positive dimensions
 
 | Attribute | Value |
 |-----------|-------|
 | **Severity** | LOW |
 | **File** | `MuMain/tests/stubs/test_game_stubs.cpp` |
-| **Lines** | 380–392 |
+| **Lines** | 392–393 |
+| **Category** | Correctness / Overflow |
+
+**Description**: After the F-4 fix, negative width/height are rejected. However, `pixelCount = (size_t)width * (size_t)height` can still overflow `size_t` on 32-bit platforms for large positive dimensions (e.g., width=65536, height=65536 → 4G pixels → wraps to 0 on 32-bit). The subsequent `rgba(pixelCount * 4u)` allocation would be undersized, and the loop would access `rgbData` out of bounds. While game textures never reach these sizes, this function is marked as a "real implementation tested directly."
+
+**Suggested Fix**: Add an overflow guard before allocation:
+```cpp
+if (pixelCount > SIZE_MAX / 4u) return {};
+```
+
+---
+
+### F-10: Stub types CListVersionInfo and FTP_SERVICE_MODE defined locally without ABI anchor
+
+| Attribute | Value |
+|-----------|-------|
+| **Severity** | LOW |
+| **File** | `MuMain/tests/stubs/test_game_stubs.cpp` |
+| **Lines** | 264–276 |
+| **Category** | Maintainability / ABI Compatibility |
+
+**Description**: `CListVersionInfo` and `FTP_SERVICE_MODE` are defined locally in the stub file rather than included from their real headers. These types are passed by value to `SetListManagerInfo()`. If the real type layouts differ (e.g., `CListVersionInfo` gains a member, changes member order, or has different alignment), the stub functions would receive garbled data. Unlike the class stubs (F-6, documented), these value types have no comment indicating which real headers they mirror.
+
+**Suggested Fix**: Add a comment documenting the source header paths for each type:
+```cpp
+// CListVersionInfo — mirrors GameShop/ShopListManager/interface/ListVersionInfo.h
+// FTP_SERVICE_MODE — mirrors GameShop/ShopListManager/interface/FtpServiceMode.h
+```
+Or preferably, include the real headers if they can compile standalone.
+
+---
+
+### F-11: GetTargetFps() stub returns -1.0 without semantic documentation
+
+| Attribute | Value |
+|-----------|-------|
+| **Severity** | LOW |
+| **File** | `MuMain/tests/stubs/test_game_stubs.cpp` |
+| **Lines** | 67 |
+| **Category** | Maintainability |
+
+**Description**: `GetTargetFps()` returns `-1.0`, which in the game codebase convention means "uncapped FPS" (consistent with `g_TargetFpsBeforeInactive = -1.0` on line 43). However, code that depends on `GetTargetFps()` returning a positive value (e.g., for delta-time calculations like `1.0 / GetTargetFps()`) would produce `-1.0` or `-inf` results. While no current test exercises this path, the return value choice is undocumented.
+
+**Suggested Fix**: Add a comment explaining the convention:
+```cpp
+double GetTargetFps() { return -1.0; } // -1.0 = uncapped (game convention)
+```
+
+---
+
+### F-12: MAX_CHAT_SIZE #ifndef guard allows silent override by prior includes
+
+| Attribute | Value |
+|-----------|-------|
+| **Severity** | LOW |
+| **File** | `MuMain/src/source/Core/mu_define.h` |
+| **Lines** | 172–173 |
 | **Category** | Robustness |
 
-**Description**: `PadRGBToRGBA(const uint8_t* rgbData, int width, int height)` casts `width` and `height` to `size_t` without checking they are non-negative. Negative values wrap to very large unsigned values, causing a massive allocation attempt and out-of-bounds reads from `rgbData`. The function is marked as a "real implementation" that is "tested directly by test_texturesystemmigration.cpp".
+**Description**: `MAX_CHAT_SIZE` is guarded by `#ifndef MAX_CHAT_SIZE`, which means any header included before `mu_define.h` can silently redefine it to a different value. This is a defensive pattern, but it also means that accidental redefinitions (e.g., a platform header defining `MAX_CHAT_SIZE` to a different value) would be silently accepted without warning, potentially causing buffer overflows or truncation in chat message handling.
 
-**Suggested Fix**: Add a precondition check:
+**Suggested Fix**: No immediate fix required — the `#ifndef` guard is standard practice for macro constants. If a stronger guarantee is needed, consider a `constexpr int` inside a namespace instead:
 ```cpp
-if (width <= 0 || height <= 0 || rgbData == nullptr) return {};
+namespace mu { inline constexpr int MAX_CHAT_SIZE = 90; }
 ```
-
----
-
-### F-5: MuStabilityTests missing test_game_stubs.cpp linkage
-
-| Attribute | Value |
-|-----------|-------|
-| **Severity** | LOW |
-| **File** | `MuMain/tests/CMakeLists.txt` |
-| **Lines** | 410–417 |
-| **Category** | Maintainability |
-
-**Description**: `MuStabilityTests` links the same libraries as `MuTests` (MUCore, MUPlatform, MURenderFX, MUAudio) but does not include `stubs/test_game_stubs.cpp`. Currently builds because the stability test TU doesn't reference the stubbed symbols, but any future stability test that exercises game code paths will hit linker failures with no obvious cause.
-
-**Suggested Fix**: Add `target_sources(MuStabilityTests PRIVATE stubs/test_game_stubs.cpp)` after line 411 for consistency.
-
----
-
-### F-6: Class stub definitions create parallel maintenance burden
-
-| Attribute | Value |
-|-----------|-------|
-| **Severity** | LOW |
-| **File** | `MuMain/tests/stubs/test_game_stubs.cpp` |
-| **Lines** | 96–180 |
-| **Category** | Maintainability |
-
-**Description**: The stub file contains full class definitions for `CGlobalBitmap`, `Connection`, `CUIRenderText`, `CNewUIMiniMap`, and `CNewUISystem`. These must remain ABI-compatible with their real implementations. If the real class adds or removes a virtual method, changes a method signature, or reorders the vtable, the stubs silently drift, potentially causing ODR violations or subtle test failures. There is no compile-time mechanism to detect this drift.
-
-**Suggested Fix**: Document the dependency in a comment header with the real source file paths, and consider adding a build-system comment that flags these files for review when the real implementations change. Alternatively, investigate whether the real headers can be included without pulling in all game dependencies.
-
----
-
-### F-7: Out-of-scope formatting change in MiniAudioBackend.cpp
-
-| Attribute | Value |
-|-----------|-------|
-| **Severity** | LOW |
-| **File** | `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` |
-| **Lines** | 373–374 |
-| **Category** | Process |
-
-**Description**: The diff includes a formatting-only change to `ma_sound_set_position` (line joining) that is unrelated to the story's test compilation objectives. This appears to be a `clang-format` side effect when the file was formatted. While harmless, it adds noise to the story's diff and makes change attribution harder in `git blame`.
-
-**Suggested Fix**: No code change needed. Accept as clang-format normalization. Note for future: `./ctl format` should be run before story work begins to avoid incidental formatting changes mixing into story diffs.
+This is informational only — not a blocker.
 
 ---
 
@@ -184,68 +136,28 @@ if (width <= 0 || height <= 0 || rgbData == nullptr) return {};
 
 | AC | Checklist Status | Verified Against Code | Assessment |
 |----|------------------|-----------------------|------------|
-| AC-1 | COMPLETE | 10 enum names replaced, kSynthesis removed | **ACCURATE** — diff confirms all 10 replacements match mu_define.h |
-| AC-2 | COMPLETE | k_BlendFactor_DstColor line removed | **ACCURATE** — single line deletion verified |
-| AC-3 | COMPLETE | Build passes (pre-run QG) | **ACCURATE** — quality gate PASS confirmed |
-| AC-4 | COMPLETE | 89/90 tests | **ACCURATE** — 1 pre-existing SIGSEGV (WriteOpenGLInfo) |
-| AC-5 | COMPLETE | ./ctl check exits 0 | **ACCURATE** — quality gate PASS confirmed |
+| AC-1 | COMPLETE | 10 enum names replaced in `test_inventory_trading_validation.cpp:252-261`, kSynthesis removed | **ACCURATE** — all replacements match `mu_define.h` STORAGE_TYPE enum (values 7-16) |
+| AC-2 | COMPLETE | `k_BlendFactor_DstColor` removed from `test_sdlgpubackend.cpp` anonymous namespace | **ACCURATE** — constant not present in file; remaining constants (Zero through OneMinusSrcAlpha) are all used by test assertions |
+| AC-3 | COMPLETE | Build passes (pre-run QG results) | **ACCURATE** — quality gate PASS confirmed |
+| AC-4 | COMPLETE | 89/90 tests pass | **ACCURATE** — 1 pre-existing SIGSEGV (WriteOpenGLInfo null GL context) |
+| AC-5 | COMPLETE | `./ctl check` exits 0 | **ACCURATE** — quality gate PASS confirmed |
 | AC-STD-1 | COMPLETE | clang-format clean | **ACCURATE** — lint PASS confirmed |
-| AC-STD-2 | COMPLETE | Tests compile and execute | **ACCURATE** — build PASS confirmed |
+| AC-STD-2 | COMPLETE | All test targets compile and execute | **ACCURATE** — build PASS confirmed |
 | AC-STD-13 | COMPLETE | Quality gate exits 0 | **ACCURATE** — matches AC-5 |
-| AC-STD-15 | COMPLETE | No force push | **ACCURATE** — git log shows clean history |
+| AC-STD-15 | COMPLETE | No force push, clean branch history | **ACCURATE** — git log shows conventional commits only |
 
-**ATDD Assessment**: All checklist items are accurately marked. No false completions detected.
-
----
-
-## Step 3: Resolution
-
-**Status:** COMPLETE
-**Date:** 2026-03-26
-**Fixes Applied:** 5/7 issues fixed, 2/7 accepted as tech debt/process
-
-### Resolution Progress
-
-| Issue | Severity | Status | Fix Applied |
-|-------|----------|--------|-------------|
-| F-1 | MEDIUM | FIXED | BuildResult double-formatting → direct member assignment |
-| F-2 | MEDIUM | DEFERRED | mu_swprintf 1024 buffer → tracked as tech debt, pre-existing design issue |
-| F-3 | MEDIUM | FIXED | operator= self-assignment guard → added `if (this == &a2)` check |
-| F-4 | LOW | FIXED | PadRGBToRGBA validation → added width/height/nullptr checks |
-| F-5 | LOW | FIXED | MuStabilityTests stubs → added `target_sources` for test_game_stubs.cpp |
-| F-6 | LOW | DOCUMENTED | Stub maintenance burden → documented in code header |
-| F-7 | LOW | ACCEPTED | Formatting change → accepted as clang-format normalization |
-
-### Quality Gate Status After Fixes
-
-✅ **PASSED** (2026-03-26)
-- clang-format: PASS (no violations)
-- cppcheck: PASS (no violations)
-- Build (MuTests + MuStabilityTests): PASS
-- All changes committed to working tree
-
-### Notes
-
-- **F-1 Fix Rationale**: The original `BuildResult` called `vswprintf` to format output into `Buffer`, then passed `Buffer` to `SetResult` which treated it as a format string and called `vswprintf` again. Passing formatted text as a format string is undefined behavior (format string injection risk). Fixed by direct member assignment which avoids the second format pass.
-
-- **F-2 Decision**: The `mu_swprintf` hardcoded 1024 buffer size is a pre-existing design issue replicated in both `stdafx.h` and `PlatformCompat.h`. Fixing requires template refactoring beyond this story's scope. Documented as tech debt in story Dev Notes for future refactor (EPIC-8 or later).
-
-- **F-3 Fix Rationale**: Self-assignment `x = x` causes `wcsncpy` to operate on overlapping buffers (source == destination), which is undefined behavior per C standard. Added guard to prevent this edge case.
-
-- **F-4 Fix Rationale**: Casting negative `width`/`height` to `size_t` wraps to huge unsigned values, causing massive allocation and out-of-bounds reads. Added precondition validation.
-
-- **F-5 Fix Rationale**: `MuStabilityTests` links the same modules as `MuTests` but was missing `test_game_stubs.cpp`. Future stability tests exercising game code paths would hit linker failures. Added for consistency and forward compatibility.
+**ATDD Assessment**: All 16 implementation checklist items are accurately marked complete. No false completions detected. The pairwise-distinct test (AC-1) correctly covers all 18 STORAGE_TYPE values (UNDEFINED + 17 values 0–16) with exhaustive C(18,2) = 153 pair comparisons.
 
 ---
 
 ## Summary
 
-| Severity | Count | Status |
-|----------|-------|--------|
+| Severity | Count | Notes |
+|----------|-------|-------|
 | BLOCKER | 0 | — |
 | HIGH | 0 | — |
-| MEDIUM | 3 | 2 FIXED, 1 DEFERRED (tech debt) |
-| LOW | 4 | 4 FIXED/DOCUMENTED |
-| **Total** | **7** | **RESOLUTION COMPLETE** |
+| MEDIUM | 1 | F-8: vswprintf failure leaves buffer unterminated |
+| LOW | 4 | F-9: overflow guard, F-10: stub type documentation, F-11: stub return docs, F-12: macro guard pattern |
+| **Total** | **5** | No blockers. All prior fixes verified. |
 
-The story achieves its stated objectives: both test compilation errors are fixed, pre-existing cross-platform build blockers are resolved, and all quality gates pass. All MEDIUM severity issues have been addressed (two fixed in code, one deferred as pre-existing tech debt). All LOW severity issues are fixed or properly documented. No blockers remain. Story ready for merge.
+This is a post-fix re-review. The 7 findings from the first review pass have been correctly addressed (5 fixed, 1 deferred as tech debt, 1 accepted). The 5 new findings are lower-severity items that do not block the story's objectives. The story achieves its stated goals: test compilation errors are fixed, cross-platform build blockers are resolved, and all quality gates pass.
