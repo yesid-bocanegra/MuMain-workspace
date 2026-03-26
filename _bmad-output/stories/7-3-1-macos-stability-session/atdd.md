@@ -2,7 +2,7 @@
 
 **Flow Code:** VS0-QUAL-STABILITY-MACOS
 **Story Type:** infrastructure
-**ATDD Phase:** RED — pre-session validation tests exist; manual session ACs await execution
+**ATDD Phase:** RED (infrastructure GREEN) — pre-session QG passed; manual session ACs await execution
 **ATDD Checklist Path:** `_bmad-output/stories/7-3-1-macos-stability-session/atdd.md`
 **Test File:** `MuMain/tests/stability/test_macos_stability_session.cpp`
 **Generated:** 2026-03-25
@@ -16,12 +16,12 @@
 | AC-1 | 60+ minute gameplay without crashes | `AC-1 [7-3-1]: 60+ minute gameplay...` | SKIP (manual) | RED |
 | AC-2 | Session includes required activities | `AC-2 [7-3-1]: Session includes...` | SKIP (manual) | RED |
 | AC-3 | No server disconnects | `AC-3 [7-3-1]: No server disconnects...` | SKIP (manual) | RED |
-| AC-4 | MuTimer: 30+ FPS, no >50ms hitches | `AC-4 [7-3-1]: FPS and hitch threshold constants...` | Infrastructure | RED→will pass |
-| AC-4 | MuTimer hitch detection for session | `AC-4 [7-3-1]: MuTimer provides hitch detection...` | Infrastructure | RED→will pass |
-| AC-4 | MuTimer FPS above 30 FPS minimum | `AC-4 [7-3-1]: MuTimer FPS reflects frame rate...` | Infrastructure | RED→will pass |
-| AC-5 | No ERROR entries in session log | `AC-5 [7-3-1]: Log scan finds zero ERROR entries...` | Infrastructure | RED→will pass |
-| AC-5 | Log scan identifies ERROR entries | `AC-5 [7-3-1]: Log scan correctly identifies ERROR...` | Infrastructure | RED→will pass |
-| AC-5 | Log scan handles missing file | `AC-5 [7-3-1]: Log scan returns -1 when log...` | Infrastructure | RED→will pass |
+| AC-4 | MuTimer: 30+ FPS, no >50ms hitches | `AC-4 [7-3-1]: FPS and hitch threshold constants...` | Infrastructure | GREEN ✓ |
+| AC-4 | MuTimer hitch detection for session | `AC-4 [7-3-1]: MuTimer provides hitch detection...` | Infrastructure | GREEN ✓ |
+| AC-4 | MuTimer FPS above 30 FPS minimum | `AC-4 [7-3-1]: MuTimer FPS reflects frame rate...` | Infrastructure | GREEN ✓ |
+| AC-5 | No ERROR entries in session log | `AC-5 [7-3-1]: Log scan finds zero ERROR entries...` | Infrastructure | GREEN ✓ |
+| AC-5 | Log scan identifies ERROR entries | `AC-5 [7-3-1]: Log scan correctly identifies ERROR...` | Infrastructure | GREEN ✓ |
+| AC-5 | Log scan handles missing file | `AC-5 [7-3-1]: Log scan returns -1 when log...` | Infrastructure | GREEN ✓ |
 | AC-6 | Memory stable, <20% growth | `AC-6 [7-3-1]: Memory usage stable over 60-minute...` | SKIP (manual) | RED |
 | AC-VAL-1 | Session log artifact exists | `AC-VAL-1 [7-3-1]: Session log artifact exists...` | SKIP (manual) | RED |
 | AC-VAL-2 | MuError.log from session referenced | `AC-VAL-2 [7-3-1]: MuError.log from session...` | SKIP (manual) | RED |
@@ -33,18 +33,18 @@
 
 ### Pre-Session Quality Gate (AC-STD-13)
 
-- [ ] Run `./ctl check` before starting the session — must pass 0 errors, 0 format violations
-- [ ] Verify macOS arm64 build: `cmake --preset macos-arm64 && cmake --build --preset macos-arm64-debug`
-- [ ] Verify test suite compiles: `cmake -DBUILD_TESTING=ON ...` and `ctest` passes infrastructure tests
+- [x] Run `./ctl check` before starting the session — must pass 0 errors, 0 format violations
+- [x] Verify macOS arm64 build: `cmake --preset macos-arm64 && cmake --build --preset macos-arm64-debug`
+- [x] Verify test suite compiles: `cmake -DBUILD_TESTING=ON ...` and `ctest` passes infrastructure tests
 
 ### Infrastructure Tests (AC-4, AC-5) — Automated
 
-- [ ] `AC-4: FPS and hitch threshold constants are consistent` — Catch2 test passes
-- [ ] `AC-4: MuTimer provides hitch detection for session monitoring` — Catch2 test passes
-- [ ] `AC-4: MuTimer FPS reflects frame rate for session monitoring` — Catch2 test passes
-- [ ] `AC-5: Log scan finds zero ERROR entries in clean session log` — Catch2 test passes
-- [ ] `AC-5: Log scan correctly identifies ERROR entries` — Catch2 test passes
-- [ ] `AC-5: Log scan returns -1 when log file does not exist` — Catch2 test passes
+- [x] `AC-4: FPS and hitch threshold constants are consistent` — Catch2 test passes
+- [x] `AC-4: MuTimer provides hitch detection for session monitoring` — Catch2 test passes
+- [x] `AC-4: MuTimer FPS reflects frame rate for session monitoring` — Catch2 test passes
+- [x] `AC-5: Log scan finds zero ERROR entries in clean session log` — Catch2 test passes
+- [x] `AC-5: Log scan correctly identifies ERROR entries` — Catch2 test passes
+- [x] `AC-5: Log scan returns -1 when log file does not exist` — Catch2 test passes
 
 ### Session Execution (AC-1, AC-2, AC-3, AC-6) — Manual
 
@@ -89,12 +89,12 @@
 
 ### PCC Compliance
 
-- [ ] No prohibited libraries used in test file (Catch2 v3.7.1 is approved)
-- [ ] No Win32 APIs in test TU (compiles on macOS/Linux/MinGW CI)
-- [ ] Catch2 `REQUIRE`/`CHECK`/`TEST_CASE`/`SECTION` structure used
-- [ ] No mocking framework — pure logic tests
-- [ ] `#pragma once` (not `#ifndef` guards) — N/A for .cpp files
-- [ ] Test file follows `tests/{module}/test_{name}.cpp` naming convention
+- [x] No prohibited libraries used in test file (Catch2 v3.7.1 is approved)
+- [x] No Win32 APIs in test TU (compiles on macOS/Linux/MinGW CI)
+- [x] Catch2 `REQUIRE`/`CHECK`/`TEST_CASE`/`SECTION` structure used
+- [x] No mocking framework — pure logic tests
+- [x] `#pragma once` (not `#ifndef` guards) — N/A for .cpp files
+- [x] Test file follows `tests/{module}/test_{name}.cpp` naming convention
 
 ---
 

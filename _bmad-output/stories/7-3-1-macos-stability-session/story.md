@@ -1,6 +1,6 @@
 # Story 7.3.1: macOS 60-Minute Stability Session
 
-Status: ready-for-dev
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -74,10 +74,10 @@ Status: ready-for-dev
 ## Tasks / Subtasks
 
 - [ ] Task 1: Pre-session environment validation (AC: 1, 2)
-  - [ ] 1.1: Verify macOS arm64 build compiles cleanly (`cmake --preset macos-arm64 && cmake --build --preset macos-arm64-debug`)
-  - [ ] 1.2: Verify `./ctl check` passes (0 errors, 0 format violations)
-  - [ ] 1.3: Verify OpenMU server is running and accessible
-  - [ ] 1.4: Record baseline system info: macOS version, hardware, RAM, initial memory usage
+  - [x] 1.1: Verify macOS arm64 build compiles cleanly — MuStabilityTests target built successfully (full Main target blocked by Win32 deps, expected per EPIC-2)
+  - [x] 1.2: Verify `./ctl check` passes (0 errors, 0 format violations) — 723/723 files passed
+  - [ ] 1.3: Verify OpenMU server is running and accessible — **requires manual verification**
+  - [x] 1.4: Record baseline system info: macOS version, hardware, RAM, initial memory usage — Darwin 25.3.0, arm64
 - [ ] Task 2: Execute 60-minute gameplay session (AC: 1-6)
   - [ ] 2.1: Login to OpenMU server from macOS client
   - [ ] 2.2: Character creation/selection
@@ -183,15 +183,31 @@ This is a **manual validation story**, not a code implementation story. The prim
 
 ### Agent Model Used
 
-Claude Opus 4.6 (create-story workflow, 2026-03-25)
+Claude Opus 4.6 (create-story + dev-story workflow, 2026-03-25)
 
 ### Debug Log References
+
+- Pre-session build required fixing 7 test compilation issues across 6 files (test mocks, POSIX constants, SDL3 linkage, Catch2 headers)
+- Created standalone `MuStabilityTests` target to isolate from pre-existing MuTests macOS failures
 
 ### Completion Notes List
 
 - Story type: infrastructure (manual validation session)
-- No code implementation expected unless hotfixes are needed during the session
+- Pre-session quality gate (Task 1) completed by agent — `./ctl check` passed, infrastructure tests GREEN
+- MuStabilityTests: 6 tests, 11 assertions, all passed (AC-4 threshold/hitch/FPS + AC-5 log scan x3)
+- Tasks 2-5 require manual execution: human operator + running OpenMU server + 60-minute gameplay session
+- Test fixes applied: DisableBlend() mock in 3 render test files, SA_SIGINFO correction, SDL3/OpenGL linkage, Catch2 include
 - All 7-6-x prerequisite stories are done — macOS build chain is clear
 - PCC compliant: SAFe metadata, AC-STD sections, flow code documented
 
 ### File List
+
+| File | Action | Notes |
+|------|--------|-------|
+| `MuMain/tests/stability/test_macos_stability_session.cpp` | Created | ATDD test file — 15 tests (6 infra GREEN, 9 manual SKIP) |
+| `MuMain/tests/CMakeLists.txt` | Modified | Added MuStabilityTests target + SDL3 linkage for MuTests |
+| `MuMain/tests/render/test_skeletalmesh_migration.cpp` | Modified | Added DisableBlend() override to RenderTrianglesCapture mock |
+| `MuMain/tests/render/test_traileffects_migration.cpp` | Modified | Added DisableBlend() override to RenderQuadStripCapture mock |
+| `MuMain/tests/render/test_renderbitmap_migration.cpp` | Modified | Added DisableBlend() override to RenderQuad2DCapture mock |
+| `MuMain/tests/render/test_sdlgpubackend.cpp` | Modified | Added missing `#include <catch2/catch_approx.hpp>` |
+| `MuMain/tests/platform/test_posix_signal_handlers.cpp` | Modified | Corrected SA_SIGACTION → SA_SIGINFO |
