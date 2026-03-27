@@ -147,8 +147,11 @@ The root problem: two init paths that must stay in sync manually. They never wil
 
 - [ ] **AC-STD-1:** Code Standards — clang-format clean; zero `#ifdef _WIN32` in Winmain.cpp.
 - [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite passes; no regressions.
+- [ ] **AC-STD-12:** SLI/SLO — N/A (infrastructure/refactor story; no latency-sensitive code surface added).
 - [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
+- [ ] **AC-STD-14:** Observability — N/A (delete-only work; no new logging surface introduced).
 - [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
+- [ ] **AC-STD-16:** Error Codes — N/A (no new error codes introduced by this story).
 
 ---
 
@@ -226,6 +229,7 @@ Each reference must be either removed or replaced with a cross-platform equivale
 
 ### References
 
+- [Project Context: _bmad-output/project-context.md] — C++ naming conventions, required patterns, quality standards
 - [Source: Winmain.cpp:27–978] — Win32-only block to delete
 - [Source: Winmain.cpp:979–1441] — WinMain to delete
 - [Source: Winmain.cpp:1464–1721] — MuMain + main (kept, enhanced)
