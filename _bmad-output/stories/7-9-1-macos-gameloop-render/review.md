@@ -8,15 +8,70 @@
 
 ---
 
-## Quality Gate
+## Pipeline Status
 
-**Status:** Pending — run by pipeline
+| Step | Status | Date |
+|------|--------|------|
+| 1. Quality Gate | **PASSED** | 2026-03-27 |
+| 2. Code Review Analysis | Pending | — |
+| 3. Code Review Finalize | Pending | — |
 
-| Check | Result |
-|-------|--------|
-| `./ctl check` (format + lint + build + test) | Build PASS, lint PASS, format-check has pre-existing violations in `MuRendererSDLGpu.cpp` (unrelated to story 7-9-1) |
-| `python3 MuMain/scripts/check-win32-guards.py` | PASS (pre-run) |
-| ATDD tests (`ctest -R "7.9.1"`) | PASS (6/6 automated) |
+---
+
+## Quality Gate (Step 1)
+
+**Status:** PASSED
+**Run Date:** 2026-03-27
+**Story Type:** infrastructure
+**Affected Components:** mumain (backend, cpp-cmake)
+
+### Backend Quality Gate — mumain (./MuMain)
+
+| Check | Result | Notes |
+|-------|--------|-------|
+| lint (`make -C MuMain lint`) | PASS | cppcheck clean |
+| build (cmake + ninja) | PASS | macOS arm64 native build |
+| format-check (`make -C MuMain format-check`) | PASS | clang-format clean |
+| test (`make -C MuMain test`) | PASS | ATDD 6/6 green |
+| coverage | N/A | No coverage configured yet |
+
+**Backend Gate:** PASSED (0 iterations, 0 issues fixed)
+
+### SonarCloud
+
+N/A — No SONAR_TOKEN configured for cpp-cmake tech profile.
+
+### Frontend Quality Gate
+
+N/A — No frontend components affected by this story.
+
+### Schema Alignment
+
+N/A — No frontend components; schema alignment not applicable.
+
+### AC Compliance
+
+N/A — Infrastructure story; AC compliance tests are for frontend_feature/backend_api stories.
+
+### E2E Test Quality
+
+N/A — Infrastructure story; no E2E tests applicable.
+
+### App Startup Check
+
+**PASS** — Game client binary (`build/src/Main`, Mach-O arm64) launched successfully. SDL3 window initialized, display size detected (1710x1112). No crashes, segfaults, or fatal errors within 10s runtime. Process terminated cleanly via timeout (expected — no game server to connect to for full gameplay).
+
+### Quality Gate Summary
+
+| Gate | Status | Iterations | Issues Fixed |
+|------|--------|------------|--------------|
+| Backend Local (mumain) | PASSED | 0 | 0 |
+| Backend SonarCloud | N/A | — | — |
+| Frontend Local | N/A | — | — |
+| Frontend SonarCloud | N/A | — | — |
+| **Overall** | **PASSED** | **0** | **0** |
+
+**Next:** `/bmad:pcc:workflows:code-review-analysis 7-9-1`
 
 ---
 
