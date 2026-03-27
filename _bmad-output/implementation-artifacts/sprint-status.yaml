@@ -215,9 +215,9 @@ sprints:
       - 7-8-3-test-compilation-fixes             # 3 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: invalid enum values + unused variable errors in test files
       - 7-8-4-dotnet-native-build               # 3 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: cmake hardcodes win-x64 RID — must build osx-arm64/linux-x64 natively
       # EPIC-7 — macOS runtime: SDL3 game loop has no init or RenderScene call → black screen
-      - 7-9-1-macos-gameloop-render             # 13 pts | in-progress | Flow:E | Deps: 7-8-4 ✓ | scope-discovery: game builds but renders black screen — SDL3 MuMain() is skeleton with no init/render
+      - 7-9-1-macos-gameloop-render             # 13 pts | done | Flow:E | Deps: 7-8-4 ✓ | code-review-finalize completed 2026-03-27
     velocity: 76
-    delivered_points: 76  # in-progress: 76 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1,7-8-2,7-8-3,7-8-4), 18 pts remaining (7-3-2 + 7-9-1)
+    delivered_points: 89  # 7-9-1 done (+13 pts), 5 pts remaining (7-3-2)
     commitment_reliability: null
     scope_changes:
       added:
@@ -587,5 +587,5 @@ development_status:
   7-8-2-gameplay-header-cross-platform: done     # 5 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
   7-8-3-test-compilation-fixes: done             # 3 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
   7-8-4-dotnet-native-build: done                # 3 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
-  7-9-1-macos-gameloop-render: in-progress        # 13 pts | Flow:E | Deps: 7-8-4 ✓ | scope-discovery from 7-3-1: black screen on macOS
+  7-9-1-macos-gameloop-render: done                # 13 pts | Flow:E | Deps: 7-8-4 ✓ | code-review-finalize completed 2026-03-27
   epic-7-retrospective: optional

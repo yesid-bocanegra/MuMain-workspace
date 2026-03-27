@@ -1,6 +1,6 @@
 # Story 7.9.1: macOS Game Loop & Render Path Migration
 
-Status: implementation-complete
+Status: done
 
 ---
 
@@ -255,4 +255,5 @@ claude-opus-4-6
 |------|--------|--------|
 | `src/source/Scenes/SceneManager.cpp` | MODIFIED | Removed SwapBuffers(hDC); replaced OutputDebugStringA with g_ErrorReport.Write(); replaced KillGLWindow() with Destroy = true |
 | `src/source/Scenes/LoadingScene.cpp` | MODIFIED | Removed ::SwapBuffers(hDC) |
-| `src/source/Main/Winmain.cpp` | MODIFIED | Added game init sequence to MuMain(); wired RenderScene(nullptr) into SDL3 game loop |
+| `src/source/Main/Winmain.cpp` | MODIFIED | Added game init sequence to MuMain(); wired RenderScene(nullptr) into SDL3 game loop; fixed OpenBasicData void return; locale fix; SDL_Delay for frame limiting |
+| `src/source/Scenes/SceneManager.cpp` | MODIFIED | Added defensive null check for e.what() in exception handlers |

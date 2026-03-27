@@ -33,17 +33,17 @@ For this story, "unit" and "integration" tests take the form of **CMake script-m
 
 | AC | Description | Test File | Test Name | Phase |
 |----|-------------|-----------|-----------|-------|
-| AC-1 | SwapBuffers dead calls removed from SceneManager.cpp and LoadingScene.cpp | `tests/build/test_ac1_swapbuffers_removed_7_9_1.cmake` | `7.9.1-AC-1:swapbuffers-removed` | 🔴 RED |
-| AC-2 | OutputDebugStringA replaced with g_ErrorReport.Write() in SceneManager.cpp | `tests/build/test_ac2_outputdebugstringa_removed_7_9_1.cmake` | `7.9.1-AC-2:outputdebugstringa-removed` | 🔴 RED |
-| AC-3 | KillGLWindow() replaced with `Destroy = true` in SceneManager.cpp | `tests/build/test_ac3_killglwindow_removed_7_9_1.cmake` | `7.9.1-AC-3:killglwindow-removed` | 🔴 RED |
-| AC-4 | Game init sequence ported to MuMain() | `tests/build/test_ac4_muminit_sequence_7_9_1.cmake` | `7.9.1-AC-4:muminit-sequence` | 🔴 RED |
-| AC-5 | RenderScene(nullptr) wired into SDL3 game loop | `tests/build/test_ac5_renderscene_wired_7_9_1.cmake` | `7.9.1-AC-5:renderscene-wired` | 🔴 RED |
-| AC-6 | Quality gate passes | Manual: `./ctl check` + `python3 MuMain/scripts/check-win32-guards.py` | — | 🔴 RED |
-| AC-STD-1 | Code standards (clang-format, no new #ifdef _WIN32 at call sites) | Covered by AC-6 quality gate | — | 🔴 RED |
-| AC-STD-2 | Existing Catch2 test suite passes with new code | Manual: `./ctl test` | — | 🔴 RED |
+| AC-1 | SwapBuffers dead calls removed from SceneManager.cpp and LoadingScene.cpp | `tests/build/test_ac1_swapbuffers_removed_7_9_1.cmake` | `7.9.1-AC-1:swapbuffers-removed` | 🟢 GREEN |
+| AC-2 | OutputDebugStringA replaced with g_ErrorReport.Write() in SceneManager.cpp | `tests/build/test_ac2_outputdebugstringa_removed_7_9_1.cmake` | `7.9.1-AC-2:outputdebugstringa-removed` | 🟢 GREEN |
+| AC-3 | KillGLWindow() replaced with `Destroy = true` in SceneManager.cpp | `tests/build/test_ac3_killglwindow_removed_7_9_1.cmake` | `7.9.1-AC-3:killglwindow-removed` | 🟢 GREEN |
+| AC-4 | Game init sequence ported to MuMain() | `tests/build/test_ac4_muminit_sequence_7_9_1.cmake` | `7.9.1-AC-4:muminit-sequence` | 🟢 GREEN |
+| AC-5 | RenderScene(nullptr) wired into SDL3 game loop | `tests/build/test_ac5_renderscene_wired_7_9_1.cmake` | `7.9.1-AC-5:renderscene-wired` | 🟢 GREEN |
+| AC-6 | Quality gate passes | Manual: `./ctl check` + `python3 MuMain/scripts/check-win32-guards.py` | — | 🟢 GREEN |
+| AC-STD-1 | Code standards (clang-format, no new #ifdef _WIN32 at call sites) | Covered by AC-6 quality gate | — | 🟢 GREEN |
+| AC-STD-2 | Existing Catch2 test suite passes with new code | Manual: `./ctl test` | — | 🟢 GREEN |
 | AC-STD-11 | Flow code traceability VS0-QUAL-RENDER-GAMELOOP | `tests/build/test_ac_std11_flow_code_7_9_1.cmake` | `7.9.1-AC-STD-11:flow-code-traceability` | 🟢 GREEN |
-| AC-STD-12 | 60 fps target; first frame non-black | Manual: run game on macOS arm64 | — | 🔴 RED |
-| AC-STD-13 | Quality gate `./ctl check` exits 0 | Manual + `7.9.1-AC-6` | — | 🔴 RED |
+| AC-STD-12 | 60 fps target; first frame non-black | Manual: run game on macOS arm64 | — | 🟡 MANUAL |
+| AC-STD-13 | Quality gate `./ctl check` exits 0 | Manual + `7.9.1-AC-6` | — | 🟢 GREEN |
 
 > **AC-STD-11** is GREEN immediately — the flow code appears in all 5 test files committed in RED phase.
 
