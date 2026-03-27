@@ -658,3 +658,9 @@
 {"timestamp":"2026-03-27T05:02:28.270982+00:00","event_type":"step_retried","story_key":"7-9-1","step":"code-review-qg","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-27T05:02:28.271527+00:00","event_type":"feedback_saved","story_key":"7-9-1","step":"code-review-qg","sprint":null,"epic":"7","data":{"regression_target":"code-review-qg"}}
 {"timestamp":"2026-03-27T05:02:30.282102+00:00","event_type":"step_started","story_key":"7-9-1","step":"code-review-qg","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T05:13:48.940992+00:00","event_type":"step_passed","story_key":"7-9-1","step":"code-review-qg","sprint":null,"epic":"7","data":{"duration_seconds":678.7,"input_tokens":6553,"output_tokens":4155,"cache_creation_tokens":213992,"cache_read_tokens":1804899,"num_turns":25,"num_tool_calls":17}}
+{"timestamp":"2026-03-27T05:13:49.952423+00:00","event_type":"step_started","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T05:17:26.882930+00:00","event_type":"step_failed","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{"duration_seconds":216.9,"retry_count":0,"error":"Exit code 1","input_tokens":30043,"output_tokens":20226,"num_turns":98,"num_tool_calls":52}}
+{"timestamp":"2026-03-27T05:17:26.885734+00:00","event_type":"step_retried","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{"attempt":2}}
+{"timestamp":"2026-03-27T05:17:26.887008+00:00","event_type":"feedback_saved","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{"regression_target":"code-review-analysis"}}
+{"timestamp":"2026-03-27T05:17:28.896525+00:00","event_type":"step_started","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{}}
