@@ -717,3 +717,5 @@
 {"timestamp":"2026-03-27T17:06:49.855434+00:00","event_type":"step_started","story_key":"7-9-2","step":"code-review","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-27T17:15:17.954626+00:00","event_type":"story_started","story_key":"7-9-3","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-27T17:15:17.955179+00:00","event_type":"step_started","story_key":"7-9-3","step":"create-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T17:17:17.095344+00:00","event_type":"step_passed","story_key":"7-9-3","step":"create-story","sprint":null,"epic":"7","data":{"duration_seconds":119.1,"input_tokens":14462,"output_tokens":867,"cache_creation_tokens":154322,"cache_read_tokens":539986,"num_turns":12,"num_tool_calls":6}}
+{"timestamp":"2026-03-27T17:17:18.102128+00:00","event_type":"step_started","story_key":"7-9-3","step":"validate-story","sprint":null,"epic":"7","data":{}}
