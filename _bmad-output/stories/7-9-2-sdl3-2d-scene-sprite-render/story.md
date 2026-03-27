@@ -1,6 +1,6 @@
 # Story 7.9.2: OpenGL Immediate-Mode → MuRenderer Abstraction Migration
 
-Status: ready-for-dev
+Status: validation-complete
 
 ---
 
@@ -166,9 +166,11 @@ What's missing:
 
 - [ ] **AC-STD-1:** Code Standards — clang-format clean; zero `#ifdef` rendering guards in game code; all rendering through `IMuRenderer`.
 - [ ] **AC-STD-2:** Testing Requirements — Existing Catch2 test suite passes; no regressions.
-- [ ] **AC-STD-12:** SLI/SLO targets — Game renders all scenes on macOS arm64: title, loading, login, character creation, main game world with terrain/effects.
+- [ ] **AC-STD-12:** SLI/SLO targets — Game renders all 2D/3D content on macOS arm64: title screen (< 100ms), loading UI (< 50ms), all scenes render without crashes.
 - [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
+- [ ] **AC-STD-14:** Observability — Post-migration: render time logged via `g_ErrorReport.Write()` at scene transitions; no raw GL performance issues logged.
 - [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
+- [ ] **AC-STD-16:** Error codes — OpenGL backend render errors (allocation failures, context loss) use `ERRCODE_RENDER_*` family from error-catalog.md (if applicable, or document as N/A for stable GL context).
 
 ---
 
