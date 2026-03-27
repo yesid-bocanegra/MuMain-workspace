@@ -1,6 +1,6 @@
 # Story 7.9.2: OpenGL Immediate-Mode → MuRenderer Abstraction Migration
 
-Status: validation-complete
+Status: atdd-complete
 
 ---
 
