@@ -1,6 +1,6 @@
 # Story 7.9.1: macOS Game Loop & Render Path Migration
 
-Status: ready-for-dev
+Status: implementation-complete
 
 ---
 
@@ -71,21 +71,21 @@ Without this, `RenderScene()` will crash or render nothing even after it is wire
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1: Remove `SwapBuffers` dead calls**
+- [x] **AC-1: Remove `SwapBuffers` dead calls**
   `SwapBuffers(hDC)` at `SceneManager.cpp:968` is removed.
   `SwapBuffers(hDC)` at `LoadingScene.cpp:107` is removed.
   SDL3 `EndFrame()` already handles presentation; the Win32 shim in PlatformCompat.h becomes
   the only remaining reference and stays as a safety net for any other lingering call sites.
   _Rationale: migration, not guarding — remove dead code from call sites._
 
-- [ ] **AC-2: Replace `OutputDebugStringA` with `g_ErrorReport.Write()`**
+- [x] **AC-2: Replace `OutputDebugStringA` with `g_ErrorReport.Write()`**
   `OutputDebugStringA(errorMsg)` at `SceneManager.cpp:993` (MainScene catch block) is replaced
   with `g_ErrorReport.Write(L"Exception in MainScene: %S\r\n", e.what())`.
   `OutputDebugStringA(errorMsg)` at `SceneManager.cpp:1032` (RenderScene catch block) is
   replaced with `g_ErrorReport.Write(L"Exception in RenderScene: %S\r\n", e.what())`.
   _Rationale: exceptions are silently swallowed on macOS with the empty OutputDebugStringA shim._
 
-- [ ] **AC-3: Remove `KillGLWindow()` from `RenderScene()`**
+- [x] **AC-3: Remove `KillGLWindow()` from `RenderScene()`**
   `KillGLWindow()` at `SceneManager.cpp:1024` (inside `if (g_iNoMouseTime > 31)` guard) is
   replaced with `Destroy = true`.
   This signals the SDL3 event loop to exit gracefully (identical to the window close path in
@@ -93,7 +93,7 @@ Without this, `RenderScene()` will crash or render nothing even after it is wire
   The `SceneCore.cpp:125` `extern` forward declaration for `KillGLWindow` may remain (it is
   used by `ZzzTexture.cpp:314` which is a Windows-only build path under `#ifdef MU_USE_OPENGL_BACKEND`).
 
-- [ ] **AC-4: Port minimum game init to `MuMain()`**
+- [x] **AC-4: Port minimum game init to `MuMain()`**
   The following initialisation steps from `WinMain()` are reproduced in `MuMain()` **after**
   the SDL3 window and renderer are created and **before** the game loop:
   - `srand((unsigned)time(nullptr))` + `RandomTable` fill
@@ -106,14 +106,14 @@ Without this, `RenderScene()` will crash or render nothing even after it is wire
   Win32-only init steps (`CreateFont`, `SetTimer`, `g_hWnd`-dependent calls, IME, screensaver)
   are **skipped** for the SDL3 path and are not ported.
 
-- [ ] **AC-5: Wire `RenderScene()` into SDL3 game loop**
+- [x] **AC-5: Wire `RenderScene()` into SDL3 game loop**
   `MuMain()` at Winmain.cpp:1516 (the `// Game loop body will be added...` comment) is replaced
   with a call to `RenderScene(nullptr)`.
   The call is placed between `BeginFrame()` and `EndFrame()`.
   On macOS, `hDC` is `nullptr`; all `hDC` dereferences in the scene hierarchy are either
   already guarded by `#ifdef MU_USE_OPENGL_BACKEND` or are the now-removed `SwapBuffers` calls.
 
-- [ ] **AC-6: Quality gate passes**
+- [x] **AC-6: Quality gate passes**
   `./ctl check` exits 0 (format-check + cppcheck lint + build + tests).
   `python3 MuMain/scripts/check-win32-guards.py` reports 0 violations.
 
@@ -121,46 +121,46 @@ Without this, `RenderScene()` will crash or render nothing even after it is wire
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards — clang-format clean; no new `#ifdef _WIN32` at call sites.
-- [ ] **AC-STD-2:** Testing Requirements — New code (MuMain game init sequence) is testable via `./ctl test`; existing Catch2 test suite passes.
+- [x] **AC-STD-1:** Code Standards — clang-format clean; no new `#ifdef _WIN32` at call sites.
+- [x] **AC-STD-2:** Testing Requirements — New code (MuMain game init sequence) is testable via `./ctl test`; existing Catch2 test suite passes.
 - [ ] **AC-STD-12:** SLI/SLO targets — Game loop maintains 60 fps target (p95 < 16.7ms per frame on macOS arm64); black screen issue resolved (frame 1 renders non-black content).
-- [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
-- [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
+- [x] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
+- [x] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Remove `SwapBuffers` dead calls** (AC-1)
-  - [ ] 1.1: Delete `SwapBuffers(hDC);` at `SceneManager.cpp:968`
-  - [ ] 1.2: Delete `::SwapBuffers(hDC);` at `LoadingScene.cpp:107`
+- [x] **Task 1: Remove `SwapBuffers` dead calls** (AC-1)
+  - [x] 1.1: Delete `SwapBuffers(hDC);` at `SceneManager.cpp:968`
+  - [x] 1.2: Delete `::SwapBuffers(hDC);` at `LoadingScene.cpp:107`
 
-- [ ] **Task 2: Replace `OutputDebugStringA` with `g_ErrorReport.Write()`** (AC-2)
-  - [ ] 2.1: Replace `SceneManager.cpp:993` — `g_ErrorReport.Write(L"Exception in MainScene: %S\r\n", e.what())`
-  - [ ] 2.2: Replace `SceneManager.cpp:1032` — `g_ErrorReport.Write(L"Exception in RenderScene: %S\r\n", e.what())`
-  - [ ] 2.3: Remove the `char errorMsg[256]` / `sprintf_s` intermediary buffers in both catch blocks
+- [x] **Task 2: Replace `OutputDebugStringA` with `g_ErrorReport.Write()`** (AC-2)
+  - [x] 2.1: Replace `SceneManager.cpp:993` — `g_ErrorReport.Write(L"Exception in MainScene: %S\r\n", e.what())`
+  - [x] 2.2: Replace `SceneManager.cpp:1032` — `g_ErrorReport.Write(L"Exception in RenderScene: %S\r\n", e.what())`
+  - [x] 2.3: Remove the `char errorMsg[256]` / `sprintf_s` intermediary buffers in both catch blocks
 
-- [ ] **Task 3: Replace `KillGLWindow()` in `RenderScene()`** (AC-3)
-  - [ ] 3.1: Replace `KillGLWindow();` at `SceneManager.cpp:1024` with `Destroy = true;`
-  - [ ] 3.2: Verify `Destroy` is the correct external-linkage bool used by the SDL3 event loop exit condition at Winmain.cpp:1502
+- [x] **Task 3: Replace `KillGLWindow()` in `RenderScene()`** (AC-3)
+  - [x] 3.1: Replace `KillGLWindow();` at `SceneManager.cpp:1024` with `Destroy = true;`
+  - [x] 3.2: Verify `Destroy` is the correct external-linkage bool used by the SDL3 event loop exit condition at Winmain.cpp:1502
 
-- [ ] **Task 4: Port minimum game init to `MuMain()`** (AC-4)
-  - [ ] 4.1: Add srand + RandomTable fill after renderer init
-  - [ ] 4.2: Add GateAttribute, SkillAttribute, ItemAttribute, CharacterMachine, CharactersClient allocation + memset
-  - [ ] 4.3: Set CharacterAttribute, call CharacterMachine->Init(), set Hero
-  - [ ] 4.4: Construct g_pUIManager, g_pUIMapName, g_BuffSystem, g_MapProcess, g_petProcess, CUIMng, g_pNewUISystem
-  - [ ] 4.5: Load i18n translations (Game domain)
-  - [ ] 4.6: Init MiniAudioBackend + restore volume levels from GameConfig
-  - [ ] 4.7: Call `OpenBasicData(nullptr)` (pass nullptr HDC — texture loading via SDL_gpu does not use HDC)
+- [x] **Task 4: Port minimum game init to `MuMain()`** (AC-4)
+  - [x] 4.1: Add srand + RandomTable fill after renderer init
+  - [x] 4.2: Add GateAttribute, SkillAttribute, ItemAttribute, CharacterMachine, CharactersClient allocation + memset
+  - [x] 4.3: Set CharacterAttribute, call CharacterMachine->Init(), set Hero
+  - [x] 4.4: Construct g_pUIManager, g_pUIMapName, g_BuffSystem, g_MapProcess, g_petProcess, CUIMng, g_pNewUISystem
+  - [x] 4.5: Load i18n translations (Game domain)
+  - [x] 4.6: Init MiniAudioBackend + restore volume levels from GameConfig
+  - [x] 4.7: Call `OpenBasicData(nullptr)` (pass nullptr HDC — texture loading via SDL_gpu does not use HDC)
 
-- [ ] **Task 5: Wire `RenderScene()` into SDL3 game loop** (AC-5)
-  - [ ] 5.1: Replace the `// Game loop body will be added...` comment with `RenderScene(nullptr);`
-  - [ ] 5.2: Verify the call is inside the `#ifdef MU_ENABLE_SDL3` BeginFrame/EndFrame block
-  - [ ] 5.3: Confirm `RenderScene(HDC)` signature accepts nullptr without crash on the macOS path (all hDC dereferences are behind MU_USE_OPENGL_BACKEND guards)
+- [x] **Task 5: Wire `RenderScene()` into SDL3 game loop** (AC-5)
+  - [x] 5.1: Replace the `// Game loop body will be added...` comment with `RenderScene(nullptr);`
+  - [x] 5.2: Verify the call is inside the `#ifdef MU_ENABLE_SDL3` BeginFrame/EndFrame block
+  - [x] 5.3: Confirm `RenderScene(HDC)` signature accepts nullptr without crash on the macOS path (all hDC dereferences are behind MU_USE_OPENGL_BACKEND guards)
 
-- [ ] **Task 6: Quality gate** (AC-6)
-  - [ ] 6.1: Run `./ctl check` — fix any format or lint issues
-  - [ ] 6.2: Run `python3 MuMain/scripts/check-win32-guards.py` — confirm 0 violations
+- [x] **Task 6: Quality gate** (AC-6)
+  - [x] 6.1: Run `./ctl check` — fix any format or lint issues
+  - [x] 6.2: Run `python3 MuMain/scripts/check-win32-guards.py` — confirm 0 violations
   - [ ] 6.3: Run game on macOS and confirm non-black first frame (loading screen or splash renders)
 
 ---
@@ -233,12 +233,26 @@ than at the call site.
 
 ### Agent Model Used
 
-claude-sonnet-4-6
+claude-opus-4-6
 
 ### Debug Log References
 
 - Session: 36258f40-6830-487d-924e-a0a0da50ddce (metal entrypoint fix, diagnostic counters, black screen root cause analysis)
+- dev-story session 2026-03-26 (implementation of all 6 tasks, ATDD GREEN)
 
 ### Completion Notes List
 
+- All 6 ATDD tests pass (AC-1 through AC-5 + AC-STD-11)
+- `./ctl check` passes (build + format-check + cppcheck lint)
+- `check-win32-guards.py` reports 0 violations
+- AC-STD-12 (60fps / non-black first frame) requires manual validation on macOS arm64 hardware
+- Task 6.3 (manual game launch) deferred to manual QA step
+- i18n translation paths use forward slashes (cross-platform, not Windows backslashes)
+
 ### File List
+
+| File | Status | Change |
+|------|--------|--------|
+| `src/source/Scenes/SceneManager.cpp` | MODIFIED | Removed SwapBuffers(hDC); replaced OutputDebugStringA with g_ErrorReport.Write(); replaced KillGLWindow() with Destroy = true |
+| `src/source/Scenes/LoadingScene.cpp` | MODIFIED | Removed ::SwapBuffers(hDC) |
+| `src/source/Main/Winmain.cpp` | MODIFIED | Added game init sequence to MuMain(); wired RenderScene(nullptr) into SDL3 game loop |

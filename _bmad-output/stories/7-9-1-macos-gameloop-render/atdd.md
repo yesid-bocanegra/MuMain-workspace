@@ -4,7 +4,7 @@
 **Story Type:** infrastructure
 **Flow Code:** VS0-QUAL-RENDER-GAMELOOP
 **Date Generated:** 2026-03-26
-**Phase:** RED (all tests failing — implementation pending)
+**Phase:** GREEN (all automated tests passing — manual validation pending for AC-STD-12)
 
 ---
 
@@ -53,51 +53,51 @@ For this story, "unit" and "integration" tests take the form of **CMake script-m
 
 ### AC-1: SwapBuffers Removal
 
-- [ ] `7.9.1-AC-1:swapbuffers-removed` test passes (GREEN)
-- [ ] `SwapBuffers(hDC)` deleted from `src/source/Scenes/SceneManager.cpp:968`
-- [ ] `::SwapBuffers(hDC)` deleted from `src/source/Scenes/LoadingScene.cpp:107`
-- [ ] No `#ifdef _WIN32` guard added at either call site (migration, not guarding)
-- [ ] `python3 MuMain/scripts/check-win32-guards.py` reports 0 violations after change
+- [x] `7.9.1-AC-1:swapbuffers-removed` test passes (GREEN)
+- [x] `SwapBuffers(hDC)` deleted from `src/source/Scenes/SceneManager.cpp:968`
+- [x] `::SwapBuffers(hDC)` deleted from `src/source/Scenes/LoadingScene.cpp:107`
+- [x] No `#ifdef _WIN32` guard added at either call site (migration, not guarding)
+- [x] `python3 MuMain/scripts/check-win32-guards.py` reports 0 violations after change
 
 ### AC-2: OutputDebugStringA Replacement
 
-- [ ] `7.9.1-AC-2:outputdebugstringa-removed` test passes (GREEN)
-- [ ] `OutputDebugStringA(errorMsg)` at `SceneManager.cpp:993` replaced with `g_ErrorReport.Write(L"Exception in MainScene: %S\r\n", e.what())`
-- [ ] `OutputDebugStringA(errorMsg)` at `SceneManager.cpp:1032` replaced with `g_ErrorReport.Write(L"Exception in RenderScene: %S\r\n", e.what())`
-- [ ] `char errorMsg[256]` / `sprintf_s` intermediary buffers removed from both catch blocks
-- [ ] `g_ErrorReport.Write` present in SceneManager.cpp cross-platform section
+- [x] `7.9.1-AC-2:outputdebugstringa-removed` test passes (GREEN)
+- [x] `OutputDebugStringA(errorMsg)` at `SceneManager.cpp:993` replaced with `g_ErrorReport.Write(L"Exception in MainScene: %S\r\n", e.what())`
+- [x] `OutputDebugStringA(errorMsg)` at `SceneManager.cpp:1032` replaced with `g_ErrorReport.Write(L"Exception in RenderScene: %S\r\n", e.what())`
+- [x] `char errorMsg[256]` / `sprintf_s` intermediary buffers removed from both catch blocks
+- [x] `g_ErrorReport.Write` present in SceneManager.cpp cross-platform section
 
 ### AC-3: KillGLWindow Replacement
 
-- [ ] `7.9.1-AC-3:killglwindow-removed` test passes (GREEN)
-- [ ] `KillGLWindow()` at `SceneManager.cpp:1024` replaced with `Destroy = true`
-- [ ] `extern GLvoid KillGLWindow(GLvoid)` declaration in `SceneCore.cpp:125` remains (used by ZzzTexture.cpp under `#ifdef MU_USE_OPENGL_BACKEND`)
-- [ ] `Destroy` extern bool resolves to the same variable used by SDL3 event loop exit condition at Winmain.cpp:1502
+- [x] `7.9.1-AC-3:killglwindow-removed` test passes (GREEN)
+- [x] `KillGLWindow()` at `SceneManager.cpp:1024` replaced with `Destroy = true`
+- [x] `extern GLvoid KillGLWindow(GLvoid)` declaration in `SceneCore.cpp:125` remains (used by ZzzTexture.cpp under `#ifdef MU_USE_OPENGL_BACKEND`)
+- [x] `Destroy` extern bool resolves to the same variable used by SDL3 event loop exit condition at Winmain.cpp:1502
 
 ### AC-4: Game Init Sequence in MuMain()
 
-- [ ] `7.9.1-AC-4:muminit-sequence` test passes (GREEN)
-- [ ] `srand((unsigned)time(nullptr))` + RandomTable fill added after SDL3 renderer init
-- [ ] `GateAttribute`, `SkillAttribute`, `ItemAttRibuteMemoryDump` / `ItemAttribute`, `CharacterMemoryDump` / `CharactersClient`, `CharacterMachine` allocated and memset
-- [ ] `CharacterAttribute = &CharacterMachine->Character`, `CharacterMachine->Init()`, `Hero = &CharactersClient[0]` set
-- [ ] `g_pUIManager`, `g_pUIMapName`, `g_BuffSystem`, `g_MapProcess`, `g_petProcess`, `CUIMng::Instance().Create()`, `g_pNewUISystem->Create()` constructed
-- [ ] `i18n::Translator` loading (Game domain, `Translations/en/game.json`)
-- [ ] `g_platformAudio` (MiniAudioBackend) init + volume restore from `GameConfig`
-- [ ] `OpenBasicData(nullptr)` called (verify `InitTextures` path does not dereference `hDC` unconditionally before this is called)
-- [ ] Win32-only init skipped: `SetTimer`, `CreateFont`, `CInput::Instance().Create(g_hWnd)`, IME, screensaver
+- [x] `7.9.1-AC-4:muminit-sequence` test passes (GREEN)
+- [x] `srand((unsigned)time(nullptr))` + RandomTable fill added after SDL3 renderer init
+- [x] `GateAttribute`, `SkillAttribute`, `ItemAttRibuteMemoryDump` / `ItemAttribute`, `CharacterMemoryDump` / `CharactersClient`, `CharacterMachine` allocated and memset
+- [x] `CharacterAttribute = &CharacterMachine->Character`, `CharacterMachine->Init()`, `Hero = &CharactersClient[0]` set
+- [x] `g_pUIManager`, `g_pUIMapName`, `g_BuffSystem`, `g_MapProcess`, `g_petProcess`, `CUIMng::Instance().Create()`, `g_pNewUISystem->Create()` constructed
+- [x] `i18n::Translator` loading (Game domain, `Translations/en/game.json`)
+- [x] `g_platformAudio` (MiniAudioBackend) init + volume restore from `GameConfig`
+- [x] `OpenBasicData(nullptr)` called (verify `InitTextures` path does not dereference `hDC` unconditionally before this is called)
+- [x] Win32-only init skipped: `SetTimer`, `CreateFont`, `CInput::Instance().Create(g_hWnd)`, IME, screensaver
 
 ### AC-5: RenderScene Wired into SDL3 Loop
 
-- [ ] `7.9.1-AC-5:renderscene-wired` test passes (GREEN)
-- [ ] `// Game loop body will be added...` comment at Winmain.cpp:1516 replaced with `RenderScene(nullptr);`
-- [ ] Call is inside `#ifdef MU_ENABLE_SDL3` BeginFrame/EndFrame block
-- [ ] `RenderScene(HDC)` signature accepts `nullptr` without crash on macOS SDL3 path (all `hDC` dereferences inside `RenderScene()` are behind `#ifdef MU_USE_OPENGL_BACKEND` after AC-1 removes SwapBuffers calls)
+- [x] `7.9.1-AC-5:renderscene-wired` test passes (GREEN)
+- [x] `// Game loop body will be added...` comment at Winmain.cpp:1516 replaced with `RenderScene(nullptr);`
+- [x] Call is inside `#ifdef MU_ENABLE_SDL3` BeginFrame/EndFrame block
+- [x] `RenderScene(HDC)` signature accepts `nullptr` without crash on macOS SDL3 path (all `hDC` dereferences inside `RenderScene()` are behind `#ifdef MU_USE_OPENGL_BACKEND` after AC-1 removes SwapBuffers calls)
 
 ### AC-6: Quality Gate
 
-- [ ] `./ctl check` exits 0 (clang-format + cppcheck + build + tests)
-- [ ] `python3 MuMain/scripts/check-win32-guards.py` reports 0 violations
-- [ ] All existing Catch2 tests pass (`./ctl test`)
+- [x] `./ctl check` exits 0 (clang-format + cppcheck + build + tests)
+- [x] `python3 MuMain/scripts/check-win32-guards.py` reports 0 violations
+- [x] All existing Catch2 tests pass (`./ctl test`)
 - [ ] Game launches on macOS arm64 and renders non-black first frame (loading screen or splash)
 
 ### AC-STD-11: Flow Code Traceability
@@ -107,11 +107,11 @@ For this story, "unit" and "integration" tests take the form of **CMake script-m
 
 ### PCC Compliance
 
-- [ ] No prohibited libraries used in test or implementation files
-- [ ] All new tests use CMake script-mode pattern (consistent with project infrastructure test style)
-- [ ] Catch2 test suite (`./ctl test`) continues to pass — no regressions introduced
-- [ ] clang-format applied to all modified `.cpp` and `.h` files
-- [ ] No new `#ifdef _WIN32` in game logic (checked by `check-win32-guards.py`)
+- [x] No prohibited libraries used in test or implementation files
+- [x] All new tests use CMake script-mode pattern (consistent with project infrastructure test style)
+- [x] Catch2 test suite (`./ctl test`) continues to pass — no regressions introduced
+- [x] clang-format applied to all modified `.cpp` and `.h` files
+- [x] No new `#ifdef _WIN32` in game logic (checked by `check-win32-guards.py`)
 - [ ] Conventional Commit format used: `feat(render): wire RenderScene into SDL3 game loop [Story-7-9-1]`
 
 ---
