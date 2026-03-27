@@ -2,7 +2,7 @@
 
 *Auto-generated 2026-03-24 by `reorganize-docs` workflow*
 
-## Stories (43)
+## Stories (44)
 
 ### EPIC-1 — Platform Foundation
 
@@ -192,3 +192,9 @@
 | Key | Name | Artifacts |
 |-----|------|-----------|
 | [7-4-1](7-4-1-native-ci-runners/) | Native CI Runners | story, atdd, review, progress, session-summary |
+
+#### 7.9 macOS Game Loop & Render Path Migration
+
+| Key | Name | Artifacts |
+|-----|------|-----------|
+| [7-9-1](7-9-1-macos-gameloop-render/) | macOS Game Loop & Render Path Migration | story |

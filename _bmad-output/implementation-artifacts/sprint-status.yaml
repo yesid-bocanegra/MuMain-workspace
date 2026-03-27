@@ -214,8 +214,10 @@ sprints:
       - 7-8-2-gameplay-header-cross-platform     # 5 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: ODR violation + missing includes in gameplay headers
       - 7-8-3-test-compilation-fixes             # 3 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: invalid enum values + unused variable errors in test files
       - 7-8-4-dotnet-native-build               # 3 pts | done | Flow:E | Deps: 7-6-1 ✓ | scope-discovery: cmake hardcodes win-x64 RID — must build osx-arm64/linux-x64 natively
+      # EPIC-7 — macOS runtime: SDL3 game loop has no init or RenderScene call → black screen
+      - 7-9-1-macos-gameloop-render             # 13 pts | ready-for-dev | Flow:E | Deps: 7-8-4 ✓ | scope-discovery: game builds but renders black screen — SDL3 MuMain() is skeleton with no init/render
     velocity: 76
-    delivered_points: 76  # in-progress: 76 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1,7-8-2,7-8-3,7-8-4), 5 pts remaining (7-3-2)
+    delivered_points: 76  # in-progress: 76 pts delivered (7-3-0,7-5-1,7-6-1–7,7-4-1,7-3-1,7-8-1,7-8-2,7-8-3,7-8-4), 18 pts remaining (7-3-2 + 7-9-1)
     commitment_reliability: null
     scope_changes:
       added:
@@ -263,6 +265,12 @@ sprints:
           reason: "Scope discovery: cmake DOTNET_RID hardcoded to win-x64 regardless of host OS — .NET Client Library must build natively (osx-arm64 on macOS, linux-x64 on Linux). C++ loader side already done (Connection.cpp uses MU_DOTNET_LIB_EXT, posix/PlatformLibrary.cpp uses dlopen). Only cmake fix needed."
           source_story: "7-3-1"
           points_delta: +3
+        - date: "2026-03-26"
+          type: scope_addition
+          story: 7-9-1-macos-gameloop-render
+          reason: "Scope discovery: game builds on macOS but renders black screen — SDL3 MuMain() is a skeleton (BeginFrame/EndFrame only, no init or RenderScene call). Must port minimum game init and wire RenderScene into SDL3 loop. Also removes SwapBuffers dead calls, replaces OutputDebugStringA with g_ErrorReport, and replaces unshimmed KillGLWindow() with Destroy=true."
+          source_story: "7-3-1"
+          points_delta: +13
       removed: []
 
 # =====================
@@ -575,4 +583,9 @@ development_status:
   7-3-1-macos-stability-session: in-progress     # 5 pts | Flow:E | Deps: 7-6-1 + all 7-6-* done
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6, 7-6-* done
   7-4-1-native-ci-runners: done                   # 5 pts | Flow:E | Deps: EPIC-4 ✓ | code-review-finalize completed 2026-03-20
+  7-8-1-audio-interface-win32-types: done        # 5 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
+  7-8-2-gameplay-header-cross-platform: done     # 5 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
+  7-8-3-test-compilation-fixes: done             # 3 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
+  7-8-4-dotnet-native-build: done                # 3 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
+  7-9-1-macos-gameloop-render: ready-for-dev     # 13 pts | Flow:E | Deps: 7-8-4 ✓ | scope-discovery from 7-3-1: black screen on macOS
   epic-7-retrospective: optional
