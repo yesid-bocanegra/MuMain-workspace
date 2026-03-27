@@ -122,6 +122,8 @@ Without this, `RenderScene()` will crash or render nothing even after it is wire
 ## Standard Acceptance Criteria
 
 - [ ] **AC-STD-1:** Code Standards — clang-format clean; no new `#ifdef _WIN32` at call sites.
+- [ ] **AC-STD-2:** Testing Requirements — New code (MuMain game init sequence) is testable via `./ctl test`; existing Catch2 test suite passes.
+- [ ] **AC-STD-12:** SLI/SLO targets — Game loop maintains 60 fps target (p95 < 16.7ms per frame on macOS arm64); black screen issue resolved (frame 1 renders non-black content).
 - [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0.
 - [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase.
 

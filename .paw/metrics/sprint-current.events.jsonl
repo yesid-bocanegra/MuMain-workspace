@@ -636,3 +636,5 @@
 {"timestamp":"2026-03-26T23:33:36.902138+00:00","event_type":"batch_completed","story_key":"7-8-2-gameplay-header-cross-platform","step":null,"sprint":null,"epic":"7","data":{"total":4,"completed":2,"failed":1}}
 {"timestamp":"2026-03-27T03:39:38.618825+00:00","event_type":"story_started","story_key":"7-9-1","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
 {"timestamp":"2026-03-27T03:39:38.619541+00:00","event_type":"step_started","story_key":"7-9-1","step":"create-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T03:40:33.781572+00:00","event_type":"step_passed","story_key":"7-9-1","step":"create-story","sprint":null,"epic":"7","data":{"duration_seconds":55.2,"input_tokens":30,"output_tokens":969,"cache_creation_tokens":180314,"cache_read_tokens":598014,"num_turns":13,"num_tool_calls":7}}
+{"timestamp":"2026-03-27T03:40:34.788018+00:00","event_type":"step_started","story_key":"7-9-1","step":"validate-story","sprint":null,"epic":"7","data":{}}
