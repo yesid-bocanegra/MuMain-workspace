@@ -63,10 +63,11 @@ DEVELOPMENT COMMANDS:
     rebuild         Clean then build from scratch
     test            Run unit + stability tests via ctest
     lint            Run static analysis (cppcheck)
+    tidy            Run clang-tidy portability checks (sizeof bugs, etc.)
     format          Auto-format C++ source files (clang-format)
     format-check    Check C++ formatting without modifying
     clean           Clean all build artifacts
-    check           Full quality gate: native build + tests + format-check + lint
+    check           Full quality gate: build + tests + format-check + lint + tidy
                     THIS MUST PASS before any commit. Build failures are not skippable.
 
 COMPONENTS:  mumain
@@ -128,6 +129,12 @@ cmd_rebuild() {
     cmd_build
 }
 
+cmd_tidy() {
+    log_info "Running clang-tidy portability gate..."
+    make -C MuMain tidy-gate
+    log_success "clang-tidy gate passed"
+}
+
 cmd_check() {
     detect_platform
     log_info "Running mumain quality gate ($CONFIGURE_PRESET)..."
@@ -138,7 +145,8 @@ cmd_check() {
         && (cd MuMain && cmake --build --preset "$BUILD_PRESET" -j"$NCPU") \
         && ctest --test-dir "MuMain/out/build/$CONFIGURE_PRESET" -C Debug --output-on-failure \
         && make -C MuMain format-check \
-        && make -C MuMain lint
+        && make -C MuMain lint \
+        && make -C MuMain tidy-gate
 
     log_success "Quality gate passed ($BUILD_PRESET)"
 }
@@ -152,6 +160,7 @@ case "${1:-help}" in
     rebuild)        cmd_rebuild ;;
     test)           cmd_test ;;
     lint)           cmd_lint ;;
+    tidy)           cmd_tidy ;;
     format)         cmd_format ;;
     format-check)   cmd_format_check ;;
     clean)          cmd_clean ;;
