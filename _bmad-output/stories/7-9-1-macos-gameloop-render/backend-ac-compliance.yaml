@@ -1,0 +1,53 @@
+metadata:
+  story_key: "7-9-1"
+  status: "passed"
+  total_iterations: 0
+  last_updated: "2026-03-27"
+
+test_class:
+  package: "cmake-script-mode"
+  class_name: "story-7.9.1-tests"
+  full_path: "MuMain/tests/build/*_7_9_1.cmake"
+  test_dir: "build-test/tests/build"
+
+test_results:
+  total_tests: 6
+  passed: 6
+  failed: 0
+  ac_mapping:
+    - ac_id: "AC-1"
+      test_name: "7.9.1-AC-1:swapbuffers-removed"
+      status: "passed"
+    - ac_id: "AC-2"
+      test_name: "7.9.1-AC-2:outputdebugstringa-removed"
+      status: "passed"
+    - ac_id: "AC-3"
+      test_name: "7.9.1-AC-3:killglwindow-removed"
+      status: "passed"
+    - ac_id: "AC-4"
+      test_name: "7.9.1-AC-4:muminit-sequence"
+      status: "passed"
+    - ac_id: "AC-5"
+      test_name: "7.9.1-AC-5:renderscene-wired"
+      status: "passed"
+    - ac_id: "AC-STD-11"
+      test_name: "7.9.1-AC-STD-11:flow-code-traceability"
+      status: "passed"
+  passing_tests:
+    - "7.9.1-AC-1:swapbuffers-removed"
+    - "7.9.1-AC-2:outputdebugstringa-removed"
+    - "7.9.1-AC-3:killglwindow-removed"
+    - "7.9.1-AC-4:muminit-sequence"
+    - "7.9.1-AC-5:renderscene-wired"
+    - "7.9.1-AC-STD-11:flow-code-traceability"
+  failing_tests: []
+
+iterations: []
+
+blockers: []
+
+notes:
+  - "Tests run via: ctest --test-dir MuMain/build-test/tests -R 7.9.1"
+  - "Makefile 'make test' runs ctest --test-dir build-test (root) which reports 'No tests were found' - known issue, tests are in build-test/tests subdirectory"
+  - "All 6 AC-mapped CMake script-mode tests passed on first run (0 iterations needed)"
+  - "AC-6 (quality gate) and AC-STD-12 (60fps manual validation) are manual checks not covered by automated tests"

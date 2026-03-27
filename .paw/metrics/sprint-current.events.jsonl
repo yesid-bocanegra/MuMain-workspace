@@ -664,3 +664,5 @@
 {"timestamp":"2026-03-27T05:17:26.885734+00:00","event_type":"step_retried","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-27T05:17:26.887008+00:00","event_type":"feedback_saved","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{"regression_target":"code-review-analysis"}}
 {"timestamp":"2026-03-27T05:17:28.896525+00:00","event_type":"step_started","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T05:21:15.495475+00:00","event_type":"step_passed","story_key":"7-9-1","step":"code-review-analysis","sprint":null,"epic":"7","data":{"duration_seconds":226.6,"input_tokens":806,"output_tokens":12803,"cache_creation_tokens":437651,"cache_read_tokens":9082882,"num_turns":71,"num_tool_calls":27}}
+{"timestamp":"2026-03-27T05:21:16.507100+00:00","event_type":"step_started","story_key":"7-9-1","step":"ac-validation","sprint":null,"epic":"7","data":{}}
