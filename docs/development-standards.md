@@ -140,10 +140,16 @@ All new platform-dependent code **must** go through these interfaces (defined in
 
 ### Path Handling
 
-- Use forward slashes (`/`) in all new code
-- Use `std::filesystem::path` for path manipulation
-- No backslash literals (`L"Data\\Local\\"`) in new code — the `mu_wfopen` shim auto-normalizes ~2,050 existing backslash paths
-- No case-sensitivity assumptions — Linux filesystems are case-sensitive
+**Forward slashes (`/`) are the universal path separator.** Use `/` in all code — new and legacy.
+
+Every major OS accepts `/` in file APIs: Windows (since NT — the kernel normalizes to `\` internally), macOS, Linux, iOS, Android. The only context where `\` is required is Windows UNC paths (`\\server\share`), which this project does not use. There is no need for `std::filesystem::path::preferred_separator` or platform-conditional separators.
+
+- Use `/` in all new path literals: `L"Data/Local/Eng/BuffEffect_eng.bmd"`
+- Use `std::filesystem::path` for path manipulation (joining, extension changes)
+- No backslash literals (`L"Data\\Local\\"`) in new code — ~2,050 legacy backslash paths are auto-normalized by two shims:
+  - `mu_wfopen()` (PlatformCompat.h) — converts `\` → `/` for `fopen` calls
+  - `NarrowPath()` (GlobalBitmap.cpp) — converts `\` → `/` for `std::ifstream` calls
+- No case-sensitivity assumptions — macOS APFS and Linux ext4 are case-sensitive (or case-preserving); use exact case matching from the filesystem
 
 ### Platform Portability Checklist
 
