@@ -11,12 +11,12 @@ Status: ready-for-dev
 | Epic | 7 - Stability, Diagnostics & Quality Gates |
 | Feature | 7.9 - macOS Game Loop & Win32 Render Path Migration |
 | Story ID | 7.9.3 |
-| Story Points | 8 |
+| Story Points | 13 |
 | Priority | P1 |
 | Story Type | infrastructure |
 | Value Stream | VS-0 |
 | Flow Code | VS0-QUAL-RENDER-UNIFYENTRY |
-| FRs Covered | Single entry point for all platforms — no divergent init paths, no `#ifdef _WIN32` blocks in Winmain.cpp |
+| FRs Covered | Single entry point + zero `#ifdef _WIN32` outside Platform/ and Audio/ — no divergent init, no platform guards in game code |
 | Prerequisites | 7-9-2-sdl3-2d-scene-sprite-render (in-progress) — all GL through IMuRenderer must land first |
 
 ### Affected Components
@@ -121,10 +121,22 @@ The root problem: two init paths that must stay in sync manually. They never wil
   The MinGW cross-compile CI build passes: `cmake --build --preset windows-x64-debug`.
   The Windows build uses `MuMain()` → SDL3 window → SDL_gpu renderer, same as macOS/Linux.
 
-- [ ] **AC-5: Zero `#ifdef _WIN32` in Winmain.cpp**
-  `grep -c '#ifdef _WIN32' src/source/Main/Winmain.cpp` returns 0.
-  `grep -c '#ifndef _WIN32' src/source/Main/Winmain.cpp` returns 0.
-  Platform-specific code lives ONLY in `Platform/PlatformCompat.h` and renderer backends.
+- [ ] **AC-5: Eliminate all `#ifdef _WIN32` outside Platform/ and Audio/**
+  Every `#ifdef _WIN32` / `#ifndef _WIN32` in game code is removed. These are all the same
+  pattern (`#ifdef _WIN32 → #include <windows.h> #else → #include PlatformCompat.h`) and are
+  unnecessary because the PCH already includes `PlatformCompat.h` on all platforms.
+  Files to clean (19 guards total):
+  - `Main/Winmain.cpp` (2) — deleted entirely by AC-2
+  - `Main/stdafx.h` (3) — unify to single include path
+  - `Scenes/*.h` (6) — WebzenScene.h, SceneCommon.h, MainScene.h, SceneManager.h, CharacterScene.h, LoginScene.h
+  - `Core/ErrorReport.cpp` (4) — replace with cross-platform equivalents
+  - `Core/StringUtils.h` (1)
+  - `Data/FieldMetadataHelper.h` (1)
+  - `Data/Skills/SkillStructs.h, SkillFieldMetadata.h, SkillFieldDefs.h` (3)
+  - `Data/Items/ItemStructs.h, ItemFieldMetadata.h` (2)
+  - `RenderFX/ZzzOpenglUtil.cpp` (1)
+  After this AC, `grep -rn '#ifdef _WIN32' src/source/ | grep -v Platform/ | grep -v Audio/ | grep -v ThirdParty/ | grep -v Dotnet/Packet` returns 0.
+  Audio/ is handled separately by story 7-9-4.
 
 - [ ] **AC-6: Quality gate passes**
   `./ctl check` exits 0 on macOS and Linux. MinGW cross-compile passes.
@@ -160,11 +172,19 @@ The root problem: two init paths that must stay in sync manually. They never wil
   - [ ] 3.4: Remove `g_hWnd`, `g_hDC`, `g_hRC`, `g_hInst` globals (Win32 handles no longer needed)
   - [ ] 3.5: Audit all files that reference removed globals — replace with SDL3 equivalents or remove
 
-- [ ] **Task 4: Quality gate** (AC-6)
-  - [ ] 4.1: `./ctl check` — macOS
-  - [ ] 4.2: `./ctl check` — Linux (if available)
-  - [ ] 4.3: MinGW cross-compile — Windows
-  - [ ] 4.4: Verify zero `#ifdef _WIN32` in Winmain.cpp
+- [ ] **Task 4: Eliminate `#ifdef _WIN32` from all non-Platform game code** (AC-5)
+  - [ ] 4.1: Scene headers (6 files) — replace `#ifdef _WIN32 / #include <windows.h> / #else / #include PlatformCompat.h / #endif` with just `#include "Platform/PlatformCompat.h"` (or nothing — PCH covers it)
+  - [ ] 4.2: `stdafx.h` (3 guards) — unify Windows/non-Windows includes into single path
+  - [ ] 4.3: `Core/ErrorReport.cpp` (4 guards) — replace Win32-specific implementations with cross-platform equivalents
+  - [ ] 4.4: `Core/StringUtils.h` (1 guard) — same pattern as scene headers
+  - [ ] 4.5: `Data/*.h` files (6 guards) — FieldMetadataHelper.h, SkillStructs.h, SkillFieldMetadata.h, SkillFieldDefs.h, ItemStructs.h, ItemFieldMetadata.h — same pattern
+  - [ ] 4.6: `RenderFX/ZzzOpenglUtil.cpp` (1 guard) — remove or move to renderer backend
+
+- [ ] **Task 5: Quality gate + verification** (AC-6)
+  - [ ] 5.1: `./ctl check` — macOS
+  - [ ] 5.2: MinGW cross-compile — Windows
+  - [ ] 5.3: `grep -rn '#ifdef _WIN32' src/source/ | grep -v Platform/ | grep -v Audio/ | grep -v ThirdParty/ | grep -v Dotnet/Packet` returns 0
+  - [ ] 5.4: Verify zero `#ifdef _WIN32` in Winmain.cpp
 
 ---
 

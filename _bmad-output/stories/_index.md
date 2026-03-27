@@ -2,7 +2,7 @@
 
 *Auto-generated 2026-03-24 by `reorganize-docs` workflow*
 
-## Stories (46)
+## Stories (47)
 
 ### EPIC-1 — Platform Foundation
 
@@ -199,4 +199,5 @@
 |-----|------|-----------|
 | [7-9-1](7-9-1-macos-gameloop-render/) | macOS Game Loop & Render Path Migration | story |
 | [7-9-2](7-9-2-sdl3-2d-scene-sprite-render/) | OpenGL Immediate-Mode → MuRenderer Migration | story |
-| [7-9-3](7-9-3-unify-entry-point/) | Unify Entry Point — Delete WinMain | story |
+| [7-9-3](7-9-3-unify-entry-point/) | Unify Entry Point — Delete WinMain + Kill `#ifdef _WIN32` | story |
+| [7-9-4](7-9-4-kill-directsound/) | Kill DirectSound — Miniaudio-Only Audio | story |

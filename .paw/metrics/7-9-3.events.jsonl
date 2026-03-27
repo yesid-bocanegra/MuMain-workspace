@@ -1,0 +1,2 @@
+{"timestamp":"2026-03-27T17:15:17.954626+00:00","event_type":"story_started","story_key":"7-9-3","step":null,"sprint":null,"epic":"7","data":{"from_step":"create-story","to_step":"code-review-finalize","planned_steps":12,"fresh":false}}
+{"timestamp":"2026-03-27T17:15:17.955179+00:00","event_type":"step_started","story_key":"7-9-3","step":"create-story","sprint":null,"epic":"7","data":{}}
