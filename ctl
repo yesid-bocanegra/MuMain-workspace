@@ -60,6 +60,7 @@ USAGE:
 
 DEVELOPMENT COMMANDS:
     build           Native build using platform-appropriate CMake preset
+    rebuild         Clean then build from scratch
     test            Run unit + stability tests via ctest
     lint            Run static analysis (cppcheck)
     format          Auto-format C++ source files (clang-format)
@@ -72,6 +73,7 @@ COMPONENTS:  mumain
 
 EXAMPLES:
     ./ctl build                 # Native build (auto-detects macOS/Linux/Windows)
+    ./ctl rebuild               # Clean then build from scratch
     ./ctl check                 # Full quality gate — run before every commit
     ./ctl format                # Auto-format all C++ source files
     ./ctl test                  # Run test suite
@@ -121,6 +123,11 @@ cmd_clean() {
     log_success "Clean complete"
 }
 
+cmd_rebuild() {
+    cmd_clean
+    cmd_build
+}
+
 cmd_check() {
     detect_platform
     log_info "Running mumain quality gate ($CONFIGURE_PRESET)..."
@@ -142,6 +149,7 @@ cmd_check() {
 
 case "${1:-help}" in
     build)          cmd_build ;;
+    rebuild)        cmd_rebuild ;;
     test)           cmd_test ;;
     lint)           cmd_lint ;;
     format)         cmd_format ;;
