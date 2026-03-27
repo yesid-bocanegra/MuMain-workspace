@@ -2,7 +2,7 @@
 
 *Auto-generated 2026-03-24 by `reorganize-docs` workflow*
 
-## Stories (44)
+## Stories (45)
 
 ### EPIC-1 — Platform Foundation
 
@@ -198,3 +198,4 @@
 | Key | Name | Artifacts |
 |-----|------|-----------|
 | [7-9-1](7-9-1-macos-gameloop-render/) | macOS Game Loop & Render Path Migration | story |
+| [7-9-2](7-9-2-sdl3-2d-scene-sprite-render/) | SDL3 2D Scene & Sprite Rendering | story |
