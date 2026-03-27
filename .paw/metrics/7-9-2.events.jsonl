@@ -25,3 +25,14 @@
 {"timestamp":"2026-03-27T15:58:05.786003+00:00","event_type":"step_retried","story_key":"7-9-2","step":"code-review","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-27T15:58:05.788801+00:00","event_type":"feedback_saved","story_key":"7-9-2","step":"code-review","sprint":null,"epic":"7","data":{"regression_target":"code-review"}}
 {"timestamp":"2026-03-27T15:58:07.795106+00:00","event_type":"step_started","story_key":"7-9-2","step":"code-review","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T16:09:52.543459+00:00","event_type":"step_passed","story_key":"7-9-2","step":"code-review","sprint":null,"epic":"7","data":{"duration_seconds":704.7,"input_tokens":2535,"output_tokens":17868,"cache_creation_tokens":431266,"cache_read_tokens":7515235,"num_turns":70,"num_tool_calls":42}}
+{"timestamp":"2026-03-27T16:09:53.546651+00:00","event_type":"step_started","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T16:23:30.864126+00:00","event_type":"step_failed","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"duration_seconds":817.3,"retry_count":0,"error":"POST_VERIFICATION_FAILED","input_tokens":44,"output_tokens":2691,"num_turns":23,"num_tool_calls":14}}
+{"timestamp":"2026-03-27T16:23:30.865947+00:00","event_type":"step_retried","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"attempt":2}}
+{"timestamp":"2026-03-27T16:23:30.866313+00:00","event_type":"feedback_saved","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"regression_target":"code-review-qg"}}
+{"timestamp":"2026-03-27T16:23:32.877031+00:00","event_type":"step_started","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T16:35:48.101094+00:00","event_type":"step_failed","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"duration_seconds":735.2,"retry_count":1,"error":"POST_VERIFICATION_FAILED","input_tokens":25,"output_tokens":1465,"num_turns":11,"num_tool_calls":7}}
+{"timestamp":"2026-03-27T16:36:18.145450+00:00","event_type":"step_triaged","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"action":"regress-dev-story"}}
+{"timestamp":"2026-03-27T16:36:18.146493+00:00","event_type":"step_regressed","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"from_step":"code-review-qg","to_step":"dev-story","regression_count":1}}
+{"timestamp":"2026-03-27T16:36:18.147476+00:00","event_type":"feedback_saved","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
+{"timestamp":"2026-03-27T16:36:20.153271+00:00","event_type":"step_started","story_key":"7-9-2","step":"dev-story","sprint":null,"epic":"7","data":{}}

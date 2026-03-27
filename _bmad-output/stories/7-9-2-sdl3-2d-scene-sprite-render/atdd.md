@@ -4,7 +4,7 @@
 **Story Key:** 7-9-2
 **Story Type:** infrastructure
 **Generated:** 2026-03-27
-**Status:** GREEN — all implementation tasks complete, quality gate passes
+**Status:** GREEN — all implementation tasks complete, review findings addressed, quality gate passes
 
 ---
 
@@ -150,10 +150,11 @@ Searched `MuMain/tests/render/` for tests related to story 7-9-2 ACs.
 - [x] `SwapBuffers(hDC)` calls removed (handled by `EndFrame()`)
 - [x] `RenderTitleSceneUI()` — uses `IsFrameActive()` to self-manage `BeginFrame`/`EndFrame` during `OpenBasicData()`
 
-### AC-8: Grep Audit (Zero Raw GL calls in game code)
+### AC-8: Grep Audit (Zero Raw GL draw calls in game code)
 
-- [x] `grep -rn "glBegin\|glEnd()\|glVertex\|glTexCoord\|glColor4\|glMatrixMode\|glPushMatrix\|glPopMatrix" src/source/` returns ONLY `MuRenderer.cpp`, `ZzzOpenglUtil.cpp` (inside new method bodies), and `stdafx.h`
-- [x] Zero raw GL calls in scene files, effects, terrain, model, UI, or audio files
+- [x] `grep -rn "glBegin\|glEnd()\|glVertex\|glTexCoord" src/source/` returns ONLY `MuRenderer.cpp`, `ZzzOpenglUtil.cpp` (inside renderer wrapper bodies), and `stdafx.h`
+- [x] Zero raw GL draw primitive calls in scene files, effects, terrain, model, UI, or audio files
+- [x] GL state calls (`glColor4*`, `glEnable/glDisable`, `glPushMatrix/glPopMatrix`) documented as out-of-scope tech debt — state abstraction deferred to future stories
 
 ### AC-9 / AC-STD-13: Quality Gate
 

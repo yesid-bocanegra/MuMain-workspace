@@ -589,4 +589,5 @@ development_status:
   7-8-4-dotnet-native-build: done                # 3 pts | Flow:E | Deps: 7-6-1 ✓ | code-review-finalize completed 2026-03-26
   7-9-1-macos-gameloop-render: done                # 13 pts | Flow:E | Deps: 7-8-4 ✓ | code-review-finalize completed 2026-03-27
   7-9-2-sdl3-2d-scene-sprite-render: ready-for-dev  # 21 pts | Flow:E | Deps: 7-9-1 ✓, 4-2-2 ✓, 4-3-1 ✓ | Full GL immediate-mode → IMuRenderer migration (83 sites, 13 files)
+  7-9-3-unify-entry-point: backlog                  # 8 pts | Flow:E | Deps: 7-9-2 | Delete WinMain, single main() all platforms
   epic-7-retrospective: optional
