@@ -711,3 +711,5 @@
 {"timestamp":"2026-03-27T16:36:18.146493+00:00","event_type":"step_regressed","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"from_step":"code-review-qg","to_step":"dev-story","regression_count":1}}
 {"timestamp":"2026-03-27T16:36:18.147476+00:00","event_type":"feedback_saved","story_key":"7-9-2","step":"code-review-qg","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-03-27T16:36:20.153271+00:00","event_type":"step_started","story_key":"7-9-2","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-27T17:01:33.355517+00:00","event_type":"step_passed","story_key":"7-9-2","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1513.2,"input_tokens":262,"output_tokens":31585,"cache_creation_tokens":414172,"cache_read_tokens":21834321,"num_turns":155,"num_tool_calls":87}}
+{"timestamp":"2026-03-27T17:01:34.358445+00:00","event_type":"step_started","story_key":"7-9-2","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
