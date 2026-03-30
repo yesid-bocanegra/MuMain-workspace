@@ -121,7 +121,9 @@ epics:
       - "7.4 Native CI"
       - "7.5 Build Quality"
       - "7.6 Win32 Elimination"
-    completion_pct: 71  # 10 of 14 stories done
+      - "7.8 Cross-Platform Header Cleanup"
+      - "7.9 macOS Game Loop & Win32 Render Path Migration"
+    completion_pct: 73  # 11 of 15 stories done (added 7-9-2)
 
 # =====================
 # FEATURES
@@ -295,6 +297,12 @@ features:
     stories: ["7-6-1", "7-6-2", "7-6-3", "7-6-4", "7-6-5", "7-6-6", "7-6-7"]
     points: 44
     completion_pct: 57  # 4 of 7 stories done (7-6-1, 7-6-2, 7-6-3, 7-6-4)
+  "7.9":
+    name: "macOS Game Loop & Win32 Render Path Migration"
+    epic: EPIC-7
+    stories: ["7-9-1", "7-9-2", "7-9-3", "7-9-4"]
+    points: 55
+    completion_pct: 50  # 2 of 4 stories done (7-9-1, 7-9-2)
 
 # =====================
 # STORIES (with artifacts)
@@ -921,6 +929,16 @@ stories:
     value_stream: "VS-0"
     flow_code: VS0-QUAL-CI-NATIVE
 
+  7-9-2-sdl3-2d-scene-sprite-render:
+    name: "OpenGL Immediate-Mode → MuRenderer Abstraction Migration"
+    epic: EPIC-7
+    feature: "7.9"
+    type: infrastructure
+    status: done
+    points: 21
+    value_stream: "VS-0"
+    flow_code: VS0-QUAL-RENDER-GLMIGRATE
+
 # =====================
 # CATALOGS
 # =====================
@@ -972,6 +990,9 @@ catalogs:
       value_stream: VS-0
     - code: VS0-QUAL-BUILDCOMPAT-MACOS
       story: 7-3-0-macos-build-compat
+      value_stream: VS-0
+    - code: VS0-QUAL-RENDER-GLMIGRATE
+      story: 7-9-2-sdl3-2d-scene-sprite-render
       value_stream: VS-0
     # VS-1: Core Experience — SDL3 Windowing & Input
     - code: VS1-SDL-WINDOW-CREATE
@@ -1046,18 +1067,18 @@ catalogs:
 statistics:
   total_epics: 7
   total_features: 26
-  total_stories: 54
-  total_points: 224
+  total_stories: 55
+  total_points: 245
   total_endpoints: 0
   total_error_codes: 2
   total_events: 0
-  total_flow_codes: 32
+  total_flow_codes: 33
   total_test_scenarios: 13
   total_bruno_collections: 0
   total_mockups: 0
-  stories_done: 49           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5) + EPIC-6(7) + EPIC-7(10)
+  stories_done: 50           # EPIC-1(6) + EPIC-2(5) + EPIC-3(7) + EPIC-4(9) + EPIC-5(5) + EPIC-6(7) + EPIC-7(11)
   stories_backlog: 5         # EPIC-7(7-3-1, 7-3-2, 7-6-5, 7-6-6, 7-6-7)
-  completion_rate: 90.7      # 49/54 stories done
-  points_done: 188           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5(18)+EPIC-6(23)+EPIC-7-done(40)
+  completion_rate: 90.9      # 50/55 stories done
+  points_done: 209           # EPIC-1(18)+EPIC-2(17)+EPIC-3(24)+EPIC-4(48)+EPIC-5(18)+EPIC-6(23)+EPIC-7-done(61)
   points_remaining: 36       # EPIC-7-backlog(7-3-1:5+7-3-2:5+7-6-5:5+7-6-6:13+7-6-7:8)
-  points_completion_rate: 83.9  # 188/224
+  points_completion_rate: 85.3  # 209/245

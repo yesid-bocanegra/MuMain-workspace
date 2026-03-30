@@ -1,0 +1,82 @@
+metadata:
+  story_key: "7-9-2"
+  status: passed
+  total_iterations: 0
+  last_updated: "2026-03-30"
+  mode: fix
+
+test_class:
+  class_name: "test_gl_migration_7_9_2"
+  full_path: "MuMain/tests/render/test_gl_migration_7_9_2.cpp"
+  runner: "Catch2"
+  binary: "MuMain/out/build/macos-arm64/tests/Debug/MuTests"
+  filter_flag: "[render][migration]"
+
+test_results:
+  total_tests: 8
+  total_sections: 27
+  total_assertions: 75
+  passed: 8
+  failed: 0
+  ac_mapping:
+    - ac_id: AC-1
+      test_name: "AC-1 [7-9-2]: BeginScene records viewport parameters"
+      status: passed
+      sections: 4
+      assertions: 15
+    - ac_id: AC-2
+      test_name: "AC-2 [7-9-2]: Begin2DPass and End2DPass are callable on IMuRenderer"
+      status: passed
+      sections: 4
+      assertions: 9
+    - ac_id: AC-3
+      test_name: "AC-3 [7-9-2]: CSprite coordinate conversion — 640x480 to screen pixels"
+      status: passed
+      sections: 7
+      assertions: 21
+    - ac_id: AC-5
+      test_name: "AC-5 [7-9-2]: RenderLines is callable on IMuRenderer"
+      status: passed
+      sections: 4
+      assertions: 5
+    - ac_id: AC-6
+      test_name: "AC-6 [7-9-2]: IsFrameActive allows conditional frame lifecycle management"
+      status: passed
+      sections: 4
+      assertions: 6
+    - ac_id: AC-7
+      test_name: "AC-7 [7-9-2]: ClearScreen is callable on IMuRenderer (wraps glClear)"
+      status: passed
+      sections: 2
+      assertions: 3
+    - ac_id: AC-STD-1
+      test_name: "AC-STD-1 [7-9-2]: IMuRenderer call sites are platform-unconditional"
+      status: passed
+      sections: 1
+      assertions: 3
+    - ac_id: AC-STD-2
+      test_name: "AC-STD-2 [7-9-2]: IMuRenderer extended interface — all new methods callable"
+      status: passed
+      sections: 3
+      assertions: 13
+  passing_tests:
+    - "AC-1 [7-9-2]: BeginScene records viewport parameters"
+    - "AC-2 [7-9-2]: Begin2DPass and End2DPass are callable on IMuRenderer"
+    - "AC-3 [7-9-2]: CSprite coordinate conversion — 640x480 to screen pixels"
+    - "AC-5 [7-9-2]: RenderLines is callable on IMuRenderer"
+    - "AC-6 [7-9-2]: IsFrameActive allows conditional frame lifecycle management"
+    - "AC-7 [7-9-2]: ClearScreen is callable on IMuRenderer (wraps glClear)"
+    - "AC-STD-1 [7-9-2]: IMuRenderer call sites are platform-unconditional"
+    - "AC-STD-2 [7-9-2]: IMuRenderer extended interface — all new methods callable"
+  failing_tests: []
+
+iterations: []
+blockers: []
+next_actions: []
+
+notes:
+  - "ACs not covered by automated tests (verified manually/by audit): AC-4, AC-8, AC-9"
+  - "AC-4 (2D glBegin sites) verified by grep audit in story dev notes"
+  - "AC-8 (zero raw GL draw calls) verified by grep audit — only MuRenderer.cpp, ZzzOpenglUtil.cpp, stdafx.h contain GL primitives"
+  - "AC-9 (quality gate) verified: ./ctl check exits 0"
+  - "Test binary contains test_gl_migration_7_9_2.cpp — registered in tests/CMakeLists.txt at line 152 (R2 fix)"

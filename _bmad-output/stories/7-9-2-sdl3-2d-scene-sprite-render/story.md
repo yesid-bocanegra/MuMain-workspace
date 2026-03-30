@@ -1,6 +1,6 @@
 # Story 7.9.2: OpenGL Immediate-Mode → MuRenderer Abstraction Migration
 
-Status: dev-complete
+Status: done
 
 ---
 
@@ -265,6 +265,14 @@ What's missing:
 - [x] **[AI-Review] Finding 3 (MEDIUM):** Narrow AC-8 grep pattern to `glBegin|glEnd()|glVertex|glTexCoord` (draw primitives only); document GL state calls as out-of-scope tech debt
 - [x] **[AI-Review] Finding 7 (LOW):** Replace vacuous `REQUIRE(true)` with meaningful assertions (cross-contamination checks on 7-9-2 counters)
 
+### Review Follow-ups Round 2 (AI)
+
+- [x] **[AI-Review-R2] Issue #1 (BLOCKER):** AC-3 coordinate conversion — verified already applied in Sprite.cpp:302-303 (full 640×480→screen conversion with Y-inversion)
+- [x] **[AI-Review-R2] Issue #2 (CRITICAL):** End2DPass depth test restore — verified already applied in MuRenderer.cpp:250 (`glEnable(GL_DEPTH_TEST)`)
+- [x] **[AI-Review-R2] Issue #3 (HIGH):** Added AC-3 unit test for CSprite coordinate conversion formula, ABGR packing, Y-inversion, and Vertex2D quad construction — 7 new test sections
+- [x] **[AI-Review-R2] Issue #3b (HIGH):** Registered test_gl_migration_7_9_2.cpp in CMakeLists.txt — tests were compiled but never linked/executed (phantom test fixed)
+- [x] **[AI-Review-R2] Issue #8 (LOW):** Added coordinate conversion contract comment at RenderBitmapRotate Y-inversion (ZzzOpenglUtil.cpp:1274)
+
 ### Known Tech Debt (documented, not blocking)
 
 - **Finding 4 (MEDIUM):** Raw GL texture/state calls (`glEnable/glDisable GL_TEXTURE_2D`, `glEnable/glDisable GL_ALPHA_TEST`) remain in story-modified files (Sprite.cpp, CameraMove.cpp, SceneManager.cpp). These are no-ops via `stdafx.h` stubs on non-Windows. Pre-existing pattern across 100+ UI files — defer to a future texture-state-abstraction story.
@@ -364,7 +372,8 @@ Claude Opus 4.6
 
 ### Debug Log References
 - Grep audit: `glBegin|glEnd()|glVertex|glTexCoord` in `src/source/` → only MuRenderer.cpp, ZzzOpenglUtil.cpp, stdafx.h
-- Render tests: 44 test cases, 642 assertions, all pass
+- Render tests: 52 test cases, 717 assertions, all pass
+- Full suite: 90 test cases, 427 assertions (2 pre-existing SIGSEGV failures in error_report/audio — macOS headless, not related)
 - Quality gate: `./ctl check` exits 0
 
 ### Completion Notes List
@@ -381,6 +390,10 @@ Claude Opus 4.6
 - [Review Fix] Broke circular MuRenderer.cpp ↔ ZzzOpenglUtil dependency — direct `glDisable(GL_DEPTH_TEST)` in OpenGL backend
 - [Review Fix] Narrowed AC-8 grep to draw primitives only (`glBegin|glEnd()|glVertex|glTexCoord`); GL state calls documented as tech debt
 - [Review Fix] Replaced vacuous `REQUIRE(true)` with cross-contamination assertions in test_gl_migration_7_9_2.cpp
+- [Review Fix R2] Verified AC-3 coordinate conversion and End2DPass depth test restore already applied
+- [Review Fix R2] Added AC-3 unit test: coordinate conversion formula, ABGR packing, Y-inversion, Vertex2D construction (7 sections)
+- [Review Fix R2] Fixed phantom test: registered test_gl_migration_7_9_2.cpp in CMakeLists.txt (tests were never linked/run)
+- [Review Fix R2] Added coordinate conversion contract comment at RenderBitmapRotate (ZzzOpenglUtil.cpp)
 
 ### File List
 
@@ -417,7 +430,10 @@ Claude Opus 4.6
 - `tests/render/test_sdlgpubackend.cpp` — test updates for new interface
 - `tests/render/test_skeletalmesh_migration.cpp` — test updates for new interface
 - `tests/render/test_traileffects_migration.cpp` — test updates for new interface
+- `tests/render/test_gl_migration_7_9_2.cpp` — AC-3 coordinate conversion unit tests (registered in CMake R2)
+- `tests/CMakeLists.txt` — registered test_gl_migration_7_9_2.cpp in MuTests target (R2)
 
 ### Change Log
 - 2026-03-27: Completed all 11 tasks — full OpenGL immediate-mode to MuRenderer abstraction migration
 - 2026-03-27: Addressed code review findings — 4 items fixed (Finding 1 HIGH, 2+3 MEDIUM, 7 LOW), 3 items documented as tech debt (Findings 4, 5, 6)
+- 2026-03-30: Addressed code review R2 findings — 5 items: verified BLOCKER/CRITICAL already fixed, added AC-3 unit tests (7 sections), fixed phantom test registration in CMakeLists.txt, added coordinate conversion comment (Date: 2026-03-30)

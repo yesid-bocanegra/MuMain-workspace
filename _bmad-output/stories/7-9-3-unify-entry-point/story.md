@@ -138,7 +138,16 @@ The root problem: two init paths that must stay in sync manually. They never wil
   After this AC, `grep -rn '#ifdef _WIN32' src/source/ | grep -v Platform/ | grep -v Audio/ | grep -v ThirdParty/ | grep -v Dotnet/Packet` returns 0.
   Audio/ is handled separately by story 7-9-4.
 
-- [ ] **AC-6: Quality gate passes**
+- [ ] **AC-6: Delete `MU_USE_OPENGL_BACKEND` and the OpenGL renderer backend**
+  The `MU_USE_OPENGL_BACKEND` flag is removed from CMake and all source files.
+  `MuRenderer.cpp` (400 lines — the old OpenGL `IMuRenderer` implementation) is deleted.
+  `stdafx.h` lines 71–253 (`#ifdef MU_USE_OPENGL_BACKEND` → GLEW/GL includes) are replaced
+  with the typedef stubs unconditionally (no `#ifdef`).
+  `MuRendererSDLGpu.cpp` `#ifndef MU_USE_OPENGL_BACKEND` guard around `GetRenderer()` is removed
+  — `GetRenderer()` is now unconditional (SDL_gpu is the only backend).
+  After this AC: `grep -rn 'MU_USE_OPENGL_BACKEND' src/` returns 0.
+
+- [ ] **AC-7: Quality gate passes**
   `./ctl check` exits 0 on macOS and Linux. MinGW cross-compile passes.
 
 ---
@@ -183,11 +192,19 @@ The root problem: two init paths that must stay in sync manually. They never wil
   - [ ] 4.5: `Data/*.h` files (6 guards) — FieldMetadataHelper.h, SkillStructs.h, SkillFieldMetadata.h, SkillFieldDefs.h, ItemStructs.h, ItemFieldMetadata.h — same pattern
   - [ ] 4.6: `RenderFX/ZzzOpenglUtil.cpp` (1 guard) — remove or move to renderer backend
 
-- [ ] **Task 5: Quality gate + verification** (AC-6)
-  - [ ] 5.1: `./ctl check` — macOS
-  - [ ] 5.2: MinGW cross-compile — Windows
-  - [ ] 5.3: `grep -rn '#ifdef _WIN32' src/source/ | grep -v Platform/ | grep -v Audio/ | grep -v ThirdParty/ | grep -v Dotnet/Packet` returns 0
-  - [ ] 5.4: Verify zero `#ifdef _WIN32` in Winmain.cpp
+- [ ] **Task 5: Delete OpenGL renderer backend and `MU_USE_OPENGL_BACKEND` flag** (AC-6)
+  - [ ] 5.1: Delete `RenderFX/MuRenderer.cpp` (400 lines — old OpenGL IMuRenderer)
+  - [ ] 5.2: Remove `MU_USE_OPENGL_BACKEND` from CMakeLists.txt / CMakePresets.json
+  - [ ] 5.3: `stdafx.h` — remove `#ifdef MU_USE_OPENGL_BACKEND` block (lines 71–253), keep only the GL typedef stubs
+  - [ ] 5.4: `MuRendererSDLGpu.cpp` — remove `#ifndef MU_USE_OPENGL_BACKEND` guard around `GetRenderer()`
+  - [ ] 5.5: `Winmain.cpp` — remove any `MU_USE_OPENGL_BACKEND` references
+  - [ ] 5.6: Verify `grep -rn 'MU_USE_OPENGL_BACKEND' src/` returns 0
+
+- [ ] **Task 6: Quality gate + verification** (AC-7)
+  - [ ] 6.1: `./ctl check` — macOS
+  - [ ] 6.2: MinGW cross-compile — Windows
+  - [ ] 6.3: `grep -rn '#ifdef _WIN32' src/source/ | grep -v Platform/ | grep -v Audio/ | grep -v ThirdParty/ | grep -v Dotnet/Packet` returns 0
+  - [ ] 6.4: `grep -rn 'MU_USE_OPENGL_BACKEND' src/` returns 0
 
 ---
 

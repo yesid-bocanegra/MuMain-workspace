@@ -33,7 +33,7 @@ Searched `MuMain/tests/render/` for tests related to story 7-9-2 ACs.
 |----|-------------|---------------|--------|
 | AC-1 | BeginScene/EndScene routing | None | GENERATE NEW |
 | AC-2 | Begin2DPass/End2DPass routing | None | GENERATE NEW |
-| AC-3 | CSprite::Render → RenderQuad2D | None | GENERATE NEW (manual verify) |
+| AC-3 | CSprite::Render → RenderQuad2D | `AC-3 [7-9-2]: CSprite coordinate conversion` | ✅ GREEN (7 sections) |
 | AC-4 | 2D glBegin blocks → RenderQuad2D | None | GENERATE NEW (compile verify) |
 | AC-5 | RenderLines interface | None | GENERATE NEW |
 | AC-6 | IsFrameActive lifecycle guard | None | GENERATE NEW |
@@ -52,6 +52,7 @@ Searched `MuMain/tests/render/` for tests related to story 7-9-2 ACs.
 | AC-5 | `AC-5 [7-9-2]: RenderLines is callable on IMuRenderer` | `tests/render/test_gl_migration_7_9_2.cpp` | `[render][migration][ac-5]` |
 | AC-6 | `AC-6 [7-9-2]: IsFrameActive allows conditional frame lifecycle management` | `tests/render/test_gl_migration_7_9_2.cpp` | `[render][migration][ac-6]` |
 | AC-7 | `AC-7 [7-9-2]: ClearScreen is callable on IMuRenderer (wraps glClear)` | `tests/render/test_gl_migration_7_9_2.cpp` | `[render][migration][ac-7]` |
+| AC-3 | `AC-3 [7-9-2]: CSprite coordinate conversion — 640x480 to screen pixels` | `tests/render/test_gl_migration_7_9_2.cpp` | `[render][migration][ac-3]` |
 | AC-STD-1 | `AC-STD-1 [7-9-2]: IMuRenderer call sites are platform-unconditional` | `tests/render/test_gl_migration_7_9_2.cpp` | `[render][migration][ac-std-1]` |
 | AC-STD-2 | `AC-STD-2 [7-9-2]: IMuRenderer extended interface — all new methods callable` | `tests/render/test_gl_migration_7_9_2.cpp` | `[render][migration][ac-std-2]` |
 
@@ -213,9 +214,9 @@ Searched `MuMain/tests/render/` for tests related to story 7-9-2 ACs.
 | Story Type | infrastructure |
 | Primary test level | Unit (Catch2) |
 | Test file | `MuMain/tests/render/test_gl_migration_7_9_2.cpp` |
-| Failing tests created | 13 test sections across 7 TEST_CASEs |
-| ACs with unit tests | AC-1, AC-2, AC-5, AC-6, AC-7, AC-STD-1, AC-STD-2 |
-| ACs with manual verification | AC-3 (CSprite port), AC-4 (2D sites), AC-7 (scene runtime), AC-8 (grep), AC-9 (ctl check) |
+| Failing tests created | 20 test sections across 8 TEST_CASEs |
+| ACs with unit tests | AC-1, AC-2, AC-3, AC-5, AC-6, AC-7, AC-STD-1, AC-STD-2 |
+| ACs with manual verification | AC-4 (2D sites), AC-7 (scene runtime), AC-8 (grep), AC-9 (ctl check) |
 | E2E tests | None (infrastructure story) |
 | Bruno API tests | None (no REST endpoints) |
 
