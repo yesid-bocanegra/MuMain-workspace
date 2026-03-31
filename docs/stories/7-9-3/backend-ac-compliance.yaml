@@ -1,0 +1,70 @@
+metadata:
+  story_key: "7-9-3"
+  status: passed
+  total_iterations: 0
+  last_updated: "2026-03-30"
+
+tech_profile:
+  name: cpp-cmake
+  test_cmd: "make -C MuMain test"
+  test_run_cmd: "ctest --test-dir MuMain/build-test/tests -R 7-9-3 --output-on-failure"
+
+test_class:
+  file: MuMain/tests/platform/test_entry_point_unification_7_9_3.cpp
+  framework: Catch2
+  ac_test_pattern: "TEST_CASE(\"AC-N [7-9-3]:\""
+
+test_results:
+  total_tests: 9
+  passed: 9
+  failed: 0
+  ac_mapping:
+    - ac_id: AC-1
+      test_name: "AC-1 [7-9-3]: Screen rate x calculation matches WinMain formula"
+      status: passed
+    - ac_id: AC-1
+      test_name: "AC-1 [7-9-3]: Screen rate y calculation matches WinMain formula"
+      status: passed
+    - ac_id: AC-1
+      test_name: "AC-1 [7-9-3]: Screen rate x and y are equal for 4:3 resolutions"
+      status: passed
+    - ac_id: AC-STD-2
+      test_name: "AC-STD-2 [7-9-3]: Test translation unit compiles without Win32 dependencies"
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2 [7-9-3]: Winmain.cpp does not contain WinMain function definition"
+      status: passed
+    - ac_id: AC-3
+      test_name: "AC-3 [7-9-3]: Winmain.cpp contains MuMain as the universal entry point"
+      status: passed
+    - ac_id: AC-5
+      test_name: "AC-5 [7-9-3]: Game code has zero #ifdef _WIN32 guards outside allowed directories"
+      status: passed
+    - ac_id: AC-5
+      test_name: "AC-5 [7-9-3]: Specific scene headers have no platform guards"
+      status: passed
+    - ac_id: AC-5
+      test_name: "AC-5 [7-9-3]: Data layer headers have no platform guards"
+      status: passed
+  passing_tests:
+    - "AC-1 [7-9-3]: Screen rate x calculation matches WinMain formula"
+    - "AC-1 [7-9-3]: Screen rate y calculation matches WinMain formula"
+    - "AC-1 [7-9-3]: Screen rate x and y are equal for 4:3 resolutions"
+    - "AC-STD-2 [7-9-3]: Test translation unit compiles without Win32 dependencies"
+    - "AC-2 [7-9-3]: Winmain.cpp does not contain WinMain function definition"
+    - "AC-3 [7-9-3]: Winmain.cpp contains MuMain as the universal entry point"
+    - "AC-5 [7-9-3]: Game code has zero #ifdef _WIN32 guards outside allowed directories"
+    - "AC-5 [7-9-3]: Specific scene headers have no platform guards"
+    - "AC-5 [7-9-3]: Data layer headers have no platform guards"
+  failing_tests: []
+
+iterations: []
+blockers: []
+next_actions: []
+
+notes:
+  - "Tests discovered at: MuMain/tests/platform/test_entry_point_unification_7_9_3.cpp"
+  - "CTest must be run from build-test/tests/ (not build-test/) due to CTestTestfile.cmake location"
+  - "File-scan tests (AC-2, AC-3, AC-5) run only on macOS/Linux (#ifndef _WIN32 guard)"
+  - "AC-4 and AC-6 are infrastructure ACs (build/grep checks) — not covered by runtime tests"
+  - "All 9 AC tests passed on first run — no fixes required"
