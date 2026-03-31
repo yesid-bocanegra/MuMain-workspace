@@ -93,8 +93,9 @@ is superior anyway.
 
 - [ ] **AC-STD-1:** Code Standards — clang-format clean; zero `#ifdef _WIN32` in Audio/; PascalCase functions, `m_` prefix members.
 - [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite passes; no regressions in existing tests.
+- [ ] **AC-STD-12:** SLI/SLO Targets — Audio playback latency p95 < 50ms (single-threaded miniaudio thread); zero audio dropout under normal load.
 - [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0 (format-check + cppcheck + build).
-- [ ] **AC-STD-15:** Git Safety — no force push, no incomplete rebase, conventional commits.
+- [ ] **AC-STD-15:** API Contract — IPlatformAudio methods called correctly; all audio paths go through interface; no direct miniaudio calls from game logic.
 
 ---
 
