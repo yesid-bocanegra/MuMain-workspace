@@ -1,6 +1,6 @@
 # Story 7.9.3: Unify Entry Point — Delete WinMain, Single main() for All Platforms
 
-Status: dev-complete
+Status: done
 
 ---
 
@@ -286,3 +286,11 @@ Claude Opus 4.6
 | MODIFIED | MuMain/src/source/RenderFX/ZzzOpenglUtil.cpp |
 | MODIFIED | MuMain/src/source/RenderFX/ZzzTexture.cpp |
 | MODIFIED | MuMain/src/source/Scenes/SceneCore.cpp |
+
+**Code Review Fixes (2026-03-30):**
+
+| Action | File | Changes |
+|--------|------|---------|
+| MODIFIED | MuMain/src/source/Main/Winmain.h | Removed 4 orphaned externs, dead `WM_NPROTECT_EXIT_TWO`, `FAKE_CODE` macro |
+| MODIFIED | MuMain/src/source/Main/Winmain.cpp | Moved `setlocale()` before `mbstowcs()`; added port validation with `strtol` |
+| MODIFIED | _bmad-output/stories/7-9-3-unify-entry-point/atdd.md | Reworded Task 3.4/3.5 for accuracy |

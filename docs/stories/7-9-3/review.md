@@ -4,7 +4,7 @@
 **Flow Code**: VS0-QUAL-RENDER-UNIFYENTRY
 **Reviewer**: Claude Opus 4.6 (adversarial)
 **Date**: 2026-03-30
-**Status**: Review complete — 6 findings documented
+**Status**: Review FINALIZED — all 6 findings resolved (2026-03-30)
 
 ---
 
@@ -180,7 +180,42 @@ The implementation successfully achieves the story's core objective: a single `m
 **Adversarial Review Verification (Fresh Analysis 2026-03-30)**:
 - ✅ Quality gate PASSED
 - ✅ ATDD completeness: 50/50 items marked `[x]` (100%)
-- ✅ All 6 documented findings remain unchanged and unresolved (expected — not blockers)
 - ✅ AC-5 compliance verified: 0 actual `#ifdef _WIN32` guards in game code (15 matches are comments only)
 - ✅ No new code violations detected
 - ⚠️ Known technical debt: WSclient.cpp line 14540 (PostMessage dependency on Win32 message queue) documented for future story 7-10-1 refactoring
+
+---
+
+## Step 3: Resolution
+
+**Status:** COMPLETE
+**Started:** 2026-03-30
+**Completed:** 2026-03-30
+**Iteration:** 1 / 10
+
+### Fix Progress
+
+| Iteration | Issues Fixed | Quality Gate | Timestamp |
+|-----------|--------------|--------------|-----------|
+| 1 | 6 | PASS | 2026-03-30 |
+
+### Resolution Details
+
+| Finding | Severity | Resolution |
+|---------|----------|------------|
+| 1 — Orphaned extern declarations | MEDIUM | **FIXED**: Removed `extern wchar_t m_Version[]`, `extern int m_Resolution`, `extern int m_nColorDepth`, `extern void DestroyWindow()` from `Winmain.h`. All four had no matching definitions after Win32 code deletion. |
+| 2 — ATDD checklist inaccuracy | MEDIUM | **FIXED**: Reworded Task 3.4/3.5 items in `atdd.md` to accurately reflect that globals are retained as `nullptr` stubs (not removed), with full removal deferred due to 210+ references. |
+| 3 — FAKE_CODE macro (MSVC asm) | LOW | **FIXED**: Deleted `FAKE_CODE(pos)` macro (lines 97–102) and the dead commented-out `ExecutionLog`/`DebugAngel` block above it from `Winmain.h`. Zero usages confirmed by grep. |
+| 4 — mbstowcs before setlocale | LOW | **FIXED**: Moved `setlocale(LC_ALL, "")` from after the game init comment block to before the command-line server override parsing, ensuring locale is set before `mbstowcs()` is called. |
+| 5 — No port validation | LOW | **FIXED**: Replaced `std::atoi(cmdPort)` with `std::strtol(cmdPort, nullptr, 10)` plus range validation (1–65535). Invalid ports now log a warning via `g_ErrorReport.Write()` and retain the default port. |
+| 6 — WM_NPROTECT_EXIT_TWO dead constant | LOW | **FIXED**: Deleted `#define WM_NPROTECT_EXIT_TWO (WM_USER + 10001)` from `Winmain.h`. Zero usages confirmed by grep — GameGuard integration was removed during cross-platform migration. |
+
+### Files Modified in Resolution
+
+| File | Changes |
+|------|---------|
+| `MuMain/src/source/Main/Winmain.h` | Removed 4 orphaned externs, 1 dead `#define`, 1 dead macro + commented block (−19 lines) |
+| `MuMain/src/source/Main/Winmain.cpp` | Moved `setlocale()` earlier; replaced `atoi` with `strtol` + validation (+4 lines, −2 lines) |
+| `_bmad-output/stories/7-9-3-unify-entry-point/atdd.md` | Reworded Task 3.4/3.5 checklist items for accuracy |
+
+**All 6 findings resolved. No BLOCKER or HIGH issues. Quality gate verified PASS.**
