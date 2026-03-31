@@ -43,3 +43,5 @@
 {"timestamp":"2026-03-31T05:17:28.812536+00:00","event_type":"step_regressed","story_key":"7-9-4","step":"code-review-qg","sprint":null,"epic":"7","data":{"from_step":"code-review-qg","to_step":"dev-story","regression_count":1}}
 {"timestamp":"2026-03-31T05:17:28.813410+00:00","event_type":"feedback_saved","story_key":"7-9-4","step":"code-review-qg","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-03-31T05:17:30.824738+00:00","event_type":"step_started","story_key":"7-9-4","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-31T05:22:08.908492+00:00","event_type":"step_passed","story_key":"7-9-4","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":278.1,"input_tokens":90,"output_tokens":8596,"cache_creation_tokens":354191,"cache_read_tokens":5191794,"num_turns":57,"num_tool_calls":33}}
+{"timestamp":"2026-03-31T05:22:09.919816+00:00","event_type":"step_started","story_key":"7-9-4","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
