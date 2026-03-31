@@ -15,3 +15,5 @@
 {"timestamp":"2026-03-31T14:07:38.447576+00:00","event_type":"feedback_saved","story_key":"7-9-5","step":"dev-story","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-03-31T14:07:40.453018+00:00","event_type":"step_started","story_key":"7-9-5","step":"dev-story","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-31T14:15:52Z","event":"step_complete","story_key":"7-9-5","step":"dev-story","status":"done","tests_passed":13,"tests_total":14,"tests_skipped":1,"assertions_passed":42,"quality_gate":"pass"}
+{"timestamp":"2026-03-31T14:16:37.437852+00:00","event_type":"step_passed","story_key":"7-9-5","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":537.0,"input_tokens":118,"output_tokens":9594,"cache_creation_tokens":328483,"cache_read_tokens":5783045,"num_turns":71,"num_tool_calls":45}}
+{"timestamp":"2026-03-31T14:16:38.440528+00:00","event_type":"step_started","story_key":"7-9-5","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
