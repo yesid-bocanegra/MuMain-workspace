@@ -809,3 +809,5 @@
 {"timestamp":"2026-03-31T00:40:11.720226+00:00","event_type":"step_started","story_key":"7-9-3","step":"dev-story","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-31T01:04:01.084848+00:00","event_type":"step_passed","story_key":"7-9-3","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1429.4,"input_tokens":392,"output_tokens":45389,"cache_creation_tokens":635540,"cache_read_tokens":45728416,"num_turns":247,"num_tool_calls":148}}
 {"timestamp":"2026-03-31T01:04:02.091095+00:00","event_type":"step_started","story_key":"7-9-3","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-31T01:06:02.115094+00:00","event_type":"step_passed","story_key":"7-9-3","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":120.0,"input_tokens":744,"output_tokens":6968,"cache_creation_tokens":421061,"cache_read_tokens":7570871,"num_turns":69,"num_tool_calls":29}}
+{"timestamp":"2026-03-31T01:06:03.126229+00:00","event_type":"step_started","story_key":"7-9-3","step":"code-review","sprint":null,"epic":"7","data":{}}
