@@ -45,3 +45,5 @@
 {"timestamp":"2026-03-31T05:17:30.824738+00:00","event_type":"step_started","story_key":"7-9-4","step":"dev-story","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-03-31T05:22:08.908492+00:00","event_type":"step_passed","story_key":"7-9-4","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":278.1,"input_tokens":90,"output_tokens":8596,"cache_creation_tokens":354191,"cache_read_tokens":5191794,"num_turns":57,"num_tool_calls":33}}
 {"timestamp":"2026-03-31T05:22:09.919816+00:00","event_type":"step_started","story_key":"7-9-4","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-31T05:24:44.516795+00:00","event_type":"step_passed","story_key":"7-9-4","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":154.6,"input_tokens":728,"output_tokens":8058,"cache_creation_tokens":190603,"cache_read_tokens":7230041,"num_turns":63,"num_tool_calls":28}}
+{"timestamp":"2026-03-31T05:24:45.527816+00:00","event_type":"step_started","story_key":"7-9-4","step":"code-review","sprint":null,"epic":"7","data":{}}
