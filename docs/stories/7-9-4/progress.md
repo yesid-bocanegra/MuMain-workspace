@@ -19,12 +19,12 @@
 | total_count | 16 |
 | current_task | done |
 | task_progress | 100% |
-| next_action | code-review-quality-gate |
+| next_action | completeness-gate |
 | blocker | none |
 
 ### Active Task Details
 
-- **Current**: All tasks complete. Ready for code review.
+- **Current**: All tasks complete. Story marked for review. Next: completeness-gate pipeline step.
 
 ---
 
