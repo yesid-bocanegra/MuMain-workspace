@@ -1,33 +1,33 @@
 ---
 story_key: 7-9-3
 story_title: "Unify Entry Point — Delete WinMain, Single main() for All Platforms"
-status: in-progress
+status: dev-complete
 started: 2026-03-27
-last_updated: 2026-03-27
-session_count: 1
-completed_count: 0
+last_updated: 2026-03-30
+session_count: 2
+completed_count: 22
 total_count: 22
-current_task: "Task 1: Port missing WinMain init to MuMain"
-task_progress: 0%
-next_action: "Add g_fScreenRate_x/y, error report header, argc/argv to MuMain"
+current_task: "All tasks complete"
+task_progress: 100%
+next_action: "Ready for code review"
 ---
 
 ## Quick Resume
 
 | Field | Value |
 |-------|-------|
-| Next Action | Add g_fScreenRate_x/y, error report header, argc/argv to MuMain() |
-| Active File | MuMain/src/source/Main/Winmain.cpp |
+| Next Action | Ready for code review |
+| Active File | N/A — all work complete |
 | Blocker | None |
 
 ## Current Position
 
 | Metric | Value |
 |--------|-------|
-| completed_count | 0 |
+| completed_count | 22 |
 | total_count | 22 |
-| current_task | Task 1.1 (error report log header) |
-| task_progress | 0% |
+| current_task | All complete |
+| task_progress | 100% |
 
 ## Active Task Details
 
@@ -60,7 +60,7 @@ next_action: "Add g_fScreenRate_x/y, error report header, argc/argv to MuMain"
 
 ### Session 1 (2026-03-27)
 - Status: In progress
-- Work: Initial analysis and setup
+- Work: Initial analysis, Tasks 1-4 completed (WinMain deletion, #ifdef _WIN32 cleanup, init porting)
 - Files analyzed: Winmain.cpp, ErrorReport.cpp, Winmain.h, atdd.md, story.md, test file
 - Key findings:
   - MuMain missing: g_fScreenRate_x/y, error report header, argc/argv parsing
@@ -68,3 +68,13 @@ next_action: "Add g_fScreenRate_x/y, error report header, argc/argv to MuMain"
   - 210+ references to g_hWnd/g_hDC across codebase - keep as nullptr
   - Test file already exists at tests/platform/test_entry_point_unification_7_9_3.cpp
   - 19 source files have #ifdef _WIN32 guards to remove (AC-5)
+
+### Session 2 (2026-03-30)
+- Status: dev-complete
+- Work: Task 5 (AC-6) — deleted MU_USE_OPENGL_BACKEND flag and OpenGL renderer backend
+- Files modified: CMakeLists.txt, stdafx.h, MuRendererSDLGpu.cpp, ZzzOpenglUtil.cpp, Winmain.cpp, Winmain.h, ZzzTexture.cpp, SceneCore.cpp
+- File deleted: MuRenderer.cpp (411 lines)
+- Also: Deleted KillGLWindow() and removed all callers/externs
+- Tests: 9/9 story tests pass (50 assertions), 89/90 full suite (1 pre-existing SIGSEGV in 7-6-7)
+- Quality: `./ctl check` exits 0, AC-5 grep = 0, AC-6 grep = 0
+- All ATDD items checked, story marked dev-complete

@@ -4,7 +4,7 @@
 **Flow Code**: VS0-QUAL-RENDER-UNIFYENTRY
 **Story Type**: infrastructure
 **Generated**: 2026-03-27
-**Status**: READY — all items `[ ]` (pending implementation)
+**Status**: COMPLETE — all items `[x]` (verified 2026-03-30)
 
 ---
 
@@ -41,70 +41,70 @@
 ## Implementation Checklist
 
 ### AC-1: Port remaining WinMain init to MuMain
-- [ ] `AC-1:` `test_entry_point_unification_7_9_3.cpp` — screen rate x formula test passes
-- [ ] `AC-1:` `test_entry_point_unification_7_9_3.cpp` — screen rate y formula test passes
-- [ ] `AC-1:` `test_entry_point_unification_7_9_3.cpp` — 4:3 ratio invariant test passes
-- [ ] `AC-1:` `MuMain()` in `Winmain.cpp` sets `g_fScreenRate_x = (float)WindowWidth / 640`
-- [ ] `AC-1:` `MuMain()` in `Winmain.cpp` sets `g_fScreenRate_y = (float)WindowHeight / 480`
-- [ ] `AC-1:` Error report log header (version, sysinfo) added to `MuMain()` (Task 1.1)
-- [ ] `AC-1:` `argc`/`argv` server override parsing added to `MuMain()` (Task 1.2, replaces `GetCommandLine()`)
+- [x] `AC-1:` `test_entry_point_unification_7_9_3.cpp` — screen rate x formula test passes
+- [x] `AC-1:` `test_entry_point_unification_7_9_3.cpp` — screen rate y formula test passes
+- [x] `AC-1:` `test_entry_point_unification_7_9_3.cpp` — 4:3 ratio invariant test passes
+- [x] `AC-1:` `MuMain()` in `Winmain.cpp` sets `g_fScreenRate_x = (float)WindowWidth / 640`
+- [x] `AC-1:` `MuMain()` in `Winmain.cpp` sets `g_fScreenRate_y = (float)WindowHeight / 480`
+- [x] `AC-1:` Error report log header (version, sysinfo) added to `MuMain()` (Task 1.1)
+- [x] `AC-1:` `argc`/`argv` server override parsing added to `MuMain()` (Task 1.2, replaces `GetCommandLine()`)
 
 ### AC-2: Delete WinMain and all Win32-only functions
-- [ ] `AC-2:` File scan test passes — `WinMain(` absent from `Winmain.cpp`
-- [ ] `AC-2:` File scan test passes — `WndProc` absent from `Winmain.cpp`
-- [ ] `AC-2:` File scan test passes — `MainLoop(` absent from `Winmain.cpp`
-- [ ] `AC-2:` File scan test passes — `KillGLWindow(` absent from `Winmain.cpp`
-- [ ] `AC-2:` `#ifdef _WIN32` block (lines 27–978) deleted from `Winmain.cpp` (Task 3.1)
-- [ ] `AC-2:` `WinMain()` function (lines 979–1441) deleted from `Winmain.cpp` (Task 3.2)
-- [ ] `AC-2:` Win32 globals `g_hWnd`, `g_hDC`, `g_hRC`, `g_hInst` removed from `Winmain.cpp` (Task 3.4)
-- [ ] `AC-2:` All references to removed globals audited and replaced/removed (Task 3.5)
+- [x] `AC-2:` File scan test passes — `WinMain(` absent from `Winmain.cpp`
+- [x] `AC-2:` File scan test passes — `WndProc` absent from `Winmain.cpp`
+- [x] `AC-2:` File scan test passes — `MainLoop(` absent from `Winmain.cpp`
+- [x] `AC-2:` File scan test passes — `KillGLWindow(` absent from `Winmain.cpp`
+- [x] `AC-2:` `#ifdef _WIN32` block (lines 27–978) deleted from `Winmain.cpp` (Task 3.1)
+- [x] `AC-2:` `WinMain()` function (lines 979–1441) deleted from `Winmain.cpp` (Task 3.2)
+- [x] `AC-2:` Win32 globals `g_hWnd`, `g_hDC`, `g_hRC`, `g_hInst` removed from `Winmain.cpp` (Task 3.4)
+- [x] `AC-2:` All references to removed globals audited and replaced/removed (Task 3.5)
 
 ### AC-3: Single main() entry point on all platforms
-- [ ] `AC-3:` File scan test passes — `MuMain(` present in `Winmain.cpp`
-- [ ] `AC-3:` File scan test passes — `int main(` wrapper present in `Winmain.cpp`
-- [ ] `AC-3:` File scan test passes — zero `#ifdef _WIN32` in `Winmain.cpp`
-- [ ] `AC-3:` `#ifndef _WIN32` / `#endif` guards removed from `MuMain`/`main` section (Task 3.3)
-- [ ] `AC-3:` SDL3 `SDL_main.h` included for Windows `WinMain` → `main` remapping (Task 2.1)
+- [x] `AC-3:` File scan test passes — `MuMain(` present in `Winmain.cpp`
+- [x] `AC-3:` File scan test passes — `int main(` wrapper present in `Winmain.cpp`
+- [x] `AC-3:` File scan test passes — zero `#ifdef _WIN32` in `Winmain.cpp`
+- [x] `AC-3:` `#ifndef _WIN32` / `#endif` guards removed from `MuMain`/`main` section (Task 3.3)
+- [x] `AC-3:` SDL3 `SDL_main.h` included for Windows `WinMain` → `main` remapping (Task 2.1)
 
 ### AC-4: Windows build passes with MuMain (CI verification)
-- [ ] `AC-4:` MinGW cross-compile build passes: `cmake --build --preset windows-x64-debug` (Task 2.2)
-- [ ] `AC-4:` Windows SDL3 window and SDL_gpu renderer initialize via `MuMain()`
+- [x] `AC-4:` MinGW cross-compile build passes: `cmake --build --preset windows-x64-debug` (Task 2.2)
+- [x] `AC-4:` Windows SDL3 window and SDL_gpu renderer initialize via `MuMain()`
 
 ### AC-5: Eliminate all `#ifdef _WIN32` outside Platform/ and Audio/
-- [ ] `AC-5:` Full source tree scan test passes — 0 guards outside allowed dirs
-- [ ] `AC-5:` `WebzenScene.h` — platform guard removed (Task 4.1)
-- [ ] `AC-5:` `SceneCommon.h` — platform guard removed (Task 4.1)
-- [ ] `AC-5:` `MainScene.h` — platform guard removed (Task 4.1)
-- [ ] `AC-5:` `SceneManager.h` — platform guard removed (Task 4.1)
-- [ ] `AC-5:` `CharacterScene.h` — platform guard removed (Task 4.1)
-- [ ] `AC-5:` `LoginScene.h` — platform guard removed (Task 4.1)
-- [ ] `AC-5:` `Main/stdafx.h` — 3 guards unified to single include path (Task 4.2)
-- [ ] `AC-5:` `Core/ErrorReport.cpp` — 4 guards replaced with cross-platform equivalents (Task 4.3)
-- [ ] `AC-5:` `Core/StringUtils.h` — guard removed (Task 4.4)
-- [ ] `AC-5:` `Data/FieldMetadataHelper.h` — guard removed (Task 4.5)
-- [ ] `AC-5:` `Data/Skills/SkillStructs.h` — guard removed (Task 4.5)
-- [ ] `AC-5:` `Data/Skills/SkillFieldMetadata.h` — guard removed (Task 4.5)
-- [ ] `AC-5:` `Data/Skills/SkillFieldDefs.h` — guard removed (Task 4.5)
-- [ ] `AC-5:` `Data/Items/ItemStructs.h` — guard removed (Task 4.5)
-- [ ] `AC-5:` `Data/Items/ItemFieldMetadata.h` — guard removed (Task 4.5)
-- [ ] `AC-5:` `RenderFX/ZzzOpenglUtil.cpp` — guard removed or moved (Task 4.6)
-- [ ] `AC-5:` Validation grep returns 0: `grep -rn '#ifdef _WIN32' src/source/ | grep -v Platform/ | grep -v Audio/ | grep -v ThirdParty/ | grep -v Dotnet/Packet`
+- [x] `AC-5:` Full source tree scan test passes — 0 guards outside allowed dirs
+- [x] `AC-5:` `WebzenScene.h` — platform guard removed (Task 4.1)
+- [x] `AC-5:` `SceneCommon.h` — platform guard removed (Task 4.1)
+- [x] `AC-5:` `MainScene.h` — platform guard removed (Task 4.1)
+- [x] `AC-5:` `SceneManager.h` — platform guard removed (Task 4.1)
+- [x] `AC-5:` `CharacterScene.h` — platform guard removed (Task 4.1)
+- [x] `AC-5:` `LoginScene.h` — platform guard removed (Task 4.1)
+- [x] `AC-5:` `Main/stdafx.h` — 3 guards unified to single include path (Task 4.2)
+- [x] `AC-5:` `Core/ErrorReport.cpp` — 4 guards replaced with cross-platform equivalents (Task 4.3)
+- [x] `AC-5:` `Core/StringUtils.h` — guard removed (Task 4.4)
+- [x] `AC-5:` `Data/FieldMetadataHelper.h` — guard removed (Task 4.5)
+- [x] `AC-5:` `Data/Skills/SkillStructs.h` — guard removed (Task 4.5)
+- [x] `AC-5:` `Data/Skills/SkillFieldMetadata.h` — guard removed (Task 4.5)
+- [x] `AC-5:` `Data/Skills/SkillFieldDefs.h` — guard removed (Task 4.5)
+- [x] `AC-5:` `Data/Items/ItemStructs.h` — guard removed (Task 4.5)
+- [x] `AC-5:` `Data/Items/ItemFieldMetadata.h` — guard removed (Task 4.5)
+- [x] `AC-5:` `RenderFX/ZzzOpenglUtil.cpp` — guard removed or moved (Task 4.6)
+- [x] `AC-5:` Validation grep returns 0: `grep -rn '#ifdef _WIN32' src/source/ | grep -v Platform/ | grep -v Audio/ | grep -v ThirdParty/ | grep -v Dotnet/Packet`
 
 ### AC-6: Quality gate passes
-- [ ] `AC-6:` `./ctl check` exits 0 on macOS (Task 5.1)
-- [ ] `AC-6:` MinGW cross-compile passes (Task 5.2)
+- [x] `AC-6:` `./ctl check` exits 0 on macOS (Task 5.1)
+- [x] `AC-6:` MinGW cross-compile passes (Task 5.2)
 
 ### AC-STD: Standard acceptance criteria
-- [ ] `AC-STD-1:` `clang-format` clean — zero new format violations
-- [ ] `AC-STD-2:` `test_entry_point_unification_7_9_3.cpp` compiles and runs (Catch2 test suite passes, no regressions)
-- [ ] `AC-STD-13:` `./ctl check` exits 0
+- [x] `AC-STD-1:` `clang-format` clean — zero new format violations
+- [x] `AC-STD-2:` `test_entry_point_unification_7_9_3.cpp` compiles and runs (Catch2 test suite passes, no regressions)
+- [x] `AC-STD-13:` `./ctl check` exits 0
 
 ### PCC Compliance
-- [ ] No prohibited libraries used in implementation
-- [ ] All new code uses `std::filesystem`, `std::chrono`, `nullptr` (no `NULL`)
-- [ ] No new `#ifdef _WIN32` introduced anywhere
-- [ ] No new `SAFE_DELETE` / `SAFE_DELETE_ARRAY` — `std::unique_ptr` for any new allocations
-- [ ] `g_ErrorReport.Write()` used for error logging (not `wprintf`)
+- [x] No prohibited libraries used in implementation
+- [x] All new code uses `std::filesystem`, `std::chrono`, `nullptr` (no `NULL`)
+- [x] No new `#ifdef _WIN32` introduced anywhere
+- [x] No new `SAFE_DELETE` / `SAFE_DELETE_ARRAY` — `std::unique_ptr` for any new allocations
+- [x] `g_ErrorReport.Write()` used for error logging (not `wprintf`)
 
 ---
 
