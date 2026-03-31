@@ -1,6 +1,6 @@
 # Code Review — Story 7.9.4: Kill DirectSound — Miniaudio-Only Audio Layer
 
-**Reviewer:** Claude (adversarial code review)
+**Reviewer:** Claude (adversarial code review — pass 2)
 **Date:** 2026-03-31
 **Story Key:** 7-9-4
 **Flow Code:** VS0-QUAL-AUDIO-KILLDSOUND
@@ -11,9 +11,9 @@
 
 | Step | Status | Date |
 |------|--------|------|
-| 1. Quality Gate | ✅ PASSED (re-verified 3x) | 2026-03-31 |
-| 2. Code Review Analysis | ✅ COMPLETE | 2026-03-31 |
-| 3. Review Follow-ups | ✅ 6/7 RESOLVED (1 accepted as-is) | 2026-03-31 |
+| 1. Quality Gate | ✅ PASSED | 2026-03-31 |
+| 2. Code Review Analysis (pass 1) | ✅ COMPLETE — 7 findings, 6 fixed | 2026-03-31 |
+| 3. Code Review Analysis (pass 2) | ✅ COMPLETE — 5 new findings, HIGH fixed | 2026-03-31 |
 | 4. Code Review Finalize | ⏳ PENDING | — |
 
 ---
@@ -33,94 +33,67 @@
 | build (macOS native arm64) | ✅ PASS | Ninja build clean |
 | test (story 7-9-4) | ✅ PASS | 13 test cases, 260 assertions |
 | coverage | N/A | Not configured yet |
-| SonarCloud | N/A | No sonar-project.properties configured |
-
-### Frontend Quality Gate
-
-N/A — no frontend components affected.
-
-### Schema Alignment
-
-N/A — infrastructure story, no API schemas.
-
-### AC Compliance
-
-ℹ️ **AC Tests:** Skipped (infrastructure story — verified via grep/script-based validation artifacts)
-
-### App Startup
-
-N/A — C++ game client (graphical application, not a headless server).
 
 ### Summary
 
 | Gate | Status | Iterations | Issues Fixed |
 |------|--------|------------|--------------|
 | Backend Local | ✅ PASSED | 0 | 0 |
-| Backend SonarCloud | N/A | — | — |
-| Frontend Local | N/A | — | — |
-| Frontend SonarCloud | N/A | — | — |
 | **Overall** | **✅ PASSED** | **0** | **0** |
-
-Quality gate passed with zero issues. All deterministic checks (lint, build) verified by pipeline. Runtime tests (260 assertions) confirmed passing.
 
 ---
 
-## Findings
+## Pass 1 Findings (Previous Review — All Resolved)
 
-### Finding 1 — MEDIUM: Vacuous test assertion in AC-1 mute level test
+| # | Severity | Status | Summary |
+|---|----------|--------|---------|
+| 1 | MEDIUM | ✅ Fixed | Vacuous mute test — now replicates `pow(10, -10000/2000)` formula |
+| 2 | MEDIUM | ✅ Fixed | Deleted 4 dead no-op functions from DSplaysound.cpp + DSPlaySound.h |
+| 3 | LOW | ✅ Fixed | `NULL` → `nullptr` in PlayBuffer default parameter |
+| 4 | LOW | ✅ Fixed | Removed unnecessary `static_cast<void*>` |
+| 5 | LOW | Accepted | Block comment filtering — Audio/ uses `//` exclusively |
+| 6 | LOW | ✅ Fixed | `#pragma once` replaces `#ifndef __DSPLAYSOUND_H__` |
+| 7 | LOW | ✅ Fixed | ATDD counts updated to 5 RED + 8 GREEN = 13 total |
 
-- **File:** `MuMain/tests/audio/test_directsound_removal_7_9_4.cpp`
-- **Lines:** 59-67
-- **Description:** The "DbToLinear formula — mute level" test checks `CHECK(EXPECTED_MUTE == 0.0f)` where `EXPECTED_MUTE` is a `constexpr float` initialized to `0.0f`. This is a tautology — it tests that 0.0f equals 0.0f and always passes regardless of the actual implementation. Furthermore, the comment claims `DbToLinear(-10000) == 0.0f` but the actual `DbToLinear` implementation computes `std::pow(10.0f, -10000.0f / 2000.0f)` = ~1e-5, not 0.0f (there is no special-case for -10000). The test neither calls DbToLinear nor replicates the formula.
-- **Impact:** The test provides zero coverage for the mute edge case. The documented contract is incorrect relative to the implementation.
-- **Suggested Fix:** Either (a) replicate the formula like the other AC-1 math tests do (`std::pow(10.0f, -10000.0f / 2000.0f)`) and check it's near zero (e.g., `< 0.001f`), or (b) if mute is intended to map to exact 0.0f, add a floor clamp in `DbToLinear` and test accordingly.
+---
 
-### Finding 2 — MEDIUM: Dead no-op functions with zero callers
+## Pass 2 Findings (Current Review)
 
-- **Files:** `MuMain/src/source/Audio/DSplaysound.cpp` (lines 19-54), `MuMain/src/source/Audio/DSPlaySound.h` (lines 1003-1015)
-- **Description:** Four functions are now pure no-ops after DirectSound removal: `InitDirectSound()`, `SetEnableSound()`, `FreeDirectSound()`, `RestoreBuffers()`. Grep confirms zero callers exist anywhere in `src/source/` (only the definitions and declarations remain). These are dead code totaling ~30 lines across the header and source.
-- **Impact:** Dead code adds maintenance burden and may mislead future developers into thinking these functions are called or needed. The function names reference "DirectSound" concepts that no longer exist.
-- **Suggested Fix:** Delete the four functions from both `DSplaysound.cpp` and `DSPlaySound.h`. If any external caller is discovered later (unlikely given the grep), the linker will catch it immediately.
+### Finding 8 — HIGH: Stale build test references deleted DSwaveIO.h — ✅ FIXED
 
-### Finding 3 — LOW: `NULL` instead of `nullptr` in DSPlaySound.h
+- **Files:**
+  - `MuMain/tests/build/test_ac6_dswaveio_mmsystem_guard_7_6_1.cmake` — **DELETED**
+  - `MuMain/tests/build/CMakeLists.txt` (removed lines 475-481)
+- **Description:** Story 7-6-1 AC-6 test checks that `DSwaveIO.h` guards `#include <mmsystem.h>` with `#ifdef _WIN32`. Since story 7-9-4 deleted `DSwaveIO.h`, this test will fail with `FATAL_ERROR: DSwaveIO.h not found` on any CI run that exercises ctest build tests.
+- **Resolution:** Deleted `test_ac6_dswaveio_mmsystem_guard_7_6_1.cmake` and removed its `add_test()` registration from `tests/build/CMakeLists.txt`. The test's purpose (ensuring `mmsystem.h` is guarded) is now moot — the entire file is gone. The broader AC-3 test in story 7-9-4 already verifies zero `#ifdef _WIN32` guards remain in Audio/. Build and story tests verified passing after fix (13 test cases, 261 assertions).
 
-- **File:** `MuMain/src/source/Audio/DSPlaySound.h`
-- **Line:** 1010
-- **Description:** `HRESULT PlayBuffer(ESound Buffer, OBJECT* Object = NULL, BOOL bLooped = false);` uses `NULL` as the default parameter. Project conventions (CLAUDE.md, PCC rules) require `nullptr` in modified files: "No `NULL`; `nullptr` only."
-- **Impact:** Convention violation in a file modified by this story. Minor.
-- **Suggested Fix:** Change `= NULL` to `= nullptr`.
+### Finding 9 — LOW: DbToLinear tests replicate formula rather than exercising the actual method
 
-### Finding 4 — LOW: Unnecessary explicit cast in PlayBuffer delegation
+- **File:** `MuMain/tests/audio/test_directsound_removal_7_9_4.cpp` (lines 59-117)
+- **Description:** All 5 AC-1a math tests call `std::pow(10.0f, dsVol / 2000.0f)` inline to verify the volume conversion formula. However, `MiniAudioBackend::DbToLinear()` is `private static`, so none of these tests exercise the actual method. If the implementation formula is changed (e.g., to add a special floor at DSBVOLUME_MIN), the tests would still pass against the old formula.
+- **Impact:** The tests are valuable as specification tests documenting the intended conversion contract, but they don't catch implementation drift. This is a test design trade-off — making `DbToLinear` accessible (public or friend) would increase coupling for a purely internal helper.
+- **Suggested Fix:** Accept as-is. The specification-test pattern is appropriate for this story. If `DbToLinear` is ever refactored, a dedicated unit test should be added at that time.
 
-- **File:** `MuMain/src/source/Audio/DSplaysound.cpp`
-- **Line:** 60
-- **Description:** `static_cast<void*>(object)` where `object` is `OBJECT*`. The parameter type in `IPlatformAudio::PlaySound` is `const void*`, and `OBJECT*` implicitly converts to `const void*` without a cast.
-- **Impact:** Unnecessary verbosity. No correctness issue.
-- **Suggested Fix:** Replace `static_cast<void*>(object)` with just `object`.
+### Finding 10 — LOW: ReleaseBuffer returns S_OK unconditionally
 
-### Finding 5 — LOW: Test comment-filtering only handles `//` line comments
+- **File:** `MuMain/src/source/Audio/DSplaysound.cpp` (lines 27-34)
+- **Description:** `ReleaseBuffer()` returns `S_OK` even when `g_platformAudio == nullptr` (audio not initialized). Callers cannot distinguish between a successful release and a silent no-op. The function signature returns `HRESULT` but the no-op path doesn't signal the no-op condition.
+- **Impact:** Low — pre-existing API pattern preserved for backward compatibility. Callers in the codebase (`ZzzOpenData.cpp`) don't check the return value. The story's scope was to delete DirectSound, not redesign the audio API.
+- **Suggested Fix:** Accept as-is. Adding `[[nodiscard]]` or returning `S_FALSE` for the no-op path can be considered in a future cleanup story.
 
-- **File:** `MuMain/tests/audio/test_directsound_removal_7_9_4.cpp`
-- **Lines:** 266-270
-- **Description:** `countPatternInDir()` skips patterns that appear after `//` on a line, but does not filter patterns inside `/* ... */` block comments. If a banned pattern (e.g., `IDirectSoundBuffer`) appeared inside a block comment in an Audio/ file, the test would count it as a real occurrence (false positive).
-- **Impact:** Low risk — the Audio/ files use `//` style exclusively. No current false positives exist.
-- **Suggested Fix:** Accept as-is or add block comment filtering for robustness.
+### Finding 11 — LOW: DbToLinear lacks lower-bound clamp at DSBVOLUME_MIN
 
-### Finding 6 — LOW: Old-style include guard in DSPlaySound.h
+- **File:** `MuMain/src/source/Platform/MiniAudio/MiniAudioBackend.cpp` (lines 642-647)
+- **Description:** `DbToLinear()` clamps `dsVol > 0` to 0 (preventing gain > 1.0) but does not clamp values below -10000 (DSBVOLUME_MIN). Values below -10000 produce very small but nonzero linear values (e.g., -11000 produces ~3.16e-6, -20000 produces ~1e-10). DirectSound defines DSBVOLUME_MIN = -10000 as absolute silence. While miniaudio handles these near-zero values correctly (effectively silent), the function doesn't fully match the documented DirectSound contract.
+- **Impact:** Harmless in practice. No caller passes values below -10000. The `pow(10, x)` function degrades gracefully toward zero.
+- **Suggested Fix:** Accept as-is. Could optionally add `if (dsVol <= -10000L) return 0.0f;` for strict contract adherence.
 
-- **File:** `MuMain/src/source/Audio/DSPlaySound.h`
-- **Lines:** 1-2
-- **Description:** Uses `#ifndef __DSPLAYSOUND_H__` / `#define __DSPLAYSOUND_H__` instead of `#pragma once`. Project conventions require `#pragma once` in modified files. Additionally, the double-underscore prefix (`__DSPLAYSOUND_H__`) is technically reserved by the C++ standard for implementation use.
-- **Impact:** Pre-existing convention violation. The story made minimal changes to this file (removed one `#ifdef _WIN32` guard), so the scope of the change may not warrant a full header modernization.
-- **Suggested Fix:** Replace with `#pragma once` and remove the `#endif` comment. Low priority — could be deferred to a dedicated cleanup story.
+### Finding 12 — LOW: Test INFO messages show stale pre-implementation guard counts
 
-### Finding 7 — LOW: ATDD test count discrepancy
-
-- **File:** `docs/stories/7-9-4/atdd.md`
-- **Lines:** 157-158
-- **Description:** The ATDD summary states "Total test cases in RED phase: 9" and "Total test cases always GREEN: 10" (total 19), but the AC-to-Test Method Mapping table lists 14 mapped test names (13 actual TEST_CASE blocks after the virtual dispatch test consolidation). The counts appear to be stale from an earlier version of the test design.
-- **Impact:** Documentation inaccuracy. Does not affect implementation correctness.
-- **Suggested Fix:** Update counts to: 5 always-GREEN file-scan tests (inside `#ifndef _WIN32`), 8 always-GREEN tests (5 DbToLinear math + 2 AC-4 interface + 1 AC-STD-2 compile) = 13 total TEST_CASE blocks.
+- **File:** `MuMain/tests/audio/test_directsound_removal_7_9_4.cpp` (lines 331-337)
+- **Description:** The AC-3 directory guard test contains INFO messages like `"Audio/DSplaysound.cpp — 14 guards (Task 3.1: replace with IPlatformAudio calls)"` and similar for DSwaveIO.cpp (2 guards), DSwaveIO.h (2 guards), DSWavRead.h (1 guard). These describe the *pre-implementation* state. Three of those files are deleted, and DSplaysound.cpp now has 0 guards. The INFO messages only appear on test failure, so they'd be misleading in a failure report.
+- **Impact:** Cosmetic — only visible if the test fails. The messages describe what *was* rather than what *should be*.
+- **Suggested Fix:** Update INFO messages to reflect the post-implementation state, or remove the per-file breakdown since the implementation is complete. Low priority.
 
 ---
 
@@ -130,7 +103,7 @@ Quality gate passed with zero issues. All deterministic checks (lint, build) ver
 
 | AC | ATDD Status | Actual Status | Notes |
 |----|-------------|---------------|-------|
-| AC-1 (math) | [x] Complete | Covered | 5 DbToLinear tests, though mute test is vacuous (Finding 1) |
+| AC-1 (math) | [x] Complete | Covered | 5 DbToLinear tests — specification-level coverage (Finding 9) |
 | AC-1 (types) | [x] Complete | Covered | File-scan test verifies 7 banned DirectSound patterns |
 | AC-1 (calls) | [x] Complete | Covered | File-scan test verifies 4 banned DirectSound calls |
 | AC-2 | [x] Complete | Covered | File-scan test verifies 7 banned Win32 wave I/O patterns |
@@ -144,10 +117,10 @@ Quality gate passed with zero issues. All deterministic checks (lint, build) ver
 
 ### Test Quality Assessment
 
-- **Strong:** File-scan tests (AC-1 types/calls, AC-2, AC-3) are thorough and exercise real code paths
-- **Strong:** AC-4 interface conformance tests use compile-time assertions effectively
-- **Weak:** AC-1a mute level test is vacuous (Finding 1) — provides false confidence
-- **Acceptable:** The other 4 DbToLinear math tests replicate the formula independently, providing good specification coverage
+- **Strong:** File-scan tests (AC-1 types/calls, AC-2, AC-3) are thorough — scan real source directory at test time
+- **Strong:** AC-4 interface conformance tests use compile-time `static_assert` + runtime `make_unique`
+- **Acceptable:** DbToLinear math tests verify the specification formula (not the implementation directly), which is an appropriate pattern for a private method
+- **Resolved:** Cross-story regression (Finding 8) — stale 7-6-1 test deleted, registration removed from CMakeLists.txt
 
 ### Deleted File Verification
 
@@ -161,21 +134,21 @@ Quality gate passed with zero issues. All deterministic checks (lint, build) ver
 
 ## Summary
 
-| Severity | Count | Resolved |
-|----------|-------|----------|
-| BLOCKER | 0 | — |
-| HIGH | 0 | — |
-| MEDIUM | 2 | 2 |
-| LOW | 5 | 4 |
-| **Total** | **7** | **6** |
+### All Findings (Pass 1 + Pass 2)
 
-All findings addressed in code review follow-up (2026-03-31):
-- **Finding 1** (MEDIUM): ✅ Fixed — mute test now replicates `pow(10, -10000/2000)` formula
-- **Finding 2** (MEDIUM): ✅ Fixed — deleted 4 dead no-op functions from DSplaysound.cpp + DSPlaySound.h
-- **Finding 3** (LOW): ✅ Fixed — `NULL` → `nullptr` in PlayBuffer default parameter
-- **Finding 4** (LOW): ✅ Fixed — removed unnecessary `static_cast<void*>`
-- **Finding 5** (LOW): Accepted as-is — block comment filtering is low-risk
-- **Finding 6** (LOW): ✅ Fixed — `#pragma once` replaces `#ifndef __DSPLAYSOUND_H__`
-- **Finding 7** (LOW): ✅ Fixed — ATDD counts updated to 5 RED + 8 GREEN = 13 total
+| Severity | Count | Resolved | Remaining |
+|----------|-------|----------|-----------|
+| HIGH | 1 | 1 | 0 |
+| MEDIUM | 2 | 2 | 0 |
+| LOW | 9 | 5 | 4 (Findings 9-12, accepted as-is) |
+| **Total** | **12** | **8** | **4 (all accepted)** |
 
-Quality gate re-verified after fixes: `./ctl check` ✅ PASS, 13 test cases / 260 assertions ✅ PASS.
+### Pass 2 Action Required
+
+| Finding | Severity | Action |
+|---------|----------|--------|
+| 8 | HIGH | ✅ Fixed — deleted stale 7-6-1 DSwaveIO.h test and registration |
+| 9 | LOW | Accept as-is — specification tests are appropriate for private method |
+| 10 | LOW | Accept as-is — backward-compatible API pattern |
+| 11 | LOW | Accept as-is — `pow(10,x)` degrades gracefully |
+| 12 | LOW | Optional: update stale INFO messages |
