@@ -592,4 +592,5 @@ development_status:
   7-9-3-unify-entry-point: done              # 13 pts | Flow:E | Deps: 7-9-2 ✓ | Delete WinMain + kill all #ifdef _WIN32 outside Platform/ and Audio/ | code-review-finalize completed 2026-03-30
   7-9-4-kill-directsound: done               # 8 pts | Flow:E | Deps: 7-9-3 ✓ | Delete DirectSound, miniaudio-only audio, zero #ifdef _WIN32 in Audio/ | code-review-complete 2026-03-31
   7-9-5-kill-all-cross-platform-stubs: done  # 21 pts | Flow:E | Deps: 7-9-4 ✓ | Replace ALL stubs across Platform/ layer with real SDL3/C++ implementations — zero no-ops, zero silent failures | dev-story completed 2026-03-31
+  7-9-6-migrate-raw-gl-to-murenderer: ready-for-dev  # 34 pts | Flow:E | Deps: 7-9-5 ✓ | Migrate 250+ raw GL calls across 35 files to MuRenderer API — zero gl* calls outside SDL GPU backend
   epic-7-retrospective: optional
