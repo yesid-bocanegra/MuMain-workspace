@@ -1,6 +1,6 @@
 # Story 7.9.6: Migrate All Raw OpenGL Calls to MuRenderer
 
-Status: ready-for-dev
+Status: dev-story
 
 ---
 
