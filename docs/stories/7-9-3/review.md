@@ -10,14 +10,15 @@
 
 ## Quality Gate
 
-**Status**: Pending — run by pipeline
+**Status**: PASS — all checks green (2026-03-30)
 
 | Check | Result |
 |-------|--------|
-| lint (clang-format) | Pending |
-| build (cmake) | Pending |
-| test (ctest) | Pending |
-| cppcheck | Pending |
+| lint (clang-format) | **PASS** |
+| build (cmake + ninja) | **PASS** |
+| test (ctest) | **PASS** (9/9 story tests, 89/90 suite — 1 pre-existing SIGSEGV in 7-6-7) |
+| cppcheck | **PASS** |
+| App startup | **N/A** — game client binary, no server process to boot |
 
 ---
 
