@@ -937,3 +937,5 @@
 {"timestamp":"2026-03-31T14:15:52Z","event":"step_complete","story_key":"7-9-5","step":"dev-story","status":"done"}
 {"timestamp":"2026-03-31T14:16:37.437852+00:00","event_type":"step_passed","story_key":"7-9-5","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":537.0,"input_tokens":118,"output_tokens":9594,"cache_creation_tokens":328483,"cache_read_tokens":5783045,"num_turns":71,"num_tool_calls":45}}
 {"timestamp":"2026-03-31T14:16:38.440528+00:00","event_type":"step_started","story_key":"7-9-5","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-31T14:19:41.072111+00:00","event_type":"step_passed","story_key":"7-9-5","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":182.6,"input_tokens":816,"output_tokens":10204,"cache_creation_tokens":381113,"cache_read_tokens":8365734,"num_turns":72,"num_tool_calls":35}}
+{"timestamp":"2026-03-31T14:19:42.075648+00:00","event_type":"step_started","story_key":"7-9-5","step":"code-review","sprint":null,"epic":"7","data":{}}
