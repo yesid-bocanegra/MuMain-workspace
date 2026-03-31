@@ -169,6 +169,9 @@ You'll be prompted to select which PRD milestone(s) this sprint advances. Story 
 
 # Check current state
 ./paw status
+
+# Inspect active pipeline topology (graph execution model — v3.75.0+)
+./paw graph
 ```
 
 The pipeline runs fully automated: create → ATDD → design → dev → review → done.

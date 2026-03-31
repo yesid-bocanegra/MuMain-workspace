@@ -1,6 +1,6 @@
 # Story 7.9.4: Kill DirectSound — Miniaudio-Only Audio Layer
 
-Status: ready-for-dev
+Status: complete
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -64,74 +64,74 @@ is superior anyway.
 
 ## Functional Acceptance Criteria
 
-- [ ] **AC-1: Delete DirectSound implementations**
+- [x] **AC-1: Delete DirectSound implementations**
   All DirectSound API calls are removed from `DSplaysound.cpp`:
   `DirectSoundCreate`, `CreateSoundBuffer`, `IDirectSoundBuffer::Play/Stop/SetVolume`,
   `IDirectSound3DBuffer`, `IDirectSound3DListener`.
   Each is replaced with the equivalent `IPlatformAudio` / miniaudio call.
 
-- [ ] **AC-2: Delete Win32 wave I/O**
+- [x] **AC-2: Delete Win32 wave I/O**
   `DSwaveIO.cpp` and `DSwaveIO.h` Win32 implementations (`mmioOpen`, `mmioRead`, `mmioDescend`)
   are deleted. WAV loading goes through miniaudio's built-in decoder (`ma_decoder`).
 
-- [ ] **AC-3: Zero `#ifdef _WIN32` in Audio/**
+- [x] **AC-3: Zero `#ifdef _WIN32` in Audio/**
   `grep -rn '#ifdef _WIN32' src/source/Audio/` returns 0.
   No DirectSound types (`IDirectSoundBuffer`, `DSBUFFERDESC`, `WAVEFORMATEX`, `LPDIRECTSOUND`)
   remain in any audio header or source file.
 
-- [ ] **AC-4: All audio functions route through IPlatformAudio**
+- [x] **AC-4: All audio functions route through IPlatformAudio**
   Every public function in `DSPlaySound.h` that game code calls (PlayBuffer, StopBuffer,
   SetVolume, SetPosition3D, etc.) delegates to `g_platformAudio` methods.
   Game code never touches DirectSound or miniaudio directly.
 
-- [ ] **AC-5: Quality gate passes**
+- [x] **AC-5: Quality gate passes**
   `./ctl check` exits 0. MinGW cross-compile passes. `check-win32-guards.py` exits 0.
 
 ---
 
 ## Standard Acceptance Criteria
 
-- [ ] **AC-STD-1:** Code Standards — clang-format clean; zero `#ifdef _WIN32` in Audio/; PascalCase functions, `m_` prefix members.
-- [ ] **AC-STD-2:** Testing Requirements — Catch2 test suite passes; no regressions in existing tests.
-- [ ] **AC-STD-12:** SLI/SLO Targets — Audio playback latency p95 < 50ms (single-threaded miniaudio thread); zero audio dropout under normal load.
-- [ ] **AC-STD-13:** Quality Gate — `./ctl check` exits 0 (format-check + cppcheck + build).
-- [ ] **AC-STD-15:** API Contract — IPlatformAudio methods called correctly; all audio paths go through interface; no direct miniaudio calls from game logic.
+- [x] **AC-STD-1:** Code Standards — clang-format clean; zero `#ifdef _WIN32` in Audio/; PascalCase functions, `m_` prefix members.
+- [x] **AC-STD-2:** Testing Requirements — Catch2 test suite passes; no regressions in existing tests.
+- [x] **AC-STD-12:** SLI/SLO Targets — Audio playback latency p95 < 50ms (single-threaded miniaudio thread); zero audio dropout under normal load.
+- [x] **AC-STD-13:** Quality Gate — `./ctl check` exits 0 (format-check + cppcheck + build).
+- [x] **AC-STD-15:** API Contract — IPlatformAudio methods called correctly; all audio paths go through interface; no direct miniaudio calls from game logic.
 
 ---
 
 ## Validation Artifacts
 
-- [ ] **AC-VAL-2:** Verify `grep -rn '#ifdef _WIN32' src/source/Audio/` returns 0
-- [ ] **AC-VAL-3:** Verify `python3 MuMain/scripts/check-win32-guards.py` exits 0
-- [ ] **AC-VAL-4:** Verify no DirectSound types remain: `grep -rn 'IDirectSound\|DSBUFFERDESC\|LPDIRECTSOUND\|DirectSoundCreate' src/source/Audio/` returns 0
+- [x] **AC-VAL-2:** Verify `grep -rn '#ifdef _WIN32' src/source/Audio/` returns 0
+- [x] **AC-VAL-3:** Verify `python3 MuMain/scripts/check-win32-guards.py` exits 0
+- [x] **AC-VAL-4:** Verify no DirectSound types remain: `grep -rn 'IDirectSound\|DSBUFFERDESC\|LPDIRECTSOUND\|DirectSoundCreate' src/source/Audio/` returns 0
 
 ---
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Audit DirectSound call sites** (AC: 1, 2, 3)
-  - [ ] 1.1: Map every `#ifdef _WIN32` block in DSplaysound.cpp (14 guards) to its IPlatformAudio equivalent
-  - [ ] 1.2: Map DSwaveIO.cpp functions (2 guards) to miniaudio decoder equivalents
-  - [ ] 1.3: Map DSwaveIO.h guards (2 guards) — identify type stubs needed
-  - [ ] 1.4: Map DSPlaySound.h guard (1) and DSWavRead.h guard (1)
-  - [ ] 1.5: Identify any DirectSound features NOT yet in IPlatformAudio (3D positioning, etc.)
+- [x] **Task 1: Audit DirectSound call sites** (AC: 1, 2, 3)
+  - [x] 1.1: Map every `#ifdef _WIN32` block in DSplaysound.cpp (14 guards) to its IPlatformAudio equivalent
+  - [x] 1.2: Map DSwaveIO.cpp functions (2 guards) to miniaudio decoder equivalents
+  - [x] 1.3: Map DSwaveIO.h guards (2 guards) — identify type stubs needed
+  - [x] 1.4: Map DSPlaySound.h guard (1) and DSWavRead.h guard (1)
+  - [x] 1.5: Identify any DirectSound features NOT yet in IPlatformAudio (3D positioning, etc.)
 
-- [ ] **Task 2: Extend IPlatformAudio if needed** (AC: 4)
-  - [ ] 2.1: Add any missing methods to IPlatformAudio for features used by game code
-  - [ ] 2.2: Implement in MiniAudioBackend
+- [x] **Task 2: Extend IPlatformAudio if needed** (AC: 4)
+  - [x] 2.1: Add any missing methods to IPlatformAudio for features used by game code
+  - [x] 2.2: Implement in MiniAudioBackend
 
-- [ ] **Task 3: Replace DirectSound with IPlatformAudio calls** (AC: 1, 2, 3, 4)
-  - [ ] 3.1: DSplaysound.cpp — replace all 14 `#ifdef _WIN32` blocks with IPlatformAudio delegates
-  - [ ] 3.2: DSPlaySound.h — remove DirectSound type declarations and COM interface references
-  - [ ] 3.3: DSwaveIO.cpp — delete Win32 wave I/O or replace with miniaudio decoder
-  - [ ] 3.4: DSwaveIO.h — delete DirectSound types (`WAVEFORMATEX`, `MMCKINFO`, etc.)
-  - [ ] 3.5: DSWavRead.h — remove Win32 guard and DirectSound type dependencies
+- [x] **Task 3: Replace DirectSound with IPlatformAudio calls** (AC: 1, 2, 3, 4)
+  - [x] 3.1: DSplaysound.cpp — replace all 14 `#ifdef _WIN32` blocks with IPlatformAudio delegates
+  - [x] 3.2: DSPlaySound.h — remove DirectSound type declarations and COM interface references
+  - [x] 3.3: DSwaveIO.cpp — delete Win32 wave I/O or replace with miniaudio decoder
+  - [x] 3.4: DSwaveIO.h — delete DirectSound types (`WAVEFORMATEX`, `MMCKINFO`, etc.)
+  - [x] 3.5: DSWavRead.h — remove Win32 guard and DirectSound type dependencies
 
-- [ ] **Task 4: Quality gate** (AC: 5)
-  - [ ] 4.1: `./ctl check` passes (format + lint + build)
-  - [ ] 4.2: MinGW cross-compile passes
-  - [ ] 4.3: `grep -rn '#ifdef _WIN32' src/source/Audio/` returns 0
-  - [ ] 4.4: `python3 MuMain/scripts/check-win32-guards.py` exits 0
+- [x] **Task 4: Quality gate** (AC: 5)
+  - [x] 4.1: `./ctl check` passes (format + lint + build)
+  - [x] 4.2: MinGW cross-compile passes
+  - [x] 4.3: `grep -rn '#ifdef _WIN32' src/source/Audio/` returns 0
+  - [x] 4.4: `python3 MuMain/scripts/check-win32-guards.py` exits 0
 
 ---
 
@@ -207,8 +207,37 @@ code lives is `Platform/PlatformCompat.h`, `Platform/PlatformTypes.h`, `Platform
 
 ### Agent Model Used
 
+claude-opus-4-6
+
 ### Debug Log References
+
+- SIGSEGV in test: ODR violation — test compiled without `Defined_Global.h`, causing `MAX_BUFFER` mismatch (946 vs 977). Fixed by adding `#include "Defined_Global.h"` to test file.
 
 ### Completion Notes List
 
+- Deleted ~860 lines of DirectSound code from `DSplaysound.cpp`, replaced with ~90 lines of IPlatformAudio delegates
+- Deleted `DSwaveIO.cpp` (252 lines), `DSwaveIO.h` (55 lines), `DSWavRead.h` (36 lines) — entirely dead code
+- Added `ReleaseSound()` to `IPlatformAudio` and `MiniAudioBackend` for `ReleaseBuffer()` call sites
+- Removed `dsound` linker dependency from both MSVC and MinGW CMake sections
+- Updated 7-9-3 test to remove Audio/ from exemption list
+- Fixed test SIGSEGV: ODR violation from `ESound` enum `#ifdef` guards requiring `Defined_Global.h`
+- Fixed stack overflow: Changed stack-allocated `MiniAudioBackend` (3.7MB) to heap-allocated `std::make_unique` in AC-4 tests
+- Cleaned up debug `fprintf` remnants from `MiniAudioBackend::~MiniAudioBackend()`
+- Verified all 13 test cases (260 assertions) pass for story 7-9-4
+- `./ctl check` exits 0, `check-win32-guards.py` exits 0, zero grep matches for banned patterns
+
 ### File List
+
+| File | Action | Summary |
+|------|--------|---------|
+| `src/source/Audio/DSplaysound.cpp` | Rewritten | All functions delegate to `g_platformAudio` |
+| `src/source/Audio/DSPlaySound.h` | Modified | Removed `#ifdef _WIN32` around `InitDirectSound` |
+| `src/source/Audio/DSwaveIO.cpp` | Deleted | Win32 wave I/O (entirely `#ifdef _WIN32`) |
+| `src/source/Audio/DSwaveIO.h` | Deleted | Win32 wave types (entirely `#ifdef _WIN32`) |
+| `src/source/Audio/DSWavRead.h` | Deleted | Dead code, never included |
+| `src/source/Platform/IPlatformAudio.h` | Modified | Added `ReleaseSound()` method |
+| `src/source/Platform/MiniAudio/MiniAudioBackend.h` | Modified | Added `ReleaseSound()` override |
+| `src/source/Platform/MiniAudio/MiniAudioBackend.cpp` | Modified | Implemented `ReleaseSound()` |
+| `src/CMakeLists.txt` | Modified | Removed `dsound` from MSVC and MinGW link libs |
+| `tests/audio/test_directsound_removal_7_9_4.cpp` | Modified | Fixed ODR violation, merged duplicate test |
+| `tests/platform/test_entry_point_unification_7_9_3.cpp` | Modified | Removed Audio/ from exemption list |
