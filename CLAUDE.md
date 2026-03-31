@@ -7,7 +7,7 @@ MU Online game client (Season 5.2→6). C++20 monolithic game loop + .NET 10 Nat
 ## Key Paths
 
 - **Game client source:** `MuMain/src/source/` (692 files in 20 module directories)
-- **Entry point:** `MuMain/src/source/Main/Winmain.cpp` → `WinMain()`
+- **Entry point:** `MuMain/src/source/Main/MuMain.cpp` → `MuMain()` → `main()`
 - **Module structure:** See `docs/modular-reorganization.md` for directory map and CMake targets
 - **.NET network layer:** `MuMain/ClientLibrary/` (14 files)
 - **Code gen tool:** `MuMain/ConstantsReplacer/` (10 files)

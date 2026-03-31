@@ -76,7 +76,7 @@ Do not introduce new calls to these APIs. Use the listed replacements. The Phase
 | Banned API | Replacement | Phase/Session | Notes |
 |------------|-------------|---------------|-------|
 | `DirectSoundCreate` / `IDirectSound*` | miniaudio `ma_engine` + `ma_sound` | 3 / 3.1–3.2 | Behind `IPlatformAudio` interface |
-| `wzAudioCreate` / `wzAudioPlay` / `wzAudioStop` | miniaudio `ma_sound` streaming | 3 / 3.3 | Only 7/18 functions used, all in `Winmain.cpp` |
+| `wzAudioCreate` / `wzAudioPlay` / `wzAudioStop` | miniaudio `ma_sound` streaming | 3 / 3.3 | Only 7/18 functions used, all in `MuMain.cpp` |
 | `PlaySound` (Win32) | `g_platformAudio->PlaySound()` | 3 / 3.2 | |
 
 #### Network / HTTP

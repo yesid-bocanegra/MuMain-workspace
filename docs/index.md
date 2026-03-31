@@ -16,7 +16,7 @@
 - **Type:** Game Client
 - **Tech Stack:** C++20, OpenGL, Win32, DirectSound
 - **Root:** `MuMain/src/source/` (692 files in 20 module directories)
-- **Entry Point:** `Main/Winmain.cpp → WinMain()`
+- **Entry Point:** `Main/MuMain.cpp → WinMain()`
 
 ### ClientLibrary (clientlibrary)
 - **Type:** Network Library

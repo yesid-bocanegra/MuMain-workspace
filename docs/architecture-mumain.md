@@ -174,7 +174,7 @@ Planned SDL3/SDL_gpu migration (see `CROSS_PLATFORM_PLAN.md`):
 
 | File | Lines | Role |
 |------|-------|------|
-| `Winmain.cpp` | ~800 | Entry point, game loop, window creation |
+| `MuMain.cpp` | ~800 | Entry point, game loop, window creation |
 | `ZzzObject.cpp` | 10,852 | Object management and rendering |
 | `_struct.h` | ~2,000 | Core data structures (CHARACTER, OBJECT, ITEM) |
 | `_define.h` | ~1,500 | Constants and system limits |

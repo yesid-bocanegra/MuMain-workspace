@@ -104,7 +104,7 @@ MuMain is a multi-part project with 4 components that communicate through code g
 - Editor reads/writes game state directly (items, skills, characters)
 - Console output redirected from `wprintf` → ImGui via macros in `stdafx.h`
 - Input blocking: `MuInputBlockerCore` prevents game input when hovering editor UI
-- Editor lifecycle managed by `MuEditorCore` singleton, initialized in `Winmain.cpp`
+- Editor lifecycle managed by `MuEditorCore` singleton, initialized in `MuMain.cpp`
 
 ### 4. CMake Build Integration
 

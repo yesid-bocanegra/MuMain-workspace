@@ -9,7 +9,7 @@
       "root_path": "MuMain/src/source/",
       "language": "C++20",
       "framework": "OpenGL/Win32",
-      "entry_point": "src/source/Winmain.cpp → WinMain()",
+      "entry_point": "src/source/MuMain.cpp → WinMain()",
       "source_files": 691,
       "description": "3D MMORPG game client with OpenGL immediate mode rendering, Win32 windowing, DirectSound audio, and scene-based state machine."
     },

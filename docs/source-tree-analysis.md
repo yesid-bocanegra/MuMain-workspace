@@ -117,8 +117,8 @@ MuMain-workspace/                          # Parent workspace (documentation + s
         └── source/                        # ★ Game client source (691 files)
             │                              # 325 .cpp + 366 .h files
             │
-            ├── Winmain.cpp                # ⭐ ENTRY: WinMain, MuMain(), MainLoop()
-            ├── Winmain.h                  # Global handles, defines, externs
+            ├── MuMain.cpp                # ⭐ ENTRY: WinMain, MuMain(), MainLoop()
+            ├── MuMain.h                  # Global handles, defines, externs
             ├── stdafx.h                   # Precompiled header: Win32, OpenGL, STL
             ├── resource.rc                # Windows resource file
             │
@@ -277,8 +277,8 @@ MuMain-workspace/                          # Parent workspace (documentation + s
 
 | Entry Point | File | Purpose |
 |------------|------|---------|
-| `WinMain()` | `src/source/Winmain.cpp` | Windows GUI entry → calls `MuMain()` |
-| `MainLoop()` | `src/source/Winmain.cpp` | Game loop: message pump + render |
+| `WinMain()` | `src/source/MuMain.cpp` | Windows GUI entry → calls `MuMain()` |
+| `MainLoop()` | `src/source/MuMain.cpp` | Game loop: message pump + render |
 | `RenderScene()` | `src/source/Scenes/SceneManager.cpp` | Per-frame scene rendering |
 | `MuEditorCore::Initialize()` | `src/MuEditor/Core/MuEditorCore.cpp` | Editor bootstrap (debug) |
 | `ConnectionManager` | `ClientLibrary/ConnectionManager.cs` | .NET network entry |

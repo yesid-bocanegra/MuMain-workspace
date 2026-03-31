@@ -24,7 +24,7 @@ For architecture details, see [Architecture: MuMain](architecture-mumain.md). Fo
 
 | Component | File | Purpose |
 |-----------|------|---------|
-| Entry point | `Winmain.cpp` | `WinMain()` → `MuMain()` → `MainLoop()` |
+| Entry point | `MuMain.cpp` | `main()` → `MuMain()` |
 | Frame timing | `Scenes/SceneManager.h` | `FrameTimingState` — FPS capping, delta time |
 | Scene dispatch | `Scenes/SceneManager.cpp` | `RenderScene()` — per-frame scene rendering |
 

@@ -29,7 +29,7 @@
 **Trigger files:** `Gameplay/ZzzCharacter.h`, `Gameplay/ZzzCharacter.cpp`
 
 **Direct dependents (125 files):**
-- **Core game logic:** `Main/Winmain.cpp`, `Gameplay/ZzzObject.cpp`
+- **Core game logic:** `Main/MuMain.cpp`, `Gameplay/ZzzObject.cpp`
 - **Scenes:** `Scenes/LoginScene.cpp`, `Scenes/CharacterScene.cpp`, `Scenes/MainScene.cpp`, `Scenes/SceneManager.cpp`
 - **Inventory:** `Gameplay/ZzzInventory.cpp`, `Data/ZzzInfomation.cpp`, `UI/Windows/NewUIMyInventory.cpp`, `UI/Framework/NewUIInventoryCtrl.cpp`
 - **UI windows:** `UI/Windows/NewUIMainFrameWindow.cpp`, `UI/Windows/NewUICharacterInfoWindow.cpp`, `UI/Windows/NewUIPartyListWindow.cpp`
@@ -270,7 +270,7 @@ Single table — "If changing X, also check Y":
 
 ## Initialization Dependency Chain
 
-Init order in `Main/Winmain.cpp` `WinMain()` function (lines 944-1354):
+Init order in `Main/MuMain.cpp` `WinMain()` function (lines 944-1354):
 
 ```
 Config Load → Display Setup → Window + OpenGL Context
@@ -351,12 +351,12 @@ Per-phase blast radius from the SDL3 migration plan:
 | Phase | Key Files Modified | Systems Affected | Blast Radius |
 |-------|-------------------|------------------|--------------|
 | Phase 0: Headers | `Main/stdafx.h`, platform headers | Precompiled header | **FULL REBUILD** (692 files) |
-| Phase 1: Window/Input | `Main/Winmain.cpp`, `Core/CInput` | Window creation, input, main loop | Login + character selection |
+| Phase 1: Window/Input | `Main/MuMain.cpp`, `Core/CInput` | Window creation, input, main loop | Login + character selection |
 | Phase 2: SDL_gpu | 14 `glBegin` files in RenderFX/ | Entire rendering pipeline | **FULL VISUAL REGRESSION** |
 | Phase 3: Audio | `Audio/DSPlaySound.*`, `Audio/DSwaveIO.*` | Background music, sound effects | All game audio |
 | Phase 4: Filesystem | `Data/ZzzOpenData.cpp`, `World/MapManager.cpp` | Asset loading, map data | All content loading |
 | Phase 5: Text/Input | `Data/MultiLanguage`, IME handling | Text rendering, localization | All UI text display |
-| Phase 6: Timer/Thread | `Main/Winmain.cpp`, game loop | Frame timing, threading | Game loop stability |
+| Phase 6: Timer/Thread | `Main/MuMain.cpp`, game loop | Frame timing, threading | Game loop stability |
 | Phase 7: Clipboard/Misc | Minor platform APIs | Clipboard, cursor, system info | Minimal |
 | Phase 8: .NET AOT | `Dotnet/Connection.h`, `ClientLibrary/` | C++/C# bridge, all networking | **ALL NETWORK FUNCTIONALITY** |
 | Phase 9: Integration | Build system, CI | Compilation, testing | Build process |
