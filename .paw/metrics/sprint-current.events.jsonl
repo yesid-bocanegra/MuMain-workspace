@@ -892,3 +892,5 @@
 {"timestamp":"2026-03-31T06:21:45.528486+00:00","event_type":"step_retried","story_key":"7-9-4","step":"code-review","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-31T06:21:45.529982+00:00","event_type":"feedback_saved","story_key":"7-9-4","step":"code-review","sprint":null,"epic":"7","data":{"regression_target":"code-review"}}
 {"timestamp":"2026-03-31T06:21:47.534883+00:00","event_type":"step_started","story_key":"7-9-4","step":"code-review","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-31T06:34:42.536869+00:00","event_type":"step_passed","story_key":"7-9-4","step":"code-review","sprint":null,"epic":"7","data":{"duration_seconds":775.0,"input_tokens":79,"output_tokens":5671,"cache_creation_tokens":163986,"cache_read_tokens":2399367,"num_turns":43,"num_tool_calls":27}}
+{"timestamp":"2026-03-31T06:34:42.537894+00:00","event_type":"step_started","story_key":"7-9-4","step":"code-review-qg","sprint":null,"epic":"7","data":{}}
