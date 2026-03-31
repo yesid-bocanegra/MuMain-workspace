@@ -225,6 +225,14 @@ claude-opus-4-6
 - Cleaned up debug `fprintf` remnants from `MiniAudioBackend::~MiniAudioBackend()`
 - Verified all 13 test cases (260 assertions) pass for story 7-9-4
 - `./ctl check` exits 0, `check-win32-guards.py` exits 0, zero grep matches for banned patterns
+- **Code review follow-ups (2026-03-31):**
+  - Finding 1: Fixed vacuous mute test — now replicates `pow(10, -10000/2000)` formula and asserts `< 0.001f`
+  - Finding 2: Deleted 4 dead no-op functions (`InitDirectSound`, `SetEnableSound`, `FreeDirectSound`, `RestoreBuffers`) from DSplaysound.cpp and DSPlaySound.h
+  - Finding 3: Changed `NULL` → `nullptr` in `PlayBuffer` default parameter
+  - Finding 4: Removed unnecessary `static_cast<void*>` in `PlayBuffer` delegation
+  - Finding 5: Accepted as-is (block comment filtering — Audio/ uses `//` exclusively)
+  - Finding 6: Replaced `#ifndef __DSPLAYSOUND_H__` include guard with `#pragma once`
+  - Finding 7: Updated ATDD test counts (5 RED + 8 GREEN = 13 total)
 
 ### File List
 

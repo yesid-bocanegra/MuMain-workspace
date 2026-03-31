@@ -154,8 +154,8 @@
 |------|-------|-------------|
 | `MuMain/tests/audio/test_directsound_removal_7_9_4.cpp` | Mixed (always-GREEN + RED file-scan) | `target_sources(MuTests PRIVATE audio/test_directsound_removal_7_9_4.cpp)` in `tests/CMakeLists.txt` |
 
-**Total test cases in RED phase:** 9 (all file-scan tests under `#ifndef _WIN32`)  
-**Total test cases always GREEN:** 10 (DbToLinear math + AC-4 interface conformance + AC-STD-2)
+**Total test cases in RED phase:** 5 (file-scan tests under `#ifndef _WIN32`: 2 AC-3, 1 AC-1 types, 1 AC-1 calls, 1 AC-2)  
+**Total test cases always GREEN:** 8 (5 DbToLinear math + 2 AC-4 interface + 1 AC-STD-2 compile)
 
 ---
 
