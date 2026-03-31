@@ -909,3 +909,5 @@
 {"timestamp":"2026-03-31T11:42:18.724912+00:00","event_type":"step_retried","story_key":"7-9-4","step":"code-review-analysis","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-03-31T11:42:18.726002+00:00","event_type":"feedback_saved","story_key":"7-9-4","step":"code-review-analysis","sprint":null,"epic":"7","data":{"regression_target":"code-review-analysis"}}
 {"timestamp":"2026-03-31T11:42:20.731508+00:00","event_type":"step_started","story_key":"7-9-4","step":"code-review-analysis","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-03-31T11:48:45.388116+00:00","event_type":"step_passed","story_key":"7-9-4","step":"code-review-analysis","sprint":null,"epic":"7","data":{"duration_seconds":384.7,"input_tokens":12709,"output_tokens":16553,"cache_creation_tokens":573474,"cache_read_tokens":13636665,"num_turns":103,"num_tool_calls":48}}
+{"timestamp":"2026-03-31T11:48:46.394428+00:00","event_type":"step_started","story_key":"7-9-4","step":"ac-validation","sprint":null,"epic":"7","data":{}}

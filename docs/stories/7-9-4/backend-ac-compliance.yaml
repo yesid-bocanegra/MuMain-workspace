@@ -1,0 +1,64 @@
+metadata:
+  story_key: "7-9-4"
+  status: passed
+  total_iterations: 0
+  last_updated: "2026-03-31T06:50:00-05:00"
+
+test_class:
+  file_path: "MuMain/tests/audio/test_directsound_removal_7_9_4.cpp"
+  framework: "Catch2"
+  ac_test_pattern: 'TEST_CASE("AC-'
+  run_cmd: "ctest --test-dir MuMain/out/build/macos-arm64/tests -C Debug -R '7-9-4'"
+
+test_results:
+  total_tests: 13
+  passed: 13
+  failed: 0
+  ac_mapping:
+    - ac_id: "AC-1"
+      tests:
+        - "AC-1 [7-9-4]: DbToLinear formula — mute level (-10000) is near zero"
+        - "AC-1 [7-9-4]: DbToLinear formula — full volume (0) maps to 1.0f"
+        - "AC-1 [7-9-4]: DbToLinear formula — -2000 millibels maps to -20 dB"
+        - "AC-1 [7-9-4]: DbToLinear formula — output is monotonically increasing"
+        - "AC-1 [7-9-4]: DbToLinear formula — output is always in range [0.0, 1.0]"
+        - "AC-1 [7-9-4]: No DirectSound API types remain in Audio/ header or source files"
+        - "AC-1 [7-9-4]: No direct DirectSound initialization calls remain in Audio/"
+      status: passed
+    - ac_id: "AC-2"
+      tests:
+        - "AC-2 [7-9-4]: No Win32 wave I/O types remain in Audio/ files"
+      status: passed
+    - ac_id: "AC-3"
+      tests:
+        - "AC-3 [7-9-4]: Audio/ directory has zero #ifdef _WIN32 guards"
+        - "AC-3 [7-9-4]: Individual Audio/ files have zero platform guards"
+      status: passed
+    - ac_id: "AC-4"
+      tests:
+        - "AC-4 [7-9-4]: IPlatformAudio remains abstract after DirectSound removal"
+        - "AC-4 [7-9-4]: MiniAudioBackend default-constructs and routes through IPlatformAudio"
+      status: passed
+    - ac_id: "AC-STD-2"
+      tests:
+        - "AC-STD-2 [7-9-4]: Translation unit compiles without Win32 or DirectSound dependencies"
+      status: passed
+  passing_tests:
+    - "AC-1 [7-9-4]: DbToLinear formula — mute level (-10000) is near zero"
+    - "AC-1 [7-9-4]: DbToLinear formula — full volume (0) maps to 1.0f"
+    - "AC-1 [7-9-4]: DbToLinear formula — -2000 millibels maps to -20 dB"
+    - "AC-1 [7-9-4]: DbToLinear formula — output is monotonically increasing"
+    - "AC-1 [7-9-4]: DbToLinear formula — output is always in range [0.0, 1.0]"
+    - "AC-4 [7-9-4]: IPlatformAudio remains abstract after DirectSound removal"
+    - "AC-4 [7-9-4]: MiniAudioBackend default-constructs and routes through IPlatformAudio"
+    - "AC-STD-2 [7-9-4]: Translation unit compiles without Win32 or DirectSound dependencies"
+    - "AC-3 [7-9-4]: Audio/ directory has zero #ifdef _WIN32 guards"
+    - "AC-3 [7-9-4]: Individual Audio/ files have zero platform guards"
+    - "AC-1 [7-9-4]: No DirectSound API types remain in Audio/ header or source files"
+    - "AC-1 [7-9-4]: No direct DirectSound initialization calls remain in Audio/"
+    - "AC-2 [7-9-4]: No Win32 wave I/O types remain in Audio/ files"
+  failing_tests: []
+
+iterations: []
+blockers: []
+next_actions: []
