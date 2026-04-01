@@ -509,6 +509,50 @@ Auto-generation reads `development-standards.md` for your commit format (convent
 
 ---
 
+## Step Summaries (v4.2.0)
+
+Every pipeline step writes a summary to `{story_root}/{node-id}.md` after execution. These summaries form an incremental knowledge chain — each step records what it achieved, what it found, and what gaps remain.
+
+### Story directory layout after a full pipeline run
+
+```
+docs/stories/7-9-7-my-story/
+  story.md                  # created by create-story (primary artifact)
+  validated-story.md        # created by validate-story sub-graph
+  atdd.md                   # created by atdd step (primary artifact)
+  requirements.md           # created by design-screen
+  progress.md               # created by dev-story (primary artifact)
+  review.md                 # created by code-review (primary artifact)
+  completeness-gate.md      # step summary (written by orchestration)
+  code-review-qg.md         # step summary
+  code-review-analysis.md   # step summary
+  ac-validation.md          # step summary
+  ui-validation.md          # step summary
+  code-review-finalize.md   # step summary
+  session-summary.md        # Haiku-consolidated session summary
+```
+
+### How it works
+
+- **Primary artifacts** (story.md, review.md, atdd.md, progress.md) are written by the step itself — the orchestration skips these
+- **Step summaries** are written by `_write_step_summary` in `orchestration.py` — extracts Claude's execution output from the log file plus structured metadata (verdict, duration, tokens, turns)
+- **Downstream injection**: before each Claude session, `_inject_prior_step_summaries` loads all step summaries into the prompt — Claude sees what prior steps found without re-doing the work
+- **Attempt accumulation**: when a step runs multiple times (regression cycles), each attempt appends with a `---` separator and timestamp
+- **Haiku consolidation**: when accumulated summary exceeds 12K chars, Haiku distills prior attempts into a ~2K digest preserving key findings and changes between attempts. Falls back to truncation if Haiku is unavailable
+- **Graph gating**: `file_exists` edge conditions check for these files to advance the pipeline — the summary IS the gating artifact
+
+### Inspecting summaries
+
+```bash
+# View what a step found
+cat docs/stories/7-9-7/completeness-gate.md
+
+# See all step summaries for a story
+ls docs/stories/7-9-7/*.md
+```
+
+---
+
 ## Status & Diagnostics
 
 ```bash
