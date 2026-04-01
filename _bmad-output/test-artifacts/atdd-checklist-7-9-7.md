@@ -210,13 +210,13 @@ The test file does not exist yet (Task 9.1 not done). Adding it to `MuMain/tests
 **File:** `MuMain/tests/build/test_ac3_depth_buffer_created_7_9_7.cmake`
 
 **Tasks to make this test pass:**
-- [ ] Task 3.1: Create `SDL_GPUTexture` with depth format (`SDL_GPU_TEXTUREFORMAT_D24_UNORM`) in `Init()`
-- [ ] Task 3.2: Pass depth texture as `SDL_GPUDepthStencilTargetInfo` to `SDL_BeginGPURenderPass()` (~line 726)
-- [ ] Task 3.3: Set `has_depth_stencil_target = true` in pipeline (~line 1867)
-- [ ] Task 3.4: Set depth clear to 1.0 with `SDL_GPU_LOADOP_CLEAR`
-- [ ] Task 3.5: Recreate depth texture on window resize
-- [ ] Run test: `ctest --test-dir MuMain/tests/build -R depth_buffer_created_7_9_7`
-- [ ] ✅ Test passes (green phase)
+- [x] Task 3.1: Create `SDL_GPUTexture` with depth format (`SDL_GPU_TEXTUREFORMAT_D24_UNORM`) in `Init()`
+- [x] Task 3.2: Pass depth texture as `SDL_GPUDepthStencilTargetInfo` to `SDL_BeginGPURenderPass()` (~line 726)
+- [x] Task 3.3: Set `has_depth_stencil_target = true` in pipeline (~line 1867)
+- [x] Task 3.4: Set depth clear to 1.0 with `SDL_GPU_LOADOP_CLEAR`
+- [x] Task 3.5: Recreate depth texture on window resize
+- [x] Run test: `ctest --test-dir MuMain/tests/build -R depth_buffer_created_7_9_7`
+- [x] ✅ Test passes (green phase)
 
 **Estimated Effort:** 3-4 hours
 
@@ -227,10 +227,10 @@ The test file does not exist yet (Task 9.1 not done). Adding it to `MuMain/tests
 **File:** `MuMain/tests/build/test_ac4_alpha_discard_propagated_7_9_7.cmake`
 
 **Tasks to make this test pass:**
-- [ ] Task 4.1: Update `SetAlphaTest(bool enabled)` to set `m_fogUniform.alphaDiscardEnabled = enabled ? 1u : 0u`
-- [ ] Task 4.1: Set `s_fogDirty = true` in `SetAlphaTest`
-- [ ] Run test: `ctest --test-dir MuMain/tests/build -R alpha_discard_propagated_7_9_7`
-- [ ] ✅ Test passes (green phase)
+- [x] Task 4.1: Update `SetAlphaTest(bool enabled)` to set `m_fogUniform.alphaDiscardEnabled = enabled ? 1u : 0u`
+- [x] Task 4.1: Set `s_fogDirty = true` in `SetAlphaTest`
+- [x] Run test: `ctest --test-dir MuMain/tests/build -R alpha_discard_propagated_7_9_7`
+- [x] ✅ Test passes (green phase)
 
 **Estimated Effort:** 1 hour
 
@@ -241,10 +241,10 @@ The test file does not exist yet (Task 9.1 not done). Adding it to `MuMain/tests
 **File:** `MuMain/tests/build/test_ac7_alpha_func_override_7_9_7.cmake`
 
 **Tasks to make this test pass:**
-- [ ] Task 4.2: Add `SetAlphaFunc(int func, float ref)` override to `MuRendererSDLGpu` concrete class
-- [ ] Task 4.2: Update `m_fogUniform.alphaThreshold = ref` and `s_fogDirty = true` in `SetAlphaFunc`
-- [ ] Run test: `ctest --test-dir MuMain/tests/build -R alpha_func_override_7_9_7`
-- [ ] ✅ Test passes (green phase)
+- [x] Task 4.2: Add `SetAlphaFunc(int func, float ref)` override to `MuRendererSDLGpu` concrete class
+- [x] Task 4.2: Update `m_fogUniform.alphaThreshold = ref` and `s_fogDirty = true` in `SetAlphaFunc`
+- [x] Run test: `ctest --test-dir MuMain/tests/build -R alpha_func_override_7_9_7`
+- [x] ✅ Test passes (green phase)
 
 **Estimated Effort:** 1 hour
 
@@ -255,13 +255,13 @@ The test file does not exist yet (Task 9.1 not done). Adding it to `MuMain/tests
 **File:** `MuMain/tests/render/test_matrix_math_7_9_7.cpp`
 
 **Tasks to make this test pass:**
-- [ ] Task 9.1: Create `MuMain/tests/render/test_matrix_math_7_9_7.cpp`
-- [ ] Task 9.1: Add `target_sources(MuTests PRIVATE render/test_matrix_math_7_9_7.cpp)` to `MuMain/tests/CMakeLists.txt`
-- [ ] Task 9.2: Verify perspective Z range [0,1] tests pass (GLM already integrated)
-- [ ] Task 9.3: Verify ortho NDC mapping tests pass
-- [ ] Task 9.4: Verify matrix stack push/pop tests pass
-- [ ] Run test: `./ctl test` (or `ctest --test-dir MuMain/build -R matrix_math_7_9_7`)
-- [ ] ✅ All 6 tests pass (green phase)
+- [x] Task 9.1: Create `MuMain/tests/render/test_matrix_math_7_9_7.cpp`
+- [x] Task 9.1: Add `target_sources(MuTests PRIVATE render/test_matrix_math_7_9_7.cpp)` to `MuMain/tests/CMakeLists.txt`
+- [x] Task 9.2: Verify perspective Z range [0,1] tests pass (GLM already integrated)
+- [x] Task 9.3: Verify ortho NDC mapping tests pass
+- [x] Task 9.4: Verify matrix stack push/pop tests pass
+- [x] Run test: `./ctl test` (or `ctest --test-dir MuMain/build -R matrix_math_7_9_7`)
+- [x] ✅ All 7 tests pass (green phase)
 
 **Estimated Effort:** 2 hours
 

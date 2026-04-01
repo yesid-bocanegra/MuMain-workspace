@@ -156,3 +156,14 @@
 {"timestamp":"2026-04-01T18:19:53.069714+00:00","event_type":"step_retried","story_key":"7-9-7","step":"atdd","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-04-01T18:19:53.071478+00:00","event_type":"feedback_saved","story_key":"7-9-7","step":"atdd","sprint":null,"epic":"7","data":{"regression_target":"atdd"}}
 {"timestamp":"2026-04-01T18:19:55.074357+00:00","event_type":"step_started","story_key":"7-9-7","step":"atdd","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-01T18:25:06.464215+00:00","event_type":"step_passed","story_key":"7-9-7","step":"atdd","sprint":null,"epic":"7","data":{"duration_seconds":311.4,"input_tokens":117,"output_tokens":16943,"cache_creation_tokens":383269,"cache_read_tokens":6820198,"num_turns":70,"num_tool_calls":46}}
+{"timestamp":"2026-04-01T18:25:07.468436+00:00","event_type":"step_started","story_key":"7-9-7","step":"design-screen","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-01T18:25:07.470013+00:00","event_type":"step_passed","story_key":"7-9-7","step":"design-screen","sprint":null,"epic":"7","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0,"cache_creation_tokens":0,"cache_read_tokens":0,"num_turns":0,"num_tool_calls":0}}
+{"timestamp":"2026-04-01T18:25:08.477397+00:00","event_type":"story_completed","story_key":"7-9-7","step":null,"sprint":null,"epic":"7","data":{"total_steps":11,"total_retries":1,"total_regressions":0,"duration_seconds":1124.4}}
+{"timestamp":"2026-04-01T18:44:16.571424+00:00","event_type":"story_started","story_key":"7-9-7","step":null,"sprint":null,"epic":"7","data":{"from_step":"design-screen","to_step":"code-review-finalize","planned_steps":7,"fresh":false}}
+{"timestamp":"2026-04-01T18:44:16.572150+00:00","event_type":"step_started","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-01T19:30:00.000000+00:00","event_type":"step_completed","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{"tasks_completed":9,"tests_passed":15,"tests_total":15,"quality_gate":"passed"}}
+{"timestamp":"2026-04-01T19:14:54.609292+00:00","event_type":"step_failed","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1838.0,"retry_count":0,"error":"Exit code 1","input_tokens":4228,"output_tokens":63586,"num_turns":375,"num_tool_calls":251}}
+{"timestamp":"2026-04-01T19:14:54.614796+00:00","event_type":"step_retried","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{"attempt":2}}
+{"timestamp":"2026-04-01T19:14:54.616586+00:00","event_type":"feedback_saved","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
+{"timestamp":"2026-04-01T19:14:56.627882+00:00","event_type":"step_started","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{}}

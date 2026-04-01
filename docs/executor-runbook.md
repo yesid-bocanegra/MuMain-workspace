@@ -540,6 +540,7 @@ docs/stories/7-9-7-my-story/
 - **Attempt accumulation**: when a step runs multiple times (regression cycles), each attempt appends with a `---` separator and timestamp
 - **Haiku consolidation**: when accumulated summary exceeds 12K chars, Haiku distills prior attempts into a ~2K digest preserving key findings and changes between attempts. Falls back to truncation if Haiku is unavailable
 - **Graph gating**: `file_exists` edge conditions check for these files to advance the pipeline — the summary IS the gating artifact
+- **Console logging**: after each step, a condensed summary (verdict, duration, turns, first 5 lines of output) is printed to the console so operators can track progress in real-time without opening files
 
 ### Inspecting summaries
 
