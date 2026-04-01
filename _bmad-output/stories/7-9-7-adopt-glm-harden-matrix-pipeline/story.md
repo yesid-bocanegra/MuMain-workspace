@@ -1,6 +1,6 @@
 # Story 7.9.7: Adopt GLM and Harden Renderer Matrix Pipeline
 
-Status: ready-for-dev
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -83,6 +83,13 @@ The hand-rolled `mat4::` utilities (~150 lines) duplicate what GLM provides as a
 - [ ] **AC-STD-2:** Testing Requirements — matrix math unit tests (perspective, ortho, rotate, translate, multiply) using Catch2
 - [ ] **AC-STD-13:** Quality Gate passes (`./ctl check` — clang-format + cppcheck)
 - [ ] **AC-STD-15:** Git Safety (no incomplete rebase, no force push)
+
+---
+
+## Validation Artifacts
+
+- [ ] **AC-VAL-2:** Test scenarios documented in `docs/test-scenarios/epic-7/` (matrix math, depth buffer, alpha discard)
+- [ ] **AC-VAL-3:** Visual validation screenshots (before/after for particles, terrain, fog)
 
 ---
 

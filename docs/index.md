@@ -61,6 +61,7 @@
 - [Asset Pipeline](./asset-pipeline.md) — Asset formats, directory structure, loading pipeline *(~230 lines)*
 - [Implementation Recipes](./implementation-recipes.md) — Step-by-step: add UI window, packet, manager, item, map, flag, scene *(~700 lines; 7 recipes, ~80-120 lines each)*
 - [Feature Impact Maps](./feature-impact-maps.md) — Change blast radius per system, dependency chains, feature flags *(~450 lines; 9 system maps, quick-lookup, init chain)*
+- [Game Dev Library Landscape](./gamedev-library-landscape.md) — C++ library survey: current stack, alternatives, adoption decisions *(~230 lines; 12 categories)*
 
 ### Guidelines
 - [Security Guidelines](./security-guidelines.md) — Input validation, memory safety, crypto migration, logging security *(~130 lines)*

@@ -134,6 +134,7 @@ Start with `docs/index.md` (~100 lines) for the full index with section navigati
 | Assessing change impact | `feature-impact-maps.md` (relevant system, ~25-45 lines each) |
 | Security review | `security-guidelines.md` (~130) |
 | Performance optimization | `performance-guidelines.md` (~130) |
+| Evaluating dependencies | `gamedev-library-landscape.md` (~230) |
 | Architectural decisions | `adr/README.md` + relevant ADR files |
 
 Large files (>400 lines): `CROSS_PLATFORM_PLAN.md` (970 lines) — always read specific phase sections, never the full file.
