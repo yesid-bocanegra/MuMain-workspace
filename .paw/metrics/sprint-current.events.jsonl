@@ -1164,3 +1164,7 @@
 {"timestamp":"2026-04-02T01:06:49.504963+00:00","event_type":"feedback_saved","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{"regression_target":"code-review-analysis"}}
 {"timestamp":"2026-04-02T01:06:51.505919+00:00","event_type":"step_started","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-04-02T01:14:25.626831+00:00","event_type":"step_failed","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{"duration_seconds":454.1,"retry_count":1,"error":"Exit code 1","input_tokens":4998,"output_tokens":16033,"num_turns":114,"num_tool_calls":48}}
+{"timestamp":"2026-04-02T01:14:38.650452+00:00","event_type":"step_triaged","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{"action":"regress-dev-story"}}
+{"timestamp":"2026-04-02T01:14:38.651243+00:00","event_type":"step_regressed","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{"from_step":"code-review-analysis","to_step":"dev-story","regression_count":1}}
+{"timestamp":"2026-04-02T01:14:38.651921+00:00","event_type":"feedback_saved","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
+{"timestamp":"2026-04-02T01:14:40.662638+00:00","event_type":"step_started","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{}}

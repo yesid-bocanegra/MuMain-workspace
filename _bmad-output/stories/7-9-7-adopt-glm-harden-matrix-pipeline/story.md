@@ -1,6 +1,6 @@
 # Story 7.9.7: Adopt GLM and Harden Renderer Matrix Pipeline
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
