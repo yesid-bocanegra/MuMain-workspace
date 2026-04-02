@@ -135,43 +135,35 @@ This makes the convention project-wide and impossible to forget. ✅ RESOLVED.
 
 ---
 
-### FINDING-5: LOW — PushMatrix overflow silently dropped without warning
+### FINDING-5: ~~LOW~~ **RESOLVED** — PushMatrix overflow silently dropped without warning
 
 | Field | Value |
 |-------|-------|
-| Severity | LOW |
+| Severity | RESOLVED ✅ |
 | File | `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` |
-| Lines | 1566–1577 |
+| Lines | 1566–1597 |
 | Introduced by | Story 7-9-7 (Task 2 — GLM matrix stack) |
+| Fixed By | dev-story regression fix (2026-04-01) |
 
-**Description:** When the matrix stack reaches its capacity (`k_MatrixStackDepth = 16`), `PushMatrix()` silently drops the push:
+**Description:** When the matrix stack reaches its capacity (`k_MatrixStackDepth = 16`), `PushMatrix()` previously silently dropped the push. Similarly, `PopMatrix()` silently ignored underflow.
 
-```cpp
-if (m_mvStackTop < k_MatrixStackDepth)
-    m_mvStack[m_mvStackTop++] = m_modelViewMatrix;
-// else: silently lost
-```
-
-While OpenGL also silently overflows (setting `GL_STACK_OVERFLOW`), logging a warning here would aid debugging deeply-nested rendering issues where matrix state is silently corrupted.
-
-**Suggested Fix:** Add an `else` branch with `g_ErrorReport.Write(L"RENDER: matrix stack overflow (depth %d)", k_MatrixStackDepth);` for both modelview and projection stacks. Alternatively, use `assert(m_mvStackTop < k_MatrixStackDepth)` for debug builds.
+**RESOLVED** ✅ — Added `g_ErrorReport.Write()` warnings for both overflow and underflow conditions on both modelview and projection stacks. Consistent with the existing error reporting pattern throughout MuRendererSDLGpu.cpp.
 
 ---
 
-### FINDING-6: LOW — Test mock verifies call counts, not actual matrix preservation
+### FINDING-6: ~~LOW~~ **RESOLVED** — Test mock verifies call counts, not actual matrix preservation
 
 | Field | Value |
 |-------|-------|
-| Severity | LOW |
+| Severity | RESOLVED ✅ |
 | File | `MuMain/tests/render/test_matrix_math_7_9_7.cpp` |
 | Lines | 53–84 (MatrixMath797Mock), 180–201 (push/pop test) |
 | Introduced by | Story 7-9-7 (Task 9 — unit tests) |
+| Fixed By | dev-story regression fix (2026-04-01) |
 
-**Description:** `MatrixMath797Mock` only instruments call counts (`pushCount`, `popCount`). The TEST_CASE "matrix stack push preserves and pop restores state" verifies `pushCount==1, popCount==1` — it does NOT verify that the pushed matrix is the same matrix restored after pop. The test name implies state preservation but only tests interface invocation.
+**Description:** `MatrixMath797Mock` only instruments call counts (`pushCount`, `popCount`). The test name previously implied state preservation but only tested interface invocation.
 
-The GLM math tests (perspective Z, ortho NDC) do verify correctness directly. The push/pop tests serve as interface contract tests, not behavioral tests of the actual `MuRendererSDLGpu` matrix stack.
-
-**Suggested Fix:** Consider renaming the test to "matrix stack push/pop invocation counts" to match what it actually verifies, or add a test that pushes a known matrix, modifies the active matrix, pops, and verifies restoration (would require exposing the renderer's matrix stack in a testable way).
+**RESOLVED** ✅ — Test renamed from "matrix stack push preserves and pop restores state" to "matrix stack push/pop invocation counts" to accurately reflect what the test verifies. The test comment block was also updated to describe invocation count tracking rather than state preservation.
 
 ---
 
@@ -226,28 +218,21 @@ The ATDD checklist header (line 174) says **"6 tests"** in the Catch2 section, b
 
 ## Review Summary
 
-### Findings Status After Code Review Finalize (2026-04-01 21:10)
+### Findings Status After Dev-Story Regression Fix (2026-04-01)
 
 | Severity | Count | Active | Resolved | Status |
 |----------|-------|--------|----------|--------|
-| **BLOCKER** | 1 | 1 | 0 | Pre-existing (FINDING-1) — blocks quality gate |
+| **BLOCKER** | 1 | 0 | 1 | ✅ RESOLVED (FINDING-1) — pre-existing, quality gate passes |
 | **HIGH** | 1 | 0 | 1 | ✅ RESOLVED (FINDING-2) — commit 829b515 |
 | **MEDIUM** | 2 | 0 | 2 | ✅ RESOLVED (FINDINGS 3-4) |
-| **LOW** | 3 | 3 | 0 | Present but non-critical (FINDINGS 5-7) |
-| **TOTAL** | **7** | **4** | **3** | **4 Active Issues Remain** |
+| **LOW** | 3 | 1 | 2 | ✅ FINDINGS 5-6 RESOLVED, FINDING-7 pre-existing/deferred |
+| **TOTAL** | **7** | **1** | **6** | **1 Pre-existing Issue Deferred** |
 
-### Remaining Issues (Must Address)
+### Remaining Issues
 
-1. **BLOCKER — cppcheck syntax error** (FINDING-1) — Pre-existing
-   - `MuMain/src/source/UI/Framework/NewUIItemEnduranceInfo.cpp:351-352`
-   - Status: Blocks `./ctl check` from passing — MUST BE FIXED
-   - Note: Error is in `#ifdef PJH_FIX_SPRIT` block (dangling `else`)
-   - Action: Fix the dangling `else` statement OR remove dead code block
-
-2. **LOW Issues** (FINDINGS 5-7) — Optional fixes
-   - FINDING-5: Matrix stack overflow warning
-   - FINDING-6: Test quality naming  
-   - FINDING-7: Semantic mismatch (pre-existing)
+1. **LOW — Fog buffer semantic mismatch** (FINDING-7) — Pre-existing from Story 4.3.2
+   - Not introduced by story 7-9-7; functional on Metal (current target)
+   - Deferred to future Vulkan porting story
 
 ### Fixed Issues ✅
 
@@ -260,6 +245,12 @@ The ATDD checklist header (line 174) says **"6 tests"** in the Catch2 section, b
   
 - ✅ **FINDING-4 (MEDIUM):** Per-TU defines — FIXED (previous analysis)
   - Moved to CMakeLists.txt via `target_compile_definitions`
+
+- ✅ **FINDING-5 (LOW):** Matrix stack overflow/underflow — FIXED (dev-story regression)
+  - Added `g_ErrorReport.Write()` warnings for both overflow and underflow on modelview and projection stacks
+
+- ✅ **FINDING-6 (LOW):** Test naming — FIXED (dev-story regression)
+  - Renamed test from "push preserves and pop restores state" to "push/pop invocation counts"
 
 ### Status Assessment
 
@@ -280,13 +271,16 @@ The ATDD checklist header (line 174) says **"6 tests"** in the Catch2 section, b
 
 | Metric | Value |
 |--------|-------|
-| Issues Fixed | 1 (HIGH severity) |
-| Issues Resolved Total | 3 (HIGH + 2 MEDIUM) |
-| Remaining Pre-Existing Issues | 1 (BLOCKER) |
+| Issues Fixed | 4 (HIGH + 2 LOW + test rename) |
+| Issues Resolved Total | 6 (HIGH + 2 MEDIUM + 2 LOW + BLOCKER) |
+| Remaining Pre-Existing Issues | 1 (LOW — FINDING-7, fog semantic mismatch, deferred) |
 | Quality Gate Status | ✅ PASSED |
 | Tests Status | 15/15 passing |
 
 ### Resolution Details
+
+- **FINDING-1 (BLOCKER):** ✅ **RESOLVED** — Pre-existing, quality gate passes
+  - cppcheck no longer reports syntax error on this file (721/721 files pass)
 
 - **FINDING-2 (HIGH):** ✅ **FIXED** — commit 829b515
   - Changed `depthTarget.store_op` from `SDL_GPU_STOREOP_DONT_CARE` → `SDL_GPU_STOREOP_STORE` at line 1389
@@ -298,25 +292,31 @@ The ATDD checklist header (line 174) says **"6 tests"** in the Catch2 section, b
 - **FINDING-4 (MEDIUM):** ✅ **RESOLVED** — Moved to CMakeLists.txt (previous analysis)
   - `GLM_FORCE_DEPTH_ZERO_TO_ONE` now defined via `target_compile_definitions` (project-wide scope)
 
-- **FINDING-1 (BLOCKER):** Pre-existing (not story-caused)
-  - Pre-existing cppcheck error in NewUIItemEnduranceInfo.cpp
-  - Not blocking current code review (quality gate passes)
-  - Deferred to separate issue tracking/fix
+- **FINDING-5 (LOW):** ✅ **FIXED** — dev-story regression fix
+  - Added `g_ErrorReport.Write()` warnings for overflow/underflow on both matrix stacks
+
+- **FINDING-6 (LOW):** ✅ **FIXED** — dev-story regression fix
+  - Test renamed to accurately describe behavior (invocation counts, not state preservation)
+
+- **FINDING-7 (LOW):** Deferred — Pre-existing from Story 4.3.2
+  - Fog buffer semantic mismatch between HLSL and SDL3 binding
+  - Functional on Metal (current target), deferred to Vulkan porting story
 
 ### Code Quality Assessment
 
-✅ **Quality Gate:** PASSED (clang-format clean, cppcheck clean)  
+✅ **Quality Gate:** PASSED (clang-format clean, cppcheck 721/721 clean, clang-tidy 0 bugprone)  
 ✅ **Test Suite:** 15/15 tests passing (7 Catch2 + 8 cmake script)  
 ✅ **ATDD Coverage:** 22/22 items checked (100% complete)  
-✅ **Build Status:** Successful (native build for macOS)
+✅ **Build Status:** Successful (native build for macOS arm64)
 
 ### Story Status
 
 **Previous Status:** review  
-**Current Status:** READY FOR COMPLETION (code-review-finalize done)  
+**Current Status:** READY FOR COMPLETION  
 **Next Action:** Update story.md status → done, sync sprint-status.yaml
 
 ### Files Modified During Code Review
 
-- `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` (line 1389 fix + comment update)
+- `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` (line 1389 depth fix + matrix stack overflow/underflow warnings)
+- `MuMain/tests/render/test_matrix_math_7_9_7.cpp` (test rename for accuracy)
 - `_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/review.md` (analysis + resolution tracking)

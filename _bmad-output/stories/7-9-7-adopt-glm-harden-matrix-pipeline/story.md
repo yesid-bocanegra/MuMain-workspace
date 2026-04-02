@@ -311,3 +311,4 @@ claude-opus-4-6
 - 2026-04-01: Tasks 1-9 implemented and verified (GLM integration, depth buffer, alpha discard, fog binding, shader blobs, unit tests)
 - 2026-04-01: AC-VAL-2 test scenarios created with 15 automated tests + 6 manual visual scenarios
 - 2026-04-01: All 15/15 tests passing, quality gate clean, status → review
+- 2026-04-01: Code review regression fixes — FINDING-5 (matrix stack overflow/underflow warnings), FINDING-6 (test rename for accuracy), review.md updated with 6/7 findings resolved

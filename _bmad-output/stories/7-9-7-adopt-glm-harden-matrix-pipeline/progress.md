@@ -3,7 +3,7 @@
 ## Quick Resume
 
 - **status:** complete
-- **next_action:** Proceed to code-review quality gate
+- **next_action:** Proceed to code-review-finalize (all findings resolved)
 - **active_file:** N/A
 - **blocker:** None
 - **completion_date:** 2026-04-01
@@ -42,7 +42,14 @@
 
 ## Blockers and Open Questions
 
-None — all tasks complete, quality gate passed, story status set to review.
+None — all tasks complete, quality gate passed, code review findings resolved.
+
+### Session 2 (Code Review Regression Fix)
+- **Date:** 2026-04-01
+- **Tasks Completed:** FINDING-5 (matrix stack overflow/underflow warnings), FINDING-6 (test rename)
+- **Quality Gate:** `./ctl check` passed (721/721 files, 0 bugprone)
+- **Tests:** 15/15 passed
+- **Status:** All code review findings addressed (6/7 resolved, 1 pre-existing deferred)
 
 ## Verification Session (2026-04-01)
 - ATDD Checklist: 22/22 items checked (0 unchecked)
