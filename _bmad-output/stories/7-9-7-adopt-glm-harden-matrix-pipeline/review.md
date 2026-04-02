@@ -7,18 +7,35 @@
 
 ---
 
+## Pipeline Status
+
+| Step | Status | Date |
+|------|--------|------|
+| 1. Quality Gate | ✅ PASSED | 2026-04-01 |
+| 2. Code Review Analysis | ✅ PASSED | 2026-04-01 |
+| 3. Code Review Finalize | pending | — |
+
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** ✅ PASSED (2026-04-01)
+**Run:** code-review-quality-gate pipeline step
 
-Pre-run results provided:
-- **mumain/lint:** FAIL — cppcheck syntax error in `NewUIItemEnduranceInfo.cpp:352` (pre-existing, not introduced by this story)
+| Check | Result |
+|-------|--------|
+| **mumain/lint** | ✅ PASS |
+| **mumain/build** | ✅ PASS |
+| **mumain/coverage** | ✅ PASS (no coverage configured) |
+| **mumain/sonarcloud** | N/A — not configured for C++ project |
+| **frontend** | N/A — no frontend components |
+| **schema-alignment** | N/A — no frontend components |
+| **ac-tests** | N/A — infrastructure story |
+| **boot-check** | N/A — C++ game client, no server endpoint |
 
 ---
 
 ## Findings
 
-### FINDING-1: BLOCKER — cppcheck syntax error blocks quality gate
+### FINDING-1: ~~BLOCKER~~ RESOLVED — cppcheck syntax error (fixed)
 
 | Field | Value |
 |-------|-------|
