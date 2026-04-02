@@ -1,6 +1,6 @@
 {
   "story_key": "7-9-7",
-  "current_step": "code-review-qg",
-  "status": "completed",
-  "last_run": "2026-04-01T20:00:09.487537"
+  "current_step": "code-review-analysis",
+  "status": "failed",
+  "last_run": "2026-04-01T20:14:25.624959"
 }

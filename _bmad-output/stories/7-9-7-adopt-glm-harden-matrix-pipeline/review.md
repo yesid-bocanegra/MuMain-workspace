@@ -9,11 +9,11 @@
 
 ## Pipeline Status
 
-| Step | Status | Date |
-|------|--------|------|
-| 1. Quality Gate | ✅ PASSED | 2026-04-01 |
-| 2. Code Review Analysis | ✅ PASSED | 2026-04-01 |
-| 3. Code Review Finalize | pending | — |
+| Step | Status | Date | Notes |
+|------|--------|------|-------|
+| 1. Quality Gate | ✅ PASSED | 2026-04-01 20:04 | mumain: lint + build passed |
+| 2. Code Review Analysis | ✅ PASSED | 2026-04-01 20:50 | FRESH RUN: 5 active issues identified, 2 resolved since last analysis |
+| 3. Code Review Finalize | pending | — | Fix HIGH + BLOCKER issues, then proceed |
 
 ## Quality Gate
 
@@ -57,85 +57,91 @@ cppcheck scans all preprocessor branches and reports `[syntaxError]` at line 352
 
 ---
 
-### FINDING-2: HIGH — Depth store_op DONT_CARE causes data loss on tile-based GPUs
+### FINDING-2: HIGH — Depth store_op DONT_CARE in mid-frame pass restart
 
 | Field | Value |
 |-------|-------|
 | Severity | HIGH |
 | File | `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` |
-| Lines | 773 (BeginFrame), 1360 (RenderQuadStrip end pass), 1388 (RenderQuadStrip reopen pass) |
+| Lines | 773 (BeginFrame) ✅ FIXED, 1389 (RenderQuadStrip reopen pass) ❌ STILL BROKEN |
 | Introduced by | Story 7-9-7 (Task 3 — depth buffer creation) |
+| Status | **PARTIALLY FIXED** — Initial pass corrected, mid-frame restart still incorrect |
 
-**Description:** The main render pass in `BeginFrame()` sets:
+**Description:** Story 7-9-7 Task 3 added depth buffer support. The initial render pass in `BeginFrame()` was previously set to:
 
 ```cpp
 depthTarget.store_op = SDL_GPU_STOREOP_DONT_CARE;  // line 773
 ```
 
-This tells the GPU driver it does not need to preserve depth data when the render pass ends. However, `RenderQuadStrip()` temporarily ends the render pass mid-frame (line 1360) to perform a copy operation, then reopens it with:
+**This has been FIXED** ✅ — line 773 now correctly uses `SDL_GPU_STOREOP_STORE`.
+
+However, the mid-frame render pass restart in `RenderQuadStrip()` at line 1389 still has the same issue:
 
 ```cpp
-depthTarget.load_op = SDL_GPU_LOADOP_LOAD;  // line 1388
+depthTarget.load_op = SDL_GPU_LOADOP_LOAD;   // line 1388
+depthTarget.store_op = SDL_GPU_STOREOP_DONT_CARE;  // line 1389 ← STILL BROKEN
 ```
 
-On **tile-based GPUs** (all Apple Silicon Macs — M1/M2/M3/M4 via Metal), `STOREOP_DONT_CARE` means tile memory content is NOT written back to the backing texture. When the reopened pass tries to `LOADOP_LOAD`, it reads **undefined depth data**, causing depth corruption for any geometry rendered after a quad strip draw.
+This tells the GPU to LOAD depth (restore prior state) but then DONT_CARE about storing it. On **tile-based GPUs** (all Apple Silicon Macs — M1/M2/M3/M4 via Metal), this means:
+1. Line 1388: Load the depth buffer from backing texture into tile memory
+2. Line 1389: GPU is told "don't preserve this data" when the pass ends
+3. Next pass reopens with LOADOP_LOAD → reads **undefined depth data**
 
-On immediate-mode GPUs (Vulkan/D3D12), this may work by chance since the driver often writes data regardless, but behavior is undefined per the spec.
+Result: Depth corruption for any geometry rendered after a quad strip draw.
 
-**Suggested Fix:** Change line 773 to:
+On immediate-mode GPUs (Vulkan/D3D12), this may work by accident, but behavior is undefined per spec.
+
+**Suggested Fix:** Change line 1389 to:
 
 ```cpp
 depthTarget.store_op = SDL_GPU_STOREOP_STORE;
 ```
 
-This ensures depth data is preserved across mid-frame render pass restarts. The performance cost is negligible — one extra depth resolve per frame on tile-based GPUs.
+This ensures depth data is preserved across mid-frame render pass restarts. The performance cost is negligible.
 
 ---
 
-### FINDING-3: MEDIUM — Misleading comment claims GLM_FORCE_LEFT_HANDED is set
+### FINDING-3: ~~MEDIUM~~ **RESOLVED** — Comment about GLM conventions
 
 | Field | Value |
 |-------|-------|
-| Severity | MEDIUM |
+| Severity | RESOLVED ✅ |
 | File | `MuMain/src/source/RenderFX/ZzzOpenglUtil.cpp` |
-| Lines | 15–18 |
-| Introduced by | Story 7-9-7 (Task 2 — GLM integration in ZzzOpenglUtil) |
+| Lines | 15–20 |
+| Status | **FIXED IN CODE REVIEW FINALIZE** |
 
-**Description:** The comment at line 16 says:
+**Previous Issue:** The comment incorrectly mentioned `GLM_FORCE_LEFT_HANDED` which is not defined.
 
-```cpp
-// projection matrix stack. GLM_FORCE_DEPTH_ZERO_TO_ONE + GLM_FORCE_LEFT_HANDED are set
-// in MuRendererSDLGpu.cpp
-```
-
-`GLM_FORCE_LEFT_HANDED` is **NOT defined anywhere** in the codebase. Task 2.11 explicitly removed it because the game uses OpenGL's right-handed convention. This comment could mislead future developers into thinking left-handed coordinates are in use, potentially causing incorrect matrix math in new code.
-
-**Suggested Fix:** Change the comment to:
+**Current State:** The comment has been corrected. Lines 15–20 now correctly state:
 
 ```cpp
+// GLU perspective — builds perspective matrix via GLM and multiplies into the renderer's
 // projection matrix stack. GLM_FORCE_DEPTH_ZERO_TO_ONE is set (Metal/Vulkan Z [0,1]).
 // Right-handed convention (GLM default) — matches original OpenGL game code.
+// ...
+// Note: GLM_FORCE_DEPTH_ZERO_TO_ONE is defined via target_compile_definitions in CMakeLists.txt
 ```
+
+This accurately reflects the current configuration and cannot mislead future developers. ✅ RESOLVED.
 
 ---
 
-### FINDING-4: MEDIUM — GLM_FORCE_DEPTH_ZERO_TO_ONE defined per-TU instead of via CMake
+### FINDING-4: ~~MEDIUM~~ **RESOLVED** — GLM_FORCE_DEPTH_ZERO_TO_ONE define location
 
 | Field | Value |
 |-------|-------|
-| Severity | MEDIUM |
-| Files | `MuRendererSDLGpu.cpp:46`, `ZzzOpenglUtil.cpp:19`, `tests/render/test_matrix_math_7_9_7.cpp:24` |
-| Introduced by | Story 7-9-7 (Task 1+2 — GLM integration) |
+| Severity | RESOLVED ✅ |
+| Files | `MuMain/src/CMakeLists.txt`, `MuMain/tests/CMakeLists.txt` |
+| Status | **FIXED IN CODE REVIEW FINALIZE** |
 
-**Description:** `GLM_FORCE_DEPTH_ZERO_TO_ONE` is manually `#define`'d before the GLM includes in three separate translation units. If a future TU includes GLM headers without this define, it will silently use the OpenGL depth convention `[-1,1]` instead of Metal/Vulkan `[0,1]`, causing hard-to-debug depth artifacts that only appear with specific camera angles or object distances.
+**Previous Issue:** `GLM_FORCE_DEPTH_ZERO_TO_ONE` was manually `#define`'d in three separate translation units, risking inconsistent depth conventions across the codebase.
 
-**Suggested Fix:** Add to `MuMain/src/CMakeLists.txt` (where `glm::glm` is linked):
+**Current State:** The define has been **moved to CMakeLists.txt** via `target_compile_definitions`:
+- Per-file `#define` statements have been removed ✅
+- All targets (MURenderFX and MuTests) receive the define globally ✅
+- Future translation units automatically inherit the correct depth convention ✅
 
-```cmake
-target_compile_definitions(MURenderFX PRIVATE GLM_FORCE_DEPTH_ZERO_TO_ONE)
-```
-
-And similarly for the test target. Then remove the per-file `#define` lines. This makes the convention project-wide and impossible to forget.
+This makes the convention project-wide and impossible to forget. ✅ RESOLVED.
 
 ---
 
@@ -230,12 +236,33 @@ The ATDD checklist header (line 174) says **"6 tests"** in the Catch2 section, b
 
 ## Review Summary
 
-| Severity | Count | Story-Introduced | Pre-Existing |
-|----------|-------|-------------------|--------------|
-| BLOCKER | 1 | 0 | 1 |
-| HIGH | 1 | 1 | 0 |
-| MEDIUM | 2 | 2 | 0 |
-| LOW | 3 | 2 | 1 |
-| **Total** | **7** | **5** | **2** |
+### Findings Status After Code Review Analysis (Fresh Run — 2026-04-01 20:50)
 
-**Verdict:** The GLM integration and matrix pipeline hardening are architecturally sound. The depth buffer, alpha discard, and fog uniform changes correctly address the rendering issues described in the story. The HIGH-severity depth store_op issue (FINDING-2) should be fixed before merge — it affects the primary target platform (macOS/Metal). The BLOCKER (FINDING-1) is pre-existing but must be resolved for the quality gate to pass.
+| Severity | Count | Active | Resolved | Status |
+|----------|-------|--------|----------|--------|
+| **BLOCKER** | 1 | 1 | 0 | Pre-existing (FINDING-1) — blocks quality gate |
+| **HIGH** | 1 | 1 | 0 | Partially fixed (FINDING-2) — still active at line 1389 |
+| **MEDIUM** | 2 | 0 | 2 | Both RESOLVED ✅ (FINDINGS 3-4) |
+| **LOW** | 3 | 3 | 0 | Present but non-critical (FINDINGS 5-7) |
+| **TOTAL** | **7** | **5** | **2** | **5 Active Issues Require Action** |
+
+### Critical Path Issues (Must Fix Before Story Can Be Marked Done)
+
+1. **BLOCKER — cppcheck syntax error** (FINDING-1) — Pre-existing, not story-caused
+   - `MuMain/src/source/UI/Framework/NewUIItemEnduranceInfo.cpp:351-352`
+   - Blocks `./ctl check` from passing
+   - Action: Fix the dangling `else` statement in the `#ifdef PJH_FIX_SPRIT` block
+
+2. **HIGH — Depth store_op DONT_CARE at line 1389** (FINDING-2) — Still active
+   - `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp:1389`
+   - Affects primary target platform (macOS/Metal)
+   - Action: Change `SDL_GPU_STOREOP_DONT_CARE` → `SDL_GPU_STOREOP_STORE`
+
+### Positive Progress
+
+- ✅ **FINDING-3 FIXED:** Comment about GLM conventions now accurate
+- ✅ **FINDING-4 FIXED:** `GLM_FORCE_DEPTH_ZERO_TO_ONE` moved to CMakeLists (no per-TU defines)
+- ✅ **ATDD:** 22/22 items checked (100% complete)
+- ✅ **Tests:** 15/15 passing (7 Catch2 + 8 cmake)
+
+**Verdict:** The GLM integration and matrix pipeline hardening are architecturally sound. The depth buffer, alpha discard, and fog uniform changes correctly address the story's rendering issues. However, **the HIGH-severity issue at line 1389 must be fixed before merge** — it affects the primary target platform (macOS/Metal). The BLOCKER (FINDING-1) is pre-existing but blocks the quality gate and must be resolved before this story can proceed to code-review-finalize.
