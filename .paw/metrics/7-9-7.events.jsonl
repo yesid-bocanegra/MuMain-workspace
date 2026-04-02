@@ -201,3 +201,5 @@
 {"timestamp":"2026-04-02T01:14:38.651243+00:00","event_type":"step_regressed","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{"from_step":"code-review-analysis","to_step":"dev-story","regression_count":1}}
 {"timestamp":"2026-04-02T01:14:38.651921+00:00","event_type":"feedback_saved","story_key":"7-9-7","step":"code-review-analysis","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-04-02T01:14:40.662638+00:00","event_type":"step_started","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-02T01:31:34.822112+00:00","event_type":"step_passed","story_key":"7-9-7","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1014.2,"input_tokens":10676,"output_tokens":21696,"cache_creation_tokens":643453,"cache_read_tokens":14607274,"num_turns":111,"num_tool_calls":60}}
+{"timestamp":"2026-04-02T01:31:35.835575+00:00","event_type":"step_started","story_key":"7-9-7","step":"completeness-gate","sprint":null,"epic":"7","data":{}}

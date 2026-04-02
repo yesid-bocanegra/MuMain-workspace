@@ -128,3 +128,114 @@ chore(story): complete dev-story 7-9-7, mark for re...
 | Quality Gate | `./ctl c
 
 [...truncated — see full log...]
+
+---
+
+## Attempt — 2026-04-01 20:31:35
+
+| Field | Value |
+|-------|-------|
+| Verdict | PASSED |
+| Duration | 1001.6951267719269s |
+| Tokens | 10676 in / 21696 out |
+| Turns | 111 |
+
+### Execution Output
+
+⚡ Skill: bmad-pcc-dev-story
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/pcc/engine/workflow.xml
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/pcc/workflows/dev-story/workflow.yaml
+💬 **Workflow Engine initialized.** Executing **Step 1a**: Load config_source and resolve variables.
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/bmm/config.yaml
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad/pcc/workflows/dev-story/instructions-implement.xml
+💬 **Workflow Engine initialized.** Variables resolved:
+- `story_key` = `7-9-7`
+- `output_folder` = `_bmad-output`
+- `communication_language` = English
+- `user_name` = Paco
+- Mode: **YOLO/unattended** (action-workflow, no template)
+
+This is a **pipeline regression** from `code-review-analysis` → `dev-story`. I need to understand what issues remain and fix them. Let me load the current state.
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/review.md
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/story.md
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/.paw/7-9-7.state.json
+💬 `★ Insight ─────────────────────────────────────`
+**Pipeline regression context:** The code-review-analysis found 7 findings. 3 were resolved (FINDING-2 HIGH, FINDING-3/4 MEDIUM). The pipeline regressed back to dev-story to address the remaining active issues: FINDING-1 (BLOCKER, pre-existing), FINDING-5 (LOW, matrix overflow), FINDING-6 (LOW, test naming), FINDING-7 (LOW, pre-existing).
+`─────────────────────────────────────────────────`
+
+Let me verify current state — run quality gate and read the files with active findings.
+🖥️  Running: ./ctl check 2>&1 | tail -30
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/tests/render/test_matrix_math_7_9_7.cpp
+💬 Let me also check the cppcheck error status and ATDD checklist while waiting for the quality gate.
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/src/source/UI/Framework/NewUIItemEnduranceInfo.cpp
+🔎 Grepping: ^- \[ \]
+🔎 Grepping: ^- \[x\]
+💬 Good — ATDD checklist: **22 checked / 0 unchecked = 100%**. The `PJH_FIX_SPRIT` code is actually well-structured now, so FINDING-1 appears to already be resolved. Let me check the quality gate output.
+📖 Reading: /private/tmp/claude-501/-Users-joseybv-workspace-mu-MuMain-workspace/ccf2e3d5-0668-4ae1-a447-6b8bdbe99b07/tasks/b98k42bvp.output
+💬 Quality gate is still running. Let me set up tracking and prepare the fixes while waiting.
+🔧 ToolSearch
+📝 Updating todo list
+💬 Let me check the quality gate output now.
+🖥️  Running: cat /private/tmp/claude-501/-Users-joseybv-workspace-mu-MuMain-workspace/ccf2e3d...
+💬 Still running. Let me start fixing FINDING-5 while waiting — I already have the code loaded.
+📝 Updating todo list
+💬 `★ Insight ─────────────────────────────────────`
+**FINDING-5 — Silent stack overflow:** The matrix stack in `PushMatrix()` has a fixed depth of 16. When the stack is full, the push silently does nothing — the caller has no idea their matrix was lost. OpenGL sets `GL_STACK_OVERFLOW` error state but our renderer has no error state mechanism. Adding a `g_ErrorReport.Write()` log provides a post-mortem breadcrumb if depth-16+ nesting ever occurs. Similarly, `PopMatrix()` should warn on underflow (popping from empty stack).
+`─────────────────────────────────────────────────`
+
+Let me read the PopMatrix section too, then apply both fixes.
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp
+💬 Now let me check what logging function is used in this file.
+🔎 Grepping: g_ErrorReport|g_ConsoleDebug
+💬 Good — `g_ErrorReport.Write(L"RENDER: ...")` is the pattern. Now let me apply both fixes:
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp
+💬 FINDING-5 fixed. Now **FINDING-6** — rename the push/pop test to accurately describe what it verifies.
+📝 Updating todo list
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/MuMain/tests/render/test_matrix_math_7_9_7.cpp
+💬 FINDING-6 fixed. Now let me check the quality gate output and handle FINDING-7.
+🖥️  Running: cat /private/tmp/claude-501/-Users-joseybv-workspace-mu-MuMain-workspace/ccf2e3d...
+💬 Quality gate still running. Let me check if the background task is done.
+🖥️  Running: wc -l /private/tmp/claude-501/-Users-joseybv-workspace-mu-MuMain-workspace/ccf2e...
+💬 Let me run the quality gate directly.
+🖥️  Running: ./ctl check 2>&1 | tail -50
+🖥️  Running: ps aux | grep -E "ctl|cmake|ninja|cppcheck|clang-format" | grep -v grep | head -...
+💬 cppcheck is running (4+ minutes in). Let me handle FINDING-7 documentation while waiting.
+📝 Updating todo list
+💬 FINDING-7 is pre-existing (from Story 4.3.2, not 7-9-7) and functional on Metal. The review already marks it as pre-existing. No code change needed — just needs to be noted as "acknowledged, deferred to Vulkan porting work."
+
+Now let me update the review.md with all resolution statuses — I'll prepare the edits and apply them once the quality gate confirms green.
+
+Let me check the quality gate output.
+🖥️  Running: wc -l /private/tmp/claude-501/-Users-joseybv-workspace-mu-MuMain-workspace/ccf2e...
+💬 The first background task has output now. Let me read it.
+📖 Reading: /private/tmp/claude-501/-Users-joseybv-workspace-mu-MuMain-workspace/ccf2e3d5-0668-4ae1-a447-6b8bdbe99b07/tasks/b98k42bvp.output
+💬 **Quality gate PASSED.** `✓ Quality gate passed (macos-arm64-debug)` — 721/721 files checked, 0 bugprone findings.
+📝 Updating todo list
+💬 Now let me run the tests to verify no regressions.
+🖥️  Running: ctest --test-dir MuMain/out/build/macos-arm64/tests -C Debug -R "7.9.7" --output...
+💬 **15/15 tests passed**, including the renamed test (#184: `matrix stack push/pop invocation counts`).
+📝 Updating todo list
+💬 Now let me update the review.md to reflect the resolution of all findings.
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/review.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/review.md
+💬 Now update the findings summary table and remaining issues section.
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/review.md
+💬 Now update the Fixed Issues section to include findings 5-6.
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/review.md
+💬 Now update the Resolution Summary section at the bottom.
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/review.md
+📝 Updating todo list
+💬 Now **Step 8.5**: Update story status, progress file, and commit.
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/story.md
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/story.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/story.md
+💬 Now update the progress file.
+📖 Reading: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/progress.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/progress.md
+🔧 Editing: /Users/joseybv/workspace/mu/MuMain-workspace/_bmad-output/stories/7-9-7-adopt-glm-harden-matrix-pipeline/progress.md
+💬 Now commit all changes per Step 8.5's task-commit requirement.
+🖥️  Running: git status 
+
+[...truncated — see full log...]
