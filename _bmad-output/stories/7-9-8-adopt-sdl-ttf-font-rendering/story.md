@@ -11,7 +11,7 @@
 | **Flow Code** | VS1-RENDER-FONT-SDLTTF |
 | **Story Points** | 13 |
 | **Dependencies** | 7-9-7 (GLM/renderer pipeline) ✓, 7-9-6 (MuRenderer migration) ✓ |
-| **Status** | ready-for-dev |
+| **Status** | in-progress |
 
 ---
 
@@ -131,3 +131,107 @@ SDL_ttf + HarfBuzz provides full CJK text shaping. The game's existing `CMultiLa
 - Dynamic texture updates for non-font use cases (separate story)
 - Removing CrossPlatformGDI.cpp or CUIRenderTextOriginal (still used on Win32)
 - Chat input rendering (uses CUITextInputBox which has its own text path)
+
+---
+
+## Story Metadata
+
+| Attribute | Value |
+|-----------|-------|
+| Story Type | infrastructure |
+
+### Affected Components
+
+| Component | Tags | Change Summary |
+|-----------|------|----------------|
+| mumain | backend | Add SDL_ttf FetchContent, implement CUIRenderTextSDLTtf, wire GPU text engine into renderer |
+| project-docs | documentation | Story artifacts |
+
+---
+
+## Tasks / Subtasks
+
+- [x] Task 1: SDL_ttf FetchContent Integration (AC-1) — DONE
+  - [x] 1.1: FetchContent_Declare(SDL3_ttf) with GIT_TAG release-3.2.2 in CMakeLists.txt
+  - [x] 1.2: FetchContent_MakeAvailable(SDL3_ttf) in src/CMakeLists.txt (deferred after SDL3 + OVERRIDE_FIND_PACKAGE)
+  - [x] 1.3: target_link_libraries for SDL3_ttf::SDL3_ttf on MURenderFX and MUThirdParty
+  - [x] 1.4: Build succeeds on macOS arm64 (Main binary links, MuTests RED as expected)
+  - [x] 1.5: CMake script test 7.9.8-AC-1:sdl-ttf-fetchcontent PASSES
+
+- [x] Task 2: Color Packing Helper (AC-3) — DONE
+  - [x] 2.1: Add `namespace mu::sdlttf` with `PackColorDWORD(r,g,b,a)` in `SDLTtfColorPack.h` (constexpr header-only)
+  - [x] 2.2: Included from `UIControls.h`; test includes header directly (no link dependency)
+  - [x] 2.3: Verify Catch2 AC-3 tests link and pass (6 test cases) — all 6 passed
+
+- [ ] Task 3: GPU Text Engine Lifecycle (AC-2)
+  - [ ] 3.1: Add `TTF_TextEngine*` and `TTF_Font*` as state in `MuRendererSDLGpu.cpp`
+  - [ ] 3.2: Call `TTF_Init()` + `TTF_CreateGPUTextEngine(s_device)` in renderer init
+  - [ ] 3.3: Call `TTF_DestroyGPUTextEngine()` + `TTF_Quit()` in renderer shutdown
+  - [ ] 3.4: Bundle a permissive `.ttf` font (Noto Sans or similar) in `Data/Font/`
+  - [ ] 3.5: Load font via `TTF_OpenFont()` with default pt size
+  - [ ] 3.6: Expose text engine/font handles for CUIRenderTextSDLTtf access
+
+- [ ] Task 4: CUIRenderTextSDLTtf Class (AC-3, AC-4)
+  - [ ] 4.1: Declare `CUIRenderTextSDLTtf : public IUIRenderText` in `UIControls.h`
+  - [ ] 4.2: Implement all IUIRenderText virtual methods
+  - [ ] 4.3: Implement `RenderText()` using `TTF_CreateText` + `TTF_GetGPUTextDrawData` + deferred draw
+  - [ ] 4.4: Implement `GetTextExtentPoint32` equivalent via `TTF_GetStringSize`
+  - [ ] 4.5: Add `RENDER_TEXT_SDL_TTF` constant and update factory `CUIRenderText::Create()`
+
+- [ ] Task 5: Deferred Rendering Integration (AC-6)
+  - [ ] 5.1: Ensure text atlas draw data integrates with `RenderCmd` deferred buffer
+  - [ ] 5.2: Verify atlas textures bind correctly during render pass
+  - [ ] 5.3: Test text rendering does not produce streak artifacts (copy-then-render pattern)
+
+- [ ] Task 6: Wire Factory and Verify Parity (AC-4, AC-5)
+  - [ ] 6.1: Update SDL3 init path in `MuMain.cpp` to use `RENDER_TEXT_SDL_TTF`
+  - [ ] 6.2: Verify button labels visible at 640x480 and 1024x768
+  - [ ] 6.3: Verify login screen text readable
+  - [ ] 6.4: Verify chat text renders correctly
+  - [ ] 6.5: Adjust font pt size if needed for visual parity
+
+- [ ] Task 7: Performance and Quality Gate (AC-STD-NFR-1)
+  - [ ] 7.1: Warm up font atlas with common glyphs at startup
+  - [ ] 7.2: Verify glyph atlas reuse across frames (no per-character re-upload)
+  - [ ] 7.3: Run `./ctl check` — 0 format/lint errors
+  - [ ] 7.4: Run `python3 MuMain/scripts/check-win32-guards.py` — exits 0
+
+---
+
+## Dev Notes
+
+### Architecture
+- SDL_ttf 3.x provides native SDL_GPU text engine — no GDI, no DIB, no glTexSubImage2D
+- `TTF_CreateGPUTextEngine` creates an atlas-based text engine tied to the SDL_GPU device
+- `TTF_GetGPUTextDrawData` returns draw sequences (atlas texture + quad vertices) for rendering
+- The deferred rendering system (RenderCmd) must handle text atlas textures alongside bitmap textures
+- CUITextInputBox has its own WriteText/UploadText — out of scope for this story
+
+### Key References
+- SDL_ttf GPU rendering: `TTF_CreateGPUTextEngine`, `TTF_GetGPUTextDrawData`, `TTF_GPUAtlasDrawSequence`
+- Current font pipeline: `UIControls.cpp:2779-2920` (CUIRenderTextOriginal::RenderText)
+- Renderer init: `MuRendererSDLGpu.cpp` Init() method
+- Factory: `UIControls.cpp:2521-2550` (CUIRenderText::Create)
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+(To be filled during implementation)
+
+### Debug Log
+(To be filled during implementation)
+
+### Completion Notes
+(To be filled on completion)
+
+---
+
+## File List
+(To be populated during implementation)
+
+---
+
+## Change Log
+(To be populated during implementation)

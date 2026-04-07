@@ -28,17 +28,17 @@
 
 ### Phase 1: Build Integration (AC-1) — Turns cmake script test GREEN
 
-- `[ ]` Add `FetchContent_Declare(SDL_ttf GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git GIT_TAG sdl3-ttf-3.2.2)` to `MuMain/CMakeLists.txt`
-- `[ ]` Call `FetchContent_MakeAvailable(SDL_ttf)` in `MuMain/CMakeLists.txt`
-- `[ ]` Add `target_link_libraries(MURenderFX PRIVATE SDL3_ttf::SDL3_ttf)` inside `if(MU_ENABLE_SDL3)` block
-- `[ ]` Verify build succeeds on macOS arm64: `./ctl build`
+- `[x]` Add `FetchContent_Declare(SDL3_ttf ...)` with `GIT_TAG release-3.2.2` to `MuMain/CMakeLists.txt`
+- `[x]` Call `FetchContent_MakeAvailable(SDL3_ttf)` in `src/CMakeLists.txt` (deferred after SDL3 + OVERRIDE_FIND_PACKAGE)
+- `[x]` Add `target_link_libraries` for SDL3_ttf::SDL3_ttf on MURenderFX and MUThirdParty
+- `[x]` Verify build succeeds on macOS arm64 (Main binary links)
 - `[ ]` Verify build succeeds on MinGW cross-compile (Linux CI): `cmake --build build-mingw`
 
 ### Phase 2: Color Packing Helper (AC-3) — Turns Catch2 link tests GREEN
 
-- `[ ]` Add `namespace mu { namespace sdlttf { uint32_t PackColorDWORD(uint8_t r, uint8_t g, uint8_t b, uint8_t a); } }` to `UIControls.h` (or a new `UIRenderTextSDLTtf.h` header)
-- `[ ]` Implement `PackColorDWORD` in `UIControls.cpp`: `return (uint32_t(a) << 24) | (uint32_t(b) << 16) | (uint32_t(g) << 8) | uint32_t(r);`
-- `[ ]` Verify Catch2 AC-3 tests link and pass: `ctest --test-dir MuMain/build -R sdl_ttf_7_9_8`
+- `[x]` Add `namespace mu::sdlttf` with constexpr `PackColorDWORD` in `SDLTtfColorPack.h` (included by UIControls.h)
+- `[x]` Constexpr inline in header — ABGR packing: `(a<<24)|(b<<16)|(g<<8)|r`
+- `[x]` Catch2 AC-3 tests link and pass: 6/6 passed, 5 GPU tests correctly SKIP'd
 
 ### Phase 3: GPU Text Engine Lifecycle (AC-2) — Engine init/shutdown
 
