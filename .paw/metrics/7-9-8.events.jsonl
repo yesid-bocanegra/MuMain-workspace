@@ -58,3 +58,5 @@
 {"timestamp":"2026-04-07T06:05:11.822191+00:00","event_type":"step_regressed","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"from_step":"completeness-gate","to_step":"dev-story","regression_count":2}}
 {"timestamp":"2026-04-07T06:05:11.822844+00:00","event_type":"feedback_saved","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-04-07T06:05:13.833807+00:00","event_type":"step_started","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-07T06:23:17.670305+00:00","event_type":"step_passed","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1083.8,"input_tokens":10680,"output_tokens":40133,"cache_creation_tokens":462385,"cache_read_tokens":18776994,"num_turns":119,"num_tool_calls":65}}
+{"timestamp":"2026-04-07T06:23:35.499503+00:00","event_type":"step_started","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
