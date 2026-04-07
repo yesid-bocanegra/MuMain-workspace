@@ -1,24 +1,24 @@
 # Progress — Story 7-9-8: Adopt SDL_ttf for Cross-Platform Font Rendering
 
 ## Quick Resume
-- **next_action:** dev-complete — proceed to completeness-gate
+- **next_action:** Review follow-ups complete — proceed to completeness-gate
 - **active_file:** none
 - **blocker:** none
 
 ## Current Position
 - **story_key:** 7-9-8
 - **story_title:** Adopt SDL_ttf for Cross-Platform Font Rendering
-- **status:** dev-complete
+- **status:** dev-complete (review follow-ups resolved)
 - **started:** 2026-04-06
 - **last_updated:** 2026-04-07
-- **session_count:** 2
-- **completed_count:** 7
-- **total_count:** 7 tasks (26 subtasks)
+- **session_count:** 3
+- **completed_count:** 7 tasks + 7 review follow-ups
+- **total_count:** 7 tasks (26 subtasks) + 7 review follow-ups
 - **current_task:** all complete
 - **task_progress:** 100%
 
 ## Active Task Details
-All tasks complete.
+All tasks and review follow-ups complete.
 
 ## Technical Decisions
 - **Font discovery:** No bundled .ttf in repo → `FindFontPath()` searches Data/Font/ then platform system fonts (macOS: Arial.ttf, Linux: DejaVuSans.ttf, Windows: arial.ttf)
@@ -39,6 +39,12 @@ All tasks complete.
 - Tasks Completed: 3 (TTF lifecycle), 4 (CUIRenderTextSDLTtf), 5 (deferred rendering), 6 (factory wiring), 7 (performance/quality gate)
 - Commits: dfd3b0f, 8f20af4, 083b9f2, df243330, adeea2f7
 - Status: dev-complete
+
+### Session 3 (2026-04-07)
+- Label: "Review follow-up fixes"
+- Review Findings Resolved: F-1 (HIGH), F-2 (MEDIUM), F-3 (MEDIUM), F-4 (MEDIUM), F-5 (LOW), F-6 (LOW), F-7 (LOW)
+- Files Modified: MuRendererSDLGpu.cpp, MuRenderer.h, UIControls.h, UIControls.cpp, MuMain.cpp
+- Status: dev-complete (review follow-ups resolved)
 
 ## Blockers and Open Questions
 - AC-5 visual parity (button labels, login text, chat) requires manual QA with running game client

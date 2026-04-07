@@ -11,7 +11,7 @@
 | **Flow Code** | VS1-RENDER-FONT-SDLTTF |
 | **Story Points** | 13 |
 | **Dependencies** | 7-9-7 (GLM/renderer pipeline) ✓, 7-9-6 (MuRenderer migration) ✓ |
-| **Status** | dev-complete |
+| **Status** | dev-complete (review follow-ups resolved) |
 
 ---
 
@@ -196,6 +196,16 @@ SDL_ttf + HarfBuzz provides full CJK text shaping. The game's existing `CMultiLa
   - [x] 7.3: Run `./ctl check` — 0 format/lint errors — Quality gate passed (macos-arm64-debug)
   - [x] 7.4: Run `python3 MuMain/scripts/check-win32-guards.py` — exits 0
 
+### Review Follow-ups (AI)
+
+- [x] [AI-Review] F-1 (HIGH): SetFont() no-op — mapped 4 HFONT handles to pre-loaded TTF_Font* variants (normal, bold, big, fixed)
+- [x] [AI-Review] F-2 (MEDIUM): Background color — submit background quad via RenderQuad2D before text when m_dwBackColor alpha > 0
+- [x] [AI-Review] F-3 (MEDIUM): TTF_Text allocation churn — reuse member m_pTtfText via TTF_SetTextString/TTF_SetTextFont
+- [x] [AI-Review] F-4 (MEDIUM): Heap allocation in hot loop — use thread_local scratch vector for vertex expansion
+- [x] [AI-Review] F-5 (LOW): Magic number 2 → RENDER_TEXT_SDL_TTF constant (added UIControls.h include to MuMain.cpp)
+- [x] [AI-Review] F-6 (LOW): FindFontPath uses SDL_GetBasePath() for exe-relative font discovery
+- [x] [AI-Review] F-7 (LOW): Window dimensions cached once per frame in BeginFrame via renderer accessor
+
 ---
 
 ## Dev Notes
@@ -236,6 +246,16 @@ SDL_ttf + HarfBuzz provides full CJK text shaping. The game's existing `CMultiLa
 ### Completion Notes
 All 7 tasks complete. SDL_ttf 3.2.2 GPU text engine integrated with deferred rendering pipeline. Factory selects CUIRenderTextSDLTtf on SDL3 builds. Glyph atlas warmed at startup. Manual runtime testing (AC-5 visual parity) deferred to QA — requires running game client with a connected server. Quality gate passes clean.
 
+### Review Follow-up Notes (2026-04-07)
+Addressed all 7 code review findings (1 HIGH, 3 MEDIUM, 3 LOW):
+- **F-1 (HIGH):** Created 4 HFONT handles in MuMain.cpp SDL3 init path via CrossPlatformGDI CreateFont(). Pre-loaded 4 TTF_Font* variants (normal 14pt, bold 14pt, big 18pt, fixed 14pt) in renderer. SetFont() maps HFONT pointer to correct variant.
+- **F-2 (MEDIUM):** Background quad submitted via RenderQuad2D(bgVerts, 0) before text when m_dwBackColor has non-zero alpha.
+- **F-3 (MEDIUM):** Member m_pTtfText reused via TTF_SetTextString()/TTF_SetTextFont() — eliminates per-call TTF_CreateText/TTF_DestroyText.
+- **F-4 (MEDIUM):** thread_local scratch vector replaces per-call std::vector allocation in atlas draw sequence loop.
+- **F-5 (LOW):** UIControls.h included in MuMain.cpp; magic number 2 replaced with RENDER_TEXT_SDL_TTF.
+- **F-6 (LOW):** FindFontPath() uses SDL_GetBasePath() for exe-relative Data/Font/ resolution.
+- **F-7 (LOW):** Window dimensions cached in BeginFrame() via s_cachedWinW/s_cachedWinH; exposed via GetCachedWindowHeight().
+
 ---
 
 ## File List
@@ -252,6 +272,16 @@ All 7 tasks complete. SDL_ttf 3.2.2 GPU text engine integrated with deferred ren
 | `MuMain/src/source/RenderFX/SDLTtfColorPack.h` | PackColorDWORD() constexpr ABGR packing |
 | `MuMain/tests/render/test_sdl_ttf_7_9_8.cpp` | Catch2 tests: color packing + SKIP'd GPU tests |
 | `MuMain/tests/build/test_ac1_sdl_ttf_fetchcontent_7_9_8.cmake` | CMake script test for FetchContent |
+
+**Review Follow-up Changes (2026-04-07):**
+
+| File | Change Summary |
+|------|----------------|
+| `MuMain/src/source/RenderFX/MuRendererSDLGpu.cpp` | F-1: pre-load 4 font variants; F-6: SDL_GetBasePath(); F-7: cache window dims in BeginFrame |
+| `MuMain/src/source/RenderFX/MuRenderer.h` | F-1: font variant accessors; F-7: GetCachedWindowHeight() |
+| `MuMain/src/source/ThirdParty/UIControls.h` | F-1: m_pActiveFont member; F-3: m_pTtfText member; forward decls |
+| `MuMain/src/source/ThirdParty/UIControls.cpp` | F-1: SetFont mapping; F-2: bg quad; F-3: TTF_Text reuse; F-4: scratch buffer; F-7: cached height |
+| `MuMain/src/source/Main/MuMain.cpp` | F-1: HFONT init on SDL3; F-5: RENDER_TEXT_SDL_TTF constant |
 
 ---
 
