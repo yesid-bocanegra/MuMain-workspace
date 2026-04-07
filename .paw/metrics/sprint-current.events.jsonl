@@ -1238,3 +1238,14 @@
 {"timestamp":"2026-04-07T05:41:47.157175+00:00","event_type":"step_regressed","story_key":"7-9-8","step":"code-review-qg","sprint":null,"epic":"7","data":{"from_step":"code-review-qg","to_step":"dev-story","regression_count":1}}
 {"timestamp":"2026-04-07T05:41:47.157992+00:00","event_type":"feedback_saved","story_key":"7-9-8","step":"code-review-qg","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-04-07T05:41:49.168962+00:00","event_type":"step_started","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-07T06:00:25.018705+00:00","event_type":"step_passed","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1115.8,"input_tokens":14793,"output_tokens":45596,"cache_creation_tokens":676165,"cache_read_tokens":33090002,"num_turns":178,"num_tool_calls":107}}
+{"timestamp":"2026-04-07T06:00:26.036753+00:00","event_type":"step_started","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-07T06:03:24.204432+00:00","event_type":"step_failed","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":178.2,"retry_count":0,"error":"Exit code 1","input_tokens":503,"output_tokens":17374,"num_turns":50,"num_tool_calls":21}}
+{"timestamp":"2026-04-07T06:03:24.207319+00:00","event_type":"step_retried","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"attempt":2}}
+{"timestamp":"2026-04-07T06:03:24.208701+00:00","event_type":"feedback_saved","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"regression_target":"completeness-gate"}}
+{"timestamp":"2026-04-07T06:03:26.217751+00:00","event_type":"step_started","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-07T06:04:54.824310+00:00","event_type":"step_failed","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":88.6,"retry_count":1,"error":"Exit code 1","input_tokens":251,"output_tokens":8024,"num_turns":26,"num_tool_calls":10}}
+{"timestamp":"2026-04-07T06:05:11.821131+00:00","event_type":"step_triaged","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"action":"abort"}}
+{"timestamp":"2026-04-07T06:05:11.822191+00:00","event_type":"step_regressed","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"from_step":"completeness-gate","to_step":"dev-story","regression_count":2}}
+{"timestamp":"2026-04-07T06:05:11.822844+00:00","event_type":"feedback_saved","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
+{"timestamp":"2026-04-07T06:05:13.833807+00:00","event_type":"step_started","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{}}

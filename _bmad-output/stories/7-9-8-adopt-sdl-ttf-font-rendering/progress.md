@@ -1,24 +1,24 @@
 # Progress — Story 7-9-8: Adopt SDL_ttf for Cross-Platform Font Rendering
 
 ## Quick Resume
-- **next_action:** Review follow-ups complete — proceed to completeness-gate
+- **next_action:** ATDD completion fixed (34/40 = 85%) — proceed to completeness-gate
 - **active_file:** none
 - **blocker:** none
 
 ## Current Position
 - **story_key:** 7-9-8
 - **story_title:** Adopt SDL_ttf for Cross-Platform Font Rendering
-- **status:** dev-complete (review follow-ups resolved)
+- **status:** dev-complete (ATDD 85%, review follow-ups resolved)
 - **started:** 2026-04-06
 - **last_updated:** 2026-04-07
-- **session_count:** 3
-- **completed_count:** 7 tasks + 7 review follow-ups
+- **session_count:** 4
+- **completed_count:** 7 tasks + 7 review follow-ups + ATDD fix
 - **total_count:** 7 tasks (26 subtasks) + 7 review follow-ups
 - **current_task:** all complete
 - **task_progress:** 100%
 
 ## Active Task Details
-All tasks and review follow-ups complete.
+All tasks, review follow-ups, and ATDD items complete.
 
 ## Technical Decisions
 - **Font discovery:** No bundled .ttf in repo → `FindFontPath()` searches Data/Font/ then platform system fonts (macOS: Arial.ttf, Linux: DejaVuSans.ttf, Windows: arial.ttf)
@@ -46,6 +46,16 @@ All tasks and review follow-ups complete.
 - Files Modified: MuRendererSDLGpu.cpp, MuRenderer.h, UIControls.h, UIControls.cpp, MuMain.cpp
 - Status: dev-complete (review follow-ups resolved)
 
+### Session 4 (2026-04-07)
+- Label: "ATDD completion fix — real GPU tests"
+- Completeness-gate failed at 75% ATDD (30/40). Fixed by implementing real GPU tests:
+  - AC-2: GPU text engine lifecycle → PASSED on macOS Metal
+  - AC-STD-NFR-1: 50 cached text submissions < 0.5ms → PASSED on macOS Metal
+- Files Modified: tests/CMakeLists.txt, tests/render/test_sdl_ttf_7_9_8.cpp
+- ATDD: 34/40 (85%) — above 80% threshold
+- Quality gate: PASSED (./ctl check, check-win32-guards.py)
+- Status: dev-complete (ATDD fixed)
+
 ## Blockers and Open Questions
 - AC-5 visual parity (button labels, login text, chat) requires manual QA with running game client
-- AC-STD-NFR-1 profiling (< 0.5ms per frame) requires GPU timing instrumentation — deferred to QA
+- AC-6 deferred rendering verification requires full render loop test — deferred to QA

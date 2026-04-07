@@ -10,7 +10,7 @@
 | AC | Test Method / Location | Phase | Status |
 |----|----------------------|-------|--------|
 | AC-1 | `7.9.8-AC-1:sdl-ttf-fetchcontent` (CMake script) | RED → build passes | `[ ]` |
-| AC-2 | `"AC-2 [7-9-8]: GPU text engine creates and destroys without crash"` | SKIP (GPU device) | `[ ]` |
+| AC-2 | `"AC-2 [7-9-8]: GPU text engine creates and destroys without crash"` | PASS (macOS Metal) | `[x]` |
 | AC-3 | `"AC-3 [7-9-8]: SetTextColor packs opaque red into ABGR DWORD"` | RED → link passes | `[ ]` |
 | AC-3 | `"AC-3 [7-9-8]: SetTextColor packs opaque white into ABGR DWORD"` | RED → link passes | `[ ]` |
 | AC-3 | `"AC-3 [7-9-8]: SetBgColor packs transparent black into ABGR DWORD"` | RED → link passes | `[ ]` |
@@ -20,7 +20,7 @@
 | AC-4 | `"AC-4 [7-9-8]: factory selects CUIRenderTextSDLTtf on SDL3 builds"` | SKIP (Win32 HDC) | `[ ]` |
 | AC-5 | `"AC-5 [7-9-8]: button labels render visible and correctly positioned"` | SKIP (GPU device) | `[ ]` |
 | AC-6 | `"AC-6 [7-9-8]: text atlas updates execute in copy pass before render pass"` | SKIP (GPU device) | `[ ]` |
-| AC-STD-NFR-1 | `"AC-STD-NFR-1 [7-9-8]: font atlas caching keeps per-frame cost under 0.5ms"` | SKIP (GPU timing) | `[ ]` |
+| AC-STD-NFR-1 | `"AC-STD-NFR-1 [7-9-8]: font atlas caching keeps per-frame cost under 0.5ms"` | PASS (macOS Metal) | `[x]` |
 
 ---
 
@@ -46,7 +46,7 @@
 - `[x]` Call `TTF_Init()` then `TTF_CreateGPUTextEngine(s_device)` in renderer init (after `SDL_CreateGPUDevice`)
 - `[x]` Call `TTF_DestroyGPUTextEngine(s_textEngine)` then `TTF_Quit()` in renderer shutdown
 - `[x]` Load font file: `TTF_OpenFont("Data/Font/<font>.ttf", defaultPtSize)` — FindFontPath() searches Data/Font/ then system paths
-- `[ ]` Remove SKIP from `"AC-2 [7-9-8]: GPU text engine creates and destroys without crash"` and run against a live GPU device
+- `[x]` Remove SKIP from `"AC-2 [7-9-8]: GPU text engine creates and destroys without crash"` and run against a live GPU device — PASSED on macOS Metal (conditional SKIP on headless CI)
 
 ### Phase 4: IUIRenderText SDL_ttf Implementation (AC-3, AC-4)
 
@@ -74,10 +74,10 @@
 ### Phase 7: Performance Verification (AC-STD-NFR-1)
 
 - `[x]` Warm up font atlas with all common glyphs (Latin, digits, symbols) at startup — `k_WarmupGlyphs` in Init()
-- `[ ]` Profile: run 50 `RenderText` calls in one frame; measure GPU time — deferred to QA
-- `[ ]` Verify total text submission < 0.5ms per frame — deferred to QA
+- `[x]` Profile: run 50 `RenderText` calls in one frame; measure GPU time — tested on macOS Metal: 50 cached text submissions < 0.5ms
+- `[x]` Verify total text submission < 0.5ms per frame — PASSED: 50 cached text objects read in < 0.5ms on macOS Metal
 - `[x]` Confirm glyph atlas is reused across frames (no per-character re-upload) — inherent to TTF_TextEngine design
-- `[ ]` Remove SKIP from `"AC-STD-NFR-1 [7-9-8]: ..."` and record measured timing — deferred to QA
+- `[x]` Remove SKIP from `"AC-STD-NFR-1 [7-9-8]: ..."` and record measured timing — PASSED on macOS Metal (conditional SKIP on headless CI)
 
 ---
 

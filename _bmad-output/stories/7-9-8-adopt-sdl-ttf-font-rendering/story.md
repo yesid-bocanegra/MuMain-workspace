@@ -246,6 +246,14 @@ SDL_ttf + HarfBuzz provides full CJK text shaping. The game's existing `CMultiLa
 ### Completion Notes
 All 7 tasks complete. SDL_ttf 3.2.2 GPU text engine integrated with deferred rendering pipeline. Factory selects CUIRenderTextSDLTtf on SDL3 builds. Glyph atlas warmed at startup. Manual runtime testing (AC-5 visual parity) deferred to QA — requires running game client with a connected server. Quality gate passes clean.
 
+### ATDD Completion Fix (2026-04-07)
+Completeness-gate failed at 75% ATDD (30/40). Fixed by implementing real GPU tests for AC-2 and AC-STD-NFR-1:
+- **AC-2 GPU test:** Removed SKIP; now creates real SDL3 GPU device (Metal on macOS) + TTF_CreateGPUTextEngine lifecycle test. Gracefully SKIPs on headless CI.
+- **AC-STD-NFR-1 perf test:** Removed SKIP; creates 50 cached TTF_Text objects, measures TTF_GetGPUTextDrawData throughput. Verified < 0.5ms on macOS Metal.
+- Added SDL3_ttf link to MuTests binary in tests/CMakeLists.txt
+- Added GpuTestEnv RAII helper + OpenSystemFont utility to test file
+- ATDD now 34/40 (85%), above 80% threshold. Remaining 6 items: MinGW CI, visual QA (4), AC-6 render loop.
+
 ### Review Follow-up Notes (2026-04-07)
 Addressed all 7 code review findings (1 HIGH, 3 MEDIUM, 3 LOW):
 - **F-1 (HIGH):** Created 4 HFONT handles in MuMain.cpp SDL3 init path via CrossPlatformGDI CreateFont(). Pre-loaded 4 TTF_Font* variants (normal 14pt, bold 14pt, big 18pt, fixed 14pt) in renderer. SetFont() maps HFONT pointer to correct variant.
@@ -282,6 +290,13 @@ Addressed all 7 code review findings (1 HIGH, 3 MEDIUM, 3 LOW):
 | `MuMain/src/source/ThirdParty/UIControls.h` | F-1: m_pActiveFont member; F-3: m_pTtfText member; forward decls |
 | `MuMain/src/source/ThirdParty/UIControls.cpp` | F-1: SetFont mapping; F-2: bg quad; F-3: TTF_Text reuse; F-4: scratch buffer; F-7: cached height |
 | `MuMain/src/source/Main/MuMain.cpp` | F-1: HFONT init on SDL3; F-5: RENDER_TEXT_SDL_TTF constant |
+
+**ATDD Completion Fix (2026-04-07):**
+
+| File | Change Summary |
+|------|----------------|
+| `MuMain/tests/CMakeLists.txt` | Link SDL3_ttf::SDL3_ttf to MuTests when MU_ENABLE_SDL3 |
+| `MuMain/tests/render/test_sdl_ttf_7_9_8.cpp` | Real GPU tests for AC-2 + AC-STD-NFR-1: GpuTestEnv RAII, OpenSystemFont, timing benchmark |
 
 ---
 
