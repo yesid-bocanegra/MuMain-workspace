@@ -42,10 +42,10 @@
 
 ### Phase 3: GPU Text Engine Lifecycle (AC-2) — Engine init/shutdown
 
-- `[ ]` Add `TTF_TextEngine* s_textEngine` as private state in `MuRendererSDLGpu.cpp`
-- `[ ]` Call `TTF_Init()` then `TTF_CreateGPUTextEngine(s_device)` in renderer init (after `SDL_CreateGPUDevice`)
-- `[ ]` Call `TTF_DestroyGPUTextEngine(s_textEngine)` then `TTF_Quit()` in renderer shutdown
-- `[ ]` Load font file: `TTF_OpenFont("Data/Font/<font>.ttf", defaultPtSize)` — check for `.ttf` in `MuMain/src/bin/Data/Font/`; bundle a permissive fallback (e.g., Noto Sans) if none exist
+- `[x]` Add `TTF_TextEngine* s_textEngine` as private state in `MuRendererSDLGpu.cpp`
+- `[x]` Call `TTF_Init()` then `TTF_CreateGPUTextEngine(s_device)` in renderer init (after `SDL_CreateGPUDevice`)
+- `[x]` Call `TTF_DestroyGPUTextEngine(s_textEngine)` then `TTF_Quit()` in renderer shutdown
+- `[x]` Load font file: `TTF_OpenFont("Data/Font/<font>.ttf", defaultPtSize)` — FindFontPath() searches Data/Font/ then system paths
 - `[ ]` Remove SKIP from `"AC-2 [7-9-8]: GPU text engine creates and destroys without crash"` and run against a live GPU device
 
 ### Phase 4: IUIRenderText SDL_ttf Implementation (AC-3, AC-4)

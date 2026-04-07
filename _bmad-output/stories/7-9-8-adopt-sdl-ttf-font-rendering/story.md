@@ -163,13 +163,13 @@ SDL_ttf + HarfBuzz provides full CJK text shaping. The game's existing `CMultiLa
   - [x] 2.2: Included from `UIControls.h`; test includes header directly (no link dependency)
   - [x] 2.3: Verify Catch2 AC-3 tests link and pass (6 test cases) — all 6 passed
 
-- [ ] Task 3: GPU Text Engine Lifecycle (AC-2)
-  - [ ] 3.1: Add `TTF_TextEngine*` and `TTF_Font*` as state in `MuRendererSDLGpu.cpp`
-  - [ ] 3.2: Call `TTF_Init()` + `TTF_CreateGPUTextEngine(s_device)` in renderer init
-  - [ ] 3.3: Call `TTF_DestroyGPUTextEngine()` + `TTF_Quit()` in renderer shutdown
-  - [ ] 3.4: Bundle a permissive `.ttf` font (Noto Sans or similar) in `Data/Font/`
-  - [ ] 3.5: Load font via `TTF_OpenFont()` with default pt size
-  - [ ] 3.6: Expose text engine/font handles for CUIRenderTextSDLTtf access
+- [x] Task 3: GPU Text Engine Lifecycle (AC-2) — DONE
+  - [x] 3.1: Add `TTF_TextEngine*` and `TTF_Font*` as state in `MuRendererSDLGpu.cpp`
+  - [x] 3.2: Call `TTF_Init()` + `TTF_CreateGPUTextEngine(s_device)` in renderer init
+  - [x] 3.3: Call `TTF_DestroyGPUTextEngine()` + `TTF_Quit()` in renderer shutdown
+  - [x] 3.4: Bundle a permissive `.ttf` font (Noto Sans or similar) in `Data/Font/` — using system font discovery with FindFontPath() fallback
+  - [x] 3.5: Load font via `TTF_OpenFont()` with default pt size
+  - [x] 3.6: Expose text engine/font handles for CUIRenderTextSDLTtf access
 
 - [ ] Task 4: CUIRenderTextSDLTtf Class (AC-3, AC-4)
   - [ ] 4.1: Declare `CUIRenderTextSDLTtf : public IUIRenderText` in `UIControls.h`

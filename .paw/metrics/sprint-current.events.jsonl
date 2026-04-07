@@ -1215,3 +1215,7 @@
 {"timestamp":"2026-04-07T04:09:02.904986+00:00","event_type":"step_started","story_key":"7-9-8","step":"design-screen","sprint":null,"epic":"7","data":{}}
 {"timestamp":"2026-04-07T04:09:02.907136+00:00","event_type":"step_passed","story_key":"7-9-8","step":"design-screen","sprint":null,"epic":"7","data":{"duration_seconds":0.0,"input_tokens":0,"output_tokens":0,"cache_creation_tokens":0,"cache_read_tokens":0,"num_turns":0,"num_tool_calls":0}}
 {"timestamp":"2026-04-07T04:09:03.915297+00:00","event_type":"step_started","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-07T04:36:43.794639+00:00","event_type":"step_failed","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":1659.9,"retry_count":0,"error":"Exit code 1","input_tokens":1042,"output_tokens":58877,"num_turns":353,"num_tool_calls":218}}
+{"timestamp":"2026-04-07T04:36:43.796642+00:00","event_type":"step_retried","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{"attempt":2}}
+{"timestamp":"2026-04-07T04:36:43.797044+00:00","event_type":"feedback_saved","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
+{"timestamp":"2026-04-07T04:36:45.803749+00:00","event_type":"step_started","story_key":"7-9-8","step":"dev-story","sprint":null,"epic":"7","data":{}}
