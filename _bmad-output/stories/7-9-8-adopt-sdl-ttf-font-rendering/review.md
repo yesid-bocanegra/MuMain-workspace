@@ -12,13 +12,38 @@
 
 ## Quality Gate
 
-**Status: Pending — run by pipeline**
+**Status: PASSED** — 2026-04-07
 
-| Gate | Component | Status |
-|------|-----------|--------|
-| Backend Local (lint) | mumain | Pending |
-| Backend Local (build) | mumain | Pending |
-| Backend Local (coverage) | mumain | Pending (not configured) |
+### Pipeline Status
+
+| Step | Status |
+|------|--------|
+| 1. Quality Gate | **PASSED** |
+| 2. Code Review Analysis | pending |
+| 3. Code Review Finalize | pending |
+
+### Backend Local Gate — `mumain` (cpp-cmake)
+
+| Check | Command | Status |
+|-------|---------|--------|
+| Lint | `make -C MuMain lint` | PASS |
+| Build | `cmake ... && cmake --build build` | PASS |
+| Coverage | N/A (not configured) | PASS |
+| Format Check | `make -C MuMain format-check` | PASS |
+
+### Non-Deterministic Checks
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| SonarCloud | SKIPPED | No SONAR_TOKEN configured |
+| Schema Alignment | N/A | Infrastructure story, no API |
+| Frontend Gate | N/A | No frontend components |
+| AC Compliance | SKIPPED | Infrastructure story |
+| E2E Test Quality | N/A | Infrastructure story |
+
+### Boot Verification
+
+N/A — Game client binary (not a server). No boot_verify configured.
 
 ---
 
