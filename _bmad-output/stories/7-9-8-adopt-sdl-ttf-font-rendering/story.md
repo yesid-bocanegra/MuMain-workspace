@@ -11,7 +11,7 @@
 | **Flow Code** | VS1-RENDER-FONT-SDLTTF |
 | **Story Points** | 13 |
 | **Dependencies** | 7-9-7 (GLM/renderer pipeline) ✓, 7-9-6 (MuRenderer migration) ✓ |
-| **Status** | dev-complete (review follow-ups resolved) |
+| **Status** | done |
 
 ---
 

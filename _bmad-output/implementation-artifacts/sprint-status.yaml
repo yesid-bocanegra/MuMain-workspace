@@ -216,8 +216,9 @@ sprints:
       # EPIC-7 — Stability Sessions (closes EPIC-7, unlocks M1 + M5 milestone-validation)
       - 7-3-1-macos-stability-session            # 5 pts | done | Flow:E | Deps: 7-6-1, 7-6-2, 7-6-3, 7-6-4, 7-6-5, 7-6-6, 7-6-7
       - 7-3-2-linux-stability-session            # 5 pts | Flow:E | Deps: EPIC-2–6 ✓, 7-6-* ✓
+      - 7-9-8-adopt-sdl-ttf-font-rendering      # 13 pts | Flow:E | Deps: 7-9-7 ✓
     velocity: 76
-    delivered_points: 89  # 7-9-1 done (+13 pts), 5 pts remaining (7-3-2)
+    delivered_points: 102  # 7-9-8 done (+13 pts), 5 pts remaining (7-3-2)
     commitment_reliability: null
     scope_changes:
       added:
@@ -594,4 +595,5 @@ development_status:
   7-9-5-kill-all-cross-platform-stubs: done  # 21 pts | Flow:E | Deps: 7-9-4 ✓ | Replace ALL stubs across Platform/ layer with real SDL3/C++ implementations — zero no-ops, zero silent failures | dev-story completed 2026-03-31
   7-9-6-migrate-raw-gl-to-murenderer: completeness-gate  # 34 pts | Flow:E | Deps: 7-9-5 ✓ | Migrate 250+ raw GL calls across 35 files to MuRenderer API — zero gl* calls outside SDL GPU backend | dev-story completed 2026-03-31
   7-9-7-adopt-glm-harden-matrix-pipeline: done  # 13 pts | Flow:E | Deps: 7-9-6 | Adopt GLM, fix depth conventions, particle billboards, terrain, fog binding, centralize viewport scaling | code-review-finalize completed 2026-04-01T21:15
+  7-9-8-adopt-sdl-ttf-font-rendering: done  # 13 pts | Flow:E | Deps: 7-9-7 ✓ | SDL_ttf 3.2.2 GPU text engine, CUIRenderTextSDLTtf, deferred rendering, glyph atlas warmup | code-review-finalize completed 2026-04-07
   epic-7-retrospective: optional
