@@ -1225,3 +1225,5 @@
 {"timestamp":"2026-04-07T05:09:20.848054+00:00","event_type":"step_retried","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-04-07T05:09:20.848914+00:00","event_type":"feedback_saved","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"regression_target":"completeness-gate"}}
 {"timestamp":"2026-04-07T05:09:22.859729+00:00","event_type":"step_started","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-07T05:11:34.757808+00:00","event_type":"step_passed","story_key":"7-9-8","step":"completeness-gate","sprint":null,"epic":"7","data":{"duration_seconds":131.9,"input_tokens":12308,"output_tokens":8965,"cache_creation_tokens":188298,"cache_read_tokens":4830011,"num_turns":44,"num_tool_calls":17}}
+{"timestamp":"2026-04-07T05:11:35.773662+00:00","event_type":"step_started","story_key":"7-9-8","step":"code-review","sprint":null,"epic":"7","data":{}}
