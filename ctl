@@ -120,7 +120,11 @@ cmd_format_check() {
 
 cmd_clean() {
     log_info "Cleaning mumain build artifacts..."
-    rm -rf MuMain/out MuMain/build MuMain/build-test MuMain/build-mingw
+    rm -rf MuMain/out MuMain/build MuMain/build-test MuMain/build-mingw 2>/dev/null || {
+        # macOS APFS race: rmdir can fail briefly after unlinking contents
+        sleep 1
+        rm -rf MuMain/out MuMain/build MuMain/build-test MuMain/build-mingw
+    }
     log_success "Clean complete"
 }
 

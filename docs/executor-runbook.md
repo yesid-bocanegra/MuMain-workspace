@@ -697,6 +697,18 @@ Profiles exist for `opus` and `o46`. Models without a profile keep per-step defa
 ./paw remediate --quick --dry-run       # preview remediation plan
 ```
 
+### Pipeline Safety Guards (v4.3.1)
+
+The pipeline has three guards that prevent incomplete work from being marked PASSED:
+
+| Guard | Triggers when | Result |
+|-------|--------------|--------|
+| **Idle/stall timeout** | No stream activity for 15 min (idle) or no progress for 30 min (stall) | Step marked FAILED — retries/regression apply |
+| **Zero-output guard** | Step produces 0 output lines for >60 seconds | Step marked FAILED — catches silent hangs |
+| **Done-story skip** | Batch runner encounters a story with `code-review-finalize completed` | Story skipped entirely — no re-processing |
+
+Previously, idle timeouts inherited the process exit code (often 0), causing timed-out steps to be marked PASSED. If a step fails due to these guards, the pipeline's normal retry (1 attempt) and regression (back to dev-story, max 2) mechanisms apply.
+
 ### Pipeline Validation & Diagnostics
 
 ```bash

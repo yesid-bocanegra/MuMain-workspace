@@ -18,7 +18,19 @@
 
 ## Quality Gate
 
-**Status:** Pending — run by pipeline
+**Status:** ✅ PASSED — 2026-04-01
+
+| Gate | Status | Iterations | Issues Fixed |
+|------|--------|------------|-------------|
+| Backend Local (mumain) | ✅ PASSED | 0 | 0 |
+| Backend SonarCloud | N/A (not configured) | — | — |
+| Frontend Local | N/A (no frontend) | — | — |
+| Frontend SonarCloud | N/A (no frontend) | — | — |
+| Schema Alignment | N/A (no frontend) | — | — |
+| **Overall** | **✅ PASSED** | **0** | **0** |
+
+- **AC Tests:** Skipped (infrastructure story)
+- **Pre-run checks:** lint ✅, build ✅, coverage ✅ (deterministic, not re-run)
 
 ---
 

@@ -6,7 +6,7 @@
 
 - **contracts/** — 1 items
 - **epics/** — 3 items
-- **findings/** — 1 items
+- **findings/** — 3 items
 - **implementation-artifacts/** — 17 items ([index](implementation-artifacts/_index.md))
 - **milestones/** — 5 items
 - **planning-artifacts/** — 6 items
