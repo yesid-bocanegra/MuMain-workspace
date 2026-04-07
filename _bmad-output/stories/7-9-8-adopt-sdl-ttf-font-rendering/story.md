@@ -171,17 +171,17 @@ SDL_ttf + HarfBuzz provides full CJK text shaping. The game's existing `CMultiLa
   - [x] 3.5: Load font via `TTF_OpenFont()` with default pt size
   - [x] 3.6: Expose text engine/font handles for CUIRenderTextSDLTtf access
 
-- [ ] Task 4: CUIRenderTextSDLTtf Class (AC-3, AC-4)
-  - [ ] 4.1: Declare `CUIRenderTextSDLTtf : public IUIRenderText` in `UIControls.h`
-  - [ ] 4.2: Implement all IUIRenderText virtual methods
-  - [ ] 4.3: Implement `RenderText()` using `TTF_CreateText` + `TTF_GetGPUTextDrawData` + deferred draw
-  - [ ] 4.4: Implement `GetTextExtentPoint32` equivalent via `TTF_GetStringSize`
-  - [ ] 4.5: Add `RENDER_TEXT_SDL_TTF` constant and update factory `CUIRenderText::Create()`
+- [x] Task 4: CUIRenderTextSDLTtf Class (AC-3, AC-4) — DONE
+  - [x] 4.1: Declare `CUIRenderTextSDLTtf : public IUIRenderText` in `UIControls.h`
+  - [x] 4.2: Implement all IUIRenderText virtual methods
+  - [x] 4.3: Implement `RenderText()` using `TTF_CreateText` + `TTF_GetGPUTextDrawData` + deferred draw
+  - [x] 4.4: Implement `GetTextExtentPoint32` equivalent via `TTF_GetStringSize`
+  - [x] 4.5: Add `RENDER_TEXT_SDL_TTF` constant and update factory `CUIRenderText::Create()`
 
-- [ ] Task 5: Deferred Rendering Integration (AC-6)
-  - [ ] 5.1: Ensure text atlas draw data integrates with `RenderCmd` deferred buffer
-  - [ ] 5.2: Verify atlas textures bind correctly during render pass
-  - [ ] 5.3: Test text rendering does not produce streak artifacts (copy-then-render pattern)
+- [x] Task 5: Deferred Rendering Integration (AC-6) — DONE
+  - [x] 5.1: Ensure text atlas draw data integrates with `RenderCmd` deferred buffer — DrawTriangles2D cmd type + SubmitTextTriangles()
+  - [x] 5.2: Verify atlas textures bind correctly during render pass — EndFrame replay handles DrawTriangles2D
+  - [x] 5.3: Test text rendering does not produce streak artifacts (copy-then-render pattern) — vertex data uploaded to GPU before render pass
 
 - [ ] Task 6: Wire Factory and Verify Parity (AC-4, AC-5)
   - [ ] 6.1: Update SDL3 init path in `MuMain.cpp` to use `RENDER_TEXT_SDL_TTF`

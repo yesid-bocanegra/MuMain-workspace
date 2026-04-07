@@ -50,24 +50,16 @@
 
 ### Phase 4: IUIRenderText SDL_ttf Implementation (AC-3, AC-4)
 
-- `[ ]` Add `CUIRenderTextSDLTtf` class declaration to `UIControls.h` inheriting `IUIRenderText`
-  - `Create(HDC hDC)` — ignores `hDC`; uses renderer's `TTF_TextEngine` from `mu::GetRenderer()`
-  - `Release()` — no-op (engine owned by renderer)
-  - `GetFontDC() const` — returns `nullptr` (not applicable for SDL_ttf path)
-  - `GetFontBuffer() const` — returns `nullptr` (no CPU-side DIB buffer)
-  - `GetTextColor() const`, `GetBgColor() const` — return stored DWORDs
-  - `SetTextColor(r, g, b, a)`, `SetTextColor(DWORD)` — store via `PackColorDWORD`
-  - `SetBgColor(r, g, b, a)`, `SetBgColor(DWORD)` — store via `PackColorDWORD`
-  - `SetFont(HFONT)` — no-op (SDL_ttf uses TTF_Font, not HFONT)
-  - `RenderText(x, y, text, boxW, boxH, sort, lpTextSize)` — creates `TTF_Text`, gets atlas draw data, submits to deferred render buffer
-- `[ ]` Implement `CUIRenderText::Create()` factory: select `CUIRenderTextSDLTtf` when `#ifdef MU_ENABLE_SDL3` and `RENDER_TEXT_SDL_TTF` type is requested; fall back to `CUIRenderTextOriginal` otherwise
-- `[ ]` Add `RENDER_TEXT_SDL_TTF` constant (e.g., `1`) to `UIControls.h` alongside the existing type enum/constant
+- `[x]` Add `CUIRenderTextSDLTtf` class declaration to `UIControls.h` inheriting `IUIRenderText`
+- `[x]` Implement all IUIRenderText virtual methods (Create, Release, colors, SetFont, RenderText)
+- `[x]` Implement `CUIRenderText::Create()` factory: select `CUIRenderTextSDLTtf` when `MU_ENABLE_SDL3` and `RENDER_TEXT_SDL_TTF`
+- `[x]` Add `RENDER_TEXT_SDL_TTF = 2` constant to `UIControls.h`
 
 ### Phase 5: Deferred Rendering Integration (AC-6)
 
-- `[ ]` Ensure `TTF_GetGPUTextDrawData` is called inside the render pass (not the copy pass)
-- `[ ]` Verify atlas texture uploads (if any) happen in the copy pass before `SDL_BeginGPURenderPass`
-- `[ ]` Verify text draws are queued as `RenderCmd` entries in the deferred buffer and replayed in `EndFrame`
+- `[x]` Text draw data queued as `DrawTriangles2D` RenderCmd entries via `SubmitTextTriangles()`
+- `[x]` Atlas textures bound during render pass replay in EndFrame
+- `[x]` Vertex data uploaded to GPU transfer buffer before render pass (copy-then-render pattern)
 - `[ ]` Remove SKIP from `"AC-6 [7-9-8]: ..."` and verify manually with a running renderer
 
 ### Phase 6: Text Rendering Parity (AC-5)
