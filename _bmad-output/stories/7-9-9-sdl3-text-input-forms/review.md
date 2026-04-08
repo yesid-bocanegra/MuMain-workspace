@@ -12,9 +12,40 @@
 
 ## Quality Gate
 
-**Status:** Pending — run by pipeline (CODE_REVIEW_QG step)
+**Status:** ✅ PASSED (2026-04-08)
 
-Pre-run results provided: lint PASS, build PASS, coverage N/A.
+### Pipeline Status
+
+| Step | Status |
+|------|--------|
+| 1. Quality Gate | ✅ PASSED |
+| 2. Code Review Analysis | pending |
+| 3. Code Review Finalize | pending |
+
+### Backend: mumain (cpp-cmake)
+
+| Check | Status | Details |
+|-------|--------|---------|
+| lint (clang-format + cppcheck) | ✅ PASS | 0 issues |
+| build (macOS arm64 native) | ✅ PASS | Debug build clean |
+| coverage | N/A | No coverage configured yet |
+| SonarCloud | N/A | No sonar-project.properties configured |
+
+### Frontend
+
+N/A — no frontend components affected.
+
+### Schema Alignment
+
+N/A — no frontend components, no API endpoints.
+
+### AC Compliance
+
+Skipped — infrastructure story (enabler).
+
+### Boot Verification
+
+N/A — game client binary (not a server with boot-check semantics). Application startup requires game server connectivity and Win32 subsystems not available in CI/macOS.
 
 ---
 
