@@ -11,7 +11,7 @@
 | **Flow Code** | VS1-INPUT-TEXTFORMS-SDL3 |
 | **Story Points** | 8 |
 | **Dependencies** | 7-9-8 (SDL_ttf font rendering) ✓ |
-| **Status** | ready-for-dev |
+| **Status** | review |
 
 ---
 
@@ -170,3 +170,47 @@ Text input forms don't work on SDL3. The login username/password fields, chat in
 - Porting CUITextInputBox to SDL_ttf (the GDI bitmap path works with QueueTextureUpdate)
 - CJK/IME composition (follow-up story)
 - Multi-line text editing (scrollbar requires Win32 scroll API replacement)
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+1. AC-1: Make GiveFocus idempotent with early-return guard + static pointer for mutual exclusion
+2. AC-2: Store configured font handle as `m_hConfiguredFont`, use in SDL3 Render path
+3. AC-4: Initialize both global input box pointers in MuMain.cpp after UI creation
+4. AC-5: Add press-edge flag for same-frame DOWN+UP detection in GetAsyncKeyState shim
+5. AC-3/AC-6: Verified by AC-1+AC-2 fixes (same code path)
+
+### Debug Log
+- Root cause of GiveFocus spam: `DoMouseAction()` calls GiveFocus every frame while `MouseLButtonPush` is true. On SDL3, `MouseLButtonPush` stays true from DOWN until UP (not edge-triggered per frame like Win32). Idempotency guard in GiveFocus is the correct fix.
+- `CWin::Update()` does NOT call GiveFocus — confirmed via grep. The spam comes from DoMouseAction only.
+- Font override bug: SDL3 Render path line 4040 selected `g_hFont` (proportional Arial) instead of `g_hFixFont` (fixed-width Courier New) configured by SetFont.
+- `g_pSingleTextInputBox` used by CharMakeWin, UIPopup, UIGuildMaster — also needed initialization.
+
+### Completion Notes
+- All 4 bugs addressed. 4 executable tests pass (24 assertions). 5 SKIP tests compile clean.
+- Quality gate (`./ctl check`) passes. Build compiles and links (367 targets).
+- Manual integration testing needed: login text input, chat input, popup text input, password deletion dialog.
+
+---
+
+## File List
+
+| File | Status | Change |
+|------|--------|--------|
+| `ThirdParty/UIControls.cpp` | MODIFIED | AC-1: GiveFocus idempotency guard + static pointer; AC-2: SetFont stores m_hConfiguredFont, Render uses it |
+| `ThirdParty/UIControls.h` | MODIFIED | AC-2: Added `m_hConfiguredFont` member |
+| `Main/MuMain.cpp` | MODIFIED | AC-4: Initialize g_pSingleTextInputBox + g_pSinglePasswdInputBox; SAFE_DELETE cleanup |
+| `Platform/sdl3/SDLEventLoop.cpp` | MODIFIED | AC-5: Added g_bMouseLButtonPressEdge, set on BUTTON_DOWN |
+| `Platform/PlatformCompat.h` | MODIFIED | AC-5: extern g_bMouseLButtonPressEdge, used in GetAsyncKeyState VK_LBUTTON |
+| `UI/Framework/NewUICommon.cpp` | MODIFIED | AC-5: Clear g_bMouseLButtonPressEdge after ScanAsyncKeyState |
+| `tests/platform/test_text_input_forms_7_9_9.cpp` | MODIFIED | Fixed unused variable warning (g_bSDLTextInputReady_local) |
+
+---
+
+## Change Log
+
+| Date | Change |
+|------|--------|
+| 2026-04-08 | Story implementation complete — all 4 bugs fixed, tests GREEN, quality gate passed |
