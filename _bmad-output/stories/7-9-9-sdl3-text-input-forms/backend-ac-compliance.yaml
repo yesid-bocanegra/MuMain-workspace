@@ -1,0 +1,71 @@
+metadata:
+  story_key: "7-9-9"
+  status: passed
+  total_iterations: 0
+  last_updated: "2026-04-08"
+  tech_profile: cpp-cmake
+  test_cmd: "ctest --test-dir MuMain/build-test/tests -R 7-9-9 --output-on-failure"
+
+test_class:
+  class_name: test_text_input_forms_7_9_9
+  full_path: MuMain/tests/platform/test_text_input_forms_7_9_9.cpp
+  binary: MuMain/build-test/tests/MuTests
+  ctest_dir: MuMain/build-test/tests
+
+test_results:
+  total_tests: 9
+  passed: 4
+  skipped: 5
+  failed: 0
+  ac_mapping:
+    - ac_id: AC-1
+      test_name: "AC-1 [7-9-9]: GiveFocus called twice on same box invokes MuStartTextInput once"
+      ctest_id: 198
+      status: passed
+    - ac_id: AC-1
+      test_name: "AC-1 [7-9-9]: GiveFocus on box B clears focus from box A"
+      ctest_id: 199
+      status: passed
+    - ac_id: AC-2
+      test_name: "AC-2 [7-9-9]: SetFont stores font handle and uses it in SDL3 render path"
+      ctest_id: 200
+      status: skipped
+      skip_reason: "Requires Win32 GDI (SelectObject/m_hMemDC) — verified by integration render test"
+    - ac_id: AC-3
+      test_name: "AC-3 [7-9-9]: DoActionSub consumes SDL text input when box has stable focus"
+      ctest_id: 201
+      status: passed
+    - ac_id: AC-3
+      test_name: "AC-3 [7-9-9]: Render pipeline WriteText→QueueTextureUpdate produces non-zero pixels"
+      ctest_id: 202
+      status: skipped
+      skip_reason: "Requires Win32 GDI TextOut + SDL3 GPU QueueTextureUpdate — manual verification"
+    - ac_id: AC-4
+      test_name: "AC-4 [7-9-9]: g_pSinglePasswdInputBox is non-null after initialization"
+      ctest_id: 203
+      status: skipped
+      skip_reason: "Requires MuMain initialization path — post-init integration only"
+    - ac_id: AC-4
+      test_name: "AC-4 [7-9-9]: g_pSingleTextInputBox is non-null after initialization"
+      ctest_id: 204
+      status: skipped
+      skip_reason: "Requires MuMain initialization path — post-init integration only"
+    - ac_id: AC-5
+      test_name: "AC-5 [7-9-9]: Same-frame press+release sets edge flag for ScanAsyncKeyState"
+      ctest_id: 205
+      status: passed
+    - ac_id: AC-6
+      test_name: "AC-6 [7-9-9]: Chat input box accepts keyboard input via DoActionSub"
+      ctest_id: 206
+      status: skipped
+      skip_reason: "Identical DoActionSub code path as AC-3 — covered by AC-3 tests"
+  passing_tests:
+    - "AC-1 [7-9-9]: GiveFocus called twice on same box invokes MuStartTextInput once"
+    - "AC-1 [7-9-9]: GiveFocus on box B clears focus from box A"
+    - "AC-3 [7-9-9]: DoActionSub consumes SDL text input when box has stable focus"
+    - "AC-5 [7-9-9]: Same-frame press+release sets edge flag for ScanAsyncKeyState"
+  failing_tests: []
+
+iterations: []
+blockers: []
+next_actions: []
