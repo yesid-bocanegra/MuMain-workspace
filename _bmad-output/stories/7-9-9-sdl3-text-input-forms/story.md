@@ -11,7 +11,7 @@
 | **Flow Code** | VS1-INPUT-TEXTFORMS-SDL3 |
 | **Story Points** | 8 |
 | **Dependencies** | 7-9-8 (SDL_ttf font rendering) ✓ |
-| **Status** | review |
+| **Status** | done |
 
 ---
 
@@ -214,3 +214,4 @@ Text input forms don't work on SDL3. The login username/password fields, chat in
 | Date | Change |
 |------|--------|
 | 2026-04-08 | Story implementation complete — all 4 bugs fixed, tests GREEN, quality gate passed |
+| 2026-04-08 | Code review finalize — 4 findings fixed (dangling pointer, stale static, fprintf, vacuous asserts), 2 accepted as tech debt. Build + lint verified. Story → done |
