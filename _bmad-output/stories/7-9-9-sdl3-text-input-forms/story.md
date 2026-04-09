@@ -189,9 +189,43 @@ Text input forms don't work on SDL3. The login username/password fields, chat in
 - `g_pSingleTextInputBox` used by CharMakeWin, UIPopup, UIGuildMaster — also needed initialization.
 
 ### Completion Notes
-- All 4 bugs addressed. 4 executable tests pass (24 assertions). 5 SKIP tests compile clean.
+- All 4 original bugs addressed. 4 executable tests pass (24 assertions). 5 SKIP tests compile clean.
 - Quality gate (`./ctl check`) passes. Build compiles and links (367 targets).
-- Manual integration testing needed: login text input, chat input, popup text input, password deletion dialog.
+
+### Integration Testing (2026-04-08)
+Manual integration testing revealed 5 additional issues beyond the original 4 bugs:
+
+#### Bug 5: TextureNumber never set on SDL3 (CRITICAL — root cause of invisible text)
+**Symptom:** Text rasterized correctly (white=20+ pixels) but never appeared on screen.
+**Root cause:** `QueueTextureUpdate` and `BindTexture` used `b->TextureNumber` which defaults to 0 on SDL3 (OpenGL's glGenTextures never runs). `LookupTexture(0)` returns the 1×1 white fallback texture. Text data uploaded to wrong GPU texture.
+**Fix:** Use `b->BitmapIndex` which matches `RegisterTexture()` key.
+
+#### Bug 6: Shared BITMAP_FONT.Buffer — last writer wins (HIGH)
+**Symptom:** Password field content (asterisks) appeared in both input fields.
+**Root cause:** Both CUITextInputBox instances write to the same `Bitmaps[BITMAP_FONT].Buffer`. With deferred rendering, both `QueueTextureUpdate` calls store pointers to the same buffer; EndFrame uploads the last writer's content to the shared GPU texture.
+**Fix:** Per-instance RGBA buffer + GPU texture via static `InputBoxTexture` map. Each box creates its own 256×32 SDL_GPUTexture registered with unique ID (60000+).
+
+#### Bug 7: Font not scaled to buffer dimensions (HIGH)
+**Symptom:** Text was 6px wide (unreadable) because embedded 8×16 bitmap font rendered at literal nHeight=12, while the buffer was 22px tall (scaled by g_fScreenRate_y=1.6).
+**Fix:** Temporarily set `dc->pFont->nHeight = savedFontHeight * g_fScreenRate_y` before TextOut, restore after GetTextExtentPoint32.
+
+#### Bug 8: GiveFocus alternation from overlapping hit regions (MEDIUM)
+**Symptom:** After clicking between fields, focus bounced between UIID 35↔36 every frame.
+**Root cause:** `DoMouseAction` expands hit region by `m_iHeight + 8` pixels. With boxes 11px apart, regions overlap by ~11px. `MouseLButtonPush` stays true for the entire button press on SDL3, causing repeated GiveFocus calls on both boxes.
+**Fix:** Static `s_mouseClickHandled` edge-trigger — GiveFocus called only on first frame of mouse press.
+
+#### Bug 9: Marshal.PtrToStringAuto truncates to 1 char on macOS (CRITICAL — login broken)
+**Symptom:** Server received only first character of username/password.
+**Root cause:** Two-part issue:
+1. C++: `SendLogin` passed `wchar_t*` (4 bytes on macOS) to .NET without `MU_C16()` conversion
+2. C#: `Marshal.PtrToStringAuto()` reads UTF-8 on macOS, but data is UTF-16. First char 't' = `0x74 0x00` → reads as "t\0".
+**Fix:** C++ uses `MU_C16(username)` for wchar_t→char16_t conversion. C# uses `Marshal.PtrToStringUni()` which always reads UTF-16.
+
+### Remaining Issues (not in scope)
+- **Text quality**: Embedded 8×16 bitmap font is blocky when upscaled. Follow-up: adopt SDL_ttf for input box text rendering.
+- **Missing labels**: GlobalText[450]/[451] ("Account"/"Password") are empty — `Data/Local/Eng/Text_Eng.bmd` file missing (only `Text_Eng_decrypted.bmd` exists). Data file naming issue, not rendering.
+- **Post-login crash**: Segfault after successful login at "SendCheck" — character selection scene issue, separate from text input.
+- **Caret not visible**: `GetFocus()` returns sentinel (not nullptr) on SDL3 so `isFocused` is always false. Caret blinking disabled.
 
 ---
 
@@ -199,13 +233,16 @@ Text input forms don't work on SDL3. The login username/password fields, chat in
 
 | File | Status | Change |
 |------|--------|--------|
-| `ThirdParty/UIControls.cpp` | MODIFIED | AC-1: GiveFocus idempotency guard + static pointer; AC-2: SetFont stores m_hConfiguredFont, Render uses it |
+| `ThirdParty/UIControls.cpp` | MODIFIED | AC-1: GiveFocus idempotency + edge-trigger; AC-2: m_hConfiguredFont + font scaling; Bug 5: BitmapIndex; Bug 6: per-instance texture; Bug 7: font nHeight scaling |
 | `ThirdParty/UIControls.h` | MODIFIED | AC-2: Added `m_hConfiguredFont` member |
 | `Main/MuMain.cpp` | MODIFIED | AC-4: Initialize g_pSingleTextInputBox + g_pSinglePasswdInputBox; SAFE_DELETE cleanup |
 | `Platform/sdl3/SDLEventLoop.cpp` | MODIFIED | AC-5: Added g_bMouseLButtonPressEdge, set on BUTTON_DOWN |
 | `Platform/PlatformCompat.h` | MODIFIED | AC-5: extern g_bMouseLButtonPressEdge, used in GetAsyncKeyState VK_LBUTTON |
 | `UI/Framework/NewUICommon.cpp` | MODIFIED | AC-5: Clear g_bMouseLButtonPressEdge after ScanAsyncKeyState |
-| `tests/platform/test_text_input_forms_7_9_9.cpp` | MODIFIED | Fixed unused variable warning (g_bSDLTextInputReady_local) |
+| `RenderFX/MuRendererSDLGpu.cpp` | MODIFIED | Bug 6: QueueTextureUpdate copies pixel data at queue time (buffer snapshot) |
+| `Dotnet/PacketFunctions_Custom.cpp` | MODIFIED | Bug 9: MU_C16 conversion for SendLogin/SendChatMessageExt |
+| `ClientLibrary/ConnectionManager.ClientToServer.Custom.cs` | MODIFIED | Bug 9: Marshal.PtrToStringUni instead of PtrToStringAuto |
+| `tests/platform/test_text_input_forms_7_9_9.cpp` | MODIFIED | Fixed unused variable warning |
 
 ---
 
@@ -214,4 +251,5 @@ Text input forms don't work on SDL3. The login username/password fields, chat in
 | Date | Change |
 |------|--------|
 | 2026-04-08 | Story implementation complete — all 4 bugs fixed, tests GREEN, quality gate passed |
-| 2026-04-08 | Code review finalize — 4 findings fixed (dangling pointer, stale static, fprintf, vacuous asserts), 2 accepted as tech debt. Build + lint verified. Story → done |
+| 2026-04-08 | Code review finalize — 4 findings fixed (dangling pointer, stale static, fprintf, vacuous asserts), 2 accepted as tech debt |
+| 2026-04-08 | Integration testing — 5 additional bugs found and fixed (invisible text, shared buffer, font scaling, focus alternation, login marshalling). Login confirmed working. Story → done |
