@@ -596,4 +596,6 @@ development_status:
   7-9-6-migrate-raw-gl-to-murenderer: completeness-gate  # 34 pts | Flow:E | Deps: 7-9-5 ✓ | Migrate 250+ raw GL calls across 35 files to MuRenderer API — zero gl* calls outside SDL GPU backend | dev-story completed 2026-03-31
   7-9-7-adopt-glm-harden-matrix-pipeline: done  # 13 pts | Flow:E | Deps: 7-9-6 | Adopt GLM, fix depth conventions, particle billboards, terrain, fog binding, centralize viewport scaling | code-review-finalize completed 2026-04-01T21:15
   7-9-8-adopt-sdl-ttf-font-rendering: done  # 13 pts | Flow:E | Deps: 7-9-7 ✓ | SDL_ttf 3.2.2 GPU text engine, CUIRenderTextSDLTtf, deferred rendering, glyph atlas warmup | code-review-finalize completed 2026-04-07
+  7-9-9-sdl3-text-input-forms: done  # 8 pts | Flow:E | Deps: 7-9-8 ✓ | Text input capture, GDI bitmap rendering, focus management, login marshalling | integration-tested 2026-04-08
+  7-9-10-sdl-ttf-text-input-rendering: ready-for-dev  # 8 pts | Flow:E | Deps: 7-9-9 ✓ | Replace embedded bitmap font with SDL_ttf for input box text, add caret
   epic-7-retrospective: optional
