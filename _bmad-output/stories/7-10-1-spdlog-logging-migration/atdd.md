@@ -1,0 +1,205 @@
+# ATDD Checklist — Story 7.10.1: spdlog Logging Infrastructure Migration
+
+**Story Key**: 7-10-1  
+**Story Type**: backend_service (infrastructure migration)  
+**Flow Code**: VS0-CORE-MIGRATE-LOGGING  
+**Date**: 2026-04-10  
+**Status**: RED PHASE — all checklist items pending
+
+---
+
+## PCC Compliance Summary
+
+| Check | Status | Detail |
+|-------|--------|--------|
+| Prohibited libraries | PASS | No prohibited libraries used — spdlog is a new addition, not banned |
+| Required testing patterns | PASS | Catch2 v3.7.1 with TEST_CASE/SECTION, REQUIRE/CHECK macros |
+| No mocking framework | PASS | Pure logic tests, no mock framework used |
+| No Win32 APIs in tests | PASS | Tests use std::filesystem, std::chrono only |
+| Test locations | PASS | `MuMain/tests/core/` matching `src/source/Core/` |
+| Coverage threshold | PASS | Threshold=0 (growing incrementally); 6 test cases for MuLogger |
+| No Bruno collection | N/A | Not an API story — no REST endpoints |
+| No Playwright E2E | N/A | Not a frontend story |
+
+---
+
+## AC-to-Test Mapping
+
+| AC | Description | Test Method | Test File |
+|----|-------------|-------------|-----------|
+| AC-1 | spdlog FetchContent integration | `AC-1 [7-10-1]: spdlog is integrated via FetchContent and version is 1.x` | `test_logging_migration_7_10_1.cpp` |
+| AC-2 | MuLogger.h facade + MU_LOG_* macros | `AC-2 [7-10-1]: mu::log::Get() returns a valid named logger` | `test_mu_logger.cpp` |
+| AC-2 | MU_LOG_* macros compile at all levels | `AC-2 [7-10-1]: MU_LOG_* macros compile and execute at all levels` | `test_mu_logger.cpp` |
+| AC-3 | Rotating file sink creates MuError.log | `AC-3/AC-11 [7-10-1]: Init() creates MuError.log and file sink writes messages` | `test_mu_logger.cpp` |
+| AC-4 | Crash handler fd preserved | Manual verification (async-signal-safe fd, not unit-testable) | — |
+| AC-5 | 277 g_ErrorReport.Write sites migrated | grep: `grep -rn "g_ErrorReport" MuMain/src/source --include="*.cpp" --include="*.h"` → 0 results | — |
+| AC-6 | 339 LOG_CALL sites migrated | grep: `grep -rn "LOG_CALL" MuMain/src/source --include="*.cpp" --include="*.h"` → 0 results | — |
+| AC-7 | 140 g_ConsoleDebug->Write sites migrated | grep: `grep -rn "g_ConsoleDebug" MuMain/src/source --include="*.cpp" --include="*.h"` → 0 results | — |
+| AC-8 | ~29 fprintf(stderr) diagnostic sites migrated | grep: `grep -rn 'fprintf(stderr.*DIAG\|fprintf(stderr.*PKT\|fprintf(stderr.*GameConfig\|fprintf(stderr.*PLAT' MuMain/src/source` → 0 results | — |
+| AC-9 | Old logging classes deleted | `AC-9 [7-10-1]: ErrorReport.h is deleted` | `test_logging_migration_7_10_1.cpp` |
+| AC-9 | muConsoleDebug.h deleted | `AC-9 [7-10-1]: muConsoleDebug.h is deleted` | `test_logging_migration_7_10_1.cpp` |
+| AC-9 | MuLogger.h exists | `AC-9/AC-2 [7-10-1]: MuLogger.h exists` | `test_logging_migration_7_10_1.cpp` |
+| AC-10 | Runtime $loglevel command | Manual verification in running game | — |
+| AC-11 | Logger creation | `AC-2 [7-10-1]: mu::log::Get() returns a valid named logger` | `test_mu_logger.cpp` |
+| AC-11 | Level filtering | `AC-11 [7-10-1]: Level filtering suppresses messages below logger threshold` | `test_mu_logger.cpp` |
+| AC-11 | File sink writes | `AC-3/AC-11 [7-10-1]: Init() creates MuError.log and file sink writes messages` | `test_mu_logger.cpp` |
+| AC-11 | Multi-logger isolation | `AC-11 [7-10-1]: Named loggers are isolated — different instances, independent levels` | `test_mu_logger.cpp` |
+| AC-11 | All 11 named loggers retrievable | `AC-11 [7-10-1]: All named loggers (core, network, render, ...) are retrievable` | `test_mu_logger.cpp` |
+| AC-12 | VK spam eliminated | Already done — [x] in story.md | COMPLETED |
+
+---
+
+## Implementation Checklist
+
+All items start as `[ ]` (pending). Developer checks each item during implementation.
+
+### Phase 1: spdlog Integration (AC-1)
+
+- [ ] spdlog FetchContent block added to `MuMain/src/CMakeLists.txt` (GIT_TAG v1.15.3)
+- [ ] `target_link_libraries(MUCore PUBLIC spdlog::spdlog)` added
+- [ ] macOS arm64 build passes with spdlog linked (`./ctl build`)
+- [ ] Linux x64 build passes with spdlog linked
+- [ ] MinGW i686 CI build passes with spdlog linked
+- [ ] `AC-1 [7-10-1]` test passes: `ctest -R mu_logger`
+
+### Phase 2: MuLogger Facade (AC-2, AC-3)
+
+- [ ] `MuMain/src/source/Core/MuLogger.h` created with `mu::log::Init()`, `mu::log::Get()`, `mu::log::Shutdown()`
+- [ ] `MuMain/src/source/Core/MuLogger.cpp` created — Init() configures rotating file sink (512KB × 3) + colored stderr sink (warn+)
+- [ ] All 11 named loggers created in Init(): `core`, `network`, `render`, `data`, `gameplay`, `ui`, `audio`, `platform`, `dotnet`, `gameshop`, `scenes`
+- [ ] `MU_LOG_TRACE` through `MU_LOG_CRITICAL` macros defined (wrap `SPDLOG_LOGGER_*`)
+- [ ] `mu::log::Init()` called in `MuMain()` before first logging call
+- [ ] `g_errorReportFd` raw fd preserved — `mu::log::Init()` opens same path with `O_WRONLY|O_APPEND`
+- [ ] `AC-2 [7-10-1]` tests pass (all 2 test cases in test_mu_logger.cpp for AC-2)
+- [ ] `AC-3/AC-11 [7-10-1]` file sink test passes
+- [ ] `AC-9/AC-2 [7-10-1]` MuLogger.h existence test passes
+
+### Phase 3: Migrate g_ErrorReport.Write — 277 Sites (AC-5)
+
+- [ ] Core/ files migrated (~20 sites) — `core` logger
+- [ ] Data/ files migrated (~30 sites) — `data` logger
+- [ ] World/ files migrated (~40 sites) — `gameplay` logger
+- [ ] Gameplay/ files migrated (~50 sites) — `gameplay` logger
+- [ ] UI/ files migrated (~30 sites) — `ui` logger
+- [ ] Network/ + Dotnet/ files migrated (~40 sites) — `network`/`dotnet` logger
+- [ ] RenderFX/ files migrated (~20 sites) — `render` logger
+- [ ] Scenes/, Audio/, GameShop/, Platform/, ThirdParty/ files migrated (~47 sites) — appropriate loggers
+- [ ] wchar_t format strings converted to UTF-8 `{fmt}` syntax
+- [ ] `WideToUtf8()` utility moved to `Core/StringUtils.h` for reuse at wide-string call sites
+- [ ] grep check: `grep -rn "g_ErrorReport" MuMain/src/source --include="*.cpp" --include="*.h"` → **0 results**
+
+### Phase 4: Migrate LOG_CALL — 339 Sites (AC-6)
+
+- [ ] World/Maps/ files migrated (~175 sites) — `SPDLOG_TRACE(logger, "func(arg)"); func(arg);`
+- [ ] Gameplay/Characters/ files migrated (~164 sites)
+- [ ] `LOG_CALL`, `MU_WIDEN`, `MU_STRINGIFY` macros deleted from `ErrorReport.h`
+- [ ] grep check: `grep -rn "LOG_CALL" MuMain/src/source --include="*.cpp" --include="*.h"` → **0 results**
+
+### Phase 5: Migrate g_ConsoleDebug->Write — 140 Sites (AC-7)
+
+- [ ] `MCD_ERROR` → `spdlog::error` at all 140 sites
+- [ ] `MCD_SEND`/`MCD_RECEIVE` → `spdlog::debug` at all sites
+- [ ] `MCD_NORMAL` → `spdlog::info` at all sites
+- [ ] `$` game debug commands from `CmuConsoleDebug::CheckCommand` preserved in `MuConsoleCommands.cpp` (not deleted!)
+- [ ] grep check: `grep -rn "g_ConsoleDebug" MuMain/src/source --include="*.cpp" --include="*.h"` → **0 results**
+
+### Phase 6: Migrate fprintf(stderr) Diagnostics — ~29 Sites (AC-8)
+
+- [ ] `[DIAG-CHARSEL]` sites in CharacterScene.cpp → `SPDLOG_DEBUG(gameplay_logger, ...)`
+- [ ] `[DIAG-SELOBJ]` sites in ZzzInterface.cpp → `SPDLOG_DEBUG(gameplay_logger, ...)`
+- [ ] `[PKT #N]` sites in WSclient.cpp → `SPDLOG_DEBUG(network_logger, ...)`
+- [ ] `[GameConfig]` sites in PlatformCrypto.cpp → `SPDLOG_DEBUG(core_logger, ...)`
+- [ ] `PLAT:` site in ErrorReport.cpp (file being deleted — ensure Init() error handling uses spdlog)
+- [ ] grep check: `grep -rn 'fprintf(stderr' MuMain/src/source --include="*.cpp"` → **0 results**
+
+### Phase 7: Delete Old Infrastructure (AC-9)
+
+- [ ] `ErrorReport.h` deleted
+- [ ] `ErrorReport.cpp` deleted
+- [ ] `muConsoleDebug.h` deleted
+- [ ] `muConsoleDebug.cpp` deleted
+- [ ] All `#include "ErrorReport.h"` replaced with `#include "MuLogger.h"`
+- [ ] All `#include "muConsoleDebug.h"` removed
+- [ ] `extern CErrorReport g_ErrorReport;` declarations removed
+- [ ] `extern volatile int g_errorReportFd;` moved to MuLogger scope
+- [ ] Build passes with 0 errors after deletions
+- [ ] `AC-9 [7-10-1]: ErrorReport.h is deleted` test PASSES
+- [ ] `AC-9 [7-10-1]: muConsoleDebug.h is deleted` test PASSES
+
+### Phase 8: Runtime Log-Level Control (AC-10)
+
+- [ ] `$loglevel <logger> <level>` command handler added
+- [ ] `$loggers` command lists all active loggers and current levels
+- [ ] Manual test: launch game, run `$loglevel network debug`, verify network debug output appears
+- [ ] Manual test: run `$loglevel network warn`, verify debug output stops
+
+### Phase 9: Tests (AC-11)
+
+- [ ] `tests/core/test_mu_logger.cpp` — all 6 test cases PASS
+- [ ] `tests/core/test_logging_migration_7_10_1.cpp` — all 4 test cases PASS
+- [ ] CTest run: `ctest --test-dir MuMain/build -R mu_logger` → all pass
+- [ ] `AC-11 [7-10-1]: Level filtering` test passes
+- [ ] `AC-11 [7-10-1]: Named loggers are isolated` test passes
+- [ ] `AC-11 [7-10-1]: All named loggers are retrievable` test passes
+
+### Phase 10: Documentation (AC-STD-3)
+
+- [ ] `_bmad-output/project-context.md` logging table updated — replace `g_ErrorReport.Write()`/`g_ConsoleDebug->Write()` rows with spdlog/MuLogger rows
+- [ ] `docs/development-standards.md` §2 (Error Handling & Logging) updated with new logging patterns and MuLogger usage examples
+
+---
+
+## Standard AC Verification
+
+- [ ] **AC-STD-1**: Code standards: `#pragma once`, `nullptr`, `std::unique_ptr`, no `new`/`delete`, `std::filesystem::path` for log dir, `[[nodiscard]]` on `mu::log::Get()` if appropriate
+- [ ] **AC-STD-2**: Catch2 tests exist and pass: `test_mu_logger.cpp` (6 cases) + `test_logging_migration_7_10_1.cpp` (4 cases)
+- [ ] **AC-STD-3**: Documentation: project-context.md logging table + development-standards.md §2 updated
+- [ ] **AC-STD-11**: Flow code `VS0-CORE-MIGRATE-LOGGING` appears in all commit messages for this story
+- [ ] **AC-STD-13**: Quality gate passes: `./ctl check` (format-check + cppcheck + build) → 0 errors
+- [ ] **AC-STD-15**: No incomplete rebase, no force-push, branch `feature/7-10-1-spdlog-migration`
+- [ ] **AC-STD-16**: Correct test infrastructure: Catch2 + CTest (no mocking, no Win32 in tests)
+- [ ] **AC-VAL-2**: Test scenarios documented in `docs/test-scenarios/epic-7/7-10-1-logging-migration.md`
+- [ ] **AC-VAL-6**: Flow catalog updated with `VS0-CORE-MIGRATE-LOGGING`
+
+---
+
+## Verification Commands
+
+Run these after implementation to confirm all migration counts are zero:
+
+```bash
+# AC-5: No g_ErrorReport references (expect 0 matches)
+grep -rn "g_ErrorReport" MuMain/src/source --include="*.cpp" --include="*.h" | wc -l
+
+# AC-6: No LOG_CALL macro uses (expect 0 matches)
+grep -rn "LOG_CALL\b" MuMain/src/source --include="*.cpp" --include="*.h" | wc -l
+
+# AC-7: No g_ConsoleDebug references (expect 0 matches)
+grep -rn "g_ConsoleDebug" MuMain/src/source --include="*.cpp" --include="*.h" | wc -l
+
+# AC-8: No fprintf(stderr) calls (expect 0 matches)
+grep -rn 'fprintf(stderr' MuMain/src/source --include="*.cpp" | wc -l
+
+# AC-9: No ErrorReport.h include (expect 0 matches)
+grep -rn '"ErrorReport.h"' MuMain/src/source --include="*.cpp" --include="*.h" | wc -l
+
+# AC-9: No muConsoleDebug.h include (expect 0 matches)
+grep -rn '"muConsoleDebug.h"' MuMain/src/source --include="*.cpp" --include="*.h" | wc -l
+
+# Run all mu_logger tests
+ctest --test-dir MuMain/build -R mu_logger -V
+
+# Full quality gate
+./ctl check
+```
+
+---
+
+## Test Files Created (RED Phase)
+
+| File | AC Coverage | RED State |
+|------|-------------|-----------|
+| `MuMain/tests/core/test_mu_logger.cpp` | AC-2, AC-3, AC-11 | SKIP (MuLogger.h not yet created) |
+| `MuMain/tests/core/test_logging_migration_7_10_1.cpp` | AC-1, AC-9 | AC-9 FAIL (headers exist), AC-1 SKIP |
+
+**Implementation Checklist Complete**: ✓ All items are `[ ]` (pending) — ready for dev-story phase.

@@ -194,6 +194,7 @@ sprints:
     end_date: "2026-04-07"
     planned_points: 75
     stories:
+      - 7-10-1
       # EPIC-7 — Build compat fix (prerequisite for stability sessions)
       - 7-3-0-macos-build-compat                 # 3 pts | Flow:E | Deps: EPIC-2–6 ✓ | scope-discovery from 7-3-1
       # EPIC-7 — Remaining build failures + quality gate bypass removal (prerequisite for 7-3-1)

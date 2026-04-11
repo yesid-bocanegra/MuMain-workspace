@@ -1,0 +1,5 @@
+{"timestamp":"2026-04-11T03:21:41.139647+00:00","event_type":"story_started","story_key":"7-10-1","step":null,"sprint":null,"epic":"7","data":{"from_step":"atdd","to_step":"code-review-finalize","planned_steps":8,"fresh":false}}
+{"timestamp":"2026-04-11T03:21:41.140243+00:00","event_type":"step_started","story_key":"7-10-1","step":"atdd","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-11T03:21:43.221562+00:00","event_type":"story_failed","story_key":"7-10-1","step":"atdd","sprint":null,"epic":"7","data":{"failed_step":"atdd","retries_used":0,"regressions_used":0,"error":"INTERRUPTED","duration_seconds":2.1}}
+{"timestamp":"2026-04-11T03:38:32.227910+00:00","event_type":"story_started","story_key":"7-10-1","step":null,"sprint":null,"epic":"7","data":{"from_step":"atdd","to_step":"code-review-finalize","planned_steps":8,"fresh":false}}
+{"timestamp":"2026-04-11T03:38:32.228834+00:00","event_type":"step_started","story_key":"7-10-1","step":"atdd","sprint":null,"epic":"7","data":{}}
