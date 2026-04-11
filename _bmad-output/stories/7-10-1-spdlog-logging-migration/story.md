@@ -1,6 +1,6 @@
 # Story 7.10.1: Migrate logging infrastructure to spdlog
 
-Status: ready-for-dev
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -85,16 +85,16 @@ Status: ready-for-dev
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Integrate spdlog via FetchContent (AC: 1)
-  - [ ] 1.1 Add spdlog FetchContent block to `src/CMakeLists.txt` (alongside SDL3, Catch2, SDL_ttf)
-  - [ ] 1.2 Link spdlog::spdlog to MUCore target (propagates to all dependents via PUBLIC)
-  - [ ] 1.3 Verify macOS, Linux, and MinGW builds pass with spdlog linked
-- [ ] Task 2: Create MuLogger facade (AC: 2, 3)
-  - [ ] 2.1 Create `src/source/Core/MuLogger.h` with `mu::log::Init()`, `mu::log::Get(name)`, and `MU_LOG_*` macros
-  - [ ] 2.2 Create `src/source/Core/MuLogger.cpp` — `Init()` sets up rotating file sink (512KB x 3) + colored stderr sink (warn+), creates default loggers
-  - [ ] 2.3 Define named loggers: `core`, `network`, `render`, `data`, `gameplay`, `ui`, `audio`, `platform`, `dotnet`, `gameshop`, `scenes`
-  - [ ] 2.4 Call `mu::log::Init()` in `MuMain()` before any existing logging calls
-  - [ ] 2.5 Preserve `g_errorReportFd` — open the same file path with O_WRONLY|O_APPEND for crash handler use
+- [x] Task 1: Integrate spdlog via FetchContent (AC: 1)
+  - [x] 1.1 Add spdlog FetchContent block to `src/CMakeLists.txt` (alongside SDL3, Catch2, SDL_ttf)
+  - [x] 1.2 Link spdlog::spdlog to MUCore target (propagates to all dependents via PUBLIC)
+  - [x] 1.3 Verify macOS, Linux, and MinGW builds pass with spdlog linked
+- [x] Task 2: Create MuLogger facade (AC: 2, 3)
+  - [x] 2.1 Create `src/source/Core/MuLogger.h` with `mu::log::Init()`, `mu::log::Get(name)`, and `MU_LOG_*` macros
+  - [x] 2.2 Create `src/source/Core/MuLogger.cpp` — `Init()` sets up rotating file sink (512KB x 3) + colored stderr sink (warn+), creates default loggers
+  - [x] 2.3 Define named loggers: `core`, `network`, `render`, `data`, `gameplay`, `ui`, `audio`, `platform`, `dotnet`, `gameshop`, `scenes`
+  - [x] 2.4 Call `mu::log::Init()` in `MuMain()` before any existing logging calls
+  - [x] 2.5 Preserve `g_errorReportFd` — open the same file path with O_WRONLY|O_APPEND for crash handler use
 - [ ] Task 3: Migrate `g_ErrorReport.Write` — 277 call sites (AC: 5)
   - [ ] 3.1 Migrate `Core/` files (~20 sites) — use `core` logger
   - [ ] 3.2 Migrate `Data/` files (~30 sites) — use `data` logger

@@ -600,5 +600,5 @@ development_status:
   7-9-9-sdl3-text-input-forms: done  # 8 pts | Flow:E | Deps: 7-9-8 ✓ | Text input capture, GDI bitmap rendering, focus management, login marshalling | integration-tested 2026-04-08
   7-9-10-sdl-ttf-text-input-rendering: ready-for-dev  # 8 pts | Flow:E | Deps: 7-9-9 ✓ | Replace embedded bitmap font with SDL_ttf for input box text, add caret
   # EPIC-7 — Logging infrastructure modernization
-  7-10-1-spdlog-logging-migration: ready-for-dev  # 13 pts | Flow:E | Deps: 7-6-7 ✓ | Replace CErrorReport, CmuConsoleDebug, LOG_CALL, fprintf with spdlog — unified leveled logging
+  7-10-1-spdlog-logging-migration: in-progress  # 13 pts | Flow:E | Deps: 7-6-7 ✓ | Replace CErrorReport, CmuConsoleDebug, LOG_CALL, fprintf with spdlog — unified leveled logging | dev-story started 2026-04-10
   epic-7-retrospective: optional

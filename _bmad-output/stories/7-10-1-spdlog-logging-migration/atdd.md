@@ -55,24 +55,24 @@ All items start as `[ ]` (pending). Developer checks each item during implementa
 
 ### Phase 1: spdlog Integration (AC-1)
 
-- [ ] spdlog FetchContent block added to `MuMain/src/CMakeLists.txt` (GIT_TAG v1.15.3)
-- [ ] `target_link_libraries(MUCore PUBLIC spdlog::spdlog)` added
-- [ ] macOS arm64 build passes with spdlog linked (`./ctl build`)
+- [x] spdlog FetchContent block added to `MuMain/src/CMakeLists.txt` (GIT_TAG v1.15.3)
+- [x] `target_link_libraries(MUCore PUBLIC spdlog::spdlog)` added
+- [x] macOS arm64 build passes with spdlog linked (`./ctl build`)
 - [ ] Linux x64 build passes with spdlog linked
 - [ ] MinGW i686 CI build passes with spdlog linked
-- [ ] `AC-1 [7-10-1]` test passes: `ctest -R mu_logger`
+- [x] `AC-1 [7-10-1]` test passes: `ctest -R mu_logger`
 
 ### Phase 2: MuLogger Facade (AC-2, AC-3)
 
-- [ ] `MuMain/src/source/Core/MuLogger.h` created with `mu::log::Init()`, `mu::log::Get()`, `mu::log::Shutdown()`
-- [ ] `MuMain/src/source/Core/MuLogger.cpp` created — Init() configures rotating file sink (512KB × 3) + colored stderr sink (warn+)
-- [ ] All 11 named loggers created in Init(): `core`, `network`, `render`, `data`, `gameplay`, `ui`, `audio`, `platform`, `dotnet`, `gameshop`, `scenes`
-- [ ] `MU_LOG_TRACE` through `MU_LOG_CRITICAL` macros defined (wrap `SPDLOG_LOGGER_*`)
-- [ ] `mu::log::Init()` called in `MuMain()` before first logging call
-- [ ] `g_errorReportFd` raw fd preserved — `mu::log::Init()` opens same path with `O_WRONLY|O_APPEND`
-- [ ] `AC-2 [7-10-1]` tests pass (all 2 test cases in test_mu_logger.cpp for AC-2)
-- [ ] `AC-3/AC-11 [7-10-1]` file sink test passes
-- [ ] `AC-9/AC-2 [7-10-1]` MuLogger.h existence test passes
+- [x] `MuMain/src/source/Core/MuLogger.h` created with `mu::log::Init()`, `mu::log::Get()`, `mu::log::Shutdown()`
+- [x] `MuMain/src/source/Core/MuLogger.cpp` created — Init() configures rotating file sink (512KB × 3) + colored stderr sink (warn+)
+- [x] All 11 named loggers created in Init(): `core`, `network`, `render`, `data`, `gameplay`, `ui`, `audio`, `platform`, `dotnet`, `gameshop`, `scenes`
+- [x] `MU_LOG_TRACE` through `MU_LOG_CRITICAL` macros defined (wrap `SPDLOG_LOGGER_*`)
+- [x] `mu::log::Init()` called in `MuMain()` before first logging call
+- [x] `g_errorReportFd` raw fd preserved — `mu::log::Init()` opens same path with `O_WRONLY|O_APPEND`
+- [x] `AC-2 [7-10-1]` tests pass (all 2 test cases in test_mu_logger.cpp for AC-2)
+- [x] `AC-3/AC-11 [7-10-1]` file sink test passes
+- [x] `AC-9/AC-2 [7-10-1]` MuLogger.h existence test passes
 
 ### Phase 3: Migrate g_ErrorReport.Write — 277 Sites (AC-5)
 
