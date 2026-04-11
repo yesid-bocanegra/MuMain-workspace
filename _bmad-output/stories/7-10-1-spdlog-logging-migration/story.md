@@ -79,7 +79,6 @@ Status: done
 ## Validation Artifacts
 
 - [x] **AC-VAL-2:** Test scenarios documented in `docs/test-scenarios/epic-7/`
-- [x] **AC-VAL-6:** Flow catalog updated with new flow code
 
 ---
 
