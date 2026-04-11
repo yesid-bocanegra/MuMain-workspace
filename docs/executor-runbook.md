@@ -130,6 +130,43 @@ Re-run `workspace-configure` after adding/removing components in `.pcc-config.ya
 
 Re-run `generate-skills` after changing components or enabling/disabling Pencil.
 
+### Token Optimization Setup (Optional)
+
+Four tools reduce token consumption in both pipeline and interactive sessions. Install the ones you want:
+
+```bash
+# 1. RTK — compresses Bash command output (git, tests, linters)
+brew install rtk
+rtk init -g                # installs hook + patches Claude Code settings
+
+# 2. context-mode — indexes tool results for on-demand search
+claude mcp add context-mode -- npx -y context-mode
+
+# 3. Headroom — AST-aware API traffic compression
+uv tool install "headroom-ai[all]"
+headroom mcp install       # registers MCP tools in Claude Code
+
+# 4. MCP Compressor — reduces MCP tool schema bloat
+uv tool install mcp-compressor
+```
+
+To enable Headroom proxy for pipeline runs (compresses all Claude API traffic), add to `.pcc-config.yaml`:
+
+```yaml
+token_optimization:
+  headroom_proxy: true
+  headroom_proxy_url: "http://127.0.0.1:8787"
+```
+
+Then start the proxy before running the pipeline:
+
+```bash
+headroom proxy --port 8787 &
+./paw sprint                 # all API traffic compressed automatically
+```
+
+See **Performance Tuning → Token Optimization Tools** for full details.
+
 ---
 
 ## Sprint Lifecycle
@@ -663,6 +700,109 @@ When using `--model` to override all steps (e.g., `./paw run {key} --model opus`
 
 Profiles exist for `opus` and `o46`. Models without a profile keep per-step default effort.
 
+### Token Optimization Tools
+
+Four tools reduce token consumption at different layers of the pipeline. All are optional but recommended — they work independently and can be combined.
+
+| Tool | Layer | What it reduces | Savings | Install |
+|------|-------|----------------|---------|---------|
+| **RTK** | Bash output | git, test, lint, build output | 60-90% | `brew install rtk && rtk init -g` |
+| **context-mode** | Tool results | All tool I/O via FTS5 sandbox | 98-99% | `claude mcp add context-mode -- npx -y context-mode` |
+| **Headroom** | API requests | Message content (AST-aware) | 73-92% | `uv tool install "headroom-ai[all]" && headroom mcp install` |
+| **MCP Compressor** | Tool definitions | MCP server schema bloat | 70-97% | `uv tool install mcp-compressor` (wrap in `.claude.json`) |
+
+#### RTK (Rust Token Killer)
+
+Already installed via `brew install rtk`. Intercepts Bash commands via a `PreToolUse` hook, runs the real command, then filters output (strips ANSI, shows only failures, aggregates by pattern). Zero code changes needed.
+
+```bash
+rtk discover       # see missed opportunities and estimated savings
+rtk gain            # see actual savings dashboard
+rtk gain --graph    # ASCII chart of savings over time
+rtk session         # adoption rate
+```
+
+**What it covers:** `git status/diff/log/push`, `uv run pytest`, `ruff check`, `mypy`, `pre-commit run`, `./gradlew build`, `npm run lint/test`, `npx playwright test`, `./paw` commands.
+
+**What it doesn't cover:** Claude Code's native tools (`Read`, `Grep`, `Glob`, `Edit`) — these bypass Bash entirely.
+
+**Config:** `~/.config/rtk/config.toml`
+```toml
+[hooks]
+exclude_commands = ["curl", "playwright"]  # skip rewrite for these
+
+[tee]
+enabled = true
+mode = "failures"   # save full output on failure for re-reading
+```
+
+#### context-mode
+
+MCP server that intercepts tool outputs, indexes them into a local FTS5 database, and lets Claude search on-demand instead of accumulating everything in context. Most impactful for multi-turn steps (dev-story, code-review-finalize) where context accumulation causes the doom-loop pattern.
+
+```bash
+# Install (one-time)
+claude mcp add context-mode -- npx -y context-mode
+
+# Or install as plugin for slash commands + hooks
+# (run inside Claude Code interactive session)
+/plugin marketplace add mksglu/context-mode
+/plugin install context-mode@context-mode
+```
+
+**Verification:** `claude mcp list` should show `context-mode: ✓ Connected`
+
+**Tools provided:** `ctx_execute`, `ctx_batch_execute`, `ctx_index`, `ctx_search`, `ctx_fetch_and_index`
+
+#### Headroom
+
+AST-aware compression layer. When used as MCP tools, provides on-demand compression and retrieval. When used as proxy (`ANTHROPIC_BASE_URL`), compresses all API traffic automatically.
+
+```bash
+# Install (one-time)
+uv tool install "headroom-ai[all]"
+headroom mcp install   # registers MCP tools in Claude Code
+
+# Optional: full proxy mode (compresses ALL API requests)
+headroom proxy --port 8787 &
+ANTHROPIC_BASE_URL=http://127.0.0.1:8787 claude
+```
+
+**MCP tools:** `headroom_compress`, `headroom_retrieve` (get original by hash), `headroom_stats`
+
+**For pipeline use (./paw):** To route pipeline subprocess calls through the proxy, set the env var before running:
+```bash
+headroom proxy --port 8787 &
+ANTHROPIC_BASE_URL=http://127.0.0.1:8787 ./paw 5-2-3
+```
+
+#### MCP Compressor (Atlassian)
+
+Wraps existing MCP servers and replaces their full tool schemas with 2 generic tools (`get_tool_schema` + `invoke_tool`). The LLM discovers tools on-demand instead of loading all schemas upfront. Most valuable for servers with many tools (GitHub has 93 tools = ~55K tokens of schema).
+
+```bash
+# Install (one-time)
+uv tool install mcp-compressor
+```
+
+**Wrapping a server** — edit `.claude.json` or `~/.claude.json`:
+```json
+{
+  "mcpServers": {
+    "compressed-github": {
+      "command": "mcp-compressor",
+      "args": [
+        "https://api.githubcopilot.com/mcp/",
+        "--server-name", "github",
+        "-c", "high"
+      ]
+    }
+  }
+}
+```
+
+Compression levels: `low` (full descriptions), `medium` (first sentence), `high` (names + params only), `max` (tool names only).
+
 ---
 
 ## Troubleshooting
@@ -699,15 +839,16 @@ Profiles exist for `opus` and `o46`. Models without a profile keep per-step defa
 
 ### Pipeline Safety Guards (v4.3.1)
 
-The pipeline has three guards that prevent incomplete work from being marked PASSED:
+The pipeline has four guards that prevent incomplete work from being marked PASSED:
 
 | Guard | Triggers when | Result |
 |-------|--------------|--------|
 | **Idle/stall timeout** | No stream activity for 15 min (idle) or no progress for 30 min (stall) | Step marked FAILED — retries/regression apply |
 | **Zero-output guard** | Step produces 0 output lines for >60 seconds | Step marked FAILED — catches silent hangs |
 | **Done-story skip** | Batch runner encounters a story with `code-review-finalize completed` | Story skipped entirely — no re-processing |
+| **Failed-state precedence** | RunState records `status: failed` but artifact says story complete | RunState wins — story resumes at the failed step |
 
-Previously, idle timeouts inherited the process exit code (often 0), causing timed-out steps to be marked PASSED. If a step fails due to these guards, the pipeline's normal retry (1 attempt) and regression (back to dev-story, max 2) mechanisms apply.
+Previously, idle timeouts inherited the process exit code (often 0), causing timed-out steps to be marked PASSED. The failed-state guard prevents a related problem: when a step writes `Status: done` to the story file before its verification fails, the stale artifact would override the RunState and report the story as complete. If a step fails due to these guards, the pipeline's normal retry (1 attempt) and regression (back to dev-story, max 2) mechanisms apply.
 
 ### Pipeline Validation & Diagnostics
 
