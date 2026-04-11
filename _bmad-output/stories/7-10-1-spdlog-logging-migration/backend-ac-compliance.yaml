@@ -1,0 +1,71 @@
+metadata:
+  story_key: "7-10-1"
+  status: "passed"
+  total_iterations: 0
+  last_updated: "2026-04-11"
+  tech_profile: "cpp-cmake"
+  component: "mumain"
+
+test_class:
+  class_name: "MuTests"
+  full_path: "MuMain/build-test/tests/MuTests"
+  test_files:
+    - "MuMain/tests/core/test_mu_logger.cpp"
+    - "MuMain/tests/core/test_logging_migration_7_10_1.cpp"
+  run_command: "./MuTests \"[7-10-1]\" --reporter compact"
+  note: "Uses Catch2 tag filter [7-10-1]; CTest discovery does not work on macOS (Apple Clang). Run binary directly."
+
+test_results:
+  total_tests: 10
+  passed: 10
+  failed: 0
+  total_assertions: 31
+  ac_mapping:
+    - ac_id: "AC-1"
+      test_name: "AC-1 [7-10-1]: spdlog is integrated via FetchContent and version is 1.x"
+      status: "passed"
+    - ac_id: "AC-2"
+      test_name: "AC-2 [7-10-1]: mu::log::Get() returns a valid named logger"
+      status: "passed"
+    - ac_id: "AC-2"
+      test_name: "AC-2 [7-10-1]: MU_LOG_* macros compile and execute at all levels"
+      status: "passed"
+    - ac_id: "AC-2/AC-9"
+      test_name: "AC-9/AC-2 [7-10-1]: MuLogger.h exists — new logging facade is in place"
+      status: "passed"
+    - ac_id: "AC-3/AC-11"
+      test_name: "AC-3/AC-11 [7-10-1]: Init() creates MuError.log and file sink writes messages"
+      status: "passed"
+    - ac_id: "AC-9"
+      test_name: "AC-9 [7-10-1]: ErrorReport.h is deleted — CErrorReport removed from codebase"
+      status: "passed"
+    - ac_id: "AC-9"
+      test_name: "AC-9 [7-10-1]: muConsoleDebug.h is deleted — CmuConsoleDebug removed"
+      status: "passed"
+    - ac_id: "AC-11"
+      test_name: "AC-11 [7-10-1]: Level filtering suppresses messages below logger threshold"
+      status: "passed"
+    - ac_id: "AC-11"
+      test_name: "AC-11 [7-10-1]: Named loggers are isolated — different instances, independent levels"
+      status: "passed"
+    - ac_id: "AC-11"
+      test_name: "AC-11 [7-10-1]: All named loggers (core, network, render, ...) are retrievable"
+      status: "passed"
+  passing_tests:
+    - "AC-1 [7-10-1]: spdlog is integrated via FetchContent and version is 1.x"
+    - "AC-2 [7-10-1]: mu::log::Get() returns a valid named logger"
+    - "AC-2 [7-10-1]: MU_LOG_* macros compile and execute at all levels"
+    - "AC-9/AC-2 [7-10-1]: MuLogger.h exists — new logging facade is in place"
+    - "AC-3/AC-11 [7-10-1]: Init() creates MuError.log and file sink writes messages"
+    - "AC-9 [7-10-1]: ErrorReport.h is deleted — CErrorReport removed from codebase"
+    - "AC-9 [7-10-1]: muConsoleDebug.h is deleted — CmuConsoleDebug removed"
+    - "AC-11 [7-10-1]: Level filtering suppresses messages below logger threshold"
+    - "AC-11 [7-10-1]: Named loggers are isolated — different instances, independent levels"
+    - "AC-11 [7-10-1]: All named loggers (core, network, render, ...) are retrievable"
+  failing_tests: []
+
+iterations: []
+
+blockers: []
+
+next_actions: []
