@@ -1324,3 +1324,5 @@
 {"timestamp":"2026-04-11T14:07:15.102597+00:00","event_type":"step_retried","story_key":"7-10-1","step":"dev-story","sprint":null,"epic":"7","data":{"attempt":2}}
 {"timestamp":"2026-04-11T14:07:15.103065+00:00","event_type":"feedback_saved","story_key":"7-10-1","step":"dev-story","sprint":null,"epic":"7","data":{"regression_target":"dev-story"}}
 {"timestamp":"2026-04-11T14:07:17.107662+00:00","event_type":"step_started","story_key":"7-10-1","step":"dev-story","sprint":null,"epic":"7","data":{}}
+{"timestamp":"2026-04-11T14:17:34.191784+00:00","event_type":"step_passed","story_key":"7-10-1","step":"dev-story","sprint":null,"epic":"7","data":{"duration_seconds":617.1,"input_tokens":123,"output_tokens":13005,"cache_creation_tokens":413259,"cache_read_tokens":6896715,"num_turns":80,"num_tool_calls":45}}
+{"timestamp":"2026-04-11T14:17:35.207935+00:00","event_type":"step_started","story_key":"7-10-1","step":"completeness-gate","sprint":null,"epic":"7","data":{}}
