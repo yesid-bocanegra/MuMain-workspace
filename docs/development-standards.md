@@ -214,79 +214,60 @@ Per `.editorconfig`:
 
 ### Error Handling & Logging
 
-#### Existing Logging Infrastructure
+#### Logging Infrastructure (spdlog)
 
-The codebase has several logging mechanisms. Choose the right one based on audience and severity:
+All logging uses the unified **MuLogger** facade (`MuMain/src/source/Core/MuLogger.h`) backed by spdlog 1.15.x. The old mechanisms (`CErrorReport`, `CmuConsoleDebug`, `LOG_CALL`, `fprintf(stderr)`) have been removed (Story 7.10.1).
 
-| Mechanism | Audience | Availability | Output |
-|-----------|----------|-------------|--------|
-| `g_ErrorReport.Write(L"fmt", ...)` | Developers (post-mortem) | All builds | `MuError.log` file |
-| `g_ConsoleDebug->Write(type, L"fmt", ...)` | Developers (live) | `_DEBUG` + `FOR_WORK` only | In-game console window |
-| `wprintf(L"fmt", ...)` | Developers (live) | All builds (but no console in release) | stdout |
-| `MessageBox()` / `PopUpErrorCheckMsgBox()` | Players / developers | All builds | Modal dialog |
-| `assert(expr)` | Developers | `_DEBUG` only | Abort + debugger break |
-| `OutputDebugString()` | Developers (VS attached) | `_DEBUG` only | VS Output window |
+| API | When to use | Output |
+|-----|-------------|--------|
+| `mu::log::Get("name")->info(...)` | Named logger with spdlog levels | `MuError.log` (rotating) + stderr (warn+) |
+| `MU_LOG_INFO(logger, ...)` | Compile-time filtered macros | Same sinks, stripped below `SPDLOG_ACTIVE_LEVEL` |
+| `assert(expr)` | Programmer errors (`_DEBUG` only) | Abort + debugger break |
+| `MessageBox()` / `PopUpErrorCheckMsgBox()` | Player-visible unrecoverable errors | Modal dialog |
 
-**Dead mechanisms — do not use:**
-- `__TraceF()` — body is commented out, completely inert
-- `DebugAngel` / `ExecutionLog` — removed from the codebase
+**Named loggers:** `core`, `network`, `render`, `data`, `gameplay`, `ui`, `audio`, `platform`, `dotnet`, `gameshop`, `scenes`. All share the same rotating file sink + stderr color sink.
 
-#### When to Use Each Mechanism
+**Initialization:** `mu::log::Init(logDir)` is called once in `MuMain()` before any logging. `mu::log::Shutdown()` flushes and tears down at exit.
 
-**`g_ErrorReport.Write()`** — Primary diagnostic log. Use for events useful in post-mortem analysis:
-- Asset loading failures (models, textures, data files)
-- Network connection state changes
-- Startup diagnostics (system info, GL capabilities)
-- Any error the player might report as a bug
+#### When to Use Each Level
 
 ```cpp
-g_ErrorReport.Write(L"AccessModel failed: %ls%ls (Type=%d)\r\n", szDir, szName, iType);
+mu::log::Get("data")->info("Loaded {} items from {}", count, path);
+mu::log::Get("network")->warn("Connection retry #{}", attempt);
+mu::log::Get("render")->error("Failed to create pipeline: {}", errMsg);
 ```
 
-Note: `g_ErrorReport` does not add timestamps automatically. Call `g_ErrorReport.WriteCurrentTime()` before important events (connection attempts, scene transitions).
+| Level | Use for |
+|-------|---------|
+| `trace` | Per-frame diagnostics, hot-path data (disabled by default) |
+| `debug` | Development-only state transitions, packet details |
+| `info` | Startup diagnostics, asset loading, connection state changes |
+| `warn` | Recoverable errors, retry situations, degraded operation |
+| `error` | Failed operations the player might report as a bug |
+| `critical` | Unrecoverable failures preceding termination |
 
-**`g_ConsoleDebug->Write()`** — Live development diagnostics. Use for high-frequency events useful while debugging:
-- Packet send/receive logging (`MCD_SEND` / `MCD_RECEIVE`)
-- Error conditions during development (`MCD_ERROR`)
-- General state transitions (`MCD_NORMAL`)
+**Enum formatting:** A generic `fmt::formatter` specialization in `MuLogger.h` handles all enum types automatically — no `static_cast<int>()` needed in log calls.
 
-```cpp
-g_ConsoleDebug->Write(MCD_RECEIVE, L"Received character list (%d chars)\r\n", nCount);
-```
+**Crash handler:** Uses raw `write(mu::log::g_errorReportFd, ...)` — async-signal-safe, not spdlog. See `PosixSignalHandlers.cpp`.
 
-Always guard with `#ifdef CONSOLE_DEBUG` or null-check, since `GetInstance()` returns null in release.
+#### Runtime Log-Level Control
 
-**`wprintf()`** — Quick debugging only. Acceptable in legacy code but avoid in new code — output goes nowhere in release builds without a console window. Prefer `g_ErrorReport.Write()` for persistent diagnostics or `g_ConsoleDebug->Write()` for debug output.
+In-game `$` commands (via `MuConsoleCommands.h`):
+- `$loglevel <logger> <level>` — change a logger's level at runtime (e.g., `$loglevel network debug`)
+- `$loggers` — list all registered loggers and their current levels
 
-**`assert()`** — Programmer errors that should never happen if the code is correct:
-- Null pointer on a parameter that must not be null
-- Index out of bounds in internal logic
-- Violated preconditions in private/internal functions
-
-```cpp
-assert(pItem != nullptr);           // Caller bug if null
-assert(iSlotIndex >= 0 && iSlotIndex < MAX_INVENTORY);
-```
-
-Do NOT assert on external data (network packets, files, user input) — validate and handle gracefully instead.
-
-**`MessageBox()` / `PopUpErrorCheckMsgBox()`** — Player-visible errors for unrecoverable situations:
-- Critical asset missing (player model, core textures)
-- Fatal initialization failure (GL context, network)
-
-Use `PopUpErrorCheckMsgBox()` which respects the `FOR_WORK` flag (recoverable in dev, fatal in release).
+Programmatic: `mu::log::SetLevel("network", spdlog::level::debug)`
 
 #### Error Handling Strategy
 
 **Return codes** are the existing pattern. Continue using them:
 
 ```cpp
-// GOOD — check return and handle failure
 bool bSuccess = Models[iType].Open2(szDir, szName);
 if (!bSuccess)
 {
-    g_ErrorReport.Write(L"Failed to load model: %ls%ls\r\n", szDir, szName);
-    return false;  // Propagate failure
+    mu::log::Get("data")->error("Failed to load model: {}{} (Type={})", szDir, szName, iType);
+    return false;
 }
 ```
 
@@ -305,30 +286,19 @@ if (!bSuccess)
 
 | Asset criticality | On failure | Example |
 |-------------------|-----------|---------|
-| Critical (player can't play) | `g_ErrorReport.Write()` + `MessageBox()` + terminate | Player model, login UI textures |
-| Important (feature broken) | `g_ErrorReport.Write()` + `PopUpErrorCheckMsgBox()` | Monster models, map textures |
-| Optional (cosmetic) | `g_ErrorReport.Write()` + skip silently | Particle effects, decorative models |
-
-#### Cross-Platform Logging Migration
-
-The current infrastructure is Win32-locked. During the SDL3 migration:
-
-- `g_ErrorReport` uses `CreateFile`/`WriteFile` → will migrate to `std::ofstream` (Phase 5, Session 5.3)
-- `CmuConsoleDebug` uses `AllocConsole`/`std::wcout` → will migrate to stdout + ANSI escapes (Phase 5, Session 5.3)
-- `MessageBox` → already shimmed via `PlatformCompat.h` → `SDL_ShowSimpleMessageBox` (Phase 0, Session 0.3)
-- `OutputDebugString` → `fprintf(stderr, ...)` on non-Windows (Phase 5, Session 5.3)
-
-**New code should avoid direct Win32 logging calls.** Use `g_ErrorReport.Write()` or `g_ConsoleDebug->Write()` — these will be ported. Do not add new `OutputDebugString`, `AllocConsole`, or direct `HANDLE`-based file writes.
+| Critical (player can't play) | `error` + `MessageBox()` + terminate | Player model, login UI textures |
+| Important (feature broken) | `error` + `PopUpErrorCheckMsgBox()` | Monster models, map textures |
+| Optional (cosmetic) | `warn` + skip silently | Particle effects, decorative models |
 
 #### Logging Rules Summary
 
 1. **Do log:** Asset load failures, network state changes, startup diagnostics, unexpected state
-2. **Don't log:** Normal operations, per-frame events (unless behind `_DEBUG`), successful routine actions
-3. **Use `g_ErrorReport`** for anything a player might report as a bug
-4. **Use `g_ConsoleDebug`** for packet debugging and live development diagnostics
+2. **Don't log:** Normal operations, per-frame events (unless `trace`/`debug` level), successful routine actions
+3. **Use `error`/`critical`** for anything a player might report as a bug
+4. **Use `debug`** for packet debugging and live development diagnostics
 5. **Use `assert`** for internal invariants, not for external data validation
 6. **Use `MessageBox`** only for player-visible unrecoverable errors
-7. **Don't use `wprintf`** in new code — prefer `g_ErrorReport` or `g_ConsoleDebug`
+7. **Don't use `wprintf`/`fprintf(stderr)`** — use `mu::log::Get("name")->level()` instead
 8. **Always propagate errors** via return codes — don't silently swallow failures
 
 ### Modern C++ (New Code)

@@ -98,7 +98,7 @@ cmake --build --preset windows-x64-mueditor-debug
 - **i18n:** `GAME_TEXT("key")` for user-facing strings, `EDITOR_TEXT("key")` in editor builds
 - **Feature flags:** Author-prefixed defines in `Defined_Global.h` (e.g., `ASG_ADD_GENS_SYSTEM`)
 - **C#:** StyleCop enforced, `[UnmanagedCallersOnly]` for AOT exports, VSTHRD103 as error
-- **Logging:** `g_ErrorReport.Write()` for post-mortem, `g_ConsoleDebug->Write()` for live debug; no `wprintf` in new code
+- **Logging:** `mu::log::Get("name")->info(...)` via spdlog (see `MuLogger.h`); no `wprintf`/`fprintf(stderr)` in new code
 - **Error handling:** Return codes (no exceptions in game loop), `assert` for internal invariants only, `[[nodiscard]]` on new fallible functions
 
 ## Generated Files — DO NOT EDIT
