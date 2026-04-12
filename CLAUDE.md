@@ -40,27 +40,6 @@ brew install cmake ninja clang-format cppcheck
 
 > **Note:** SDL3 is fetched via FetchContent on first configure (internet required, ~30 sec). `.NET` SDK needed for server connectivity.
 
-### Linux / WSL — MinGW Cross-Compile (Recommended)
-
-MinGW cross-compiles a Windows `.exe` from Linux. WSL is the recommended daily-dev environment.
-
-```bash
-# Install toolchain (one-time)
-sudo apt-get update && sudo apt-get install -y mingw-w64 g++-mingw-w64-i686 cmake ninja-build
-
-# Build
-cmake -S MuMain -B build-mingw -G Ninja \
-  -DCMAKE_TOOLCHAIN_FILE=MuMain/cmake/toolchains/mingw-w64-i686.cmake \
-  -DCMAKE_BUILD_TYPE=Debug -DENABLE_EDITOR=ON \
-  -DMU_TURBOJPEG_STATIC_LIB=_deps/mingw-i686/lib/libturbojpeg.a
-cmake --build build-mingw -j$(nproc)
-
-# Quality gates
-./ctl check
-```
-
-> **Note:** .NET Native AOT (`ClientLibrary/`) requires Windows `dotnet.exe`. WSL finds it via interop at `/mnt/c/Program Files/dotnet/dotnet.exe`. Without it, the game compiles but cannot connect to servers.
-
 ### Linux — Native Build (x64)
 
 Linux **MUST** build natively. All platforms are first-class build targets.
@@ -114,7 +93,7 @@ XSLT-generated from XML packet definitions. Located in `MuMain/src/source/Dotnet
 - No backslash path literals, no `wchar_t` in new serialization
 - Forward slashes, `std::filesystem::path` for new code
 - Native builds on macOS (arm64), Linux (x64), and Windows (x64) MUST all pass — no platform is optional
-- CI (MinGW cross-compile) build must also pass on all changes
+- CI builds all three platforms natively (no cross-compilation)
 
 ## Documentation — Load On Demand
 
