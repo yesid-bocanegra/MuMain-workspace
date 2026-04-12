@@ -85,6 +85,7 @@
 - [Cross-Platform Plan](./CROSS_PLATFORM_PLAN.md) — 10-phase, 58-session SDL3/SDL_gpu migration roadmap *(~970 lines — load specific phase sections, not entire file)*
 - [Cross-Platform Decisions](./CROSS_PLATFORM_DECISIONS.md) — Research, library decisions, OpenGL audit, shader specs *(~435 lines)*
 - [Mobile Port Feasibility](./mobile-port-feasibility.md) — Android/iPadOS assessment: blockers (.NET, asset I/O, touch), timeline, risks *(~200 lines)*
+- [.NET to C++ Migration Scope](./dotnet-to-cpp-migration-scope.md) — Network layer migration: encryption, XSLT retarget, 15-22 day estimate *(~250 lines)*
 
 ### CI/CD
 - [CI Workflows](./ci-workflows.md) — Consolidated CI: quality gates + build pipeline, Makefile as source of truth *(~110 lines)*
