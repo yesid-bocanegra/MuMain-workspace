@@ -1,23 +1,25 @@
 # Rendering Architecture
 
-The MuMain game client uses OpenGL 1.x immediate mode for all rendering. The cross-platform migration replaces this with SDL_gpu (Vulkan/Metal/D3D12) via a `MuRenderer` abstraction layer. This document covers the current rendering pipeline, the migration path, and shader specifications.
+The MuMain game client uses SDL_gpu (Metal on macOS, Vulkan on Linux, D3D12 on Windows) for all rendering via the `IMuRenderer` interface, implemented by `MuRendererSDLGpu` (~3,045 lines). The original OpenGL 1.x immediate-mode backend (`MuRendererGL` in `MuRenderer.cpp`) was deleted after story 7.9.3; the legacy `ZzzOpenglUtil.cpp` call sites still exist but are unused on SDL3 builds.
 
-For the full migration plan, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md) Phase 2. For library decisions, see [CROSS_PLATFORM_DECISIONS.md](CROSS_PLATFORM_DECISIONS.md).
+For the full migration history, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md) Phase 2. For library decisions, see [CROSS_PLATFORM_DECISIONS.md](CROSS_PLATFORM_DECISIONS.md).
 
 **Section navigation:**
 
 | Section | Lines | Content |
 |---------|-------|---------|
-| [Current Pipeline](#current-pipeline-opengl-immediate-mode) | ~60 | 111 glBegin sites inventory, blend modes, duplication analysis |
-| [Migration Path: MuRenderer](#migration-path-murenderer-abstraction) | ~35 | Abstraction API, migration order |
+| [Legacy Pipeline](#legacy-pipeline-opengl-immediate-mode) | ~60 | 111 glBegin sites inventory, blend modes, duplication analysis |
+| [Active Renderer: MuRendererSDLGpu](#active-renderer-murenderersdlgpu) | ~45 | Deferred command buffer, pipeline architecture, texture upload, SDL_ttf |
+| [IMuRenderer Interface](#imurenderer-interface) | ~25 | Abstraction API surface |
 | [SDL_gpu Concept Mapping](#sdl_gpu-concept-mapping) | ~25 | OpenGL→SDL_gpu translation table |
 | [HLSL Shaders](#hlsl-shaders-session-28) | ~30 | 5 shader programs, ~150 lines total |
-| [Effort Estimate](#effort-estimate) | ~20 | 10–16 week breakdown |
 | [Texture Management](#texture-management) | ~10 | 30,000+ textures, CGlobalBitmap |
 
 ---
 
-## Current Pipeline (OpenGL Immediate Mode)
+## Legacy Pipeline (OpenGL Immediate Mode)
+
+> **Status (April 2026):** The OpenGL backend has been removed. The call sites below are retained in the codebase for Windows compatibility but are not compiled on SDL3 builds. All rendering goes through `MuRendererSDLGpu`.
 
 ### Call Site Inventory
 
@@ -77,60 +79,100 @@ For the full migration plan, see [CROSS_PLATFORM_PLAN.md](CROSS_PLATFORM_PLAN.md
 
 ---
 
-## Migration Path: MuRenderer Abstraction
+## Active Renderer: MuRendererSDLGpu
 
-### Phase 2 Architecture
+`MuRendererSDLGpu` (in `MuRendererSDLGpu.cpp`, ~3,045 lines) is the sole rendering backend on macOS and Linux. It implements the `IMuRenderer` interface defined in `MuRenderer.h`.
 
 ```
-Current:
-  Game Code → glBegin/glEnd (111 sites, 14 files)
-
-After MuRenderer (Sessions 2.1–2.7):
-  Game Code → MuRenderer API (~5 functions) → OpenGL backend (temporary)
-
-After SDL_gpu swap (Sessions 2.8–2.10):
-  Game Code → MuRenderer API → SDL_gpu backend (Vulkan/Metal/D3D12)
+Game Code → IMuRenderer API → MuRendererSDLGpu → SDL_gpu (Metal / Vulkan / D3D12)
 ```
 
-### MuRenderer API Surface (Session 2.1)
+### Deferred Command Buffer Architecture
 
-| API | Replaces | Purpose |
-|-----|----------|---------|
-| `BlendMode` enum | 7 `Enable*Blend` functions | Consolidate blend state |
-| `RenderQuad2D()` | 9 `RenderBitmap*` variants | 2D textured quads |
-| `RenderTriangles()` / `RenderQuadStrip()` | Raw `glBegin` geometry | 3D mesh rendering |
-| `SetBlendMode()` / `SetDepthTest()` / `SetAlphaTest()` / `SetFog()` | Scattered `glEnable` calls | Pipeline state |
-| `MatrixStack` class | `glPushMatrix`/`glPopMatrix`/`glTranslatef` | Matrix management |
-| `DebugDrawLine()` / `DebugDrawQuad()` | Debug rendering | Debug visualization |
+The renderer does **not** issue GPU draw calls inline. Instead:
 
-### Migration Order
+1. **BeginFrame()** — acquires an `SDL_GPUCommandBuffer`, maps a 16 MB scratch vertex transfer buffer, resets per-frame state.
+2. **Draw calls** (`RenderQuad2D`, `RenderTriangles`, `RenderQuadStrip`, `SubmitTextTriangles`) — copy vertex data into the mapped transfer buffer and append a `RenderCmd` struct to `s_renderCmds`. No render pass is open at this point.
+3. **EndFrame()** — unmaps the transfer buffer, runs a **copy pass** (vertex upload + deferred texture uploads), then opens the render pass and **replays** all `RenderCmd` entries. Finally submits the command buffer and presents.
 
-1. **Session 2.3: ZzzOpenglUtil.cpp** — 15 sites, cascades to ~80% of rendering
-2. **Session 2.5: Terrain + Water** — ZzzLodTerrain (9 sites) + CSWaterTerrain (2 sites)
-3. **Session 2.6: Models + Objects** — ZzzBMD (4 sites, most complex) + ZzzObject (2 sites)
-4. **Session 2.7: Effects + Remaining** — 8 files, effects and debug rendering
+This eliminates a 1-frame vertex data delay that caused streak artifacts when vertex counts varied per frame.
+
+#### RenderCmd Types
+
+| Type | Geometry | Usage |
+|------|----------|-------|
+| `DrawIndexedQuads2D` | Indexed 2D (Vertex2D, static quad index buffer) | Sprites, UI, `RenderBitmap*` |
+| `DrawTriangles` | Non-indexed 3D (Vertex3D) | Meshes, effects, terrain |
+| `DrawIndexedStrip` | Indexed 3D (Vertex3D, per-frame strip indices) | Quad strips, terrain strips |
+| `DrawTriangles2D` | Non-indexed 2D (Vertex2D) | SDL_ttf text atlas glyphs |
+| `SetViewport` | — | Viewport changes mid-frame |
+
+Each `RenderCmd` captures the pipeline, texture/sampler bindings, vertex offset/count, MVP uniform, and fog uniform at record time.
+
+### Pipeline Architecture
+
+45 GPU pipelines created at init: **9 blend modes** (8 named + disabled) × **5 depth/layout variants**:
+
+| Pipeline Set | Vertex Layout | Depth Test | Depth Write | Purpose |
+|-------------|---------------|------------|-------------|---------|
+| `s_pipelines2D` | Vertex2D (20 B) | ON | ON | 2D with depth sorting |
+| `s_pipelines2DDepthOff` | Vertex2D (20 B) | OFF | OFF | 2D overlay (UI) |
+| `s_pipelines3D` | Vertex3D (40 B) | ON | ON | Opaque 3D geometry |
+| `s_pipelines3DDepthOff` | Vertex3D (40 B) | OFF | OFF | Skybox, fullscreen effects |
+| `s_pipelines3DDepthReadOnly` | Vertex3D (40 B) | ON | OFF | Transparent/additive particles |
+
+Blend modes: Alpha, Additive, Subtract, InverseColor, Mixed, LightMap, Glow, Luminance, Disabled.
+
+### Dynamic Texture Upload
+
+`QueueTextureUpdate()` snapshots the CPU pixel buffer at queue time (`std::vector<uint8_t>` copy) into a `TextureUpdateCmd`. These are processed during EndFrame's copy pass **before** the render pass, so draw commands always see updated texture data. Used by GDI text rasterization (`CUIRenderTextOriginal`, `CUITextInputBox`) to upload modified bitmap fonts.
+
+### SDL_ttf Integration
+
+SDL_ttf 3.x is initialized via `TTF_CreateGPUTextEngine(s_device)` during `Init()`. Font accessors on `IMuRenderer` (`GetTtfFont`, `GetTtfFontBold`, `GetTtfFontBig`, `GetTtfFontFixed`) expose loaded `TTF_Font*` handles. Text glyphs are submitted via `SubmitTextTriangles()` which records a `DrawTriangles2D` command referencing the glyph atlas texture.
+
+---
+
+## IMuRenderer Interface
+
+`IMuRenderer` (`MuRenderer.h`) is the pure abstract rendering interface. Game code calls `mu::GetRenderer()` to obtain the active backend.
+
+### API Surface
+
+| API | Purpose |
+|-----|---------|
+| `RenderQuad2D()` | Screen-space textured quads (4 vertices per quad) |
+| `RenderTriangles()` / `RenderQuadStrip()` | World-space 3D geometry |
+| `RenderLines()` | Debug line primitives |
+| `SetBlendMode()` / `DisableBlend()` | Blend equation selection |
+| `SetDepthTest()` / `SetDepthMask()` / `SetCullFace()` | Depth/rasterizer state |
+| `BeginScene()` / `EndScene()` | 3D perspective projection setup |
+| `Begin2DPass()` / `End2DPass()` | 2D orthographic projection |
+| `BeginFrame()` / `EndFrame()` | Per-frame lifecycle (command buffer acquire/submit) |
+| `SetFog()` | Fog uniform buffer update |
+| `BindTexture()` | Bind by game bitmap index |
+| `QueueTextureUpdate()` | Deferred CPU→GPU texture upload |
+| `SubmitTextTriangles()` | SDL_ttf glyph triangle submission |
+| `GetDevice()` | `SDL_GPUDevice*` accessor (for texture system) |
+| Matrix stack | `PushMatrix`, `PopMatrix`, `Translate`, `Rotate`, `Scale`, `MultMatrix`, `LoadMatrix` |
 
 ---
 
 ## SDL_gpu Concept Mapping
 
-| OpenGL Pattern | SDL_gpu Replacement |
+The following table shows how each OpenGL pattern was replaced in `MuRendererSDLGpu`:
+
+| OpenGL Pattern | SDL_gpu Implementation |
 |---------------|---------------------|
-| `glBegin`/`glEnd` | `SDL_GPUCommandBuffer` + `SDL_GPURenderPass` with vertex buffers |
-| `glVertex3f`/`glTexCoord2f` | Vertex buffer data uploaded via `SDL_UploadToGPUBuffer` |
-| `glBindTexture` | `SDL_BindGPUFragmentSamplers` |
-| `glMatrixMode`/`glTranslatef`/`glRotatef` | Uniform buffer with projection/view/model matrices |
-| `glOrtho`/`glFrustum` | Manual matrix math in uniform buffers |
-| `glEnable(GL_BLEND)` | `SDL_GPUColorTargetBlendState` in pipeline creation |
-| `glEnable(GL_DEPTH_TEST)` | `SDL_GPUDepthStencilState` in pipeline creation |
-| Stencil operations (shadow volumes) | `SDL_GPUStencilOpState` in pipeline |
-
-### SDL_gpu Pipeline Objects
-
-- **6 blend mode pipelines** mapping to `SDL_GPUColorTargetBlendState`
-- **Depth/stencil state variants** mapping to `SDL_GPUDepthStencilState`
-- **Shadow volume stencil pipeline** with INCR/DECR passes via `SDL_GPUStencilOpState`
-- **Rasterizer state** for face culling and winding order via `SDL_GPURasterizerState`
+| `glBegin`/`glEnd` | Deferred `RenderCmd` recording + `SDL_GPURenderPass` replay in EndFrame |
+| `glVertex3f`/`glTexCoord2f` | `Vertex2D`/`Vertex3D` structs written to mapped transfer buffer, uploaded in copy pass |
+| `glBindTexture` | `SDL_BindGPUFragmentSamplers` with texture registry lookup by bitmap index |
+| `glMatrixMode`/`glTranslatef`/`glRotatef` | `MatrixStack` class + `VertexUniforms` pushed per-draw via `SDL_PushGPUVertexUniformData` |
+| `glOrtho`/`glFrustum` | GLM matrix math (`glm::ortho`, `glm::perspective`) in uniform buffers |
+| `glEnable(GL_BLEND)` | 9 `SDL_GPUColorTargetBlendState` variants baked into 45 pipelines |
+| `glEnable(GL_DEPTH_TEST)` | 5 depth/layout pipeline sets with `SDL_GPUDepthStencilState` |
+| `glTexImage2D` | `SDL_UploadToGPUTexture` via deferred `TextureUpdateCmd` in copy pass |
+| `glClear` | `SDL_GPU_LOADOP_CLEAR` at render pass begin |
 
 ---
 
@@ -168,25 +210,6 @@ Fullscreen quad with semi-transparent shadow color output.
 
 ---
 
-## Effort Estimate
-
-| Work Item | Scope | Effort |
-|-----------|-------|--------|
-| MuRenderer abstraction (OpenGL backend) | Consolidate 111 sites → ~5 functions | 2–3 weeks |
-| HLSL shaders + SDL_shadercross build | ~150 lines HLSL, CMake pipeline | 1 week |
-| Matrix math utility | ~300 lines C++, 200+ call sites | 2–3 weeks |
-| Swap MuRenderer backend to SDL_gpu | ~5 functions to reimplement | 2–3 weeks |
-| Pipeline state objects | 6 blend + depth/stencil variants | 1 week |
-| Shadow volume stencil rewrite | ShadowVolume.cpp + ZzzBMD.cpp | 1 week |
-| SDL_gpu device init + swap chain | Replace SDL_GL_CreateContext | 1 week |
-| ImGui backend swap | `imgui_impl_sdlgpu3.cpp` drop-in | 1 day |
-| Testing and visual parity | Screenshot comparison | 1–2 weeks |
-| **Total** | | **10–16 weeks** |
-
-The abstraction layer adds 2–3 weeks upfront but reduces SDL_gpu backend work from 3–5 weeks (111 sites) to 2–3 weeks (~5 functions). Net cost is ~0, with better code quality.
-
----
-
 ## Texture Management
 
 - ~30,000+ indexed textures managed by `CGlobalBitmap` (`GlobalBitmap.cpp`)
@@ -196,4 +219,4 @@ The abstraction layer adds 2–3 weeks upfront but reduces SDL_gpu backend work 
 - LRU cache with 15-minute aging cleanup
 - Memory tracked via `dwUsedTextureMemory`
 
-Post SDL_gpu migration, `glGenTextures`/`glTexImage2D` calls become `SDL_CreateGPUTexture`/`SDL_UploadToGPUTexture`.
+On SDL3 builds, textures are created via `SDL_CreateGPUTexture` and uploaded via `SDL_UploadToGPUTexture`. A `TextureRegistry` (`std::unordered_map`) maps game bitmap indices to `SDL_GPUTexture*` handles. Mid-frame texture updates go through `QueueTextureUpdate()` (see [Dynamic Texture Upload](#dynamic-texture-upload) above).

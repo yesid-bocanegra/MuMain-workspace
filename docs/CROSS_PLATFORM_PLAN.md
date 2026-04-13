@@ -25,6 +25,25 @@ Every session follows this format:
 **Invariant:** Windows x64 build compiles
 ```
 
+## Phase Completion Status (as of April 2026)
+
+Game is **fully playable on macOS** (rendering, input, hotkeys, audio, network, text input all working). Phases 0-6 and 8 are complete. Phases 7, 9, 10 remain planned.
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| -1 | Modular Reorganization | Done |
+| 0 | Platform Compatibility Headers & Build | Done |
+| 1 | SDL3 Window, Input & Main Loop | Done |
+| 2 | SDL_gpu Migration | Done |
+| 3 | Audio System (miniaudio) | Done |
+| 4 | Font Rendering (SDL_ttf) | Done |
+| 5 | Config, Encryption & System Utilities | Done |
+| 6 | Text Input & IME | Done |
+| 7 | ImGui Editor | Planned |
+| 8 | .NET Native AOT Cross-Platform | Done |
+| 9 | CI/CD, Packaging & Ground Truth Essentials | Planned |
+| 10 | UI Design Reference Capture | Planned |
+
 ## Phase Overview
 
 | Phase | Name | Sessions | Depends On |
@@ -44,7 +63,9 @@ Every session follows this format:
 
 ---
 
-## Phase 0: Platform Compatibility Headers & Build
+## Phase 0: Platform Compatibility Headers & Build [DONE]
+
+> **Completed.** PlatformCompat.h grew to ~2585 lines covering Win32 API shims, type aliases, virtual key constants, string conversion, and timing wrappers.
 
 **Goal:** Make the header chain conditionally compile on non-Windows, unblocking all subsequent phases.
 
@@ -167,7 +188,9 @@ miniaudio is vendored (single header), not a vcpkg/FetchContent dependency.
 
 ---
 
-## Phase 1: SDL3 Window, Input & Main Loop
+## Phase 1: SDL3 Window, Input & Main Loop [DONE]
+
+> **Completed.** SDL3 window creation, event loop (`SDLEventLoop.cpp`), mouse/keyboard input with GetCursorPos and GetAsyncKeyState shims in PlatformCompat.h. Entry point via `main()` in MuMain.cpp.
 
 **Goal:** The game opens a window, creates an OpenGL context, and runs the render loop on Linux/macOS via SDL3. Keyboard and mouse input works.
 
@@ -299,7 +322,9 @@ WGL removals:
 
 ---
 
-## Phase 2: SDL_gpu Migration
+## Phase 2: SDL_gpu Migration [DONE]
+
+> **Completed.** `MuRendererSDLGpu.cpp` (~3045 lines) implements deferred draw command buffer with 45 GPU pipelines (9 blend modes x depth variants). Dynamic texture upload via `QueueTextureUpdate()`. OpenGL fully eliminated.
 
 **Goal:** Migrate rendering from OpenGL immediate mode to SDL_gpu (Vulkan/Metal/D3D12), eliminating OpenGL entirely.
 
@@ -439,7 +464,9 @@ Removals:
 
 ---
 
-## Phase 3: Audio System (miniaudio)
+## Phase 3: Audio System (miniaudio) [DONE]
+
+> **Completed.** `MiniAudioBackend.cpp` via miniaudio single-file library. Sound effects and background music working on macOS.
 
 **Goal:** Full audio on all platforms. Replaces both DirectSound and wzAudio. See [CROSS_PLATFORM_DECISIONS.md](CROSS_PLATFORM_DECISIONS.md) for miniaudio selection rationale.
 
@@ -490,7 +517,9 @@ Changes:
 
 ---
 
-## Phase 4: Font Rendering (FreeType)
+## Phase 4: Font Rendering (SDL_ttf) [DONE]
+
+> **Completed.** Used SDL_ttf 3.2.2 (via FetchContent) instead of raw FreeType. `TTF_CreateGPUTextEngine` integrates with SDL_gpu renderer. `CUIRenderTextSDLTtf` in UIControls.cpp handles text rendering with `DrawTriangles2D` render command type.
 
 **Goal:** Replace GDI font rendering with FreeType for cross-platform text.
 
@@ -550,7 +579,9 @@ Alternative font: Source Han Sans (SIL OFL, excellent CJK, ~15MB vs ~5MB).
 
 ---
 
-## Phase 5: Config, Encryption & System Utilities
+## Phase 5: Config, Encryption & System Utilities [DONE]
+
+> **Completed.** `mu_narrow_path()` (3 overloads) for path normalization, `GetCursorPos`/`GetAsyncKeyState` shims for input coordinate mapping, config.ini parsing, and wchar_t marshalling with `MU_C16()`.
 
 **Goal:** Cross-platform config persistence, credential storage, and misc OS utilities.
 
@@ -659,7 +690,9 @@ Changes:
 
 ---
 
-## Phase 6: Text Input & IME
+## Phase 6: Text Input & IME [DONE]
+
+> **Completed.** `CUITextInputBox` text input with `g_iChatInputType = 1`, SDL3 text input events, per-instance input box textures using IDs 60000+. Login form fully working (CLoginWin with 2 CUITextInputBox members). 9 bugs fixed during integration.
 
 **Goal:** Chat and login text input works on non-Windows platforms.
 
@@ -732,7 +765,9 @@ endif()
 
 ---
 
-## Phase 8: .NET Native AOT Cross-Platform
+## Phase 8: .NET Native AOT Cross-Platform [DONE]
+
+> **Completed.** All 191 ClientToServer packet bindings resolved in `ResolvePacketBindings()`. .NET interop strings use `MU_C16()` on C++ side + `Marshal.PtrToStringUni()` on C# side. Full server connectivity working on macOS.
 
 **Goal:** The game can connect to servers from Linux/macOS.
 

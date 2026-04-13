@@ -87,7 +87,7 @@ Shared utilities in `Common.xslt`. Triggered by Visual Studio PreBuild event (sk
 
 | Type | C++ Side | .NET Side | Notes |
 |------|----------|-----------|-------|
-| Strings | `wchar_t*` (2-byte) | `char*` UTF-16LE | Windows-specific, needs `char16_t` for cross-platform |
+| Strings | `MU_C16(wchar_t*)` &rarr; `const char16_t*` | `Marshal.PtrToStringUni()` | Cross-platform: on Windows `MU_C16` is a zero-cost `reinterpret_cast`; on macOS/Linux (where `wchar_t` is 4 bytes) it transcodes UTF-32 to UTF-16 via `mu_wchar_to_char16()` |
 | Packets | `byte*` + length | `ReadOnlySpan<byte>` | Raw byte buffers |
 | Callbacks | Function pointers | `[UnmanagedCallersOnly]` delegates | Registered at DLL load time |
 | Numerics | Native sizes | Matching sizes | Direct pass-through |
@@ -98,7 +98,7 @@ Shared utilities in `Common.xslt`. Triggered by Visual Studio PreBuild event (sk
 
 | Protocol | XML Source | Packet Count | Use Case |
 |----------|-----------|-------------|----------|
-| ClientToServer | `ClientToServerPackets.xml` | ~200+ | Main game server communication |
+| ClientToServer | `ClientToServerPackets.xml` | ~207 bindings | Main game server communication |
 | ChatServer | `ChatServerPackets.xml` | ~20 | Chat, whisper, guild chat |
 | ConnectServer | `ConnectServerPackets.xml` | ~10 | Server list, initial connection |
 
@@ -114,14 +114,38 @@ dotnet publish -c Release -r win-x64
 
 The CMake build system auto-detects `dotnet.exe` (Windows) or `dotnet` (Linux) and handles WSL path translation via `wslpath`.
 
+## Cross-Platform Binding Resolution (SDL3)
+
+On Windows, the .NET library is loaded via `LoadLibrary` and `PacketBindings_*.h` inline variables resolve function pointers at static initialization time. On non-Windows platforms this fails due to **SIOF (Static Initialization Order Fiasco)**: the library handle may not be initialized when the linker runs the inline variable initializers, leaving function pointers as `NULL`.
+
+Three mechanisms were added during the SDL3 migration to solve this:
+
+### ResolvePacketBindings()
+
+Defined in `Connection.cpp`, called once from `MuMain()` after all static initialization is complete. It iterates ~207 bindings via a `ReResolve()` template helper that checks each function pointer and re-resolves it from the loaded library if it is `NULL`. This guarantees all packet bindings are valid before the game loop begins.
+
+**Include order matters:** `Connection.cpp` includes `PacketBindings_*.h` headers *twice* -- once before the library handle definition (for type declarations) and once after (for the inline variable definitions that call `GetSymbol()`). The Bindings headers must appear before the Functions headers due to the SIOF-sensitive initialization order.
+
+### DrainPacketQueue()
+
+On Win32, server packets arrive via `PostMessage` / `WM_RECEIVE_BUFFER` in the Windows message pump. SDL3 has no message pump, so a thread-safe queue replaces this path:
+
+1. The .NET I/O thread pushes received packets into a `std::queue` protected by `std::mutex` (`WSclient.cpp`).
+2. `DrainPacketQueue()` (declared in `WSclient.h`, guarded by `#ifdef MU_ENABLE_SDL3`) moves all queued packets to a local vector under the lock, then processes them without the lock to minimize contention.
+3. Called once per frame at the top of the render loop in `MuMain.cpp`, before `BeginFrame()`.
+
+### PostMessage No-Op
+
+`PlatformCompat.h` defines `PostMessage` and `PostMessageW` as inline no-ops on non-Windows platforms. The .NET callback code still calls `PostMessage` in the original Win32 path, but on SDL3 these calls silently do nothing -- packets flow through the queue instead.
+
 ## Cross-Platform Considerations
 
-- **Current:** Windows-only (`wchar_t` = 2 bytes, `LoadLibrary`)
-- **Planned:** Linux/macOS support requires:
-  - `char16_t` at interop boundary (Linux `wchar_t` = 4 bytes)
-  - `dlopen` / `dlsym` for DLL loading
-  - `.so` / `.dylib` output instead of `.dll`
+- **Implemented (April 2026):** macOS (arm64) and Linux (x64) are fully supported alongside Windows:
+  - `MU_C16()` macro at the interop boundary handles `wchar_t` size differences (see Data Marshaling above)
+  - `dlopen` / `dlsym` for library loading (abstracted via `mu::platform::Load` / `GetSymbol`)
+  - `.dylib` (macOS) / `.so` (Linux) / `.dll` (Windows) output, selected by `MU_DOTNET_LIB_EXT` CMake variable
   - Runtime identifiers: `linux-x64`, `osx-arm64`, `osx-x64`
+  - `ResolvePacketBindings()` works around SIOF on all platforms
 
 ## Key Files Reference
 
@@ -137,3 +161,7 @@ The CMake build system auto-detects `dotnet.exe` (Windows) or `dotnet` (Linux) a
 | `GenerateFunctions.xslt` | XSLT: XML → C++ source |
 | `GenerateBindingsHeader.xslt` | XSLT: XML → C++ structs |
 | `Common.xslt` | Shared XSLT templates |
+| `Connection.cpp` | Library loading, `ResolvePacketBindings()`, SIOF workaround |
+| `WSclient.cpp` / `WSclient.h` | `DrainPacketQueue()`, thread-safe packet queue |
+| `PlatformCompat.h` | `MU_C16()` macro, `PostMessage` no-op shim |
+| `PacketFunctions_Custom.cpp` | Manual packet handlers using `MU_C16()` marshalling |

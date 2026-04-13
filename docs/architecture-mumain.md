@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-MuMain is a C++20 game client for MU Online (Season 5.2→6 fork), rendering a 3D MMORPG world using OpenGL immediate mode on Win32. The client handles real-time 3D rendering, player input, UI overlays, audio, and network communication via a .NET Native AOT bridge. It follows a monolithic single-process architecture with global state management through extern globals and singleton managers.
+MuMain is a C++20 game client for MU Online (Season 5.2→6 fork), rendering a 3D MMORPG world using SDL3 GPU (retained-mode) on macOS/Linux and OpenGL immediate mode on Windows. The client handles real-time 3D rendering, player input, UI overlays, audio (miniaudio), and network communication via a .NET Native AOT bridge. It runs cross-platform on macOS (arm64), Linux (x64), and Windows (x64), with the game fully playable on macOS as of April 2026. It follows a monolithic single-process architecture with global state management through extern globals and singleton managers.
 
 ## Technology Stack
 
@@ -10,9 +10,9 @@ MuMain is a C++20 game client for MU Online (Season 5.2→6 fork), rendering a 3
 |----------|-----------|---------|-------|
 | Language | C++ | C++20 | `cxx_std_20` in CMake |
 | Build System | CMake | 3.25+ | Presets for x86/x64 ± editor |
-| Graphics | OpenGL | 1.x (immediate mode) | via GLEW, 111 `glBegin` sites |
-| Windowing | Win32 API | — | `CreateWindowEx`, message pump |
-| Audio | DirectSound + wzAudio | — | WAV via MMIO, OGG via Vorbis |
+| Graphics | SDL3 GPU / OpenGL | SDL3 (retained-mode) | SDL_gpu on macOS/Linux; legacy OpenGL on Windows |
+| Windowing | SDL3 / Win32 API | — | SDL3 on macOS/Linux; Win32 on Windows (via `SDL_main.h` remapping) |
+| Audio | miniaudio / DirectSound | — | miniaudio on macOS/Linux (CoreAudio/ALSA); DirectSound on Windows |
 | Image Loading | libjpeg-turbo | 3.1.3 | Static-linked, texture decoding |
 | UI Framework | ImGui | Latest (submodule) | Editor only (`#ifdef _EDITOR`) |
 | Network | .NET Native AOT DLL | .NET 10 | Via `coreclr_delegates.h` bridge |
@@ -23,9 +23,9 @@ MuMain is a C++20 game client for MU Online (Season 5.2→6 fork), rendering a 3
 **Monolithic Game Loop with Scene State Machine**
 
 ```
-WinMain() → MuMain() → MainLoop()
+main() → MuMain() → MainLoop()
                             │
-                            ├── Win32 Message Pump (PeekMessage)
+                            ├── SDL3 Event Loop (PollEvents) / Win32 Message Pump (PeekMessage)
                             ├── SceneManager::RenderScene()
                             │       ├── ServerListScene
                             │       ├── WebzenScene
@@ -39,7 +39,7 @@ WinMain() → MuMain() → MainLoop()
                             └── MuEditor Update (debug builds)
 ```
 
-The game loop runs a fixed-timestep loop with `FrameTimingState` managing delta time. Each scene is responsible for its own input handling, rendering, and state management.
+The entry point is `main()` which calls `MuMain()`. On Windows, `SDL_main.h` remaps `WinMain` to `main()` transparently. The game loop runs a fixed-timestep loop with `FrameTimingState` managing delta time. Each scene is responsible for its own input handling, rendering, and state management.
 
 ## State Management
 
@@ -54,7 +54,7 @@ The game loop runs a fixed-timestep loop with `FrameTimingState` managing delta 
 State flows:
 1. **Network → Globals**: Packet callbacks in `PacketFunctions_*.cpp` write directly to global arrays
 2. **Globals → Rendering**: Scene render functions read globals to draw the world
-3. **Input → Globals**: Win32 message handlers update input state globals
+3. **Input → Globals**: SDL3 event loop (`SDLEventLoop.cpp`) / Win32 message handlers update input state globals
 4. **Config → Globals**: `GameConfig` reads INI at startup, writes on settings change
 
 ## Rendering Architecture
@@ -73,7 +73,35 @@ OpenGL Immediate Mode Pipeline
 └── ZzzEffectMagicSkill.cpp — Magic skill VFX
 ```
 
-All rendering uses `glBegin`/`glEnd` immediate mode (111 call sites across 14 files). A planned migration to SDL_gpu with retained-mode rendering is documented in `CROSS_PLATFORM_PLAN.md`.
+On SDL3 platforms, rendering uses the SDL3 GPU retained-mode renderer (`MuRendererSDLGpu.cpp`) with deferred draw commands (`RenderCmd`) recorded during the frame and replayed in `EndFrame`. On Windows, the legacy OpenGL immediate-mode path (`glBegin`/`glEnd`, 111 call sites) remains active.
+
+## Platform Abstraction Layer
+
+`PlatformCompat.h` (~2,585 lines) is the cornerstone of cross-platform support. On non-Windows builds (`#else` branch of `#ifdef _WIN32`), it provides 100+ inline shims that re-implement Win32 API functions using SDL3 and standard C++, allowing legacy Win32 game code to compile and run unchanged on macOS and Linux.
+
+Key shim categories:
+
+| Category | Functions | Implementation |
+|----------|-----------|----------------|
+| Window | `CreateWindowEx`, `GetDC`, `SetPixelFormat`, `ShowWindow` | SDL3 window via `MuPlatform` |
+| Input | `GetCursorPos`, `GetAsyncKeyState`, `SetCursorPos` | SDL3 mouse/keyboard state globals |
+| Focus | `GetFocus`, `GetActiveWindow` | Return `g_hWnd` sentinel `(HWND)1` |
+| Messages | `PostMessage`, `SendMessage`, `PeekMessage` | No-op or direct dispatch |
+| Timing | `timeGetTime`, `QueryPerformanceCounter` | `SDL_GetTicks` / `std::chrono` |
+| GDI | `CreateFont`, `SelectObject`, `SetTextColor` | `CrossPlatformGDI.h` (SDL_ttf) |
+| Strings | `wcsncpy_s`, `_wsplitpath`, `_wcsicmp` | POSIX equivalents |
+| File I/O | `_wfopen`, `CreateDirectory`, `GetModuleFileName` | `std::filesystem` |
+| Registry | `RegOpenKeyEx`, `RegQueryValueEx` | Return `ERROR_FILE_NOT_FOUND` |
+
+**g_hWnd sentinel**: On SDL3 platforms, `g_hWnd` is set to `(HWND)1` during startup. The `GetFocus()` and `GetActiveWindow()` shims return this same sentinel, so hotkey checks like `GetFocus() == g_hWnd` pass correctly without a real Win32 HWND.
+
+## SDL3 Event Loop
+
+`SDLEventLoop.cpp` (~350 lines, `Platform/sdl3/`) translates SDL3 events into the game's global input state variables (`MouseX`, `MouseY`, `MouseLButton`, `MouseLButtonPush`, `MouseRButton`, etc.).
+
+- **Mouse push/edge flags** (`MouseLButtonPush`, `g_bMouseLButtonPressEdge`) accumulate across `PollEvents()` calls and survive frame throttling. They are cleared in `RenderScene` after game logic consumes them.
+- **Text input** populates `g_szSDLTextInput[]` from `SDL_EVENT_TEXT_INPUT` events for `CUITextInputBox`.
+- **Focus handling**: Clears mouse state on focus loss in windowed mode; throttles FPS when inactive in fullscreen.
 
 ## UI System
 
@@ -108,8 +136,13 @@ Each scene implements:
 
 ## Audio Architecture
 
-- **DirectSound** (`DSplaysound.cpp`) — Sound effect playback
-- **wzAudio.dll** — Proprietary audio library (BGM, streaming)
+**SDL3 platforms (macOS/Linux):**
+- **miniaudio** (`MiniAudioBackend.cpp`) — Implements `IPlatformAudio` interface for both BGM and SFX playback. Uses CoreAudio on macOS, ALSA on Linux, and WASAPI on Windows.
+- **`g_platformAudio`** — Global `IPlatformAudio*` pointer, initialized during `MuMain()` startup.
+- wzAudio dependency removed; `Mp3FileName` global eliminated — same-track guard handled by `MiniAudioBackend::m_currentMusicName`.
+
+**Windows (legacy):**
+- **DirectSound** (`DSplaysound.cpp`) — Sound effect playback (still compiled on Windows, will be replaced by miniaudio)
 - **DSwaveIO.cpp** — WAV file loading via Win32 MMIO API
 - **OGG Vorbis** (`ogg.dll` + `vorbisfile.dll`) — Compressed audio codec
 
@@ -141,13 +174,15 @@ CMakeLists.txt (root)
     ├── GLOB_RECURSE src/source/**/*.cpp  (691 files)
     ├── GLOB_RECURSE src/MuEditor/**/*.cpp (if ENABLE_EDITOR)
     ├── ImGui submodule auto-init
-    ├── Link: Win32 (user32, gdi32, ws2_32, opengl32, glu32)
-    ├── Link: GLEW, turbojpeg, wzAudio
+    ├── FetchContent: SDL3, SDL_ttf (macOS/Linux)
+    ├── Link: Win32 (user32, gdi32, ws2_32, opengl32, glu32) — Windows only
+    ├── Link: GLEW, turbojpeg — Windows only
+    ├── Link: miniaudio (header-only) — all platforms
     ├── Custom command: ClientLibrary .NET publish → Native AOT DLL
     └── Custom command: ConstantsReplacer build
 ```
 
-**Presets:** `windows-x86`, `windows-x64`, `windows-x86-mueditor`, `windows-x64-mueditor`
+**Presets:** `windows-x86`, `windows-x64`, `windows-x86-mueditor`, `windows-x64-mueditor`. macOS and Linux use the default CMake preset via `./ctl build`.
 
 ## Testing Strategy
 
@@ -158,23 +193,28 @@ No automated test suite. Testing is manual:
 4. UI: Inventory, shop, chat, minimap functional
 5. Editor (debug): F12 toggle, console output, item editor
 
-CI validates compilation only (MinGW-w64 cross-compile on Ubuntu).
+CI validates compilation on all three platforms natively (macOS arm64, Linux x64, Windows x64). Quality gate: `./ctl check` (build + test + clang-format + cppcheck).
 
 ## Cross-Platform Migration
 
-Planned SDL3/SDL_gpu migration (see `CROSS_PLATFORM_PLAN.md`):
-- **Phase 1-2**: SDL3 windowing + input (replace Win32 API)
-- **Phase 3-5**: SDL_gpu rendering (replace 111 glBegin sites)
-- **Phase 6**: miniaudio (replace DirectSound + wzAudio)
-- **Phase 7**: FreeType (replace GDI text rendering)
-- **Phase 8**: Cross-platform .NET AOT (`dlopen`, `char16_t`)
-- **Phase 9-10**: Linux/macOS builds, CI/CD expansion
+SDL3/SDL_gpu migration (see `CROSS_PLATFORM_PLAN.md`). **Phases 1-6 completed** — the game is fully playable on macOS as of April 2026:
+
+- **Phase 1-2** (done): SDL3 windowing + input (PlatformCompat.h shim layer, SDLEventLoop.cpp)
+- **Phase 3-5** (done): SDL3 GPU rendering (retained-mode renderer, 45 pipelines, deferred draw commands)
+- **Phase 6** (done): miniaudio (replaced DirectSound + wzAudio on SDL3 platforms)
+- **Phase 7**: SDL_ttf text rendering (partially done — input boxes use SDL_ttf, bitmap font replacement in progress)
+- **Phase 8**: Cross-platform .NET AOT (`dlopen`, `char16_t`) — all 191 packet bindings resolved
+- **Phase 9-10**: Linux builds, CI/CD expansion
 
 ## Key Files Reference
 
 | File | Lines | Role |
 |------|-------|------|
-| `MuMain.cpp` | ~800 | Entry point, game loop, window creation |
+| `MuMain.cpp` | ~670 | Entry point (`main()` → `MuMain()`), game loop, init |
+| `PlatformCompat.h` | ~2,585 | Win32 API shim layer for SDL3 platforms |
+| `SDLEventLoop.cpp` | ~350 | SDL3 event polling, mouse/keyboard/text input |
+| `MuRendererSDLGpu.cpp` | ~2,000 | SDL3 GPU retained-mode renderer |
+| `MiniAudioBackend.cpp` | ~500 | miniaudio audio backend (BGM + SFX) |
 | `ZzzObject.cpp` | 10,852 | Object management and rendering |
 | `_struct.h` | ~2,000 | Core data structures (CHARACTER, OBJECT, ITEM) |
 | `_define.h` | ~1,500 | Constants and system limits |
