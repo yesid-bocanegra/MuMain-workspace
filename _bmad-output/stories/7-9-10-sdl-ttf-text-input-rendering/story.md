@@ -11,7 +11,7 @@
 | **Flow Code** | VS1-INPUT-TTFRENDER-SDL3 |
 | **Story Points** | 8 |
 | **Dependencies** | 7-9-8 (SDL_ttf font rendering) ✓, 7-9-9 (text input forms) ✓ |
-| **Status** | ready-for-dev |
+| **Status** | done (verified 2026-04-25 — shipped via dc085d27 + c1df16a0 + 4904d4ce) |
 
 ---
 

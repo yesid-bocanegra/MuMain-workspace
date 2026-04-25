@@ -1,6 +1,6 @@
 # Story 7.9.6: Migrate All Raw OpenGL Calls to MuRenderer
 
-Status: completeness-gate
+Status: done (verified 2026-04-25 — completion commit a397c44e, gate commit 95b86aae; downstream 7-9-7 done)
 
 ---
 
