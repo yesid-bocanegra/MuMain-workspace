@@ -76,6 +76,7 @@ The build must define `MU_ENABLE_SDL3` on **all** target platforms (macOS, Linux
 - [ ] **AC-4: Build configuration.** All build presets (CMake `mumain-macos-debug`, `mumain-linux-debug`, `mumain-windows-debug`, equivalents for release) define `MU_ENABLE_SDL3=ON`. No preset produces a binary that would link against the deleted Win32 backend.
 - [ ] **AC-5: Build passes on all platforms.** `cmake --build` succeeds on macOS, Linux, Windows. No undefined references to deleted symbols (`Win32Window::*`, `Win32EventLoop::*`, `RegKey<*>`).
 - [ ] **AC-6: Smoke test.** Game launches on macOS, Linux, Windows. Reaches login screen. Logs in. Renders chat. No regression vs. pre-deletion behavior.
+- [ ] **AC-7: `MuPlatform::CreateWindow` macro-collision guard.** Add `#undef CreateWindow` (and `#undef CreateWindowA` / `CreateWindowW` for safety) at the top of `Platform/MuPlatform.h`, after any potential `<windows.h>` include site. This is belt-and-suspenders against future translation units that pull in `<windows.h>` alongside `MuPlatform.h` — the existing `PlatformCompat.h:2016` comment ("CreateWindow macro NOT defined here") only protects the current PlatformCompat.h shim path. Sourced from PR-329 review #5.
 
 ---
 
@@ -106,10 +107,13 @@ The build must define `MU_ENABLE_SDL3` on **all** target platforms (macOS, Linux
 - [ ] Task 5: Update CMake build configuration (AC: 4)
   - [ ] 5.1: Verify `MU_ENABLE_SDL3=ON` in all platform presets
   - [ ] 5.2: Remove any CMake glob patterns that referenced `Platform/win32/*.cpp`
-- [ ] Task 6: Build + smoke test (AC: 5, 6)
-  - [ ] 6.1: Clean build on macOS, Linux, Windows
-  - [ ] 6.2: Smoke test: launch → login → chat → logout on each platform
-  - [ ] 6.3: `./ctl check` passes
+- [ ] Task 6: `MuPlatform::CreateWindow` macro-collision guard (AC: 7)
+  - [ ] 6.1: Add `#undef CreateWindow`, `#undef CreateWindowA`, `#undef CreateWindowW` near the top of `Platform/MuPlatform.h`, in a small block clearly commented as a `<windows.h>`-collision guard
+  - [ ] 6.2: Verify the build still passes — confirms the `#undef`s don't accidentally break a real caller of those macros (none expected since the project is migrating off Win32 directly, but check)
+- [ ] Task 7: Build + smoke test (AC: 5, 6)
+  - [ ] 7.1: Clean build on macOS, Linux, Windows
+  - [ ] 7.2: Smoke test: launch → login → chat → logout on each platform
+  - [ ] 7.3: `./ctl check` passes
 
 ---
 
