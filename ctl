@@ -61,6 +61,8 @@ USAGE:
 DEVELOPMENT COMMANDS:
     build           Native build using platform-appropriate CMake preset
     rebuild         Clean then build from scratch
+    run [args...]   Launch the built MuMain client (cwd = exe dir)
+    debug [args...] Launch MuMain under lldb (gdb fallback on Linux)
     test            Run unit + stability tests via ctest
     lint            Run static analysis (cppcheck)
     tidy            Run clang-tidy portability checks (sizeof bugs, etc.)
@@ -75,6 +77,9 @@ COMPONENTS:  mumain
 EXAMPLES:
     ./ctl build                 # Native build (auto-detects macOS/Linux/Windows)
     ./ctl rebuild               # Clean then build from scratch
+    ./ctl run                   # Run the built client
+    ./ctl debug                 # Launch under lldb (run/r to start, bt for backtrace)
+    ./ctl debug -- --windowed   # Forward args to the program under lldb
     ./ctl check                 # Full quality gate — run before every commit
     ./ctl format                # Auto-format all C++ source files
     ./ctl test                  # Run test suite
@@ -133,6 +138,56 @@ cmd_rebuild() {
     cmd_build
 }
 
+# Resolve the built MuMain executable path for the current platform's preset.
+# Ninja Multi-Config emits per-config subfolders (Debug/, Release/) under src/.
+# Sets $MUMAIN_EXE (absolute) and $MUMAIN_EXE_DIR (cwd for launch — must be the
+# folder that contains config.ini and Data/ for asset paths to resolve).
+resolve_mumain_exe() {
+    detect_platform
+    local exe_name="Main"
+    case "$(uname -s)" in
+        MINGW*|MSYS*|CYGWIN*) exe_name="Main.exe" ;;
+    esac
+    MUMAIN_EXE_DIR="$SCRIPT_DIR/MuMain/out/build/$CONFIGURE_PRESET/src/Debug"
+    MUMAIN_EXE="$MUMAIN_EXE_DIR/$exe_name"
+    if [[ ! -x "$MUMAIN_EXE" ]]; then
+        log_error "Executable not found: $MUMAIN_EXE"
+        log_warn "Run './ctl build' first."
+        exit 1
+    fi
+}
+
+cmd_run() {
+    resolve_mumain_exe
+    log_info "Running $MUMAIN_EXE"
+    cd "$MUMAIN_EXE_DIR"
+    exec "$MUMAIN_EXE" "$@"
+}
+
+cmd_debug() {
+    resolve_mumain_exe
+    local debugger=""
+    if command -v lldb >/dev/null 2>&1; then
+        debugger="lldb"
+    elif command -v gdb >/dev/null 2>&1; then
+        debugger="gdb"
+        log_warn "lldb not found; falling back to gdb"
+    else
+        log_error "Neither lldb nor gdb is installed"
+        exit 1
+    fi
+    log_info "Launching $MUMAIN_EXE under $debugger (cwd: $MUMAIN_EXE_DIR)"
+    cd "$MUMAIN_EXE_DIR"
+    if [[ "$debugger" == "lldb" ]]; then
+        # `--` separates lldb flags from inferior args; lldb runs but does not
+        # auto-start the program — type `run` (or `r`) at the prompt.
+        exec lldb -- "$MUMAIN_EXE" "$@"
+    else
+        # gdb equivalent: `--args` makes everything after it the program + argv.
+        exec gdb --args "$MUMAIN_EXE" "$@"
+    fi
+}
+
 cmd_tidy() {
     log_info "Running clang-tidy portability gate..."
     make -C MuMain tidy-gate
@@ -159,19 +214,23 @@ cmd_check() {
 # MAIN
 # =============================================================================
 
-case "${1:-help}" in
-    build)          cmd_build ;;
-    rebuild)        cmd_rebuild ;;
-    test)           cmd_test ;;
-    lint)           cmd_lint ;;
-    tidy)           cmd_tidy ;;
-    format)         cmd_format ;;
-    format-check)   cmd_format_check ;;
-    clean)          cmd_clean ;;
-    check)          cmd_check ;;
+cmd="${1:-help}"
+shift || true
+case "$cmd" in
+    build)          cmd_build "$@" ;;
+    rebuild)        cmd_rebuild "$@" ;;
+    run)            cmd_run "$@" ;;
+    debug)          cmd_debug "$@" ;;
+    test)           cmd_test "$@" ;;
+    lint)           cmd_lint "$@" ;;
+    tidy)           cmd_tidy "$@" ;;
+    format)         cmd_format "$@" ;;
+    format-check)   cmd_format_check "$@" ;;
+    clean)          cmd_clean "$@" ;;
+    check)          cmd_check "$@" ;;
     help|--help|-h) show_help ;;
     *)
-        log_error "Unknown command: $1"
+        log_error "Unknown command: $cmd"
         show_help
         exit 1
         ;;
