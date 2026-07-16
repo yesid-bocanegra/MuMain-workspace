@@ -61,7 +61,8 @@ USAGE:
 DEVELOPMENT COMMANDS:
     build           Native build using platform-appropriate CMake preset
     rebuild         Clean then build from scratch
-    run [args...]   Launch the built MuMain client (cwd = exe dir)
+    run [--debug|--release] [args...]
+                    Launch the selected MuMain build (default: Debug)
     debug [args...] Launch MuMain under lldb (gdb fallback on Linux)
     test            Run unit + stability tests via ctest
     lint            Run static analysis (cppcheck)
@@ -78,6 +79,7 @@ EXAMPLES:
     ./ctl build                 # Native build (auto-detects macOS/Linux/Windows)
     ./ctl rebuild               # Clean then build from scratch
     ./ctl run                   # Run the built client
+    ./ctl run --release         # Run the optimized Release client
     ./ctl debug                 # Launch under lldb (run/r to start, bt for backtrace)
     ./ctl debug -- --windowed   # Forward args to the program under lldb
     ./ctl check                 # Full quality gate — run before every commit
@@ -144,24 +146,115 @@ cmd_rebuild() {
 # folder that contains config.ini and Data/ for asset paths to resolve).
 resolve_mumain_exe() {
     detect_platform
+    MUMAIN_BUILD_CONFIG="${1:-Debug}"
     local exe_name="Main"
     case "$(uname -s)" in
         MINGW*|MSYS*|CYGWIN*) exe_name="Main.exe" ;;
     esac
-    MUMAIN_EXE_DIR="$SCRIPT_DIR/MuMain/out/build/$CONFIGURE_PRESET/src/Debug"
+    MUMAIN_EXE_DIR="$SCRIPT_DIR/MuMain/out/build/$CONFIGURE_PRESET/src/$MUMAIN_BUILD_CONFIG"
     MUMAIN_EXE="$MUMAIN_EXE_DIR/$exe_name"
     if [[ ! -x "$MUMAIN_EXE" ]]; then
         log_error "Executable not found: $MUMAIN_EXE"
-        log_warn "Run './ctl build' first."
+        log_warn "Run 'cmake --build MuMain/out/build/$CONFIGURE_PRESET --config $MUMAIN_BUILD_CONFIG --target Main' first."
         exit 1
     fi
 }
 
+configure_server_args() {
+    local env_file="$SCRIPT_DIR/.env"
+    local server_ip=""
+    local server_port=""
+    local server_ip_set=false
+    local server_port_set=false
+    local explicit_ip=false
+    local explicit_port=false
+    local connect_arg=false
+    local line
+
+    RUN_ARGS=("$@")
+    RUN_SERVER_IP=""
+    RUN_SERVER_PORT=""
+
+    for arg in "${RUN_ARGS[@]}"; do
+        case "$arg" in
+            /u*)
+                explicit_ip=true
+                RUN_SERVER_IP="${arg#/u}"
+                ;;
+            /p*)
+                explicit_port=true
+                RUN_SERVER_PORT="${arg#/p}"
+                ;;
+            connect) connect_arg=true ;;
+        esac
+    done
+
+    if [[ -f "$env_file" ]]; then
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            line="${line%$'\r'}"
+            case "$line" in
+                MUMAIN_SERVER_IP=*)
+                    server_ip="${line#*=}"
+                    server_ip_set=true
+                    ;;
+                MUMAIN_SERVER_PORT=*)
+                    server_port="${line#*=}"
+                    server_port_set=true
+                    ;;
+            esac
+        done < "$env_file"
+    fi
+
+    if [[ "$explicit_ip" == false && "$server_ip_set" == true ]]; then
+        if [[ -z "$server_ip" ]]; then
+            log_error "MUMAIN_SERVER_IP in .env must not be empty."
+            exit 1
+        fi
+        RUN_ARGS+=("/u$server_ip")
+        RUN_SERVER_IP="$server_ip"
+    elif [[ "$explicit_ip" == false && "$server_port_set" == true ]]; then
+        log_error "MUMAIN_SERVER_IP is required when MUMAIN_SERVER_PORT is configured."
+        exit 1
+    fi
+
+    if [[ "$explicit_port" == false && "$server_port_set" == true ]]; then
+        if [[ ! "$server_port" =~ ^[0-9]+$ ]] || [[ ${#server_port} -gt 5 ]] || (( 10#$server_port < 1 || 10#$server_port > 65535 )); then
+            log_error "MUMAIN_SERVER_PORT must be an integer from 1 to 65535."
+            exit 1
+        fi
+        RUN_ARGS+=("/p$server_port")
+        RUN_SERVER_PORT="$server_port"
+    elif [[ "$explicit_port" == false && "$server_ip_set" == true ]]; then
+        log_error "MUMAIN_SERVER_PORT is required when MUMAIN_SERVER_IP is configured."
+        exit 1
+    fi
+
+    if [[ "$connect_arg" == false && ( "$server_ip_set" == true || "$server_port_set" == true ) ]]; then
+        RUN_ARGS=(connect "${RUN_ARGS[@]}")
+    fi
+}
+
 cmd_run() {
-    resolve_mumain_exe
+    local build_config="Debug"
+    local run_args=()
+    local arg
+
+    for arg in "$@"; do
+        case "$arg" in
+            --debug) build_config="Debug" ;;
+            --release) build_config="Release" ;;
+            *) run_args+=("$arg") ;;
+        esac
+    done
+
+    resolve_mumain_exe "$build_config"
+    configure_server_args "${run_args[@]}"
+    if [[ -n "$RUN_SERVER_IP" || -n "$RUN_SERVER_PORT" ]]; then
+        log_info "Server target: ${RUN_SERVER_IP:-<config.ini>}:${RUN_SERVER_PORT:-<config.ini>}"
+    fi
     log_info "Running $MUMAIN_EXE"
     cd "$MUMAIN_EXE_DIR"
-    exec "$MUMAIN_EXE" "$@"
+    exec "$MUMAIN_EXE" "${RUN_ARGS[@]}"
 }
 
 cmd_debug() {
