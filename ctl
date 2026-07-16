@@ -151,8 +151,14 @@ resolve_mumain_exe() {
     case "$(uname -s)" in
         MINGW*|MSYS*|CYGWIN*) exe_name="Main.exe" ;;
     esac
-    MUMAIN_EXE_DIR="$SCRIPT_DIR/MuMain/out/build/$CONFIGURE_PRESET/src/$MUMAIN_BUILD_CONFIG"
-    MUMAIN_EXE="$MUMAIN_EXE_DIR/$exe_name"
+    local build_dir="$SCRIPT_DIR/MuMain/out/build/$CONFIGURE_PRESET/src/$MUMAIN_BUILD_CONFIG"
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        MUMAIN_EXE_DIR="$build_dir/Main.app/Contents/MacOS"
+        MUMAIN_EXE="$MUMAIN_EXE_DIR/Main"
+    else
+        MUMAIN_EXE_DIR="$build_dir"
+        MUMAIN_EXE="$MUMAIN_EXE_DIR/$exe_name"
+    fi
     if [[ ! -x "$MUMAIN_EXE" ]]; then
         log_error "Executable not found: $MUMAIN_EXE"
         log_warn "Run 'cmake --build MuMain/out/build/$CONFIGURE_PRESET --config $MUMAIN_BUILD_CONFIG --target Main' first."
