@@ -463,6 +463,7 @@ development_status:
   6-3-1-social-systems-validation: backlog      # 3 pts | Flow:F | Deps: 6.1.1
   6-3-3-friend-invite-stability: review         # 3 pts | Scope discovery 2026-07-17
   6-3-4-combat-action-overload-control: review # 5 pts | Scope discovery 2026-07-17
+  6-3-5-zen-render-geometry-budget: review      # 1 pt | Runtime confirmed 2026-07-17
   6-3-2-advanced-systems-validation: backlog    # 3 pts | Flow:F | Deps: 6.2.1
   6-4-1-ui-windows-validation: backlog          # 5 pts | Flow:F | Deps: 6.1.1
   epic-6-retrospective: optional
