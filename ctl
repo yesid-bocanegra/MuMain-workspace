@@ -240,6 +240,35 @@ configure_server_args() {
     fi
 }
 
+configure_runtime_env() {
+    local env_file="$SCRIPT_DIR/.env"
+    local line name value
+
+    [[ -f "$env_file" ]] || return
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        line="${line%$'\r'}"
+        name="${line%%=*}"
+        value="${line#*=}"
+        case "$name" in
+            MU_NETWORK_DIAGNOSTICS|MU_RENDER_TIMING)
+                printenv "$name" >/dev/null 2>&1 && continue
+                case "$value" in
+                    1|true|TRUE|on|ON) export "$name=1" ;;
+                    0|false|FALSE|off|OFF|"") ;;
+                    *)
+                        log_error "$name in .env must be 1/0, true/false, or on/off."
+                        exit 1
+                        ;;
+                esac
+                ;;
+            MU_CAPTURE_FRAME|MU_CAPTURE_PATH)
+                printenv "$name" >/dev/null 2>&1 || export "$name=$value"
+                ;;
+        esac
+    done < "$env_file"
+}
+
 cmd_run() {
     local build_config="Debug"
     local run_args=()
@@ -255,6 +284,7 @@ cmd_run() {
 
     resolve_mumain_exe "$build_config"
     configure_server_args "${run_args[@]}"
+    configure_runtime_env
     if [[ -n "$RUN_SERVER_IP" || -n "$RUN_SERVER_PORT" ]]; then
         log_info "Server target: ${RUN_SERVER_IP:-<config.ini>}:${RUN_SERVER_PORT:-<config.ini>}"
     fi
