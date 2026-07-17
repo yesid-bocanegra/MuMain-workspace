@@ -155,6 +155,8 @@ sprints:
       # Scope discovery — runtime account/social stability
       - 6-1-3-account-switch-character-isolation # 3 pts | injected 2026-07-17
       - 6-3-3-friend-invite-stability             # 3 pts | injected 2026-07-17
+      - 7-3-3-combat-packet-queue-telemetry        # 5 pts | injected 2026-07-17
+      - 6-3-4-combat-action-overload-control       # 5 pts | injected 2026-07-17
     velocity: null
     delivered_points: null
     commitment_reliability: null
@@ -459,6 +461,7 @@ development_status:
   6-2-2-inventory-trading-validation: backlog   # 3 pts | Flow:F | Deps: 6.1.1
   6-3-1-social-systems-validation: backlog      # 3 pts | Flow:F | Deps: 6.1.1
   6-3-3-friend-invite-stability: review         # 3 pts | Scope discovery 2026-07-17
+  6-3-4-combat-action-overload-control: review # 5 pts | Scope discovery 2026-07-17
   6-3-2-advanced-systems-validation: backlog    # 3 pts | Flow:F | Deps: 6.2.1
   6-4-1-ui-windows-validation: backlog          # 5 pts | Flow:F | Deps: 6.1.1
   epic-6-retrospective: optional
@@ -470,5 +473,6 @@ development_status:
   7-2-1-frame-time-instrumentation: done           # 3 pts | Flow:E | No deps | Sprint-2
   7-3-1-macos-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
+  7-3-3-combat-packet-queue-telemetry: review # 5 pts | Scope discovery 2026-07-17
   7-4-1-native-ci-runners: backlog              # 5 pts | Flow:E | Deps: EPIC-4
   epic-7-retrospective: optional
