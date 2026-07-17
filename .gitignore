@@ -11,6 +11,14 @@ Thumbs.db
 .vscode/
 .idea/
 *.sublime-*
+graphify-out/
+.cursorrules
+.kiro
+.remember
+.codex
+.agents
+.mimocode
+.remember
 
 # =============================================================================
 # Claude Code & BMAD

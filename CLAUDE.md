@@ -1,127 +1,35 @@
-# MuMain-workspace — Claude Code Context
+# lean-ctx — Context Engineering Layer
 
-## Project
+PREFER lean-ctx MCP tools over native equivalents for token savings:
 
-MU Online game client (Season 5.2→6). C++20 monolithic game loop + .NET 10 Native AOT network bridge + XSLT code generation. Currently planning a 10-phase SDL3 cross-platform migration (Linux + macOS).
+| PREFER | OVER | Why |
+|--------|------|-----|
+| `ctx_read(path)` | Read / cat / head / tail | Session caching, 8 compression modes, re-reads cost ~13 tokens |
+| `ctx_shell(command)` | Bash (shell commands) | Pattern-based compression for git, npm, cargo, docker, tsc |
+| `ctx_search(pattern, path)` | Grep / rg | Compact context, token-efficient results |
+| `ctx_tree(path, depth)` | ls / find | Compact directory maps with file counts |
 
-## Key Paths
+## ctx_read Modes
 
-- **Game client source:** `MuMain/src/source/` (692 files in 20 module directories)
-- **Entry point:** `MuMain/src/source/Main/MuMain.cpp` → `MuMain()` → `main()`
-- **Module structure:** See `docs/modular-reorganization.md` for directory map and CMake targets
-- **.NET network layer:** `MuMain/ClientLibrary/` (14 files)
-- **Code gen tool:** `MuMain/ConstantsReplacer/` (10 files)
-- **Debug editor:** `MuMain/src/MuEditor/` (34 files, `_EDITOR` builds)
-- **Game assets:** `MuMain/src/bin/Data/`
-- **Documentation:** `docs/`
-- **Feature flags:** `MuMain/src/source/Core/Defined_Global.h`
-- **PCH:** `MuMain/src/source/Main/stdafx.h`
-- **Build presets:** `MuMain/CMakePresets.json`
-- **i18n:** `MuMain/src/source/Translation/i18n.h`
-- **CI:** `MuMain/.github/workflows/ci.yml`
+- `full` — cached read (use for files you will edit)
+- `map` — deps + API signatures (use for context-only files)
+- `signatures` — API surface only
+- `diff` — changed lines only (after edits)
+- `aggressive` — syntax stripped
+- `entropy` — Shannon + Jaccard filtering
+- `lines:N-M` — specific range
 
-## Build Commands (by OS)
+## File Editing
 
-### macOS — Native Build (arm64)
-
-macOS **MUST** build natively. All platforms are first-class build targets.
-
-```bash
-# Install build tools (one-time, Clang ships with Xcode CLI tools)
-xcode-select --install
-brew install cmake ninja clang-format cppcheck
-
-# Build (from workspace root — ctl handles directory changes)
-./ctl build                                 # configure + build
-./ctl test                                  # run tests via ctest
-./ctl check                                 # full quality gate: build + test + format-check + lint
-./ctl format                                # auto-format all C++ files
-```
-
-> **Note:** SDL3 is fetched via FetchContent on first configure (internet required, ~30 sec). `.NET` SDK needed for server connectivity.
-
-### Linux — Native Build (x64)
-
-Linux **MUST** build natively. All platforms are first-class build targets.
-
-```bash
-# Install toolchain (one-time)
-sudo apt-get update && sudo apt-get install -y cmake ninja-build gcc g++ libgl1-mesa-dev clang-format cppcheck
-
-# Build (from workspace root — ctl handles directory changes)
-./ctl build                                 # configure + build
-./ctl test                                  # run tests via ctest
-./ctl check                                 # full quality gate: build + test + format-check + lint
-./ctl format                                # auto-format all C++ files
-```
-
-> **Note:** SDL3 is fetched via FetchContent on first configure (internet required, ~30 sec). GCC 12+ required for full C++20 support.
-
-### Windows — MSVC Presets
-
-```powershell
-cmake --preset windows-x64
-cmake --build --preset windows-x64-debug
-
-# With editor
-cmake --preset windows-x64-mueditor
-cmake --build --preset windows-x64-mueditor-debug
-```
-
-## Conventions
-
-- **Commits:** Conventional Commits format — `type(scope): description` (e.g., `feat(ui):`, `fix(network):`, `refactor:`). Semantic-release parses these for automated versioning. See `docs/development-standards.md` §6.
-- **C++ naming:** PascalCase functions, `m_` prefix members with Hungarian hints (`by`, `w`, `dw`, `sz`, `p`), `CNewUI*` UI classes, UPPER_SNAKE constants
-- **Formatting:** 4 spaces, UTF-8, LF, Allman braces (per `.editorconfig`)
-- **New code:** `std::unique_ptr` (no raw `new`/`delete`), `nullptr` (not `NULL`), `std::chrono` (not `timeGetTime`), `std::filesystem` for paths
-- **i18n:** `GAME_TEXT("key")` for user-facing strings, `EDITOR_TEXT("key")` in editor builds
-- **Feature flags:** Author-prefixed defines in `Defined_Global.h` (e.g., `ASG_ADD_GENS_SYSTEM`)
-- **C#:** StyleCop enforced, `[UnmanagedCallersOnly]` for AOT exports, VSTHRD103 as error
-- **Logging:** `mu::log::Get("name")->info(...)` via spdlog (see `MuLogger.h`); no `wprintf`/`fprintf(stderr)` in new code
-- **Error handling:** Return codes (no exceptions in game loop), `assert` for internal invariants only, `[[nodiscard]]` on new fallible functions
-
-## Generated Files — DO NOT EDIT
-
-XSLT-generated from XML packet definitions. Located in `MuMain/src/source/Dotnet/`:
-- `PacketBindings_*.h`
-- `PacketFunctions_*.h` / `.cpp`
-
-## Cross-Platform Rules
-
-- No new Win32 API calls — check banned API table in `docs/development-standards.md`
-- No `#ifdef _WIN32` in game logic — only in platform abstraction layer
-- No backslash path literals, no `wchar_t` in new serialization
-- Forward slashes, `std::filesystem::path` for new code
-- Native builds on macOS (arm64), Linux (x64), and Windows (x64) MUST all pass — no platform is optional
-- CI builds all three platforms natively (no cross-compilation)
-
-## Documentation — Load On Demand
-
-Start with `docs/index.md` (~100 lines) for the full index with section navigation hints. Load individual docs only when relevant to your current task.
-
-| When working on... | Load (lines) |
-|---------------------|-------------|
-| Cross-platform migration | `modular-reorganization.md` (~120) + `development-standards.md` §1 (~150 lines) + `CROSS_PLATFORM_PLAN.md` (relevant phase, ~100 lines each) |
-| Game client features | `game-systems-reference.md` (~300) + `architecture-mumain.md` (~185) |
-| Rendering / shaders | `architecture-rendering.md` (~190) |
-| Network protocol | `packet-protocol-reference.md` (~230) + `architecture-clientlibrary.md` (~140) |
-| Build / CI issues | `development-guide.md` (~400) + `troubleshooting.md` (~150) + `ci-workflows.md` (~130) |
-| Asset loading | `asset-pipeline.md` (~230) |
-| Error handling / logging | `development-standards.md` §2 Error Handling & Logging (~110 lines) |
-| Static analysis (cppcheck) | `cppcheck-guidance.md` (~100) |
-| Planning a new feature | `implementation-recipes.md` (relevant recipe, ~80-120 lines each) |
-| Assessing change impact | `feature-impact-maps.md` (relevant system, ~25-45 lines each) |
-| Security review | `security-guidelines.md` (~130) |
-| Performance optimization | `performance-guidelines.md` (~130) |
-| Evaluating dependencies | `gamedev-library-landscape.md` (~230) |
-| Architectural decisions | `adr/README.md` + relevant ADR files |
-
-Large files (>400 lines): `CROSS_PLATFORM_PLAN.md` (970 lines) — always read specific phase sections, never the full file.
+Use native Edit/StrReplace when available. If Edit requires Read and Read is unavailable,
+use `ctx_edit(path, old_string, new_string)` — it reads, replaces, and writes in one MCP call.
+NEVER loop trying to make Edit work. If it fails, switch to ctx_edit immediately.
+Write, Delete have no lean-ctx equivalent — use them normally.
 
 <!-- PCC-START — managed by PCC deploy, do not edit manually -->
 # PCC Module
 
-PCC (Project-specific Customizations and Constraints) is a BMAD add-on that provides automated story lifecycle, quality gates, and sprint management.
+PCC (Project-specific Customizations and Constraints) is a standalone module (originally a BMAD add-on; decoupled v6.10.0) that provides automated story lifecycle, quality gates, and sprint management.
 
 ## Key Paths
 
@@ -136,11 +44,11 @@ Run the full story pipeline:
 ./paw story-key --from DEV_STORY --to CODE_REVIEW_QG
 ```
 
-Invoke workflows directly:
+Invoke skills directly (slash commands resolve via command entrypoints that load the skill):
 ```bash
 /bmad:pcc:workflows:dev-story
 /bmad:pcc:workflows:code-review-quality-gate
-/bmad:pcc:tasks:load-guidelines
+# skills the runner loads by path, e.g. _bmad/pcc/skills/execution/load-guidelines/SKILL.md
 ```
 
 ## Do NOT

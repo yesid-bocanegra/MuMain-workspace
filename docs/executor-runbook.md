@@ -1,5 +1,7 @@
 # PCC Executor Runbook
 
+> **As of v6.11.0: skills-only** — workflows/tasks/engine removed; capability is markdown under `_bmad/pcc/skills/`. Operator commands are unchanged: `./paw` and the `/bmad-pcc-*` slash commands work exactly as before. Each command now points Claude at a backing `SKILL.md` instead of an XML workflow/task.
+
 > Cheat sheet for running the project lifecycle. Follow commands in order.
 > If something breaks → Troubleshooting section.
 > If still stuck → ask the PCC agent (bottom of this doc).
@@ -27,7 +29,7 @@ Claude Code automatically discovers slash commands from `.claude/commands/` in t
 ├── bmad-pcc-dev-story.md        →  /bmad-pcc-dev-story
 ├── bmad-pcc-create-story.md     →  /bmad-pcc-create-story
 ├── bmad-pcc.agent.md            →  /bmad-pcc
-└── ...                          →  83 total commands
+└── ...                          →  83 total command files (77 commands + 6 agents)
 ```
 
 Claude Code scans this directory on session start. No additional registration or configuration is needed — if the file is present, the command is available.
@@ -55,13 +57,13 @@ context: fork          # fork = runs in isolated context (zero main context toke
 ---
 
 <steps>
-1. Load workflow.xml engine
-2. Read workflow config
-3. Execute workflow instructions
+1. Load the backing SKILL.md under _bmad/pcc/skills/
+2. Follow the skill instructions
+3. Produce the expected artifacts
 </steps>
 ```
 
-The `context: fork` directive means the command runs in a forked Claude Code session, keeping the main conversation context clean.
+The `context: fork` directive means the command runs in a forked Claude Code session, keeping the main conversation context clean. (Skills-only as of v6.11.0 — there is no XML workflow engine; each command points at a `SKILL.md`.)
 
 ### Naming Convention
 
@@ -69,15 +71,14 @@ Commands follow the pattern `bmad-pcc-{name}.md`:
 
 | File pattern | Slash command | Type |
 |-------------|--------------|------|
-| `bmad-pcc-{workflow}.md` | `/bmad-pcc-{workflow}` | Workflow command (74) |
+| `bmad-pcc-{name}.md` | `/bmad-pcc-{name}` | Skill command (78) |
 | `bmad-pcc-{name}.agent.md` | `/bmad-pcc-{name}` | Agent command (6) |
-| `bmad-pcc-{task}.md` | `/bmad-pcc-{task}` | Task command (3) |
 
 ### Verifying Installation
 
 ```bash
 # Count installed commands
-ls .claude/commands/bmad-pcc-*.md | wc -l    # Should be 83
+ls .claude/commands/bmad-pcc-*.md | wc -l    # Should be 83 (77 commands + 6 agents)
 
 # Check a specific command exists
 ls .claude/commands/bmad-pcc-dev-story.md
@@ -214,6 +215,71 @@ You'll be prompted to select which PRD milestone(s) this sprint advances. Story 
 The pipeline runs fully automated: create → ATDD → design → dev → review → done.
 Self-healing is built in: 1 retry per step, up to 2 regressions before stopping.
 
+**Graph-native repair routing (v6.4.0+).** A `code-review-qg` failure no longer
+always rewinds to the expensive `dev-story` step. Lint-class (advisory) failures —
+style / lint / coverage thresholds — route graph-natively to the cheap, scoped
+`lint-fix` repair node, which re-runs only the gate. Dispositive failures
+(compilation failure or a failed/errored test suite → `POST_VERIFICATION_FAILED`)
+keep the hard floor and fall through to the `dev-story` regression. The gate↔repair
+cycle has its **own** budget, independent of the regression counter:
+
+| Env var | Default | Bounds |
+|---------|---------|--------|
+| `PAW_MAX_RETRIES_PER_STEP` | 1 | In-place retries per step |
+| `PAW_MAX_REGRESSIONS` | 2 | Cross-step loopbacks to `dev-story` per story |
+| `PAW_MAX_TRIAGE_PER_STEP` | 2 | Haiku-driven minimal-fix attempts per step |
+| `PAW_MAX_REPAIR_ATTEMPTS` | 2 | `lint-fix` **and** `ac-fix` repair cycles per gate failure |
+
+When `PAW_MAX_REPAIR_ATTEMPTS` is exhausted, the repair edge is suppressed and
+`dev-story` fires. A repair hop emits a `step_repair_routed` metrics event
+(carrying `error_class` + attempt) instead of `step_failed`, so repairs show up as
+routing decisions rather than terminal failures.
+
+**Agent-decided ac-fix repair routing (v6.5.0+).** The same self-repair shape now
+covers `ac-validation` failures. Rather than always rewinding to `dev-story`, an
+`ac-validation` failure routes graph-natively to a scoped `ac-fix` repair node that
+fixes ONLY the failing acceptance criteria and re-runs `ac-validation`. Unlike
+`lint-fix` (whose routing reads a deterministic `error_class` hint), `ac-fix`
+routing is **agent-decided**: a `haiku_triage` `on_failure` edge — the first
+production `haiku_triage` edge — asks a fast-tier agent, over a lean
+`failure_summary` of the failing ACs, whether they are scoped-fixable (vs. needing
+a full `dev-story` rework). An agent "no", a judge error, or repair-budget
+exhaustion all fall through to the `always`→`dev-story` fallback. `ac-fix` shares
+the `PAW_MAX_REPAIR_ATTEMPTS` budget with `lint-fix`. Under `--dry-run` the routing
+is air-gapped: `haiku_triage` returns `True` without any agent call (mirroring the
+`triage_regression` dry-run short-circuit).
+
+**Per-step exit reports (v6.3.7+).** After every step the console prints a
+structured exit block: files changed (`git diff --name-only HEAD`), pytest /
+ruff / mypy summary scraped from the log, a curated summary excerpt from
+`{story_root}/{node-id}.md`, and — on failure only — a Haiku-distilled
+diagnosis (`What failed / Likely cause / Suggested next action`). The same
+data is written as a JSON sidecar at
+`.paw/logs/{story_key}_{step}_{ts}_exit.json` for CI/dashboard consumption.
+A single-line **pipeline tape** (`tape: CREATE_STORY ✓ • DEV_STORY ✓ •
+COMPLETENESS_GATE ✗`) trails each step and is reset per-story.
+
+**Per-step cost instrumentation (v6.6.0+).** The pipeline tape now also records
+per-step token counts and an estimated USD cost; the tape line shows a running
+`$` total (rendered only when the running total is nonzero, so cheap/dry runs stay
+clean). On terminal exit each run writes a per-run cost aggregate to
+`.paw/{story_key}.cost.json` (best-effort — a write failure never crashes the run).
+Cost is **observability only**: it is reporting-derived (`cost_model.estimate_cost`,
+token→USD by model tier) and **never feeds model selection**. A missing rate logs a
+warning and falls back to Sonnet pricing rather than crashing. The numbers are
+**accurate for sequential runs**; under `--parallel` the worktree workers share a
+single in-process tape, so the aggregate can interleave (see
+`docs/findings/finding-2026-05-26-parallel-cost-tape-isolation.md` — a follow-up
+story).
+
+**Per-step cache metrics (v6.6.1+).** The same `.paw/{story_key}.cost.json` aggregate
+now also carries per-step `cache_read_tokens` / `cache_creation_tokens`, run totals
+(`total_cache_read_tokens` / `total_cache_creation_tokens`), and a derived
+`cache_read_ratio` — the prompt-cache **hit rate**, `cache_read / (cache_read +
+tokens_in)`. Use it to diagnose cross-step prompt-cache effectiveness (a low ratio
+means steps are re-paying cold-start prompt cost). Cache metrics are reporting-only
+and never affect execution.
+
 ---
 
 ### 3. Quality Checks (Between Stories)
@@ -239,6 +305,37 @@ Self-healing is built in: 1 retry per step, up to 2 regressions before stopping.
 `check` mirrors CI locally. `fix` goes further — if checks fail, it invokes Claude to diagnose and fix, then re-verifies.
 
 The pre-push hook uses `--skip-submodules` automatically — submodule components get their own hooks installed inside their git directory.
+
+---
+
+### 3.5. Retrofit: Audit Shipped Stories Against the Current Graph (v4.3.6+)
+
+`paw retrofit` re-validates the file lists of *already-shipped* stories against today's knowledge graph. Use it when you suspect a refactor orphaned some files, or to quantify structural tech debt accumulated since a sprint closed.
+
+```bash
+# Re-validate a single story
+./paw retrofit 5-4-1-story-retrofit-validator
+
+# Batch: all stories in a sprint
+./paw retrofit --sprint sprint-5
+
+# Batch: every story with a file list
+./paw retrofit --all
+
+# Add read-only fix recommendations (does NOT modify code)
+./paw retrofit --all --fix
+
+# Machine-readable output
+./paw retrofit --all --json --output retrofit-report.json
+```
+
+Each file is classified `CONNECTED` (cross-community inbound edge — well-integrated), `PARTIAL` (inbound only from same community — weakly integrated), or `ORPHAN` (no inbound edges or absent from graph — dead code / isolation risk). Reports include an A–F quality grade with coupling, cohesion, complexity, and maintainability scores.
+
+Exit codes: `0` = all stories pass, `1` = orphans detected, `2` = missing graph / usage error.
+
+**Story path resolution (v6.1.12+):** `retrofit` and `validate-story` automatically search both `docs/stories/` and BMAD's `implementation_artifacts/stories/` directory (configured in `_bmad/bmm/config.yaml`). No manual path configuration is needed — the workspace setup is sufficient.
+
+**Prerequisite:** Run `graphify` first so `graph.json` exists at the project root.
 
 ---
 
@@ -297,6 +394,55 @@ Use when a session (story implementation, code review, or audit) surfaces a find
 ```
 
 Repeat health audit after each remediation until the sprint shows HEALTHY or AT_RISK (no CRITICALs).
+
+---
+
+### 5.5. Reconcile Sprint Story Keys (v6.2.0+, Story 6.3.3)
+
+When `./paw status` shows sprint entries as `unknown`, `ORPHAN`, `RESOLVED`, or `AMBIGUOUS`, the sprint's `stories:` list contains keys that don't match the `development_status` table. This is common in long-lived workspaces where early sprints used short keys (`5-2-3`) and later ones used slug-form (`5-2-3-dependency-graph`).
+
+```bash
+# Diagnose the active sprint (read-only)
+./paw sprint doctor
+
+# Diagnose a specific sprint
+./paw sprint doctor --sprint sprint-6
+
+# Diagnose every sprint
+./paw sprint doctor --all
+
+# Auto-fix RESOLVED short keys (rewrites sprint-status.yaml with a timestamped backup)
+./paw sprint doctor --fix
+
+# Preview the fix without writing
+./paw sprint doctor --fix --dry-run
+```
+
+**Four resolution kinds:**
+
+| Kind | Meaning | Auto-fixable? |
+|------|---------|---------------|
+| `EXACT` | Key is present verbatim in `development_status`. | No action needed. |
+| `RESOLVED` | Exactly one slug-form key has this short key as its prefix. | Yes — `--fix` rewrites the short key to its slug. |
+| `AMBIGUOUS` | Two or more slug-form keys share this prefix. | **No** — operator must disambiguate manually. The doctor lists candidates. |
+| `ORPHAN` | No slug-form key matches. | **No** — the short key has no twin. Either find the real slug via `grep -r '<key>' docs/stories/` or remove the stale line. |
+
+**Safety:**
+
+- Every `--fix` write is preceded by a timestamped backup at `<file>.bak-<UTC-ISO-timestamp>`.
+- The rewrite uses scoped text-line surgery — comments and unrelated YAML are preserved byte-for-byte.
+- AMBIGUOUS and ORPHAN entries are NEVER auto-modified (loud-failure philosophy).
+- Atomic semantics: temp file in the same directory + `os.replace()` over the original.
+
+**Exit codes:**
+
+| Code | Meaning |
+|------|---------|
+| 0 | All EXACT, or `--fix` applied successfully with no remaining issues. |
+| 1 | Non-EXACT entries found (diagnose-only path) — operator should review or run `--fix`. |
+| 2 | Filesystem or parse error. |
+
+This command runs the same in every workspace (single-repo or BMAD-output-default). It reads `sprint-status.yaml` via the BMAD-aware path resolution introduced in Story 6.3.1.
 
 ---
 
@@ -559,7 +705,7 @@ docs/stories/7-9-7-my-story/
   atdd.md                   # created by atdd step (primary artifact)
   requirements.md           # created by design-screen
   progress.md               # created by dev-story (primary artifact)
-  review.md                 # created by code-review (primary artifact)
+  review.md                 # created by code-review-quality-gate (primary artifact)
   completeness-gate.md      # step summary (written by orchestration)
   code-review-qg.md         # step summary
   code-review-analysis.md   # step summary
@@ -635,24 +781,23 @@ ls docs/stories/7-9-7/*.md
 
 ## Performance Tuning
 
-Each pipeline step has built-in defaults for model, max turns, and reasoning effort level. You can override these per-step in `_bmad/pcc/config.yaml` to control cost, speed, and quality.
+Each pipeline step has a semantic tier and max-turn budget. The active adapter resolves a tier to its provider-specific model and reasoning policy.
 
 ### Built-in Step Defaults
 
-| Step | Model | Max Turns | Effort |
+| Step | Tier | Max Turns |
 |------|-------|-----------|--------|
-| CREATE_STORY | opus | 50 | low |
-| VALIDATE_STORY | haiku | 20 | low |
-| ATDD | sonnet | 50 | medium |
-| DESIGN_SCREEN | sonnet | 80 | high |
-| DEV_STORY | opus | 150 | high |
-| COMPLETENESS_GATE | haiku | 30 | low |
-| CODE_REVIEW | opus | 80 | high |
-| CODE_REVIEW_QG | sonnet | 60 | medium |
-| CODE_REVIEW_ANALYSIS | haiku | 30 | low |
-| AC_VALIDATION | sonnet | 80 | medium |
-| UI_VALIDATION | sonnet | 60 | medium |
-| CODE_REVIEW_FINALIZE | opus | 80 | medium |
+| CREATE_STORY | deep | 50 |
+| VALIDATE_STORY | fast | 30 |
+| ATDD | balanced | 50 |
+| DESIGN_SCREEN | balanced | 80 |
+| DEV_STORY | deep | 150 |
+| COMPLETENESS_GATE | fast | 60 |
+| CODE_REVIEW_QG | deep | 100 |
+| CODE_REVIEW_ANALYSIS | deep | 50 |
+| AC_VALIDATION | balanced | 80 |
+| UI_VALIDATION | balanced | 60 |
+| CODE_REVIEW_FINALIZE | deep | 80 |
 
 ### Overriding Step Defaults
 
@@ -661,46 +806,43 @@ Add a `step_overrides:` block to `_bmad/pcc/config.yaml`. Only the fields you sp
 ```yaml
 # _bmad/pcc/config.yaml
 step_overrides:
-  # Use opus for code review analysis instead of haiku
+  # Use the deep tier for code review analysis
   code-review-analysis:
-    model: opus
-    effort: high
+    tier: deep
 
   # Reduce dev-story turns to save cost
   dev-story:
     max_turns: 100
-    effort: medium
 ```
 
 **Available values:**
-- `model`: `opus`, `o4`, `o46`, `sonnet`, `haiku`
-- `effort`: `low`, `medium`, `high` (maps to Claude reasoning effort — lower = fewer thinking tokens = faster and cheaper)
+- `tier`: `fast`, `balanced`, `deep`
 - `max_turns`: any positive integer
 
 Step names use the kebab-case form (e.g., `dev-story`, `code-review-qg`, `ac-validation`).
 
-### Global Model Override with Effort Profiles
+### Global Tier Override
 
-When using `--model` to override all steps (e.g., `./paw run {key} --model opus`), the effort levels automatically tune for that model's capability. Opus is more capable per token, so lightweight steps drop effort:
+Use `--tier` to override all agent-driven work for one command, for example `./paw run {key} --tier deep`. Provider adapters select their concrete models and reasoning policies; workflow sessions direct-load their canonical `SKILL.md` files.
 
-| Step | Default (mixed) | Opus profile |
-|------|----------------|--------------|
-| create-story | opus/low | opus/low |
-| validate-story | haiku/low | opus/low |
-| atdd | sonnet/medium | opus/low |
-| design-screen | sonnet/high | opus/medium |
-| dev-story | opus/high | opus/high |
-| completeness-gate | haiku/low | opus/low |
-| code-review | opus/high | opus/high |
-| code-review-qg | sonnet/medium | opus/low |
-| code-review-analysis | haiku/low | opus/low |
-| ac-validation | sonnet/medium | opus/low |
-| ui-validation | sonnet/medium | opus/medium |
-| code-review-finalize | opus/medium | opus/medium |
-
-Profiles exist for `opus` and `o46`. Models without a profile keep per-step default effort.
+> **v7.0.0 — DAG runs skills (micro-node decomposition removed):** as of v7.0.0 the sub-graph layer is **deleted** — `sub_graph.py`, `executors.py`, `graphs/sub/`, `graphs/prompts/`, `skills/steps/`, and `load_step_skill` are gone. Each top-level graph node (`backend-only.yaml`, `frontend-only.yaml`, `full-stack.yaml`) now carries `skill:` (path to a SKILL.md), `budget:`, and `on_pass:`/`on_fail:` edges. `story_loop.run_story` dispatches via `run_skill_node` — **one whole SKILL.md run by one agent per node**; agent verdict at each edge via `decide_boundary`. Deterministic test/lint/file signals are HINTS injected into the skill prompt. Operator commands and produced artifacts are unchanged. See `docs/superpowers/notes/2026-06-26-dag-runs-skills-behavioral-evidence.md`.
+>
+> _(The v6.8.0 sub-graph dispatch note above is superseded — `SubGraphStage`, `stage-chains.yaml`, and `graphs/sub/` no longer exist.)_
 
 ### Token Optimization Tools
+
+#### Headless invocation profiles
+
+Automated headless agent runs now compile scoped MCP configs under `.paw/mcp/` at runtime instead of inheriting every configured MCP server.
+
+- `headless_minimal` → allowlists configured optional optimizers: `lean-ctx`, `headroom`, `context-mode`
+- `headless_design` → minimal optional allowlist + required `pencil`
+
+Missing optional optimizers are omitted from the compiled strict MCP config; they do not block
+story execution. Missing required servers fail closed with an actionable configuration error.
+
+The live agent path (`skill_node` / triage invoke flows) also passes `--exclude-dynamic-system-prompt-sections`, improving prompt-cache reuse by keeping machine-specific system-prompt sections out of the reusable prefix.
+
 
 Four tools reduce token consumption at different layers of the pipeline. All are optional but recommended — they work independently and can be combined.
 
@@ -742,7 +884,7 @@ MCP server that intercepts tool outputs, indexes them into a local FTS5 database
 
 ```bash
 # Install (one-time)
-claude mcp add context-mode -- npx -y context-mode
+claude mcp add --scope user context-mode -- npx -y context-mode
 
 # Or install as plugin for slash commands + hooks
 # (run inside Claude Code interactive session)
@@ -805,6 +947,95 @@ Compression levels: `low` (full descriptions), `medium` (first sentence), `high`
 
 ---
 
+## Coding agent backend (v6.3.0+)
+
+The Phase B multi-agent migration introduces an `agent:` block in `.pcc-config.yaml` that selects which coding-agent backend the pipeline invokes. `claude` is the default; `codex` is available through the local Codex CLI. `copilot` and `opencode` still raise `NotImplementedError`.
+
+**Default behaviour (no `agent:` block).** Existing `.pcc-config.yaml` files work unchanged — the pipeline runs on Claude exactly as it did before. No migration is required.
+
+**Operator config:**
+
+```yaml
+schema_version: 3
+
+agent:
+  backend: claude        # claude (default) | codex | copilot | opencode
+  claude:
+    mode: cli            # cli (subprocess) | sdk
+```
+
+`codex` is implemented via `codex exec` and requires a local authenticated Codex CLI (`codex login` and `codex doctor` should pass before running a PCC story).
+
+```yaml
+schema_version: 3
+
+agent:
+  backend: codex
+  models:
+    codex:
+      fast: {model: gpt-5.6-luna, effort: low}
+      balanced: {model: gpt-5.6-terra, effort: medium}
+      deep: {model: gpt-5.6-sol, effort: high}
+```
+
+PCC uses `codex exec` non-interactively. `.pcc-config.yaml` selects runner models and
+reasoning policies; the Codex adapter resolves the semantic tier into its provider-specific
+`--model` and `model_reasoning_effort` options, which outrank `.codex/config.toml`. Keep interactive defaults in that file, for example:
+
+```toml
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+```
+
+Codex skill nodes run with `workspace-write`; judge calls run read-only. Luna is fast, Terra
+balanced, and Sol deep. Operators may partially override any tier. Project Codex config loads
+only for trusted projects. See the official [Codex model guide](https://developers.openai.com/codex/models),
+[configuration guide](https://learn.chatgpt.com/docs/config-file/config-basic), and
+[non-interactive mode guide](https://learn.chatgpt.com/docs/non-interactive-mode).
+
+Codex supports PCC skills, MCP, and Pencil MCP. Project skills are discovered under
+`.agents/skills/`; pipeline nodes also direct-load their canonical `SKILL.md` so execution does
+not depend on discovery. Codex still does not advertise `CACHE_TELEMETRY` or `WEB_FETCH`.
+
+The Pencil app owns registration of the `pencil` MCP server. PCC does not write the server
+command, arguments, URL, or environment. Design nodes mark the existing server as enabled and
+required for that invocation, so Codex fails before useful work if Pencil cannot initialize.
+
+Local smoke:
+
+```bash
+codex --version
+codex login status
+codex doctor
+codex mcp get pencil  # required only for Pencil design stages
+./paw <story-key> --smoke
+```
+
+`./paw --smoke` validates graph traversal and capability-gate behavior without invoking a real coding agent. Use `codex doctor` as the local Codex CLI/auth prerequisite check. For Pencil-enabled workspaces, `codex mcp get pencil` must show an enabled app-managed server before a real Codex-backed design stage runs.
+
+Setting `backend: copilot|opencode` today raises `NotImplementedError` referencing Phase D/E so that misconfigurations surface immediately rather than silently falling back to Claude.
+
+**Capability gate.** The v7 story loop checks capabilities before each node dispatch. Graph YAMLs (`_bmad/pcc/graphs/*.yaml`) may declare `required_capabilities:` per node:
+
+| Node | Required capabilities |
+|------|----------------------|
+| `design-screen` | `pencil-mcp`, `file-edit` |
+| `dev-story` | `file-edit`, `shell-exec`, `subprocess-turns` |
+| `ui-validation` | `pencil-mcp` |
+
+When a node has no YAML requirements, the loop falls back to the node's `SKILL.md` frontmatter/body and parses `REQUIRES capabilities:` / `PREFERS capabilities:` hints. When a required capability is not advertised by the configured backend, the pipeline emits a structured `capability_skip` warn log and SKIPS the node without invoking the agent — the run does NOT fail. This lets future Codex/Copilot adapters land incrementally without blocking pipelines that touch capabilities they don't support yet.
+
+Skip log shape (warn level, machine-parseable):
+
+```
+capability_skip node=ui-validation capability=PENCIL_MCP backend=copilot
+message=PENCIL_MCP unavailable on backend=copilot; ui-validation skipped
+```
+
+---
+
 ## Troubleshooting
 
 | Symptom | Try First | If Still Failing |
@@ -821,6 +1052,7 @@ Compression levels: `low` (full descriptions), `medium` (first sentence), `high`
 | Slash commands not available | `ls .claude/commands/bmad-pcc-*.md \| wc -l` | `cp _bmad/pcc/commands/*.md .claude/commands/` then restart session |
 | Quality gate fails on push | `./paw check` → `./paw fix` | Check `.pcc-config.yaml` build commands (run `workspace-configure`) |
 | `./paw commit` can't generate message | Run `/bmad:pcc:workflows:guidelines-init` | Provide explicit: `./paw commit -m "msg"` |
+| Run halts with "Model unavailable (RATE_LIMITED/TRANSPORT_ERROR)" (exit 2) | **Out of model quota / rate-limited** — the runner stopped fast to preserve budget and your committed work; wait for quota to reset | Re-run `./paw {key} --from {step}` when quota is back; completed dev-story tasks were committed per-task so they won't be redone |
 | Don't know what to do next | `./paw status` | Ask the PCC agent (below) |
 
 ### `./paw` Flags for Common Recovery Scenarios
@@ -871,7 +1103,56 @@ Previously, idle timeouts inherited the process exit code (often 0), causing tim
 
 Both modes print an assertion-based test report showing pass/fail per step and per assertion. Use dry-run after deploying paw_runner changes to verify flow logic. Use smoke to verify Claude CLI integration end-to-end.
 
-**Smoke mode safety:** Commits are auto-disabled (`--no-commit`) to prevent test runs from modifying the repo. Smoke also validates post-step processing (quality gate verification, memory saves) that dry-run cannot reach. Use `--parallel --smoke` to exercise the full fan-out worktree path.
+**Smoke mode safety:** Commits are auto-disabled (`--no-commit`) to prevent test runs from modifying the repo. Smoke also validates post-step processing (quality gate verification, memory saves) that dry-run cannot reach. Use `batch --parallel --smoke` to exercise the inter-story worktree batch path.
+
+### Pipeline Tuning Environment Variables
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `PAW_TRIAGE_TIMEOUT` | `180` | Seconds before the post-failure Haiku triage call is killed. Increase on slow machines or when MCP server startup adds overhead to the decision subprocess. |
+| `PAW_RUN_TOKEN_BUDGET` | _unset (disabled)_ | Soft per-run token ceiling (sums input + output + cache tokens across steps). When set and crossed, the runner finishes the current step, relies on the dev-story green checkpoint, and **halts cleanly + resumably** (`./paw <story>` to continue) instead of being killed mid-task by the server-side 5-hour window. Unset = unchanged behavior. |
+| `PAW_BATCH_MAX_ITEMS` | `12` | Safety ceiling on how many unchecked ATDD items `detect-next-task` may pull into ONE dev-story RED→GREEN cycle (v6.17.0 aggressive batching). A generous *ceiling*, not a target — the selector picks the largest coherent value slice (a whole AC / coupled ACs) up to this bound. Lower it if batches starve the heavy-node turn budgets; raise it for very large, tightly-coupled ACs. |
+
+```bash
+# Example: extend triage timeout for a slow environment
+PAW_TRIAGE_TIMEOUT=300 ./paw run {key}
+
+# Example: cap a single run's token spend (halts cleanly + resumable when crossed)
+PAW_RUN_TOKEN_BUDGET=8000000 ./paw {key}
+```
+
+The triage call runs after a step failure to decide whether to retry, regress, or abort. It uses a dedicated Haiku subprocess that must initialize its MCP session before responding — the default 180 s accounts for that overhead.
+
+**dev-story batching + green checkpoint (v6.17.0).** dev-story no longer runs one cycle per ATDD line. `detect-next-task` (Sonnet) selects an aggressive, value-coherent **batch** of related items (bounded by `PAW_BATCH_MAX_ITEMS`) per cycle, and the moment a batch's tests are GREEN a deterministic shell `checkpoint-green` node commits the code and records the completed items in `.paw/{story}.tasks-done.json` — **before** refactor/lint. A resumed run reads that ledger to skip finished work with zero re-discovery cost. Cache-token cost is now recorded in `.paw/{story}.cost.json` (previously read all-zeros on graph runs), so you can see real burn per run.
+
+**dev-story burn reduction — verdict-skip, already-done fast-path, tier-targeted verify (v6.18.0).**
+
+- **Verdict-skip on shell nodes:** `goal_verification_middleware` and `evaluation_middleware` no longer call a model to judge shell-executor nodes. Shell nodes are deterministic — their exit code is the verdict. This removes ~2 model calls per shell node per dev-story iteration.
+- **Already-done fast-path:** When `reconcile-check` declares a batch already implemented, the loop skips the Claude `refactor` + `run-lint` nodes. `checkpoint-green` re-emits `already_done` via `output_key` and routes directly `→ commit-task`.
+- **Tier-targeted RED/GREEN verify:** RED and GREEN verify now run the tests the batch actually wrote at the correct tier (unit vs. integration), never mixing tiers. Fixes the convergence-killer where an integration test was never confirmed by the unit-only RED command (causing infinite regression). The code-review quality gate now also runs each non-unit tier's full suite for system-wide sanity.
+
+**Operator: activating tier-targeted verify in a target workspace.** In the build
+component's `.pcc-config.yaml` (e.g. `memoria-backend`) add under `testing:`:
+
+```yaml
+    testing:
+      test_filter_flag: "--tests"
+      test_tiers:
+        - name: integration
+          command: "./gradlew integrationTest --rerun-tasks"
+          match: "*IntegrationTest"
+        - name: unit
+          command: "./gradlew unitTest --rerun-tasks"
+          match: "*"
+```
+
+Then `./deploy` + `./paw clean <story> --include-summary` + `./paw sprint`.
+
+Without `test_tiers` the fix is inert — RED still confirms tests but tiers are not
+separated (single catch-all tier, unchanged behavior from before v6.18.0).
+
+Note: `python3 -m paw_runner.test_targeting` can be run from the workspace root
+(where `paw_runner` is importable — the standard deploy-by-copy layout).
 
 ---
 
@@ -893,4 +1174,4 @@ The PCC agent (Nova) guides you through any lifecycle decision. You can ask:
 For per-workflow usage details:
 → `_bmad/pcc/docs/lifecycle-hierarchy.md` — full state machines
 → `_bmad/pcc/docs/sprint-scoping-model.md` — sprint YAML schema
-→ `docs/specification/pcc-workflow-catalog.md` — all 74 workflows
+→ `docs/specification/pcc-workflow-catalog.md` — capability catalog (pre-migration reference; authoritative registry is `module.yaml` `skills:`)
