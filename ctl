@@ -59,8 +59,10 @@ USAGE:
     ./ctl <command>
 
 DEVELOPMENT COMMANDS:
-    build           Native build using platform-appropriate CMake preset
-    rebuild         Clean then build from scratch
+    build [--debug|--release]
+                    Native build using selected configuration (default: Debug)
+    rebuild [--debug|--release]
+                    Clean then build selected configuration from scratch
     run [--debug|--release] [args...]
                     Launch the selected MuMain build (default: Debug)
     debug [args...] Launch MuMain under lldb (gdb fallback on Linux)
@@ -77,6 +79,7 @@ COMPONENTS:  mumain
 
 EXAMPLES:
     ./ctl build                 # Native build (auto-detects macOS/Linux/Windows)
+    ./ctl build --release       # Build optimized Release client and runtime artifacts
     ./ctl rebuild               # Clean then build from scratch
     ./ctl run                   # Run the built client
     ./ctl run --release         # Run the optimized Release client
@@ -95,7 +98,23 @@ EOF
 
 cmd_build() {
     detect_platform
-    log_info "Building mumain natively ($CONFIGURE_PRESET)..."
+    local build_config="Debug"
+    local arg
+    for arg in "$@"; do
+        case "$arg" in
+            --debug) build_config="Debug" ;;
+            --release) build_config="Release" ;;
+            *)
+                log_error "Unknown build option: $arg"
+                exit 1
+                ;;
+        esac
+    done
+    case "$build_config" in
+        Debug) BUILD_PRESET="$CONFIGURE_PRESET-debug" ;;
+        Release) BUILD_PRESET="$CONFIGURE_PRESET-release" ;;
+    esac
+    log_info "Building mumain natively ($BUILD_PRESET)..."
     (cd MuMain && cmake --preset "$CONFIGURE_PRESET" && cmake --build --preset "$BUILD_PRESET" -j"$NCPU")
     log_success "Build complete ($BUILD_PRESET)"
 }
@@ -137,7 +156,7 @@ cmd_clean() {
 
 cmd_rebuild() {
     cmd_clean
-    cmd_build
+    cmd_build "$@"
 }
 
 # Resolve the built MuMain executable path for the current platform's preset.

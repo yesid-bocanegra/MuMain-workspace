@@ -476,5 +476,6 @@ development_status:
   7-3-2-linux-stability-session: backlog        # 5 pts | Flow:E | Deps: EPIC-2-6
   7-3-3-combat-packet-queue-telemetry: review # 5 pts | Scope discovery 2026-07-17
   7-3-4-openmu-monster-ai-tick-reentrancy: ready-for-dev # 2 pts | Scope discovery 2026-07-17
+  7-3-5-nonblocking-ordered-outbound-network-send: in-progress # 3 pts | Scope discovery 2026-07-17
   7-4-1-native-ci-runners: backlog              # 5 pts | Flow:E | Deps: EPIC-4
   epic-7-retrospective: optional
