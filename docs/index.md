@@ -89,6 +89,7 @@
 
 ### CI/CD
 - [CI Workflows](./ci-workflows.md) — Consolidated CI: quality gates + build pipeline, Makefile as source of truth *(~110 lines)*
+- [Upstream Sync](./upstream-sync.md) — Merge-friendly fork synchronization, rollback, and upstream pull-request preparation
 - [CI Workflow](../MuMain/.github/workflows/ci.yml) — Single workflow: quality gates + MinGW cross-compile + artifact upload
 
 ## Getting Started
